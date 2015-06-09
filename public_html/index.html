@@ -22,7 +22,7 @@ and open the template in the editor.
        
         
         <script src="ultimotls/ultimotls.js" type="text/javascript"></script>
-       
+       <script src="lib/js/angular/angular-route.js" type="text/javascript"></script>
         <script src="lib/js/angular/ng-slider.min.js" type="text/javascript"></script>
         
     </head>
@@ -48,9 +48,11 @@ and open the template in the editor.
             <nav class="navbar navbar-default">
                 <div class="container-fluid">
                     <tabs-panel></tabs-panel>
+                    
                 </div>
             </nav>
         </div>
+        <div ng-view></div>
         <script src="http://d3js.org/d3.v3.min.js"></script>
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
         <script src="ultimotls/audit/audit.js" type="text/javascript"></script>
