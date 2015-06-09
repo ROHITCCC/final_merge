@@ -5,7 +5,7 @@
  */
 
 //(function(angular){
-    var ultimotls = angular.module('ultimotls', ['ngSlider', 'auditDirectiveModule', 'sunburstDirectiveModule', 'auditControllerModule']);
+    var ultimotls = angular.module('ultimotls', ['ngSlider', 'auditDirectiveModule', 'sunburstDirectiveModule', 'auditControllerModule', 'ngRoute']);
 
     ultimotls.run(function($http) {  
         $http.defaults.headers.common.Authorization = 'Basic YTph';
@@ -58,7 +58,7 @@
         scope: true,
         templateUrl: 'navTabs.html',
         controller: function(){
-           this.tab = 1;
+           this.tab = 3;
            this.isSet = function(checkTab){
                return this.tab === checkTab;
            };
@@ -69,6 +69,21 @@
         controllerAs: "tab"
     }; 
 });
+
+ultimotls.config(['$routeProvider', function($routeProvider) {
+    $routeProvider.
+        when('/audits', {
+            templateUrl: 'ultimotls/audit/searchApp.html',
+            controller: 'DataRetrieve'
+        }).
+        when('/sunburst', {
+            templateUrl: 'ultimotls/dashboard/sunburst/sunburstDashboard.html',
+            controller: 'sunburstController'
+        }).
+        otherwise({
+            redirectTo: '/sunburst'
+        });
+}]);
 
 
 ultimotls.factory("mongoAggregateService", function($http){
