@@ -1,0 +1,22 @@
+<section>
+    <ul class="nav nav-pills">
+        <li ng-class="{ active:tab.isSet(1) }">
+            <a href ng-click="tab.setTab(1)">Dashboard</a>
+        </li>
+        <li ng-class="{ active:tab.isSet(2) }">
+            <a href ng-click="tab.setTab(2)">Audits</a>
+        </li>
+        <li ng-class="{ active:tab.isSet(3) }">
+            <a href ng-click="tab.setTab(3)">Sunburst Dashboard</a>
+        </li>
+    </ul>
+    <!-- For Dashboard Panel-->
+    <!--<div ng-show="tab.isSet(1)" ng-include="'partials/appDashboard.html'"></div>-->
+
+    <!-- For Search Panel -->
+    <div ng-show="tab.isSet(2)" ng-include="'ultimotls/audit/searchApp.html'"></div>
+    
+    <!-- For Sunburst Panel -->
+    <div ng-show="tab.isSet(3)" ng-include="'ultimotls/dashboard/sunburst/sunburstDashboard.html'"></div>
+
+</section>
