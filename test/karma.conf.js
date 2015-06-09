@@ -7,12 +7,17 @@
 module.exports = function (config) {
     config.set({
         basePath: './',
-        files: ['lib/js/angular/*.js',
-            'lib/js/jquery/*.js',
-            'lib/js/jsonPath/*.js',
-            'ultimotls/audit/*.js',
-            'ultimotls/dashboard/*.js'
-
+        files: ['../public_html/lib/js/angular/angular.js',
+            'lib/js/angular/angular-mocks.js',
+            '../public_html/lib/js/angular/ng-slider.min.js',
+            '../public_html/lib/js/jquery/*.js',
+            '../public_html/lib/js/jsonPath/*.js',
+            '../public_html/ultimotls/audit/*.js',
+            '../public_html/ultimotls/ultimotls.js',
+            '../public_html/ultimotls/dashboard/sunburst/*.js',
+            'sunburstDashboardUnitTest/*.js',
+            'lib/js/angular/*.js'
+  
         ],
         exclude: [
         ],
