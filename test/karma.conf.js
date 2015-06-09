@@ -11,7 +11,8 @@ module.exports = function (config) {
             'lib/js/jquery/*.js',
             'lib/js/jsonPath/*.js',
             'ultimotls/audit/*.js',
-            'ultimotls/dashboard/*.js'
+            'ultimotls/dashboard/*.js',
+            'sunburstDashboardUnitTest/*.js'
 
         ],
         exclude: [
