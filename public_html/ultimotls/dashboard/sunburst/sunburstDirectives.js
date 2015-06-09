@@ -6,7 +6,7 @@
 
 var sunburstDirectiveModule = angular.module('sunburstDirectiveModule', ['sunburstControllerModule']);
 
-sunburstDirectiveModule.directive('sunburstChart', ['$compile', function($compile){
+sunburstDirectiveModule.directive('sunburstChart', function(){
     function sunburstChart(data, element){
         var ele = element[0];
         var width = (window.innerWidth*.5), height = (window.innerHeight*.60);
@@ -254,4 +254,4 @@ sunburstDirectiveModule.directive('sunburstChart', ['$compile', function($compil
         link: link,
         controller: 'sunburstController'
     };
-}]);
+});
