@@ -58,7 +58,8 @@ sunburstControllerModule.controller('sunburstController', ['$scope', 'mongoAggre
                          "'$transactionType'},'children':{'$addToSet':{'children':'$application"+
                          "'}}}},{'$project':{'_id':1,'name':'$_id.transactionType','description'"+
                          ":{'$literal':'Transaction Type'},'children':'$children.children'}}]";
-            $scope.sliderDatePromise = mongoAggregateService.callHttp(sliderDataQuery);
+            //$scope.sliderDatePromise = mongoAggregateService.callHttp(sliderDataQuery);
+            $scope.sunburstPromise = mongoAggregateService.callHttp(sliderDataQuery);
            
         }
     };

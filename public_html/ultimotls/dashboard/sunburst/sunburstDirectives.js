@@ -22,11 +22,18 @@ sunburstDirectiveModule.directive('sunburstChart', ['$compile', function($compil
             .clamp(true)
             .range([90, 20]);
 
+
+        //remove SVG before appending. To be replaced by transition.
+        d3.select(ele).select("svg").remove();
+        
         var svg = d3.select(ele).append("svg")
             .attr("width", margin.left + margin.right)
             .attr("height", margin.top + margin.bottom)
           .append("g")
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    
+    
+    
 
         var partition = d3.layout.partition()
             .sort(function(a, b) { return d3.ascending(a.name, b.name); })
@@ -90,6 +97,8 @@ sunburstDirectiveModule.directive('sunburstChart', ['$compile', function($compil
                     return depth < 2 ? d._children : null; 
                 })
                 .value(function(d) { return d.sum; });
+
+
 
             var center = svg.append("circle")
                 .attr("r", radius / 5)
@@ -230,6 +239,7 @@ sunburstDirectiveModule.directive('sunburstChart', ['$compile', function($compil
           return {depth: d.depth, x: d.x, dx: d.dx};
         };
         d3.select(self.frameElement).style("height", margin.top + margin.bottom + "px");
+        
         createSunburst(data);
     }
     function link(scope, element){
@@ -242,13 +252,15 @@ sunburstDirectiveModule.directive('sunburstChart', ['$compile', function($compil
                 //sunburstChart(temp._embedded['rh:doc'], element);
             });
         });
-        scope.$watch('sliderDatePromise', function(){
+      
+    /*    scope.$watch('sliderDatePromise', function(){
             scope.sliderDatePromise.then(function(data){
                 var temp = {"_embedded":{"rh:doc":[{"children":[]}]}};
                 temp._embedded['rh:doc'].children = data.data._embedded['rh:doc'];
                 scope.replaceGraph("sunburstChart", temp._embedded['rh:doc'], element, sunburstChart)
             });
         });
+        */
     }
     return{
         link: link,
