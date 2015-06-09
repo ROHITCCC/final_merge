@@ -63,10 +63,7 @@ sunburstControllerModule.controller('sunburstController', ['$scope', 'mongoAggre
            
         }
     };
-    $scope.replaceGraph = function(divID, newData, element, newGraph){
-        var edit = document.getElementById(divID);
-        edit.removeChild(edit.childNodes[0]);
-        newGraph(newData,element);
-    };
+    
+    
     
 }]);

@@ -135,6 +135,10 @@ sunburstDirectiveModule.directive('sunburstChart', function(){
 
           function zoomIn(p) {
             if (p.depth > 1) p = p.parent;
+            
+            //Check for the depth and call audit details
+            
+            
             if (!p.children) return;
             zoom(p, p);
           }
