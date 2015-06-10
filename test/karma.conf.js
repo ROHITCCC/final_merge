@@ -8,6 +8,7 @@ module.exports = function (config) {
     config.set({
         basePath: './',
         files: ['../public_html/lib/js/angular/angular.js',
+            '../public_html/lib/js/angular/angular-route.js',
             'lib/js/angular/angular-mocks.js',
             '../public_html/lib/js/angular/ng-slider.min.js',
             '../public_html/lib/js/jquery/*.js',
