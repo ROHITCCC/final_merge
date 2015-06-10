@@ -26,13 +26,13 @@ describe("Testing date range for sunburstController", function(){
             expect(value).toBe(4);
         });
         deferred.resolve(10);
-        $rootScope.$digest();
+        $rootScope.$digest();//digest is manually hand cranked
     })
     it('testing angulars promise another way', function(){
         var handler = jasmine.createSpy('success');
         deferred.promise.then(handler);
         deferred.resolve(10);
-        $rootScope.$digest();
+        $rootScope.$digest();//digest is manually hand cranked
         expect(handler).toHaveBeenCalledWith(10);
     });
     /*describe('$scope.options.callback', function(){
