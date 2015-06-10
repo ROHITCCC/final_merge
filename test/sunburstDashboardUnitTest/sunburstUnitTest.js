@@ -13,22 +13,27 @@ describe("A suite", function() {
 
 describe("Testing date range for sunburstController", function(){
     beforeEach(module('sunburstControllerModule'));
-    var $controller;
+    var $controller, deferred, $rootScope;
      
-    beforeEach(inject(function(_$controller_, _$q_, _$rootScope_){
-        //the injector unwraps the underscores(_) from around the parameter
-        //name when matching
-        $controller = _$controller_;
-        var deferred = _$q_.defer();
-        rootScope = _$rootScope_;
-        deferred.resolve('resolveData');
-        spyOn($controller, 'mongoAggregateService.callHttp').andReturn(deferred.promise);
-    }));
-    describe('$scope.options.callback',function(){
-        it('check to receive promise', function(){
-            rootScope.$apply();
-            expect($scope.sunburstPromise).toBe('resolvedData');
+    beforeEach(function(){
+        inject(function($q, _$rootScope_){
+            deferred = $q.defer();
+            $rootScope = _$rootScope_;
         });
+    });
+    it('testing angulars promise one way', function(){
+        deferred.promise.then(function(value){
+            expect(value).toBe(4);
+        });
+        deferred.resolve(10);
+        $rootScope.$digest();
+    })
+    it('testing angulars promise another way', function(){
+        var handler = jasmine.createSpy('success');
+        deferred.promise.then(handler);
+        deferred.resolve(10);
+        $rootScope.$digest();
+        expect(handler).toHaveBeenCalledWith(10);
     });
     /*describe('$scope.options.callback', function(){
         it('set the to and from date to retrieve existing data', function(){
