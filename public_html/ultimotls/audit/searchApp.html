@@ -4,19 +4,19 @@ To change this license header, choose License Headers in Project Properties.
 To change this template file, choose Tools | Templates
 and open the template in the editor.
 -->
-<div id="mainBody" class="container-fluid" ng-controller="DataRetrieve">
+<div id="mainBody" class="container-fluid">
     <div id="header" class="container-fluid">
         <center> 
             <div id="freeFormSearch" class="container-fluid">     
                 <form class="form-horizontal" role="form">
                     <div id="searchBar" class="form-group">
                         <div class="col-sm-offset-2 col-sm-8">
-                            <input ng-model="searchCriteria" type="text" ng-enter="doSearch()"
+                            <input ng-model="searchCriteria" type="text" ng-enter="doSearch(searchCriteria)"
                                    class="form-control" id="myInput" value="transactionId:''"/>
                         </div>
                         <div class="col-sm-1 form-group">
                             <div>
-                                <button ng-click="doSearch()" type="button" class="btn btn-primary">
+                                <button ng-click="doSearch(searchCriteria)" type="button" class="btn btn-primary">
                                     Search
                                 </button>
                             </div>
@@ -112,8 +112,8 @@ and open the template in the editor.
         </div>
         <div id="paginationDropDown" class="col-sm-1 form-horizontal" style="float: left">
             <label class="control-label">
-                <select ng-model="pageNumber" id="rowOptions"
-                    data-ng-options="p as p.page for p in pageOptions"
+                <select ng-model="rowNumber" id="rowsOptions"
+                    data-ng-options="p as p.rows for p in rowsOptions"
                     ng-click="">
                 </select>
             </label>

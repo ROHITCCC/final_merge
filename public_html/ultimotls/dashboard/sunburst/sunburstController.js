@@ -5,18 +5,23 @@
  */
 
 
-var sunburstControllerModule = angular.module('sunburstControllerModule', ['ultimotls']);
+var sunburstControllerModule = angular.module('sunburstControllerModule', ['ultimotls', 'auditControllerModule', 'ngRoute', 'ngSlider']);
 
-sunburstControllerModule.controller('sunburstController', ['$scope', 'mongoAggregateService', function($scope, mongoAggregateService){
-    var toDate, fromDate;
-    if(!toDate){
+sunburstControllerModule.controller('sunburstController', ['$scope', 'mongoAggregateService', '$location', '$route', 
+    '$routeParams', '$controller', '$rootScope', '$injector',
+    function($scope, mongoAggregateService, $location, $route, $routeParams, $controller, $rootScope, $injector){
+   // $scope.toDate, $scope.fromDate;
+   $scope.toDate = null;
+   $scope.fromDate = null;
+   
+    if(!$scope.toDate){
         var currentDateTime = new Date();
-        fromDate = new Date(currentDateTime - 7200000 - 25200000).toISOString(); //Current minus 2 hours
+        $scope.fromDate = new Date(currentDateTime - 7200000 - 25200000).toISOString(); //Current minus 2 hours
         //fromDate = new Date(1262370498).toISOString();
-        toDate = new Date(currentDateTime-25200000).toISOString();
+        $scope.toDate = new Date(currentDateTime-25200000).toISOString();
     }
     var dataQuery = "[{'$match':{'$and':[{'timestamp':{'$gte':{'$date':"+
-                         "'"+fromDate+"'},'$lt':{'$date':'"+toDate+"'}}},"+
+                         "'"+$scope.fromDate+"'},'$lt':{'$date':'"+$scope.toDate+"'}}},"+
                          "{'$and':[{'severity':{'$ne':null}},{'severity':"+
                          "{'$exists': true,'$ne':''}}]}]}},{'$group':{'_id':{'transactionType'"+
                          ":'$transactionType','interface1':'$interface1','application':"+
@@ -41,10 +46,10 @@ sunburstControllerModule.controller('sunburstController', ['$scope', 'mongoAggre
         dimension: " hours",
         callback: function(value){
             var currentDateTime = new Date();
-            fromDate = new Date(currentDateTime - (value*60*60*1000)- 25200000).toISOString();
-            toDate = new Date(currentDateTime - 25200000).toISOString(); 
+            $scope.fromDate = new Date(currentDateTime - (value*60*60*1000)- 25200000).toISOString();
+            $scope.toDate = new Date(currentDateTime - 25200000).toISOString(); 
             var sliderDataQuery = "[{'$match':{'$and':[{'timestamp':{'$gte':{'$date':"+
-                         "'"+fromDate+"'},'$lt':{'$date':'"+toDate+"'}}},"+
+                         "'"+$scope.fromDate+"'},'$lt':{'$date':'"+$scope.toDate+"'}}},"+
                          "{'$and':[{'severity':{'$ne':null}},{'severity':"+
                          "{'$exists': true,'$ne':''}}]}]}},{'$group':{'_id':{'transactionType'"+
                          ":'$transactionType','interface1':'$interface1','application':"+
@@ -64,6 +69,23 @@ sunburstControllerModule.controller('sunburstController', ['$scope', 'mongoAggre
         }
     };
     
-    
+    $scope.getAuditsForInterface = function(interface){
+        
+        //var auditScope = $rootScope.$new(false);
+        //var auditCtrl = $controller("DataRetrieve", {$scope: auditScope});
+        
+        
+        
+        //var $injector = angular.injector(['auditControllerModule', 'ultimotls']);
+        //var injector = $injector;
+        
+        //var injectedCtrl = $injector.get(auditCtrl);
+        console.log(interface);
+       
+        //auditScope.doSearch("transactionId:'BBQ1234'");
+        //auditCtrl.doSearch();
+         $location.path("/audits");
+        //$route.reload();
+    };
     
 }]);
