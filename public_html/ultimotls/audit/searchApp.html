@@ -25,7 +25,7 @@ and open the template in the editor.
                             <a id="advanceSearch" ng-click="toggle= !toggle">Advance Search</a>
                         </div>
                         <div class="col-sm-offset-2 col-sm-8">
-                            <p ng-model="inputWarning1">{{inputWarning1}}</p>
+                            <p ng-model="inputError">{{inputError}}</p>
                         </div>
                     </div>
                 </form>
@@ -164,14 +164,14 @@ and open the template in the editor.
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="d in data._embedded['rh:doc'] | orderBy:predicate:reverse" ng-click="slide=!slide">
+                <tr ng-repeat="d in data._embedded['rh:doc'] | orderBy:predicate:reverse" ng-click="rowClick(d)" data-toggle="modal" data-target="#dataBasePage">
             
                     <td>{{d.timestamp | date:'EEE MMM dd, yyyy hh:mm:ss'}}</td>
                     <td>{{d.transactionDomain}}</td>
                     <td>{{d.transactionType}}</td>
                     <td>{{d.transactionId}}</td>
                     <td>{{d.application}}</td>
-                    <td>{{d.interface}}</td>
+                    <td>{{d.interface1}}</td>
                     <td id="status">{{d.status}}</td>
                     <td>
                         <span ng-if="d.exceptionFlag == 0" id="iconSymbol" class="glyphicon glyphicon-ok-sign" style="color: green"></span>
@@ -183,101 +183,144 @@ and open the template in the editor.
         </table>
     </div> 
 </div> 
-<div class="container-fluid" ng-show="slide">
-    <div id="sliderWindow">
-        <div id="sliderContent" class="container-fluid">
-            <div class="container-fluid">
-                <button type="button" class="btn btn-primary btn-block" ng-click="slide=!slide">
-                    Close
-                </button>
+<!-- Modal -->
+<div id="dataBasePage" class="modal fade col-sm-6" role="dialog">
+    <div class="modal-dialog col-sm-6">
+        <!-- Modal content-->
+        <div class="modal-content" ng-model="sliderWindowData">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Database Page: ID# {{sliderWindowData._id.$oid}}</h4>
             </div>
+            <div class="modal-body">
+    <div id="sliderWindow">
             <div class="list-group container-fluid">
                 <ul class="list-group">
                     <li class="list-group-item">
-                        ID#: {{d._id.$oid}}
+                              Envid: {{sliderWindowData.envid}}
                     </li>
                     <li class="list-group-item">
-                        Envid: {{d.envid}}
+                              Application: {{sliderWindowData.application}}
                     </li>
                     <li class="list-group-item">
-                        Application: {{d.application}}
+                              Interface1: {{sliderWindowData.interface1}}
                     </li>
                     <li class="list-group-item">
-                        Interface1: {{d.interface1}}
+                              Hostname: {{sliderWindowData.hostname}}
                     </li>
                     <li class="list-group-item">
-                        Hostname: {{d.hostname}}
+                              TransactionDomain: {{sliderWindowData.transactionDomain}}
                     </li>
                     <li class="list-group-item">
-                        TransactionDomain: {{d.transactionDomain}}
+                              TransactionType: {{sliderWindowData.transactionType}}
                     </li>
                     <li class="list-group-item">
-                        TransactionType: {{d.transactionType}}
+                              TransactionId: {{sliderWindowData.transactionId}}
                     </li>
                     <li class="list-group-item">
-                        TransactionId: {{d.transactionId}}
+                              Severity: {{sliderWindowData.severity}}
                     </li>
                     <li class="list-group-item">
-                        Severity: {{d.severity}}
+                              ErrorType: {{sliderWindowData.errorType}}
                     </li>
                     <li class="list-group-item">
-                        ErrorType: {{d.errorType}}
+                              Category: {{sliderWindowData.category}}
                     </li>
                     <li class="list-group-item">
-                        Category: {{d.category}}
+                              Timestamp: {{sliderWindowData.timestamp | date:'EEE MMM dd, yyyy hh:mm:ss'}}
                     </li>
                     <li class="list-group-item">
-                        Timestamp: {{d.timestamp | date:'EEE MMM dd, yyyy hh:mm:ss'}}
+                              ActivityName: {{sliderWindowData.activityName}}
                     </li>
                     <li class="list-group-item">
-                        ActivityName: {{d.activityName}}
+                              ProcessId: {{sliderWindowData.processId}}
                     </li>
                     <li class="list-group-item">
-                        ProcessId: {{d.processId}}
+                              EngineName: {{sliderWindowData.engineName}}
                     </li>
                     <li class="list-group-item">
-                        EngineName: {{d.engineName}}
+                              TrackingInfo: {{sliderWindowData.trackingInfo}}
                     </li>
                     <li class="list-group-item">
-                        TrackingInfo: {{d.trackingInfo}}
+                              StackTrace: {{sliderWindowData.stackTrace}}
                     </li>
                     <li class="list-group-item">
-                        StackTrace: {{d.stackTrace}}
+                              MsgCode: {{sliderWindowData.msgCode}}
                     </li>
                     <li class="list-group-item">
-                        MsgCode: {{d.msgCode}}
+                              Class: {{sliderWindowData.class}}
                     </li>
                     <li class="list-group-item">
-                        Class: {{d.class}}
+                              ProcessStack: {{sliderWindowData.processStack}}
                     </li>
                     <li class="list-group-item">
-                        ProcessStack: {{d.processStack}}
+                              DataLocation: {{sliderWindowData.dataLocation}}
+                              <button ng-click="someFunction()" data-toggle="modal" data-target="#payloadPage">Payload</button>
                     </li>
                     <li class="list-group-item">
-                        DataLocation: {{d.dataLocation}}
+                              InterfaceData: {{sliderWindowData.interfaceData}}
                     </li>
                     <li class="list-group-item">
-                        InterfaceData: {{d.interfaceData}}
+                              Notification: {{sliderWindowData.notification}}
                     </li>
                     <li class="list-group-item">
-                        Notification: {{d.notification}}
+                              Status: {{sliderWindowData.status}}
                     </li>
                     <li class="list-group-item">
-                        Status: {{d.status}}
+                              ExceptionFlag: {{sliderWindowData.exceptionFlag}}
                     </li>
                     <li class="list-group-item">
-                        ExceptionFlag: {{d.exceptionFlag}}
-                    </li>
-                    <li class="list-group-item">
-                        Create On: {{d._created_on | date:'EEE MMM dd, yyyy hh:mm:ss'}}
+                              Create On: {{sliderWindowData._created_on | date:'EEE MMM dd, yyyy hh:mm:ss'}}
                     </li>
                 </ul>
             </div>
-            <div class="container-fluid">
-                <button type="button" class="btn btn-primary btn-block">
-                    Close
-                </button>
             </div>
         </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+    </div>
+</div>
+    </div>    
+</div>
+<div id="payloadPage" class="modal fade col-sm-offset-6 col-sm-6" role="dialog">
+    <div class="modal-dialog col-sm-offset-6 col-sm-6">
+      <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title col-sm-6">Payload</h4>
+                <button class="col-sm-6" data-toggle="modal" data-target="#replayPage">Replay</button>
+            </div>
+            <div class="modal-body">
+                <div id="sliderWindow">
+                    <div class="list-group container-fluid">
+
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+      </div>
+    </div>
+</div>
+<div id="replayPage" class="modal fade col-sm-offset-6 col-sm-6" role="dialog">
+    <div class="modal-dialog col-sm-offset-6 col-sm-6">
+      <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title col-sm-6">Replay</h4>
+                <button class="col-sm-6">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="sliderWindow">
+                    <div class="list-group container-fluid">
+
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+      </div>
     </div>
 </div>
