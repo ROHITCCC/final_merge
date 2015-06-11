@@ -7,7 +7,7 @@ and open the template in the editor.
 <div id="mainBody" class="container-fluid">
     <div id="header" class="container-fluid">
         <center> 
-            <div id="freeFormSearch" class="container-fluid">     
+            <div ng-class="searchBox" ng-hide="toggle" class="container-fluid">     
                 <form class="form-horizontal" role="form">
                     <div id="searchBar" class="form-group">
                         <div class="col-sm-offset-2 col-sm-8">
@@ -22,7 +22,7 @@ and open the template in the editor.
                             </div>
                         </div>
                         <div class="col-sm-1">
-                            <a id="advanceSearch">Advance Search</a>
+                            <a id="advanceSearch" ng-click="toggle= !toggle">Advance Search</a>
                         </div>
                         <div class="col-sm-offset-2 col-sm-8">
                             <p ng-model="inputWarning1">{{inputWarning1}}</p>
@@ -30,7 +30,8 @@ and open the template in the editor.
                     </div>
                 </form>
             </div>
-            <div id="advSearchBox" class="container-fluid">
+            <!--<div id="advSearchBox" class="container-fluid">-->
+            <div ng-class="advSearchBox" ng-show="toggle" class="container-fluid">
                 <h3> Advance Search</h3>
                 <form class="form-horizontal" role="form">
                     <div class="form-group">
@@ -65,10 +66,7 @@ and open the template in the editor.
                         </div>
                         <div class="form-group">        
                             <div class="col-sm-12" id="optionField">
-                                <!--<a id="extraField" onclick="appendSearchField()">
-                                    Add Another Field
-                                </a>--> 
-                                <a id="closeAdvanceField">
+                                <a id="closeAdvanceField" ng-click="toggle=!toggle">
                                     Close Advance Search
                                 </a>
                             </div>
@@ -166,7 +164,8 @@ and open the template in the editor.
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="d in data._embedded['rh:doc'] | orderBy:predicate:reverse">
+                <tr ng-repeat="d in data._embedded['rh:doc'] | orderBy:predicate:reverse" ng-click="slide=!slide">
+            
                     <td>{{d.timestamp | date:'EEE MMM dd, yyyy hh:mm:ss'}}</td>
                     <td>{{d.transactionDomain}}</td>
                     <td>{{d.transactionType}}</td>
@@ -178,8 +177,107 @@ and open the template in the editor.
                         <span ng-if="d.exceptionFlag == 0" id="iconSymbol" class="glyphicon glyphicon-ok-sign" style="color: green"></span>
                         <span ng-if="d.exceptionFlag == 1" id="iconSymbol" class="glyphicon glyphicon-remove-sign" style="color: red"></span>
                     </td>
+            
                 </tr>
             </tbody> 
         </table>
+    </div> 
+</div> 
+<div class="container-fluid" ng-show="slide">
+    <div id="sliderWindow">
+        <div id="sliderContent" class="container-fluid">
+            <div class="container-fluid">
+                <button type="button" class="btn btn-primary btn-block" ng-click="slide=!slide">
+                    Close
+                </button>
+            </div>
+            <div class="list-group container-fluid">
+                <ul class="list-group">
+                    <li class="list-group-item">
+                        ID#: {{d._id.$oid}}
+                    </li>
+                    <li class="list-group-item">
+                        Envid: {{d.envid}}
+                    </li>
+                    <li class="list-group-item">
+                        Application: {{d.application}}
+                    </li>
+                    <li class="list-group-item">
+                        Interface1: {{d.interface1}}
+                    </li>
+                    <li class="list-group-item">
+                        Hostname: {{d.hostname}}
+                    </li>
+                    <li class="list-group-item">
+                        TransactionDomain: {{d.transactionDomain}}
+                    </li>
+                    <li class="list-group-item">
+                        TransactionType: {{d.transactionType}}
+                    </li>
+                    <li class="list-group-item">
+                        TransactionId: {{d.transactionId}}
+                    </li>
+                    <li class="list-group-item">
+                        Severity: {{d.severity}}
+                    </li>
+                    <li class="list-group-item">
+                        ErrorType: {{d.errorType}}
+                    </li>
+                    <li class="list-group-item">
+                        Category: {{d.category}}
+                    </li>
+                    <li class="list-group-item">
+                        Timestamp: {{d.timestamp | date:'EEE MMM dd, yyyy hh:mm:ss'}}
+                    </li>
+                    <li class="list-group-item">
+                        ActivityName: {{d.activityName}}
+                    </li>
+                    <li class="list-group-item">
+                        ProcessId: {{d.processId}}
+                    </li>
+                    <li class="list-group-item">
+                        EngineName: {{d.engineName}}
+                    </li>
+                    <li class="list-group-item">
+                        TrackingInfo: {{d.trackingInfo}}
+                    </li>
+                    <li class="list-group-item">
+                        StackTrace: {{d.stackTrace}}
+                    </li>
+                    <li class="list-group-item">
+                        MsgCode: {{d.msgCode}}
+                    </li>
+                    <li class="list-group-item">
+                        Class: {{d.class}}
+                    </li>
+                    <li class="list-group-item">
+                        ProcessStack: {{d.processStack}}
+                    </li>
+                    <li class="list-group-item">
+                        DataLocation: {{d.dataLocation}}
+                    </li>
+                    <li class="list-group-item">
+                        InterfaceData: {{d.interfaceData}}
+                    </li>
+                    <li class="list-group-item">
+                        Notification: {{d.notification}}
+                    </li>
+                    <li class="list-group-item">
+                        Status: {{d.status}}
+                    </li>
+                    <li class="list-group-item">
+                        ExceptionFlag: {{d.exceptionFlag}}
+                    </li>
+                    <li class="list-group-item">
+                        Create On: {{d._created_on | date:'EEE MMM dd, yyyy hh:mm:ss'}}
+                    </li>
+                </ul>
+            </div>
+            <div class="container-fluid">
+                <button type="button" class="btn btn-primary btn-block">
+                    Close
+                </button>
+            </div>
+        </div>
     </div>
 </div>

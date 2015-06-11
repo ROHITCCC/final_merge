@@ -7,6 +7,13 @@ and open the template in the editor.
     Created on : May 21, 2015, 2:23:04 PM
     Author     : Ultimo User
 */
+.css-class-add, .css-class-remove {
+  -webkit-transition:all linear 0.3s;
+  -moz-transition:all linear 0.3s;
+  -ms-transition:all linear 0.3s;
+  -o-transition:all linear 0.3s;
+  transition:all linear 0.3s;
+}
 body {
         overflow-x: hidden;
         position: relative;
@@ -32,11 +39,20 @@ a .glyphicon .glyphicon-remove {
     center {
         margin: 15px 0 0 0;
     }
-        #header #freeFormSearch input {
-            //width: 350px;
-        }
         #header a{
             
+        }
+        .css-hide-searchBox, 
+        .css-class-add.css-class-add-active {
+            opacity: 0;
+            top: -50px;
+            height: 0px;
+        }
+        .css-show-searchBox, 
+        .css-class-remove.css-class-remove-active {
+            opacity: 1;
+            top: 0;
+            height: 30px;
         }
         #searchBar {
             margin-bottom: 0;
@@ -48,7 +64,21 @@ a .glyphicon .glyphicon-remove {
             width: 70%;
             display: none;
             margin-top: -20px;
-}
+        }
+        .css-hide-advSearchBox, 
+        .css-class-add.css-class-add-active {
+            opacity: 0;
+            top: -50px;
+            height: 0px;
+        }
+        .css-show-advSearchBox, 
+        .css-class-remove.css-class-remove-active {
+            opacity: 1;
+            top: 0;
+            height: 30px;
+        }
+        
+
         #advSearchBox p {
             color: red;
         
