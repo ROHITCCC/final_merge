@@ -18,10 +18,3 @@ auditDirectiveModule.directive('ngEnter', function () {
         });
     };
 });
-auditDirectiveModule.directive('sliderWindow', function(){
-   return{
-        restrict: 'E',
-        scope: true,
-        templateUrl: 'ultimotls/audit/sliderWindow.html',
-    };  
-});
