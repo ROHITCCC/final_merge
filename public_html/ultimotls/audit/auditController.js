@@ -44,7 +44,7 @@ var auditControllerModule = angular.module('auditControllerModule', []);
                 if($scope.myBool.name == "AND") {
                     var url = "http://172.16.120.170:8080/ES/ErrorSpotActual?filter={$and:[{"+
                         $scope.advanceSearch+"},{"+
-                        $scope.secondField+"}]}&count&pagesize="+$scope.pageNumber.page;
+                        $scope.secondField+"}]}&count&pagesize="+$scope.rowNumber.rows;
                     $http.get(url)
                     .success(function(response) {
                         $scope.data = response;
@@ -60,7 +60,7 @@ var auditControllerModule = angular.module('auditControllerModule', []);
                     var value = str.substring(n+1, str.length);
                     var url = "http://172.16.120.170:8080/ES/ErrorSpotActual?filter={$and:[{"+
                         $scope.advanceSearch+"},{"+
-                        name+"{$not:{$eq:"+value+"}}}]}&count&pagesize="+$scope.pageNumber.page;
+                        name+"{$not:{$eq:"+value+"}}}]}&count&pagesize="+$scope.rowNumber.rows;
                     $http.get(url)
                     .success(function(response) {
                         $scope.data = response;
@@ -72,7 +72,7 @@ var auditControllerModule = angular.module('auditControllerModule', []);
                 else if($scope.myBool.name == "OR"){
                     var url = "http://172.16.120.170:8080/ES/ErrorSpotActual?filter={$or:[{"+
                         $scope.advanceSearch+"},{"+
-                        $scope.secondField+"}]}}&count&pagesize="+$scope.pageNumber.page;
+                        $scope.secondField+"}]}}&count&pagesize="+$scope.rowNumber.rows;
                     $http.get(url)
                     .success(function(response) {
                         $scope.data = response;
@@ -91,6 +91,7 @@ var auditControllerModule = angular.module('auditControllerModule', []);
                 $scope.inputWarning2 = "Text was input Incorrectly (ex. name:'value')";
             }
         };
+        //First, Previous, Next, Last are button function for Pagination to render new view
         $scope.goToFirst = function(){
             var payload = $scope.data._links.first;
             if (payload == null || payload == undefined){
@@ -150,6 +151,12 @@ var auditControllerModule = angular.module('auditControllerModule', []);
                 $log.info($scope.data);
                 $log.info("Last page");
             });
+        }
+        
+        //Click event on Rows from Audit Data to be passed to the Slider Window
+        $scope.rowClick = function(rowData){
+            console.log(rowData);
+            $scope.sliderWindowData = rowData;
         }
     }]);
 
