@@ -7,7 +7,7 @@
 var sunburstDirectiveModule = angular.module('sunburstDirectiveModule', ['sunburstControllerModule']);
 
 sunburstDirectiveModule.directive('sunburstChart', function(){
-    function sunburstChart(data, element){
+    function sunburstChart(data, element, scope){
         var ele = element[0];
         var width = (window.innerWidth*.5), height = (window.innerHeight*.60);
         var margin = {top: height/2, right: width/2, bottom: height/2, left: width/2},
@@ -80,7 +80,7 @@ sunburstDirectiveModule.directive('sunburstChart', function(){
             .style("top", (d3.event.pageY-275)+"px")
             .style("left", (d3.event.pageX+10)+"px");
         };//location of tooltip
-        function createSunburst(root){
+        function createSunburst(root, scope){
             partition
               .value(function(d) { return d.size; })
               .nodes(root)
@@ -117,7 +117,7 @@ sunburstDirectiveModule.directive('sunburstChart', function(){
               .attr("d", arc)
               .style("fill", function(d) { return d.fill; })
               .each(function(d) { this._current = updateArc(d); })
-              .on("click", zoomIn)
+              .on("click", function(d){zoomIn(d, scope);})
               .on("mouseover", mouseOverArc)
               .on("mousemove", mouseMoveArc)
               .on("mouseout", mouseOutArc);
@@ -132,14 +132,15 @@ sunburstDirectiveModule.directive('sunburstChart', function(){
                         .attr("dx", "6") // margin
               .attr("dy", ".35em") // vertical-align	
                         .text(function(d,i) {return d.name})
+   
+        function zoomIn(p, scope) {
 
-          function zoomIn(p) {
-            if (p.depth > 1) p = p.parent;
-            
-            //Check for the depth and call audit details
-            
-            
-            if (!p.children) return;
+            if (p.depth > 1) p = p.parent;        
+            if (!p.children) {
+                //call controller function to make audit call
+                scope.getAuditsForInterface(p.key);
+                return;
+            }
             zoom(p, p);
           }
 
@@ -191,7 +192,7 @@ sunburstDirectiveModule.directive('sunburstChart', function(){
               path.enter().append("path")
                   .style("fill-opacity", function(d) { return d.depth === 2 - (root === p) ? 1 : 0; })
                   .style("fill", function(d) { return d.fill; })
-                  .on("click", zoomIn)
+                  .on("click", function(d){zoomIn(d, scope);})
                                  .on("mouseover", mouseOverArc)
                  .on("mousemove", mouseMoveArc)
                  .on("mouseout", mouseOutArc)
@@ -244,14 +245,15 @@ sunburstDirectiveModule.directive('sunburstChart', function(){
         };
         d3.select(self.frameElement).style("height", margin.top + margin.bottom + "px");
         
-        createSunburst(data);
+        createSunburst(data, scope);
     }
     function link(scope, element){
         scope.$watch('sunburstPromise', function(){
             scope.sunburstPromise.then(function(data){
                 var temp = {"_embedded":{"rh:doc":[{"children":[]}]}};
                 temp._embedded['rh:doc'].children = data.data._embedded['rh:doc'];
-                sunburstChart(temp._embedded['rh:doc'], element);
+                sunburstChart(temp._embedded['rh:doc'], element,scope);
+                
                 //scope.replaceGraph("sunburstChart", temp._embedded['rh:doc'], element, sunburstChart)
                 //sunburstChart(temp._embedded['rh:doc'], element);
             });

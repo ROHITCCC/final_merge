@@ -5,103 +5,149 @@
  */
 
 //(function(angular){
-    var ultimotls = angular.module('ultimotls', ['ngSlider', 'auditDirectiveModule', 'sunburstDirectiveModule', 'auditControllerModule', 'ngRoute']);
+var ultimotls = angular.module('ultimotls', ['auditControllerModule', 'sunburstDirectiveModule', 'auditDirectiveModule' , 'ngRoute']);
 
-    ultimotls.run(function($http) {  
-        $http.defaults.headers.common.Authorization = 'Basic YTph';
-    });
+ultimotls.run(function ($http) {
+    $http.defaults.headers.common.Authorization = 'Basic YTph';
+});
 
-    
-     ultimotls.filter('unique', function () {
 
-                return function (items, filterOn) {
+ultimotls.filter('unique', function () {
 
-                if (filterOn === false) {
-                    return items;
+    return function (items, filterOn) {
+
+        if (filterOn === false) {
+            return items;
+        }
+
+        if ((filterOn || angular.isUndefined(filterOn)) && angular.isArray(items)) {
+            var hashCheck = {}, newItems = [];
+
+            var extractValueToCompare = function (item) {
+                if (angular.isObject(item) && angular.isString(filterOn)) {
+                    return item[filterOn];
+                } else {
+                    return item;
+                }
+            };
+
+            angular.forEach(items, function (item) {
+                var valueToCheck, isDuplicate = false;
+
+                for (var i = 0; i < newItems.length; i++) {
+                    if (angular.equals(extractValueToCompare(newItems[i]), extractValueToCompare(item))) {
+                        isDuplicate = true;
+                        break;
+                    }
+                }
+                if (!isDuplicate) {
+                    newItems.push(item);
                 }
 
-                if ((filterOn || angular.isUndefined(filterOn)) && angular.isArray(items)) {
-                    var hashCheck = {}, newItems = [];
-
-                    var extractValueToCompare = function (item) {
-                        if (angular.isObject(item) && angular.isString(filterOn)) {
-                            return item[filterOn];
-                        } else {
-                            return item;
-                        }
-                    };
-
-                    angular.forEach(items, function (item) {
-                        var valueToCheck, isDuplicate = false;
-
-                        for (var i = 0; i < newItems.length; i++) {
-                            if (angular.equals(extractValueToCompare(newItems[i]), extractValueToCompare(item))) {
-                                isDuplicate = true;
-                                break;
-                            }
-                        }
-                        if (!isDuplicate) {
-                            newItems.push(item);
-                        }
-
-                    });
-                    items = newItems;
-                }
-                return items;
-              };
             });
-            
-            
-  ultimotls.directive('tabsPanel', function(){
+            items = newItems;
+        }
+        return items;
+    };
+});
+
+
+ultimotls.directive('tabsPanel', function () {
     return{
         restrict: 'E',
         scope: true,
         templateUrl: 'navTabs.html',
-        controller: function(){
-           this.tab = 3;
-           this.isSet = function(checkTab){
-               return this.tab === checkTab;
-           };
-           this.setTab = function(activeTab){
-               this.tab = activeTab;
-           };
+        controller: function () {
+            this.tab = 3;
+            this.isSet = function (checkTab) {
+                return this.tab === checkTab;
+            };
+            this.setTab = function (activeTab) {
+                this.tab = activeTab;
+            };
         },
         controllerAs: "tab"
-    }; 
+    };
 });
 
-ultimotls.config(['$routeProvider', function($routeProvider) {
-    $routeProvider.
-        when('/audits', {
-            templateUrl: 'ultimotls/audit/searchApp.html',
-            controller: 'DataRetrieve'
-        }).
-        when('/sunburst', {
-            templateUrl: 'ultimotls/dashboard/sunburst/sunburstDashboard.html',
-            controller: 'sunburstController'
-        }).
-        otherwise({
-            redirectTo: '/sunburst'
-        });
-}]);
+ultimotls.config(['$routeProvider', function ($routeProvider) {
+        $routeProvider.
+                when('/audits', {
+                    templateUrl: 'ultimotls/audit/searchApp.html',
+                    controller: 'DataRetrieve',
+                    resolve: {
+                        initPromise:['auditSearch', function(auditSearch){
+                            var rowNumber = {'rows': 25};
+                            //var promise = auditSearch.doSearch("transactionId:'BBQ1234'", rowNumber);
+                            //console.log(promise);
+                            return auditSearch.doSearch("transactionId:'BBQ1234'", rowNumber);
+                        }]
+                    } 
+                    
+                }).
+                when('/sunburst', {
+                    templateUrl: 'ultimotls/dashboard/sunburst/sunburstDashboard.html',
+                    controller: 'sunburstController'
+                }).
+                otherwise({
+                    redirectTo: '/sunburst'
+                });
+    }]);
 
 
-ultimotls.factory("mongoAggregateService", function($http){
+ultimotls.factory("mongoAggregateService", function ($http) {
     var postUrl = "http://172.16.120.170:8080/_logic/ES/ErrorSpotActual/aggregate";
-    var custom = {};
-    custom.httpResponse = {};
-    custom.prepForBroadcast = function (){
-        this.httpResponse =  this.callHttp();
+    var callAggregate = {};
+    callAggregate.httpResponse = {};
+    callAggregate.prepForBroadcast = function () {
+        this.httpResponse = this.callHttp();
     };
-    custom.callHttp = function(payload) {
-        var promise = $http.post(postUrl, payload).success(function(result) {
+    callAggregate.callHttp = function (payload) {
+        var promise = $http.post(postUrl, payload).success(function (result) {
             //console.log(result);
-        }).error(function() {
+        }).error(function () {
             console.log("error");
         });
         return promise;
     };
-    return custom;
+    return callAggregate;
 });
+
+ultimotls.service("auditSearch",['$http', function ($http) {
+    var postUrl = "http://172.16.120.170:8080/ES/ErrorSpotActual?filter={";
+
+
+    var audits = {};
+    audits.doSearch = function (searchCriteria, rowNumber) {
+    //this.doSearch = function (searchCriteria, rowNumber) {
+        var textSearch = "{$text:{$search:'" + searchCriteria + "'}}&count&pagesize=" + rowNumber.rows;
+        var jsonSearch = searchCriteria + "}&count&pagesize=" + rowNumber.rows;
+        var searchPromise = {};
+        if (/:/.test(searchCriteria)) {
+            if (/[A-Za-z0-9]+:('|")[A-Za-z0-9]+('|")/.test(searchCriteria)) {
+                var getUrl = postUrl + jsonSearch;
+                searchPromise = $http.get(getUrl).success(function (response) {
+
+                }).error(function () {
+                    console.log("error");
+                });
+                audits.inputError = "";
+            }
+            else {
+                audits.inputError = "Need to add quotes to value (ex. name:'value')";
+
+            }
+        }
+        else {
+            var url = postUrl + textSearch;
+            searchPromise = $http.get(url).success;
+            audits.inputError = "";
+        }
+
+        return searchPromise;
+    };
+
+    return audits;
+}]);
 
 //})(window.angular);

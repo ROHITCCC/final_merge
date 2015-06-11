@@ -6,45 +6,30 @@
 var auditControllerModule = angular.module('auditControllerModule', []);
 
 
-    auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', function($scope, $log, $http){
-        $scope.pageOptions = [{page:5},{page:10},{page:25},{page:50},{page:100}];
-        $scope.pageNumber = $scope.pageOptions[2];
+    auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'auditSearch', 'initPromise',
+        function($scope, $log, $http, auditSearch, initPromise){
+        $scope.rowsOptions = [{rows:5},{rows:10},{rows:25},{rows:50},{rows:100}];
+        $scope.rowNumber = $scope.rowsOptions[2];
         $scope.searchCriteria = "transactionId:'BBQ1234'";
-        $scope.doSearch = function(){
+        $scope.predicate = 'timestamp'; 
+
+         $scope.data = initPromise.data;
+        
+        
+        $scope.doSearch = function(query){
             
-            if(/:/.test($scope.searchCriteria)){
-                if(/[A-Za-z0-9]+:('|")[A-Za-z0-9]+('|")/.test($scope.searchCriteria)){
-                    var getUrl = "http://172.16.120.170:8080/ES/ErrorSpotActual?filter={"+$scope.searchCriteria+
-                            "}&count&pagesize="+$scope.pageNumber.page;
-                    $http.get(getUrl)
-                    .success(function(response) {
-                        $scope.data = response;
-                        $log.info($scope.data);
-                        $log.info("name and value get passed");
-                    });
-                    $scope.inputWarning1 = "";
-                }
-                else {
-                    $scope.inputWarning1 = "Need to add quotes to value (ex. name:'value')";
-                    $log.info("Invalid input");
-                }
-            }
-            else {
-                var url = "http://172.16.120.170:8080/ES/ErrorSpotActual?filter={$text:{$search:'"+$scope.searchCriteria+"'}"+
-                    "}&count&pagesize="+$scope.pageNumber.page;
-                $http.get(url)
-                .success(function(response) {
-                    $scope.data = response;
-                    $log.info($scope.data);
-                    $log.info("text gets passed");
-                });
-                $scope.inputWarning1 = "";
-            }
-            //var payload = data._embedded.rhdoc;
-            $scope.predicate = 'timestamp'; //by defualt it will order results by
-                                            //date
+            var searchPromise = auditSearch.doSearch(query, $scope.rowNumber);
+                
+                searchPromise.then(function(response){
+                $scope.data = response.data;
+                console.log($scope.data);
+            });
+            
         };
-        /////ADVANCE SEARCH INITIALIZATION////////
+        
+       
+            
+            /////ADVANCE SEARCH INITIALIZATION////////
         $scope.advanceSearch = "transactionId:'BBQ1234'";
         $scope.secondField = "application:'Salesforce'";
         ////NGOPTIONS///////
