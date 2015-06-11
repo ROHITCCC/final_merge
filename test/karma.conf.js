@@ -17,6 +17,7 @@ module.exports = function (config) {
             '../public_html/ultimotls/ultimotls.js',
             '../public_html/ultimotls/dashboard/sunburst/*.js',
             'sunburstDashboardUnitTest/*.js',
+            'ultimotlsUnitTest/*.js',
             'lib/js/angular/*.js'
   
         ],
