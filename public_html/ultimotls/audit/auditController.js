@@ -57,10 +57,10 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                     (/[A-Za-z0-9]+:('|")[A-Za-z0-9]+('|")/.test($scope.secondField))) {
                 $scope.inputWarning2 = "";
 
-                if ($scope.myBool.name == "AND") {
-                    var url = "http://172.16.120.170:8080/ES/ErrorSpotActual?filter={$and:[{" +
-                            $scope.advanceSearch + "},{" +
-                            $scope.secondField + "}]}&count&pagesize=" + $scope.pageNumber.page;
+                if($scope.myBool.name == "AND") {
+                    var url = "http://172.16.120.170:8080/ES/ErrorSpotActual?filter={$and:[{"+
+                        $scope.advanceSearch+"},{"+
+                        $scope.secondField+"}]}&count&pagesize="+$scope.rowNumber.rows;
                     $http.get(url)
                             .success(function (response) {
                                 $scope.data = response;
@@ -72,11 +72,11 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                 else if ($scope.myBool.name == "NOT") {
                     var str = $scope.secondField;
                     var n = str.search(":");
-                    var name = str.substring(0, n + 1);
-                    var value = str.substring(n + 1, str.length);
-                    var url = "http://172.16.120.170:8080/ES/ErrorSpotActual?filter={$and:[{" +
-                            $scope.advanceSearch + "},{" +
-                            name + "{$not:{$eq:" + value + "}}}]}&count&pagesize=" + $scope.pageNumber.page;
+                    var name = str.substring(0,n+1);
+                    var value = str.substring(n+1, str.length);
+                    var url = "http://172.16.120.170:8080/ES/ErrorSpotActual?filter={$and:[{"+
+                        $scope.advanceSearch+"},{"+
+                        name+"{$not:{$eq:"+value+"}}}]}&count&pagesize="+$scope.rowNumber.rows;
                     $http.get(url)
                             .success(function (response) {
                                 $scope.data = response;
@@ -85,10 +85,10 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                             });
                     $scope.predicate = 'timestamp'; //by defualt it will order results by
                 }
-                else if ($scope.myBool.name == "OR") {
-                    var url = "http://172.16.120.170:8080/ES/ErrorSpotActual?filter={$or:[{" +
-                            $scope.advanceSearch + "},{" +
-                            $scope.secondField + "}]}}&count&pagesize=" + $scope.pageNumber.page;
+                else if($scope.myBool.name == "OR"){
+                    var url = "http://172.16.120.170:8080/ES/ErrorSpotActual?filter={$or:[{"+
+                        $scope.advanceSearch+"},{"+
+                        $scope.secondField+"}]}}&count&pagesize="+$scope.rowNumber.rows;
                     $http.get(url)
                             .success(function (response) {
                                 $scope.data = response;
@@ -107,7 +107,8 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                 $scope.inputWarning2 = "Text was input Incorrectly (ex. name:'value')";
             }
         };
-        $scope.goToFirst = function () {
+        //First, Previous, Next, Last are button function for Pagination to render new view
+        $scope.goToFirst = function(){
             var payload = $scope.data._links.first;
             if (payload == null || payload == undefined) {
                 alert("Row(s) has not been queried");
@@ -166,6 +167,12 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                         $log.info($scope.data);
                         $log.info("Last page");
                     });
+        }
+        
+        //Click event on Rows from Audit Data to be passed to the Slider Window
+        $scope.rowClick = function(rowData){
+            console.log(rowData);
+            $scope.sliderWindowData = rowData;
         }
         
         //Click event on Rows from Audit Data to be passed to the Slider Window

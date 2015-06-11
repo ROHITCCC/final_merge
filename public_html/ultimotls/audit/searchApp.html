@@ -193,93 +193,93 @@ and open the template in the editor.
                 <h4 class="modal-title">Database Page: ID# {{sliderWindowData._id.$oid}}</h4>
             </div>
             <div class="modal-body">
-    <div id="sliderWindow">
-            <div class="list-group container-fluid">
-                <ul class="list-group">
-                    <li class="list-group-item">
+                <div id="sliderWindow">
+                    <div class="list-group container-fluid">
+                        <ul class="list-group">
+                          <li class="list-group-item">
                               Envid: {{sliderWindowData.envid}}
-                    </li>
-                    <li class="list-group-item">
+                          </li>
+                          <li class="list-group-item">
                               Application: {{sliderWindowData.application}}
-                    </li>
-                    <li class="list-group-item">
+                          </li>
+                          <li class="list-group-item">
                               Interface1: {{sliderWindowData.interface1}}
-                    </li>
-                    <li class="list-group-item">
+                          </li>
+                          <li class="list-group-item">
                               Hostname: {{sliderWindowData.hostname}}
-                    </li>
-                    <li class="list-group-item">
+                          </li>
+                          <li class="list-group-item">
                               TransactionDomain: {{sliderWindowData.transactionDomain}}
-                    </li>
-                    <li class="list-group-item">
+                          </li>
+                          <li class="list-group-item">
                               TransactionType: {{sliderWindowData.transactionType}}
-                    </li>
-                    <li class="list-group-item">
+                          </li>
+                          <li class="list-group-item">
                               TransactionId: {{sliderWindowData.transactionId}}
-                    </li>
-                    <li class="list-group-item">
+                          </li>
+                          <li class="list-group-item">
                               Severity: {{sliderWindowData.severity}}
-                    </li>
-                    <li class="list-group-item">
+                          </li>
+                          <li class="list-group-item">
                               ErrorType: {{sliderWindowData.errorType}}
-                    </li>
-                    <li class="list-group-item">
+                          </li>
+                          <li class="list-group-item">
                               Category: {{sliderWindowData.category}}
-                    </li>
-                    <li class="list-group-item">
+                          </li>
+                          <li class="list-group-item">
                               Timestamp: {{sliderWindowData.timestamp | date:'EEE MMM dd, yyyy hh:mm:ss'}}
-                    </li>
-                    <li class="list-group-item">
+                          </li>
+                          <li class="list-group-item">
                               ActivityName: {{sliderWindowData.activityName}}
-                    </li>
-                    <li class="list-group-item">
+                          </li>
+                          <li class="list-group-item">
                               ProcessId: {{sliderWindowData.processId}}
-                    </li>
-                    <li class="list-group-item">
+                          </li>
+                          <li class="list-group-item">
                               EngineName: {{sliderWindowData.engineName}}
-                    </li>
-                    <li class="list-group-item">
+                          </li>
+                          <li class="list-group-item">
                               TrackingInfo: {{sliderWindowData.trackingInfo}}
-                    </li>
-                    <li class="list-group-item">
+                          </li>
+                          <li class="list-group-item">
                               StackTrace: {{sliderWindowData.stackTrace}}
-                    </li>
-                    <li class="list-group-item">
+                          </li>
+                          <li class="list-group-item">
                               MsgCode: {{sliderWindowData.msgCode}}
-                    </li>
-                    <li class="list-group-item">
+                          </li>
+                          <li class="list-group-item">
                               Class: {{sliderWindowData.class}}
-                    </li>
-                    <li class="list-group-item">
+                          </li>
+                          <li class="list-group-item">
                               ProcessStack: {{sliderWindowData.processStack}}
-                    </li>
-                    <li class="list-group-item">
+                          </li>
+                          <li class="list-group-item">
                               DataLocation: {{sliderWindowData.dataLocation}}
                               <button ng-click="someFunction()" data-toggle="modal" data-target="#payloadPage">Payload</button>
-                    </li>
-                    <li class="list-group-item">
+                          </li>
+                          <li class="list-group-item">
                               InterfaceData: {{sliderWindowData.interfaceData}}
-                    </li>
-                    <li class="list-group-item">
+                          </li>
+                          <li class="list-group-item">
                               Notification: {{sliderWindowData.notification}}
-                    </li>
-                    <li class="list-group-item">
+                          </li>
+                          <li class="list-group-item">
                               Status: {{sliderWindowData.status}}
-                    </li>
-                    <li class="list-group-item">
+                          </li>
+                          <li class="list-group-item">
                               ExceptionFlag: {{sliderWindowData.exceptionFlag}}
-                    </li>
-                    <li class="list-group-item">
+                          </li>
+                          <li class="list-group-item">
                               Create On: {{sliderWindowData._created_on | date:'EEE MMM dd, yyyy hh:mm:ss'}}
-                    </li>
-                </ul>
+                          </li>
+                      </ul>
+                    </div>
+                </div>
             </div>
-            </div>
-        </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-    </div>
-</div>
+            </div>
+        </div>
     </div>    
 </div>
 <div id="payloadPage" class="modal fade col-sm-offset-6 col-sm-6" role="dialog">
