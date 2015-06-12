@@ -15,9 +15,8 @@ sunburstControllerModule.controller('sunburstController', ['$scope', 'mongoAggre
    
     if(!$scope.toDate){
         var currentDateTime = new Date();
-        $scope.fromDate = new Date(currentDateTime - 7200000 - 25200000).toISOString(); //Current minus 2 hours
-        //fromDate = new Date(1262370498).toISOString();
-        $scope.toDate = new Date(currentDateTime-25200000).toISOString();
+        $scope.fromDate = new Date(currentDateTime - 7200000).toISOString(); //Current minus 2 hours
+        $scope.toDate = new Date(currentDateTime).toISOString();
     }
     var dataQuery = "[{'$match':{'$and':[{'timestamp':{'$gte':{'$date':"+
                          "'"+$scope.fromDate+"'},'$lt':{'$date':'"+$scope.toDate+"'}}},"+
@@ -45,8 +44,8 @@ sunburstControllerModule.controller('sunburstController', ['$scope', 'mongoAggre
         dimension: " hours",
         callback: function(value){
             var currentDateTime = new Date();
-            $scope.fromDate = new Date(currentDateTime - (value*60*60*1000)- 25200000).toISOString();
-            $scope.toDate = new Date(currentDateTime - 25200000).toISOString(); 
+            $scope.fromDate = new Date(currentDateTime - (value*60*60*1000)).toISOString();
+            $scope.toDate = new Date(currentDateTime).toISOString(); 
             var sliderDataQuery = "[{'$match':{'$and':[{'timestamp':{'$gte':{'$date':"+
                          "'"+$scope.fromDate+"'},'$lt':{'$date':'"+$scope.toDate+"'}}},"+
                          "{'$and':[{'severity':{'$ne':null}},{'severity':"+
@@ -64,7 +63,7 @@ sunburstControllerModule.controller('sunburstController', ['$scope', 'mongoAggre
                          ":{'$literal':'Transaction Type'},'children':'$children.children'}}]";
             //$scope.sliderDatePromise = mongoAggregateService.callHttp(sliderDataQuery);
             $scope.sunburstPromise = mongoAggregateService.callHttp(sliderDataQuery);
-           
+            console.log(sliderDataQuery);
         }
     };
     
