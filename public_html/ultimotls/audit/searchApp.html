@@ -12,7 +12,7 @@ and open the template in the editor.
                     <div id="searchBar" class="form-group">
                         <div class="col-sm-offset-2 col-sm-8">
                             <input ng-model="searchCriteria" type="text" ng-enter="doSearch(searchCriteria)"
-                                   class="form-control" id="myInput" value="transactionId:''"/>
+                                   class="form-control" id="myInput" onkeypress="clearError()"/>
                         </div>
                         <div class="col-sm-1 form-group">
                             <div>
@@ -25,7 +25,7 @@ and open the template in the editor.
                             <a id="advanceSearch" ng-click="toggle= !toggle">Advance Search</a>
                         </div>
                         <div class="col-sm-offset-2 col-sm-8">
-                            <p ng-model="inputWarning1">{{inputWarning1}}</p>
+                            <p ng-model="inputError">{{inputError}}</p>
                         </div>
                     </div>
                 </form>
@@ -112,7 +112,7 @@ and open the template in the editor.
             <label class="control-label">
                 <select ng-model="rowNumber" id="rowsOptions"
                     data-ng-options="p as p.rows for p in rowsOptions"
-                    ng-click="">
+                    ng-change="rowSelected()">
                 </select>
             </label>
         </div>
@@ -166,7 +166,7 @@ and open the template in the editor.
             <tbody>
                 <tr ng-repeat="d in data._embedded['rh:doc'] | orderBy:predicate:reverse" ng-click="rowClick(d)" data-toggle="modal" data-target="#dataBasePage">
             
-                    <td>{{d.timestamp | date:'EEE MMM dd, yyyy hh:mm:ss'}}</td>
+                    <td>{{d.timestamp.$date | date:'EEE MMM dd, yyyy hh:mm:ss'}}</td>
                     <td>{{d.transactionDomain}}</td>
                     <td>{{d.transactionType}}</td>
                     <td>{{d.transactionId}}</td>
