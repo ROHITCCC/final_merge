@@ -7,9 +7,8 @@
 
 var sunburstControllerModule = angular.module('sunburstControllerModule', ['ultimotls', 'auditControllerModule', 'ngRoute', 'ngSlider']);
 
-sunburstControllerModule.controller('sunburstController', ['$scope', 'mongoAggregateService', '$location', '$route', 
-    '$routeParams', '$controller', '$rootScope', '$injector',
-    function($scope, mongoAggregateService, $location, $route, $routeParams, $controller, $rootScope, $injector){
+sunburstControllerModule.controller('sunburstController', ['$scope', 'mongoAggregateService', '$location', '$route','auditQuery', 
+    function($scope, mongoAggregateService, $location, $route, auditQuery){
    // $scope.toDate, $scope.fromDate;
    $scope.toDate = null;
    $scope.fromDate = null;
@@ -69,23 +68,15 @@ sunburstControllerModule.controller('sunburstController', ['$scope', 'mongoAggre
         }
     };
     
+    //get the interface and get the audits. display in audit window
     $scope.getAuditsForInterface = function(interface){
+
+        var keys = interface.split('.');
+        var interfaceQuery = '{"transactionType":"'+keys[0]+'","application":"'+keys[1]+'","interface1":"'+keys[2]+'","timestamp":{"$gte":{"$date":"'+$scope.fromDate+'"},"$lt":{"$date":"'+$scope.toDate+'"}},"$and":[{"severity":{"$ne":"null"}},{"severity":{"$exists":"true","$ne":""}}]}';
+
+        auditQuery.query(interfaceQuery);
+        $scope.$apply($location.path("/audits"));
         
-        //var auditScope = $rootScope.$new(false);
-        //var auditCtrl = $controller("DataRetrieve", {$scope: auditScope});
-        
-        
-        
-        //var $injector = angular.injector(['auditControllerModule', 'ultimotls']);
-        //var injector = $injector;
-        
-        //var injectedCtrl = $injector.get(auditCtrl);
-        console.log(interface);
-       
-        //auditScope.doSearch("transactionId:'BBQ1234'");
-        //auditCtrl.doSearch();
-         $location.path("/audits");
-        //$route.reload();
     };
     
 }]);

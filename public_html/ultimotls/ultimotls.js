@@ -76,11 +76,17 @@ ultimotls.config(['$routeProvider', function ($routeProvider) {
                     templateUrl: 'ultimotls/audit/searchApp.html',
                     controller: 'DataRetrieve',
                     resolve: {
-                        initPromise:['auditSearch', function(auditSearch){
+                        initPromise:['auditSearch','auditQuery', function(auditSearch, auditQuery){
                             var rowNumber = {'rows': 25};
-                            //var promise = auditSearch.doSearch("transactionId:'BBQ1234'", rowNumber);
-                            //console.log(promise);
-                            return auditSearch.doSearch("transactionId:'BBQ1234'", rowNumber);
+                            var query = auditQuery.query();
+                            
+                            if( query!= ''){
+                                var data = auditSearch.doSearch(query, rowNumber);
+                               
+                               return data;
+                            }
+                            
+                            return;
                         }]
                     } 
                     
@@ -114,17 +120,17 @@ ultimotls.factory("mongoAggregateService", function ($http) {
 });
 
 ultimotls.service("auditSearch",['$http', function ($http) {
-    var postUrl = "http://172.16.120.170:8080/ES/ErrorSpotActual?filter={";
+    var postUrl = "http://172.16.120.170:8080/ES/ErrorSpotActual?filter=";
 
 
     var audits = {};
     audits.doSearch = function (searchCriteria, rowNumber) {
     //this.doSearch = function (searchCriteria, rowNumber) {
         var textSearch = "{$text:{$search:'" + searchCriteria + "'}}&count&pagesize=" + rowNumber.rows;
-        var jsonSearch = searchCriteria + "}&count&pagesize=" + rowNumber.rows;
+        var jsonSearch = searchCriteria + "&count&pagesize=" + rowNumber.rows;
         var searchPromise = {};
         if (/:/.test(searchCriteria)) {
-            if (/[A-Za-z0-9]+:('|")[A-Za-z0-9]+('|")/.test(searchCriteria)) {
+            if (/('|")[A-Za-z0-9]+('|"):('|")[A-Za-z0-9]+('|")/.test(searchCriteria)) {
                 var getUrl = postUrl + jsonSearch;
                 searchPromise = $http.get(getUrl).success(function (response) {
 
@@ -149,5 +155,26 @@ ultimotls.service("auditSearch",['$http', function ($http) {
 
     return audits;
 }]);
+
+
+//common service to get query string from other sunburst controllers
+ultimotls.service("auditQuery", function () {
+    var queryParam  = "";
+
+    
+    return {
+        query: function(param){
+            
+            if (param)
+            {
+                queryParam =  param;
+                
+            }
+        
+            return queryParam;
+        }
+    }
+    
+});
 
 //})(window.angular);
