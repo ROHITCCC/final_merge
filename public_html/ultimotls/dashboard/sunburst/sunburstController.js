@@ -14,7 +14,7 @@ sunburstControllerModule.controller('sunburstController', ['$scope', 'mongoAggre
    $scope.fromDate = null;
    
     if(!$scope.toDate){
-        var currentDateTime = new Date();
+        var currentDateTime = new Date(); 
         $scope.fromDate = new Date(currentDateTime - 7200000).toISOString(); //Current minus 2 hours
         $scope.toDate = new Date(currentDateTime).toISOString();
     }
