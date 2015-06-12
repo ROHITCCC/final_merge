@@ -265,6 +265,6 @@ html {
 }
 
 /////////MODAL WINDOWS///////////////////
-#replayPage{
-    top: 50%;
+.modal #replayPage{
+    top: 50%; 
 }

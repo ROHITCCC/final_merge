@@ -192,7 +192,10 @@ and open the template in the editor.
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
                 <h4 class="modal-title">Database Page: ID# {{sliderWindowData._id.$oid}}</h4>
             </div>
-            <div class="modal-body">
+            <div class="modal-body" style="overflow: scroll;
+        overflow-x: hidden;
+        overflow-y: auto;
+        height: 100%;">
                 <div id="sliderWindow">
                     <div class="list-group container-fluid">
                         <ul class="list-group">
@@ -303,7 +306,7 @@ and open the template in the editor.
       </div>
     </div>
 </div>
-<div id="replayPage" class="modal fade col-sm-offset-6 col-sm-6" role="dialog">
+<div id="replayPage" class="modal fade col-sm-offset-6 col-sm-6" role="dialog" style="top: 50%">
     <div class="modal-dialog col-sm-offset-6 col-sm-6">
       <!-- Modal content-->
         <div class="modal-content">
