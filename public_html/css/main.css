@@ -128,7 +128,7 @@ a .glyphicon .glyphicon-remove {
     overflow: scroll;
     overflow-x: hidden;
     overflow-y: auto;
-    max-height: 500px; 
+    max-height: 300px; 
 }
 #table {
     margin-bottom: 0;
