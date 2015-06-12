@@ -11,7 +11,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
         //Initialize scope data 
         $scope.rowsOptions = [{rows: 5}, {rows: 10}, {rows: 25}, {rows: 50}, {rows: 100}];
         $scope.rowNumber = $scope.rowsOptions[2];
-        $scope.searchCriteria = "{'transactionId':'BBQ1234'}";
+        $scope.searchCriteria = "{\"transactionId\":\"BBQ1234\"}";
         $scope.predicate = 'timestamp';
 
 
@@ -111,14 +111,12 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
         };
         //First, Previous, Next, Last are button function for Pagination to render new view
         $scope.goToFirst = function(){
-            var payload = $scope.data._links.first;
-            if (payload == null || payload == undefined) {
+            var firstLink = $scope.data._links.first.href;
+            if (firstLink == null || firstLink == undefined) {
                 alert("Row(s) has not been queried");
             }
             else {
-                var link = JSON.stringify($scope.data._links.first);
-                var append = link.substring(9, link.length - 2);
-                var firstUrl = "http://172.16.120.170:8080" + append;
+                var firstUrl = "http://172.16.120.170:8080" + firstLink;
                 $http.get(firstUrl)
                         .success(function (response) {
                             $scope.data = response;
@@ -128,13 +126,12 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
             }
         }
         $scope.goToPrevious = function () {
-            var link = JSON.stringify($scope.data._links.previous);
-            if (link === undefined || link === null) {
+            var previousLink = $scope.data._links.previous.href;
+            if (previousLink === undefined || previousLink === null) {
                 alert("No previous rows available");
             }
             else {
-                var append = link.substring(9, link.length - 2);
-                var previousUrl = "http://172.16.120.170:8080" + append;
+                var previousUrl = "http://172.16.120.170:8080" + previousLink;
                 $http.get(previousUrl)
                         .success(function (response) {
                             $scope.data = response;
@@ -144,13 +141,12 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
             }
         }
         $scope.goToNext = function () {
-            var link = JSON.stringify($scope.data._links.next);
-            if (link === undefined || link === null) {
+            var nextLink = $scope.data._links.next.href;
+            if (nextLink === undefined || nextLink === null) {
                 alert("No more rows available");
             }
             else {
-                var append = link.substring(9, link.length - 2);
-                var nextUrl = "http://172.16.120.170:8080" + append;
+                var nextUrl = "http://172.16.120.170:8080" + nextLink;
                 $http.get(nextUrl)
                         .success(function (response) {
                             $scope.data = response;
@@ -160,9 +156,8 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
             }
         }
         $scope.goToLast = function () {
-            var link = JSON.stringify($scope.data._links.last);
-            var append = link.substring(9, link.length - 2);
-            var lastUrl = "http://172.16.120.170:8080" + append;
+            var lastLink = $scope.data._links.last.href;
+            var lastUrl = "http://172.16.120.170:8080" + lastLink;
             $http.get(lastUrl)
                     .success(function (response) {
                         $scope.data = response;
