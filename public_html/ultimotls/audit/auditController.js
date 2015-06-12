@@ -8,6 +8,7 @@ var auditControllerModule = angular.module('auditControllerModule', []);
 
 auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'auditSearch', 'initPromise',
     function ($scope, $log, $http, auditSearch, initPromise) {
+        //Initialize scope data 
         $scope.rowsOptions = [{rows: 5}, {rows: 10}, {rows: 25}, {rows: 50}, {rows: 100}];
         $scope.rowNumber = $scope.rowsOptions[2];
         $scope.searchCriteria = "{'transactionId':'BBQ1234'}";
@@ -18,18 +19,19 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
 
         if (initPromise && initPromise.data) {
             var queryFromResolve = initPromise.config.url;
-            $scope.searchCriteria = queryFromResolve.substring(queryFromResolve.indexOf('{'), queryFromResolve.indexOf('}') + 1);
+            $scope.searchCriteria = queryFromResolve.substring(queryFromResolve.indexOf('{'), queryFromResolve.lastIndexOf('}') + 1);
             $scope.data = initPromise.data;
         }
-
+        clearError = function(){ //onKeyPress error message will clear
+            $scope.inputError = "";
+        }
         $scope.doSearch = function (query) {
             if (/:/.test(query)) {
                 try {
                     JSON.parse(query);
                 }
                 catch (err) {
-                    console.log(err);
-                    $scope.inputError = "Input should be valid JSON. eg. {'transactionId':'BBQ1234'} ";
+                    $scope.inputError = "Input should be valid JSON. eg. {\"transactionId\":\"BBQ1234\"} ";
                     return;
                 }
             }
@@ -42,8 +44,8 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                     });
 
         };
-
-
+        
+        
 
         /////ADVANCE SEARCH INITIALIZATION////////
         $scope.advanceSearch = "transactionId:'BBQ1234'";
@@ -169,16 +171,12 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                     });
         }
         
-        //Click event on Rows from Audit Data to be passed to the Slider Window
-        $scope.rowClick = function(rowData){
-            console.log(rowData);
-            $scope.sliderWindowData = rowData;
+        $scope.rowSelected = function(){
+            $scope.doSearch($scope.searchCriteria);
         }
-        
         //Click event on Rows from Audit Data to be passed to the Slider Window
         $scope.rowClick = function(rowData){
             console.log(rowData);
             $scope.sliderWindowData = rowData;
         }
     }]);
-
