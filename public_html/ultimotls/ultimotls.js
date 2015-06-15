@@ -5,7 +5,7 @@
  */
 
 //(function(angular){
-var ultimotls = angular.module('ultimotls', ['auditControllerModule', 'sunburstDirectiveModule', 'auditDirectiveModule' , 'ngRoute']);
+var ultimotls = angular.module('ultimotls', ['auditControllerModule', 'sunburstDirectiveModule', 'auditDirectiveModule' , 'treemapDirectiveModule', 'ngRoute']);
 
 ultimotls.run(function ($http) {
     $http.defaults.headers.common.Authorization = 'Basic YTph';
@@ -94,6 +94,10 @@ ultimotls.config(['$routeProvider', function ($routeProvider) {
                 when('/sunburst', {
                     templateUrl: 'ultimotls/dashboard/sunburst/sunburstDashboard.html',
                     controller: 'sunburstController'
+                }).
+                when('/treemap', {
+                    templateUrl: 'ultimotls/dashboard/treemap/treemapDashboard.html',
+                    controller: 'treemapController'
                 }).
                 otherwise({
                     redirectTo: '/sunburst'
