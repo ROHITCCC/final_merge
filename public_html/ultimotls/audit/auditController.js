@@ -13,8 +13,12 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
         $scope.rowNumber = $scope.rowsOptions[2];
         $scope.searchCriteria = "{\"transactionId\":\"BBQ1234\"}";
         $scope.predicate = 'timestamp';
-
-
+        //Replay Page Options
+        $scope.replayOptions = [{type: "REST"}, {type: "FILE"}, {type: "WS"}];
+        $scope.replayType = $scope.replayOptions[0];
+        //REST methods Options
+        $scope.methodOptions = [{type: "POST"}, {type: "GET"}, {type: "PUT"}, {type: "DELETE"}];
+        $scope.methodType = $scope.methodOptions[0];
         //check if initPromise from resolve has data.
 
         if (initPromise && initPromise.data) {
@@ -168,10 +172,33 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
         
         $scope.rowSelected = function(){
             $scope.doSearch($scope.searchCriteria);
-        }
+        };
         //Click event on Rows from Audit Data to be passed to the Slider Window
         $scope.rowClick = function(rowData){
-            console.log(rowData);
             $scope.sliderWindowData = rowData;
-        }
+        };
+        $scope.callPayload = function(data){ //from Database Page datalocation makes a call
+            var dataLocationId = data;
+            var payloadUrl = "http://172.16.120.170:8080/ES/payloadCollection/";
+            $http.get(payloadUrl+dataLocationId)
+                .success(function (response){ 
+//                    if (response.payload is XML){ //Handle payload type to be properly parsed
+//                        var parsedXML = xmlParse(response.payload);
+//                        $scope.payloadPageData.payload = parsedXML;
+//                    }
+//                    else{
+//                        var parsedJSON = jsonParse(response.payload);
+//                        $scope.payloadPageData.payload = parsedJSON;
+//                    }
+                    $scope.payloadPageData = response;
+            });
+        };
+        $scope.restReplay = {};
+        $scope.runRestService = function(){
+            var replayPostUrl = "http://172.16.120.70:8080/_logic/ES/ErrorSpotActual/replay";
+            var restPayload = "type="+$scope.replayType.type+"~, endpoint="+$scope.restReplay.endpointUrl+"~, method="+
+                    $scope.methodType.type+"~, content-type="+$scope.restReplay.contentType+"~, payload="+$scope.payloadPageData.payload+
+                    "~, header=['type'='"+$scope.restReplay.header.type+"', 'value'='"+$scope.restReplay.header.value+"']";
+            console.log(restPayload);
+        };
     }]);
