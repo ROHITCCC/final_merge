@@ -17,8 +17,8 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
         $scope.replayOptions = [{type: "REST"}, {type: "FILE"}, {type: "WS"}];
         $scope.replayType = $scope.replayOptions[0];
         //REST methods Options
-        $scope.methodOptions = [{type: "POST"}, {type: "GET"}, {type: "PUT"}, {type: "DELETE"}];
-        $scope.methodType = $scope.methodOptions[0];
+        $scope.methodOptions = [{types: "POST"}, {types: "GET"}, {types: "PUT"}, {types: "DELETE"}];
+        $scope.methodTypes = $scope.methodOptions[0];
         //check if initPromise from resolve has data.
 
         if (initPromise && initPromise.data) {
@@ -44,7 +44,6 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                     $scope.inputError = "";
                     searchPromise.then(function (response) {
                         $scope.data = response.data;
-                        console.log($scope.data);
                     });
 
         };
@@ -124,8 +123,6 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                 $http.get(firstUrl)
                         .success(function (response) {
                             $scope.data = response;
-                            $log.info($scope.data);
-                            $log.info("First page");
                         });
             }
         }
@@ -139,8 +136,6 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                 $http.get(previousUrl)
                         .success(function (response) {
                             $scope.data = response;
-                            $log.info($scope.data);
-                            $log.info("Previous page");
                         });
             }
         }
@@ -154,8 +149,6 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                 $http.get(nextUrl)
                         .success(function (response) {
                             $scope.data = response;
-                            $log.info($scope.data);
-                            $log.info("Next page");
                         });
             }
         }
@@ -165,8 +158,6 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
             $http.get(lastUrl)
                     .success(function (response) {
                         $scope.data = response;
-                        $log.info($scope.data);
-                        $log.info("Last page");
                     });
         }
         
@@ -194,15 +185,30 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
             });
         };
         $scope.restReplay = {};
-        $scope.runRestService = function(){
+        $scope.$watch('methodTypes', function(){
+            console.log($scope.methodTypes);
+        })
+        $scope.setMethodType = function(){//function isn't working correctly value never changes
+            console.log($scope.methodTypes.types)
+            $scope.currentMethod = $scope.methodTypes;
+        }
+        $scope.runRestService = function(){//
             var replayPostUrl = "http://172.16.120.70:8080/_logic/ES/ErrorSpotActual/replay";
             var restPayload = "type=REST~, endpoint="+$scope.restReplay.endpointUrl+"~, method="+
-                    $scope.methodType.type+"~, content-type="+$scope.restReplay.contentType+"~, payload="+$scope.payloadPageData.payload+
+                    $scope.currentMethod.types+"~, content-type="+$scope.restReplay.contentType+"~, payload="+$scope.payloadPageData.payload+
                     "~, header=['type'='"+$scope.restReplay.header.type+"', 'value'='"+$scope.restReplay.header.value+"']";
+                    console.log(restPayload);
         };
         $scope.fileReplay = {};
         $scope.runFileService = function(){ //how do i set a file location
-            var filePayload = "type=FILE~, file-location="+$scope.fileReplay.location+"~, payload="+$scope.payloadPageData.payload;
+            var filePayload = "type=FILE~, file-location="+$scope.fileReplay.location+"~, payload="+$scope.payloadPageData.payload+"";
             console.log(filePayload);
+        };
+        $scope.webServiceReplay = {};
+        $scope.runWebService = function(){
+            var webServicePayload = "type=WS~, wsdl="+$scope.webServiceReplay.wsdl+"~, operation="+$scope.webServiceReplay.operation+
+                    "~,  soapaction="+$scope.webServiceReplay.soapAction+"~, binding="+$scope.webServiceReplay.binding+"~, payload="+
+                    $scope.payloadPageData.payload;
+            console.log(webServicePayload);
         };
     }]);
