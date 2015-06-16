@@ -388,8 +388,8 @@ and open the template in the editor.
                                         <div class="form-group">
                                             <div class="form-inline">
                                                 <label for="fileLocation" class="control-label"><b>File Location: </b></label>
-                                                <input type="text" class="form-control" id="fileLocation" placeholder="file-location" style="width: 75%">
-                                                <button ng-click="" class="btn btn-default">Submit</button>
+                                                <input ng-model="fileReplay.location" type="text" class="form-control" id="fileLocation" placeholder="file-location" style="width: 75%">
+                                                <button ng-click="fileReplay()" class="btn btn-default">Submit</button>
                                             </div>
                                         </div>
                                     </form>
