@@ -190,12 +190,12 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
         })
         $scope.setMethodType = function(){//function isn't working correctly value never changes
             console.log($scope.methodTypes.types)
-            $scope.currentMethod = $scope.methodTypes;
+            $scope.restReplay.currentMethod = $scope.methodTypes;
         }
         $scope.runRestService = function(){//
             var replayPostUrl = "http://172.16.120.70:8080/_logic/ES/ErrorSpotActual/replay";
             var restPayload = "type=REST~, endpoint="+$scope.restReplay.endpointUrl+"~, method="+
-                    $scope.currentMethod.types+"~, content-type="+$scope.restReplay.contentType+"~, payload="+$scope.payloadPageData.payload+
+                    $scope.restReplay.currentMethod.types+"~, content-type="+$scope.restReplay.contentType+"~, payload="+$scope.payloadPageData.payload+
                     "~, header=['type'='"+$scope.restReplay.header.type+"', 'value'='"+$scope.restReplay.header.value+"']";
                     console.log(restPayload);
         };
