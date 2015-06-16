@@ -22,7 +22,7 @@ and open the template in the editor.
                             </div>
                         </div>
                         <div class="col-sm-1">
-                            <a id="advanceSearch" ng-click="toggle= !toggle">Advance Search</a>
+                            <a id="advanceSearch" ng-click="toggle= !toggle; searchOn(false)">Advance Search</a>
                         </div>
                         <div class="col-sm-offset-2 col-sm-8">
                             <p ng-model="inputError">{{inputError}}</p>
@@ -66,7 +66,7 @@ and open the template in the editor.
                         </div>
                         <div class="form-group">        
                             <div class="col-sm-12" id="optionField">
-                                <a id="closeAdvanceField" ng-click="toggle=!toggle">
+                                <a id="closeAdvanceField" ng-click="toggle=!toggle; searchOn(true)">
                                     Close Advance Search
                                 </a>
                             </div>
@@ -310,9 +310,7 @@ and open the template in the editor.
                             </li>
                             <li class="list-group-item">
                                 <b>Payload:</b> 
-                                <pre>
-                                    {{payloadPageData.payload}}
-                                </pre>
+                                <pre>{{payloadPageData.payload}}</pre>
                             </li>
                         </ul>
                     </div>
@@ -341,7 +339,7 @@ and open the template in the editor.
                     <div class="container-fluid col-sm-offset-4 col-sm-2">
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                     </div>
-                </div>
+                </div> 
             </div>
             <div class="modal-body">
                 <div id="replayBodyPage">
