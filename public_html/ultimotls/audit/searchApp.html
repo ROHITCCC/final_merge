@@ -371,8 +371,9 @@ and open the template in the editor.
                                         <div class="form-group">        
                                             <div class="col-sm-offset-2 col-sm-10">
                                                 <label class="control-label">
-                                                    <select ng-model="methodType" id="methodOptions"
-                                                            data-ng-options="p as p.type for p in methodOptions">
+                                                    <select ng-model="methodTypes" id="methodOptions"
+                                                        data-ng-options="p as p.types for p in methodOptions"
+                                                        ng-change="setMethodType()">
                                                     </select>
                                                 </label>
 <!--                                                perform Rest service, come up with a better name-->
@@ -388,8 +389,9 @@ and open the template in the editor.
                                         <div class="form-group">
                                             <div class="form-inline">
                                                 <label for="fileLocation" class="control-label"><b>File Location: </b></label>
-                                                <input ng-model="fileReplay.location" type="text" class="form-control" id="fileLocation" placeholder="file-location" style="width: 75%">
-                                                <button ng-click="fileReplay()" class="btn btn-default">Submit</button>
+                                                <input ng-model="fileReplay.location" type="text" class="form-control" 
+                                                       id="fileLocation" placeholder="file-location" style="width: 75%">
+                                                <button ng-click="runFileService()" class="btn btn-default">Submit</button>
                                             </div>
                                         </div>
                                     </form>
@@ -401,29 +403,33 @@ and open the template in the editor.
                                         <div class="form-group">
                                             <div class="form-inline">
                                                 <label for="wsdl" class="control-label col-sm-2"><b>WSDL: </b></label>
-                                                <input type="text" class="form-control col-sm-10" id="wsdl" placeholder="Web Serive Definition Language" style="width: 80%">
+                                                <input ng-model="webServiceReplay.wsdl" type="text" class="form-control col-sm-10" 
+                                                       id="wsdl" placeholder="Web Serive Definition Language" style="width: 80%">
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <div class="form-inline">
                                                 <label for="operation" class="control-label col-sm-2"><b>Operation: </b></label>
-                                                <input type="text" class="form-control col-sm-10" id="operation" placeholder="Operation" style="width: 80%">
+                                                <input ng-model="webServiceReplay.operation" type="text" class="form-control col-sm-10" 
+                                                       id="operation" placeholder="Operation" style="width: 80%">
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <div class="form-inline">
                                                 <label for="soapAction" class="control-label col-sm-2"><b>SoapAction: </b></label>
-                                                <input type="text" class="form-control col-sm-10" id="soapAction" placeholder="soapaction" style="width: 80%">
+                                                <input ng-model="webServiceReplay.soapAction" type="text" class="form-control col-sm-10" 
+                                                       id="soapAction" placeholder="soapaction" style="width: 80%">
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <div class="form-inline">
                                                 <label for="binding" class="control-label col-sm-2"><b>Binding: </b></label>
-                                                <input type="text" class="form-control col-sm-10" id="binding" placeholder="binding" style="width: 80%">
+                                                <input ng-model="webServiceReplay.binding" type="text" class="form-control col-sm-10" 
+                                                       id="binding" placeholder="binding" style="width: 80%">
                                             </div>
                                         </div>
                                         <div class="form-group"> 
-                                            <button ng-click="" class="btn btn-default">Submit</button>
+                                            <button ng-click="runWebService()" class="btn btn-default">Submit</button>
                                         </div>
                                     </form>
                                 </div>
