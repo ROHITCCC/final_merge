@@ -196,9 +196,13 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
         $scope.restReplay = {};
         $scope.runRestService = function(){
             var replayPostUrl = "http://172.16.120.70:8080/_logic/ES/ErrorSpotActual/replay";
-            var restPayload = "type="+$scope.replayType.type+"~, endpoint="+$scope.restReplay.endpointUrl+"~, method="+
+            var restPayload = "type=REST~, endpoint="+$scope.restReplay.endpointUrl+"~, method="+
                     $scope.methodType.type+"~, content-type="+$scope.restReplay.contentType+"~, payload="+$scope.payloadPageData.payload+
                     "~, header=['type'='"+$scope.restReplay.header.type+"', 'value'='"+$scope.restReplay.header.value+"']";
-            console.log(restPayload);
+        };
+        $scope.fileReplay = {};
+        $scope.runFileService = function(){ //how do i set a file location
+            var filePayload = "type=FILE~, file-location="+$scope.fileReplay.location+"~, payload="+$scope.payloadPageData.payload;
+            console.log(filePayload);
         };
     }]);
