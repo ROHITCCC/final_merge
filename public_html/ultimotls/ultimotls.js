@@ -7,6 +7,13 @@
 //(function(angular){
 var ultimotls = angular.module('ultimotls', ['auditControllerModule', 'sunburstDirectiveModule', 'auditDirectiveModule' , 'treemapDirectiveModule', 'ngRoute']);
 
+ultimotls.controller('loginControllerModule', ['$scope', function($scope){ //loging Controller
+    $scope.validateUser = function(){ //Going to be use to validate users
+        $scope.login.screen = false;
+        console.log($scope.login);
+    } 
+}]);
+
 ultimotls.run(function ($http) {
     $http.defaults.headers.common.Authorization = 'Basic YTph';
 });
