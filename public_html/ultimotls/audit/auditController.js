@@ -17,8 +17,14 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
         $scope.replayOptions = [{type: "REST"}, {type: "FILE"}, {type: "WS"}];
         $scope.replayType = $scope.replayOptions[0];
         //REST methods Options
-        $scope.methodOptions = [{type: "POST"}, {type: "GET"}, {type: "PUT"}, {type: "DELETE"}];
-        $scope.methodType = $scope.methodOptions[0];
+        $scope.methodOptions = [{types: "POST"}, {types: "GET"}, {types: "PUT"}, {types: "DELETE"}];
+        $scope.methodTypes = $scope.methodOptions[0];
+        //flag and function to toggle between doSearch and doAdvanceSearch when choosing rowNumber
+        var searchFlag = true;
+        $scope.searchOn = function(bool){
+            console.log(bool);
+            searchFlag = bool;
+        }
         //check if initPromise from resolve has data.
 
         if (initPromise && initPromise.data) {
@@ -30,6 +36,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
             $scope.inputError = "";
         }
         $scope.doSearch = function (query) {
+            $scope.searchOn(true);
             if (/:/.test(query)) {
                 try {
                     JSON.parse(query);
@@ -44,7 +51,6 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                     $scope.inputError = "";
                     searchPromise.then(function (response) {
                         $scope.data = response.data;
-                        console.log($scope.data);
                     });
 
         };
@@ -59,6 +65,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
         $scope.myBool = $scope.bools[0];
         ////ADVANCE SEARCH FUNCTION///////////
         $scope.doAdvanceSearch = function () {
+            $scope.searchOn(false);
             if ((/[A-Za-z0-9]+:('|")[A-Za-z0-9]+('|")/.test($scope.advanceSearch)) &&
                     (/[A-Za-z0-9]+:('|")[A-Za-z0-9]+('|")/.test($scope.secondField))) {
                 $scope.inputWarning2 = "";
@@ -124,8 +131,6 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                 $http.get(firstUrl)
                         .success(function (response) {
                             $scope.data = response;
-                            $log.info($scope.data);
-                            $log.info("First page");
                         });
             }
         }
@@ -139,8 +144,6 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                 $http.get(previousUrl)
                         .success(function (response) {
                             $scope.data = response;
-                            $log.info($scope.data);
-                            $log.info("Previous page");
                         });
             }
         }
@@ -154,8 +157,6 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                 $http.get(nextUrl)
                         .success(function (response) {
                             $scope.data = response;
-                            $log.info($scope.data);
-                            $log.info("Next page");
                         });
             }
         }
@@ -165,13 +166,17 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
             $http.get(lastUrl)
                     .success(function (response) {
                         $scope.data = response;
-                        $log.info($scope.data);
-                        $log.info("Last page");
                     });
         }
         
-        $scope.rowSelected = function(){
-            $scope.doSearch($scope.searchCriteria);
+        $scope.rowSelected = function(){//toggle between Search and AdvanceSearch
+            if(searchFlag){
+                $scope.doSearch($scope.searchCriteria);
+            }
+            else{
+                $scope.doAdvanceSearch();
+            }
+            
         };
         //Click event on Rows from Audit Data to be passed to the Slider Window
         $scope.rowClick = function(rowData){
@@ -190,15 +195,41 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
 //                        var parsedJSON = jsonParse(response.payload);
 //                        $scope.payloadPageData.payload = parsedJSON;
 //                    }
+                    response.payload = response.payload.replace(/&quot;/g,"\"");
                     $scope.payloadPageData = response;
+                    console.log($scope.payloadPageData)
             });
         };
         $scope.restReplay = {};
-        $scope.runRestService = function(){
-            var replayPostUrl = "http://172.16.120.70:8080/_logic/ES/ErrorSpotActual/replay";
-            var restPayload = "type="+$scope.replayType.type+"~, endpoint="+$scope.restReplay.endpointUrl+"~, method="+
-                    $scope.methodType.type+"~, content-type="+$scope.restReplay.contentType+"~, payload="+$scope.payloadPageData.payload+
+        $scope.$watch('methodTypes', function(){
+            console.log($scope.methodTypes);
+        })
+        $scope.setMethodType = function(){//function isn't working correctly value never changes
+            console.log($scope.methodTypes.types)
+            $scope.restReplay.currentMethod = $scope.methodTypes;
+        }
+        var replayPostUrl = "http://172.16.120.170:8080/_logic/ES/ErrorSpotActual/replay";
+        $scope.runRestService = function(){//only takes JSON files not 
+            
+            var restPayload = "type=REST~, endpoint="+$scope.restReplay.endpointUrl+"~, method="+
+                    $scope.restReplay.currentMethod.types+"~, content-type="+$scope.restReplay.contentType+"~, payload="+$scope.payloadPageData.payload+
                     "~, header=['type'='"+$scope.restReplay.header.type+"', 'value'='"+$scope.restReplay.header.value+"']";
-            console.log(restPayload);
+                    console.log(restPayload);
+            $http.post(replayPostUrl, restPayload)
+                    .success(function(d){console.log(d)});
+        };
+        $scope.fileReplay = {};
+        $scope.runFileService = function(){ //how do i set a file location
+            var filePayload = "type=FILE~, file-location="+$scope.fileReplay.location+"~, payload="+$scope.payloadPageData.payload+"";
+            console.log(filePayload);
+        };
+        $scope.webServiceReplay = {};
+        $scope.runWebService = function(){
+            var webServicePayload = "type=WS~, wsdl="+$scope.webServiceReplay.wsdl+"~, operation="+$scope.webServiceReplay.operation+
+                    "~,  soapaction="+$scope.webServiceReplay.soapAction+"~, binding="+$scope.webServiceReplay.binding+"~, payload="+
+                    $scope.payloadPageData.payload;
+            console.log(webServicePayload);
+            $http.post(replayPostUrl, webServicePayload)
+                .success(function(d){console.log(d)});
         };
     }]);

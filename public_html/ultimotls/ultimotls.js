@@ -57,13 +57,30 @@ ultimotls.directive('tabsPanel', function () {
         restrict: 'E',
         scope: true,
         templateUrl: 'navTabs.html',
-        controller: function () {
-            this.tab = 3;
-            this.isSet = function (checkTab) {
-                return this.tab === checkTab;
+        controller: function ($scope, $location) {
+              $scope.tabs = [
+                { link : '', label : 'Dashboard' },
+                { link : '#/audits', label : 'Audits' },
+                { link : '#/sunburst', label : 'Sunburst Dashboard' },
+                { link : '#/treemap', label : 'Treemap Dashboard' }
+              ]; 
+
+            var setTab = null;
+            for(var tabCounter = 0; tabCounter < $scope.tabs.length; tabCounter++){
+                if($location.path() === $scope.tabs[tabCounter].link.substring(1)){
+                    setTab = tabCounter;
+                }
+            }
+            $scope.selectedTab = $scope.tabs[setTab];    
+            $scope.setSelectedTab = function(tab) {
+              $scope.selectedTab = tab;
             };
-            this.setTab = function (activeTab) {
-                this.tab = activeTab;
+            $scope.tabClass = function(tab) {
+              if ($scope.selectedTab === tab) {
+                return "active";
+              } else {
+                return "";
+              }
             };
         },
         controllerAs: "tab"
@@ -179,6 +196,10 @@ ultimotls.service("auditQuery", function () {
         }
     }
     
+});
+
+ultimotls.factory("treemapSaver", function() {
+    return {};
 });
 
 //})(window.angular);
