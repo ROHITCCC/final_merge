@@ -10,7 +10,7 @@ and open the template in the editor.
             <div ng-class="searchBox" ng-hide="toggle" class="container-fluid">     
                 <form class="form-horizontal" role="form">
                     <div id="searchBar" class="form-group">
-                        <div class="col-sm-offset-2 col-sm-7">
+                        <div class="col-sm-offset-2 col-sm-6">
                             <input ng-model="searchCriteria" type="text" ng-enter="doSearch(searchCriteria)"
                                    class="form-control" id="myInput" onkeypress="clearError()"/>
                         </div>
@@ -21,7 +21,7 @@ and open the template in the editor.
                                 </button>
                             </div>
                         </div>
-                        <div class="col-sm-1">
+                        <div class="col-sm-2">
                             <a id="advanceSearch" ng-click="toggle= !toggle; searchOn(false)">Advance Search</a>
                         </div>
                         <div class="col-sm-offset-2 col-sm-8">
