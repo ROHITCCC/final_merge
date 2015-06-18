@@ -251,7 +251,7 @@ text{
 svg{
     width: 100%;
     height: auto;
-    min-height: 250px;
+    /* min-height: 250px; */
 }
 path .slice{
     stroke-width: 2px;

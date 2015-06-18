@@ -7,8 +7,8 @@
 
 var sunburstControllerModule = angular.module('sunburstControllerModule', ['ultimotls', 'auditControllerModule', 'ngRoute', 'ngSlider']);
 
-sunburstControllerModule.controller('sunburstController', ['$scope', 'mongoAggregateService', '$location', '$route','auditQuery', 
-    function($scope, mongoAggregateService, $location, $route, auditQuery){
+sunburstControllerModule.controller('sunburstController', ['$scope', 'mongoAggregateService', '$location', '$route','auditQuery', 'sunburstSaver',
+    function($scope, mongoAggregateService, $location, $route, auditQuery, sunburstSaver){
    // $scope.toDate, $scope.fromDate;
    $scope.toDate = null;
    $scope.fromDate = null;
@@ -16,10 +16,22 @@ sunburstControllerModule.controller('sunburstController', ['$scope', 'mongoAggre
                          {"time":1,"description":"1 hour"},{"time":24, "description":"24 hours"},
                          {"time":48,"description":"48 hours"}];
    $scope.timeSelected = $scope.timeOptions[2];
-   
+   $scope.sunburstSaver = sunburstSaver;
+
     if(!$scope.toDate){
-        var currentDateTime = new Date(); 
-        $scope.fromDate = new Date(currentDateTime - 7200000).toISOString(); //Current minus 2 hours
+        var currentDateTime = new Date();
+        if(typeof $scope.sunburstSaver.slideVal !== 'undefined'){ //checks whether or not the slider value holder in the service exists yet
+            console.log("pop up once")
+            for(var i =0; i< $scope.timeOptions.length; i++){
+                if ($scope.sunburstSaver.slideVal === $scope.timeOptions[i].time){
+                    $scope.timeSelected = $scope.timeOptions[i];
+                }
+            }  
+            $scope.fromDate = new Date(currentDateTime - ($scope.sunburstSaver.slideVal*60*60*1000)).toISOString();  //changes the time accordingly
+        }
+        else{
+            $scope.fromDate = new Date(currentDateTime - 7200000).toISOString(); //Current minus 2 hours           
+        }
         $scope.toDate = new Date(currentDateTime).toISOString();
     }
     var dataQuery = "[{'$match':{'$and':[{'timestamp':{'$gte':{'$date':"+
@@ -59,6 +71,14 @@ sunburstControllerModule.controller('sunburstController', ['$scope', 'mongoAggre
                      "'}}}},{'$project':{'_id':1,'name':'$_id.transactionType','description'"+
                      ":{'$literal':'Transaction Type'},'children':'$children.children'}}]";
         $scope.sunburstPromise = mongoAggregateService.callHttp(sliderDataQuery);
+        if(typeof $scope.sunburstSaver.slideVal === 'undefined'){ //checks whether the value holder exists yet
+            console.log("here")
+            $scope.sunburstSaver.slideVal = $scope.timeSelected.time; //initializes the value holder
+        }
+        else{
+            console.log("else here")
+            $scope.timeSelected.time = $scope.sunburstSaver.slideVal;
+        }
     };
     
     //get the interface and get the audits. display in audit window
