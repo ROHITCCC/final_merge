@@ -19,6 +19,7 @@ and open the template in the editor.
         <script src="lib/js/angular/angular.js" type="text/javascript"></script>
         <script src="lib/js/angular/angular-route.js" type="text/javascript"></script>
         <script src="lib/js/angular/ng-slider.min.js" type="text/javascript"></script>
+        <script src="lib/js/angular/angular-cookies.js" type="text/javascript"></script>
         <script src="ultimotls/audit/auditController.js" type="text/javascript"></script>
         <script src="ultimotls/dashboard/sunburst/sunburstController.js" type="text/javascript"></script>
         <script src="ultimotls/dashboard/sunburst/sunburstDirectives.js" type="text/javascript"></script>
@@ -30,9 +31,9 @@ and open the template in the editor.
         <script src="ultimotls/ultimotls.js" type="text/javascript"></script>
        
     </head>
-    <body ng-app="ultimotls" ng-init="login.screen = true"> 
-        <div id="loginContainter" class="container-fluid" ng-show="login.screen" ng-controller="loginControllerModule">
-            <div id="loginFormContainer" class="container-fluid">
+    <body ng-app="ultimotls" ng-controller="loginControllerModule"> 
+        <div id="loginContainter" class="container-fluid" ng-show="login.screen" >
+            <div id="loginFormContainer" class="container-fluid"ng-show="login.screen">
                 <form class="form-signin">
                     <h2 class="form-signin-heading">Please sign in</h2>
                     <label for="inputEmail" class="sr-only">Username</label>
