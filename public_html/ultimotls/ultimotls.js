@@ -5,12 +5,17 @@
  */
 
 //(function(angular){
-var ultimotls = angular.module('ultimotls', ['auditControllerModule', 'sunburstDirectiveModule', 'auditDirectiveModule' , 'treemapDirectiveModule', 'ngRoute']);
+var ultimotls = angular.module('ultimotls', ['auditControllerModule', 'sunburstDirectiveModule', 'auditDirectiveModule' , 'treemapDirectiveModule', 'ngRoute', 'ngCookies']);
 
-ultimotls.controller('loginControllerModule', ['$scope', function($scope){ //loging Controller
+ultimotls.controller('loginControllerModule', ['$scope', '$cookies', function($scope, $cookieStore){ //loging Controller
+    $scope.login = {};
+    $scope.login.screen = true; //default
     $scope.validateUser = function(){ //Going to be use to validate users
         $scope.login.screen = false;
         console.log($scope.login);
+        //cookies to store and pull passwords and user names 
+        //$cookieStore.put($scope.login);
+        //$cookies.put($scope.login);
     } 
 }]);
 
