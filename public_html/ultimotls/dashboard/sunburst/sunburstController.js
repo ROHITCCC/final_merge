@@ -21,10 +21,9 @@ sunburstControllerModule.controller('sunburstController', ['$scope', 'mongoAggre
     if(!$scope.toDate){
         var currentDateTime = new Date();
         if(typeof $scope.sunburstSaver.slideVal !== 'undefined'){ //checks whether or not the slider value holder in the service exists yet
-            console.log("pop up once")
             for(var i =0; i< $scope.timeOptions.length; i++){
                 if ($scope.sunburstSaver.slideVal === $scope.timeOptions[i].time){
-                    $scope.timeSelected = $scope.timeOptions[i];
+                    $scope.timeSelected = $scope.timeOptions[i]; 
                 }
             }  
             $scope.fromDate = new Date(currentDateTime - ($scope.sunburstSaver.slideVal*60*60*1000)).toISOString();  //changes the time accordingly
@@ -72,11 +71,9 @@ sunburstControllerModule.controller('sunburstController', ['$scope', 'mongoAggre
                      ":{'$literal':'Transaction Type'},'children':'$children.children'}}]";
         $scope.sunburstPromise = mongoAggregateService.callHttp(sliderDataQuery);
         if(typeof $scope.sunburstSaver.slideVal === 'undefined'){ //checks whether the value holder exists yet
-            console.log("here")
             $scope.sunburstSaver.slideVal = $scope.timeSelected.time; //initializes the value holder
         }
         else{
-            console.log("else here")
             $scope.timeSelected.time = $scope.sunburstSaver.slideVal;
         }
     };
