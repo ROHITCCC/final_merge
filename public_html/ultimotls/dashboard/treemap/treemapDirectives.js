@@ -21,6 +21,7 @@ treemapDirectiveModule.directive('treemapZoom', ['$http', function($http){
                 .attr("id", "treemapChart")
                 .style("width", w + "px")
                 .style("height", h + "px")
+                .style("margin-top", 15 + "px")
                 .style("margin-bottom", 200 + "px")
                 .style("margin-left", 40 + "px")
               .append("svg")
