@@ -36,3 +36,11 @@ $("html").dblclick(function(){
         {"right": "-50%"},
         "slow");
 });
+
+$('body').on('click', '.mainmodal .close', function() {
+    $('#replayPage').modal('hide');
+    $('#payloadPage').modal('hide');
+}).on('click', '.mainmodal .modal-footer .btn', function() {
+    $('#replayPage').modal('hide');
+    $('#payloadPage').modal('hide');
+});
