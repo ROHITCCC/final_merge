@@ -5,7 +5,7 @@
  */
 
 
-var sunburstControllerModule = angular.module('sunburstControllerModule', ['ultimotls', 'auditControllerModule', 'ngRoute', 'ngSlider']);
+var sunburstControllerModule = angular.module('sunburstControllerModule', ['ultimotls', 'auditControllerModule', 'ngRoute']);
 
 sunburstControllerModule.controller('sunburstController', ['$scope', 'mongoAggregateService', '$location', '$route','auditQuery', 'sunburstSaver',
     function($scope, mongoAggregateService, $location, $route, auditQuery, sunburstSaver){
@@ -70,12 +70,7 @@ sunburstControllerModule.controller('sunburstController', ['$scope', 'mongoAggre
                      "'}}}},{'$project':{'_id':1,'name':'$_id.transactionType','description'"+
                      ":{'$literal':'Transaction Type'},'children':'$children.children'}}]";
         $scope.sunburstPromise = mongoAggregateService.callHttp(sliderDataQuery);
-        if(typeof $scope.sunburstSaver.slideVal === 'undefined'){ //checks whether the value holder exists yet
-            $scope.sunburstSaver.slideVal = $scope.timeSelected.time; //initializes the value holder
-        }
-        else{
-            $scope.timeSelected.time = $scope.sunburstSaver.slideVal;
-        }
+        $scope.sunburstSaver.slideVal = $scope.timeSelected.time;//Saves TimeSelected when drop down value changes
     };
     
     //get the interface and get the audits. display in audit window
