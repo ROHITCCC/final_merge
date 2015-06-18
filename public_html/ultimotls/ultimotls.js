@@ -51,27 +51,23 @@ ultimotls.filter('unique', function () {
     };
 });
 
-
-ultimotls.directive('tabsPanel', function () {
-    return{
-        restrict: 'E',
-        scope: true,
-        templateUrl: 'navTabs.html',
-        controller: function ($scope, $location) {
+ultimotls.controller('getTabs', function($scope, $location){
+    $scope.tabBuilder = function(){
               $scope.tabs = [
-                { link : '', label : 'Dashboard' },
+                { link : '#/sunburst', label : 'Dashboard' },
                 { link : '#/audits', label : 'Audits' },
-                { link : '#/sunburst', label : 'Sunburst Dashboard' },
                 { link : '#/treemap', label : 'Treemap Dashboard' }
               ]; 
 
-            var setTab = null;
+            $scope.setTab = null;
+            
+            $scope.currentPath = $location.path();
             for(var tabCounter = 0; tabCounter < $scope.tabs.length; tabCounter++){
-                if($location.path() === $scope.tabs[tabCounter].link.substring(1)){
-                    setTab = tabCounter;
+                if($scope.currentPath === $scope.tabs[tabCounter].link.substring(1)){
+                    $scope.setTab = tabCounter;
                 }
             }
-            $scope.selectedTab = $scope.tabs[setTab];    
+            $scope.selectedTab = $scope.tabs[$scope.setTab];    
             $scope.setSelectedTab = function(tab) {
               $scope.selectedTab = tab;
             };
@@ -82,8 +78,21 @@ ultimotls.directive('tabsPanel', function () {
                 return "";
               }
             };
-        },
-        controllerAs: "tab"
+        }
+});
+
+ultimotls.directive('tabsPanel', function () {
+    return{
+        restrict: 'E',
+        scope: true,
+        templateUrl: 'navTabs.html',
+        controller: 'getTabs',
+        link : function ($scope, $location) {
+            $scope.tabBuilder();
+            $scope.$on('$locationChangeStart', function(event) {
+                $scope.tabBuilder();
+            });
+        }
     };
 });
 
@@ -199,6 +208,9 @@ ultimotls.service("auditQuery", function () {
 });
 
 ultimotls.factory("treemapSaver", function() {
+    return {};
+});
+ultimotls.factory("sunburstSaver", function() {
     return {};
 });
 

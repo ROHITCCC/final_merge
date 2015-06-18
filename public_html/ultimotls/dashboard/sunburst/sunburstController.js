@@ -7,15 +7,22 @@
 
 var sunburstControllerModule = angular.module('sunburstControllerModule', ['ultimotls', 'auditControllerModule', 'ngRoute', 'ngSlider']);
 
-sunburstControllerModule.controller('sunburstController', ['$scope', 'mongoAggregateService', '$location', '$route','auditQuery', 
-    function($scope, mongoAggregateService, $location, $route, auditQuery){
+sunburstControllerModule.controller('sunburstController', ['$scope', 'mongoAggregateService', '$location', '$route','auditQuery', 'sunburstSaver',
+    function($scope, mongoAggregateService, $location, $route, auditQuery, sunburstSaver){
    // $scope.toDate, $scope.fromDate;
    $scope.toDate = null;
    $scope.fromDate = null;
+   $scope.sunburstSaver = sunburstSaver;
    
     if(!$scope.toDate){
-        var currentDateTime = new Date(); 
-        $scope.fromDate = new Date(currentDateTime - 7200000).toISOString(); //Current minus 2 hours
+        var currentDateTime = new Date();
+        if(typeof $scope.sunburstSaver.slideVal !== 'undefined'){ //checks whether or not the slider value holder in the service exists yet
+            $scope.fromDate = new Date(currentDateTime - ($scope.sunburstSaver.slideVal*60*60*1000)).toISOString();  //changes the time accordingly
+        }
+        else{
+            $scope.fromDate = new Date(currentDateTime - 7200000).toISOString(); //Current minus 2 hours
+            
+        }
         $scope.toDate = new Date(currentDateTime).toISOString();
     }
     var dataQuery = "[{'$match':{'$and':[{'timestamp':{'$gte':{'$date':"+
@@ -37,6 +44,12 @@ sunburstControllerModule.controller('sunburstController', ['$scope', 'mongoAggre
     //date slider Config
     $scope.sliderDatePromise = {};
     $scope.sliderValue = "2";
+    if(typeof $scope.sunburstSaver.slideVal === 'undefined'){ //checks whether the value holder exists yet
+        $scope.sunburstSaver.slideVal = $scope.sliderValue; //initializes the value holder
+    }
+    else{
+        $scope.sliderValue = $scope.sunburstSaver.slideVal;
+    }
     $scope.options = {       
         from: 1,
         to: 48,
@@ -44,6 +57,7 @@ sunburstControllerModule.controller('sunburstController', ['$scope', 'mongoAggre
         dimension: " hours",
         callback: function(value){
             var currentDateTime = new Date();
+            $scope.sunburstSaver.slideVal = value; //stores the value within the service sunburstSaver
             $scope.fromDate = new Date(currentDateTime - (value*60*60*1000)).toISOString();
             $scope.toDate = new Date(currentDateTime).toISOString(); 
             var sliderDataQuery = "[{'$match':{'$and':[{'timestamp':{'$gte':{'$date':"+
