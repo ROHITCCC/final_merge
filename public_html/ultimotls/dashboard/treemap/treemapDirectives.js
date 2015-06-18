@@ -29,7 +29,7 @@ treemapDirectiveModule.directive('treemapZoom', ['$http', function($http){
                 .attr("height", h);
         
     function createZoomTree(treeData, element, flag, scope){
-         
+         d3.select("#zoomOut").style("opacity",0)
             var jsonRaw = treeData;
             var treeData = {name:"tree", children:[{}]};
             var treeChildren = [{}];
@@ -65,6 +65,7 @@ treemapDirectiveModule.directive('treemapZoom', ['$http', function($http){
               
               var nodes = treemap.nodes(root)
                   .filter(function(d) { return !d.children; });
+          
 
           
               var cell = svg.selectAll("g")
@@ -72,6 +73,8 @@ treemapDirectiveModule.directive('treemapZoom', ['$http', function($http){
           
           cell.enter().append("g").attr("class", "cell")
                   .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
+          .on("mouseover", mouseOverArc)
+              .on("mouseout", mouseOutArc)
                   .on("click", function(d) { return zoom((node === d.parent ? root : d.parent),(d3.select(this).attr("id")),(d3.select(this).attr("parent"))); });
           
                   cell.attr("class", "cell")
@@ -103,7 +106,8 @@ treemapDirectiveModule.directive('treemapZoom', ['$http', function($http){
                                 .style("height", 0)
                     .style("fill-opacity", 0)
                     .transition().remove();
-             d3.select(window).on("click", function() { zoom(root); });
+            
+             d3.select("#zoomOut").on("click", function() { zoom(root, "flag", "flag"); });
 
             function zoom(d, name, parent) {
               var kx = w / d.dx, ky = h / d.dy;
@@ -111,14 +115,18 @@ treemapDirectiveModule.directive('treemapZoom', ['$http', function($http){
               y.domain([d.y, d.y + d.dy]);
               var auditParam=null;
               auditParam = parent + "." + name;
-             console.log(d);
-             
+             console.log(auditParam);
+             if(name !== "flag" && parent !== "flag"){
+                 d3.select("#zoomOut").transition().duration(750).style("opacity",1)
               if (!d.parent) {
                  // console.log(d.children[0].name);
                 //call controller function to make audit call
                 scope.getAuditsForInterface(auditParam);
                 return;
             }
+        }
+        else d3.select("#zoomOut").transition().duration(750).style("opacity",0)
+            
               var transform =svg.selectAll("g.cell")
                   .attr("transform");
               var t = svg.selectAll("g.cell").transition()
@@ -137,17 +145,15 @@ treemapDirectiveModule.directive('treemapZoom', ['$http', function($http){
               
               
             }
+            function mouseOverArc(d) {
+                d3.select(this).style("opacity", .8);
+            };
+            function mouseOutArc(){
+                d3.select(this).style("opacity", 1);
+            };
 
         }
         function link(scope, element){ 
-            var postUrl = "http://172.16.120.170:8080/_logic/ES/ErrorSpotActual/aggregate";
-                var payload = "[ { '$match': { '$and': [ { 'timestamp': { '$gte': {'$date': '"+scope.fromDate+"'}, '$lt': {'$date': '"+scope.toDate+"'} } }, { '$and': [ {'severity': {'$ne': null}}, {'severity': {'$exists': true, '$ne': ''}} ] } ] } },{ '$group': { '_id' : { 'interface1': '$interface1', 'application': '$application' }, 'count': {'$sum': 1} } } , { '$group': { '_id' : { 'application': '$_id.application' }, 'data': { '$addToSet':{ 'name': '$_id.interface1', 'size': '$count' } } } } , { '$project': { '_id': 1, 'name': '$_id.application', 'children': '$data' } } ]";
-                var call = $http.post(postUrl,payload);
-                scope.output = call.success(function(getCall){
-                    var temp = getCall._embedded['rh:doc'];
-                    
-                    createZoomTree(temp, element, "");
-                });
                 
                 scope.$watch('sliderDatePromise', function(){
                 scope.sliderDatePromise.then(function(getCall){ //handles the promise
