@@ -1,8 +1,11 @@
 <div class="container-fluid">
     <div id="row1" class="row">
-        <div id="slideValueDiv" class="col-sm-offset-6 col-sm-6">
-            <input ng-model="sliderValue" type="text" id="mySlider1" slider options=options />
-        </div>
+        <label class="control-label">
+            <select ng-model="timeSelected" class="timeOptions"
+                data-ng-options="t as t.description for t in timeOptions"
+                ng-change="fromDateChange()">
+            </select>
+        </label>
     </div>
     <div id="row2" class="row">
         <div id="sunburstDiv" class="col-sm-8">
