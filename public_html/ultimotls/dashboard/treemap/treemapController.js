@@ -41,7 +41,7 @@ treemapControllerModule.controller('treemapController', ['$scope', '$location', 
         callback: function(value, elt){
                     
             var currentDateTime = new Date();
-            $scope.fromDate = new Date(currentDateTime - (value*60*60*1000)*5).toISOString();
+            $scope.fromDate = new Date(currentDateTime - (value*60*60*1000)).toISOString();
             $scope.toDate = new Date(currentDateTime).toISOString();
             
             $scope.treemapSaver.slideVal = value;            //gets slider value to store within the service treemapSaver

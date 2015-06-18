@@ -8,8 +8,8 @@ var treemapDirectiveModule = angular.module('treemapDirectiveModule', ['treemapC
 
 treemapDirectiveModule.directive('treemapZoom', ['$http', function($http){
         
-         var w = window.innerWidth*.7,
-                h = window.innerHeight*.5,
+         var w = window.innerWidth*.9,
+                h = window.innerHeight*.7,
                 x = d3.scale.linear().range([0, w]),
                 y = d3.scale.linear().range([0, h]),
                 color = d3.scale.category20c(),
@@ -78,7 +78,7 @@ treemapDirectiveModule.directive('treemapZoom', ['$http', function($http){
                   .attr("id", function(d){return d.name;})
                   .attr("parent",function(d){return d.parent.name})
                   .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
-                  .on("click", function(d) { return zoom((node === d.parent ? root : d.parent),(d3.select(this).attr("id")),(d3.select(this).attr("parent"))); });
+                  
           
               cell.append("rect");
               cell.append("text");
@@ -86,6 +86,7 @@ treemapDirectiveModule.directive('treemapZoom', ['$http', function($http){
               cell.select("rect").transition().duration(500)
                   .attr("width", function(d) { return d.dx - 1; })
                   .attr("height", function(d) { return d.dy - 1; })
+                  .style("word-wrap", "break-word")
                   .style("fill", function(d) { return color(d.parent.name); });
           
 
@@ -102,7 +103,7 @@ treemapDirectiveModule.directive('treemapZoom', ['$http', function($http){
                                 .style("height", 0)
                     .style("fill-opacity", 0)
                     .transition().remove();
-            
+             d3.select(window).on("click", function() { zoom(root); });
 
             function zoom(d, name, parent) {
               var kx = w / d.dx, ky = h / d.dy;
@@ -110,8 +111,8 @@ treemapDirectiveModule.directive('treemapZoom', ['$http', function($http){
               y.domain([d.y, d.y + d.dy]);
               var auditParam=null;
               auditParam = parent + "." + name;
+             console.log(d);
              
-              
               if (!d.parent) {
                  // console.log(d.children[0].name);
                 //call controller function to make audit call
@@ -133,6 +134,7 @@ treemapDirectiveModule.directive('treemapZoom', ['$http', function($http){
                   .attr("y", function(d) { return ky * d.dy / 2; })
                   .style("opacity", function(d) { return kx * d.dx > d.w ? 1 : 0; });
               node = d;
+              
               
             }
 
