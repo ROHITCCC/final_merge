@@ -304,10 +304,9 @@ html {
     font-family: sans-serif;
 }
 
-//SLIDER
-#slideValueDiv{
-    min-height: 200px;
-    margin: 30px;
+//Drop Down TimeSelection
+.timeOptions{
+    float: right;
 }
 
 /////////MODAL WINDOWS///////////////////
