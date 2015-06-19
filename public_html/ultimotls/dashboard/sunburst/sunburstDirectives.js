@@ -25,7 +25,7 @@ sunburstDirectiveModule.directive('sunburstChart', function(){
 
         //remove SVG before appending. To be replaced by transition.
         d3.select(ele).select("svg").remove();
-        
+        d3.select(ele).select("#tooltip").remove();
         var svg = d3.select(ele).append("svg")
             .attr("width", margin.left + margin.right)
             .attr("height", margin.top + margin.bottom)
@@ -133,7 +133,7 @@ sunburstDirectiveModule.directive('sunburstChart', function(){
                 .attr("dy", ".35em") // vertical-align
                 .text(function(d) {
                     var nameholder = null;
-                    var getWidth = 6;
+                    var getWidth = radius/3 * .1;
                     if (d.name.length > (getWidth)) {
                         nameholder = d.name.substring(0,(getWidth)) + "...";
                     }
@@ -225,7 +225,7 @@ sunburstDirectiveModule.directive('sunburstChart', function(){
                 .attr("dy", ".35em") // vertical-align  	
                 .text(function(d) {
                     var nameholder = null;
-                    var getWidth = 6;
+                    var getWidth = radius/3 * .1;
                     if (d.name.length > (getWidth)) {
                         nameholder = d.name.substring(0,(getWidth)) + "...";
                     }
