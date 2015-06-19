@@ -58,6 +58,6 @@ treemapControllerModule.controller('treemapController', ['$scope', '$location', 
 
         auditQuery.query(interfaceQuery);
         $scope.$apply($location.path("/audits"));
-        
+        console.log("here")
     };
     }]);
