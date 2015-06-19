@@ -14,6 +14,9 @@ and open the template in the editor.
   -o-transition:all linear 0.3s;
   transition:all linear 0.3s;
 }
+.nav, .pagination, .carousel, .panel-title a {
+    cursor: pointer; 
+}
 body {
         overflow-x: hidden;
         position: relative;
