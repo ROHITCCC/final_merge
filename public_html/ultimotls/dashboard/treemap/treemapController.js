@@ -52,7 +52,7 @@ treemapControllerModule.controller('treemapController', ['$scope', '$location', 
         newGraph(newData,element, "true");
     };
     $scope.getAuditsForInterface = function(interface){
-        console.log("here");
+        
         var keys = interface.split('.');
         var interfaceQuery = '{"application":"'+keys[0]+'","interface1":"'+keys[1]+'","timestamp":{"$gte":{"$date":"'+$scope.fromDate+'"},"$lt":{"$date":"'+$scope.toDate+'"}},"$and":[{"severity":{"$ne":"null"}},{"severity":{"$exists":"true","$ne":""}}]}';
 
