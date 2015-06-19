@@ -9,7 +9,7 @@ var sunburstDirectiveModule = angular.module('sunburstDirectiveModule', ['sunbur
 sunburstDirectiveModule.directive('sunburstChart', function(){
     function sunburstChart(data, element, scope){
         var ele = element[0];
-        var width = (window.innerWidth*.5), height = (window.innerHeight*.60);
+        var width = (window.innerWidth*.8), height = (window.innerHeight*.8);
         var margin = {top: height/2, right: width/2, bottom: height/2, left: width/2},
             radius = Math.min(margin.top, margin.right, margin.bottom, margin.left) - 10;
 
