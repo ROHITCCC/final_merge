@@ -9,11 +9,11 @@ var sunburstDirectiveModule = angular.module('sunburstDirectiveModule', ['sunbur
 sunburstDirectiveModule.directive('sunburstChart', function(){
     function sunburstChart(data, element, scope){
         var ele = element[0];
-        var width = (window.innerWidth*.5), height = (window.innerHeight*.60);
+        var width = (window.innerWidth*.8), height = (window.innerHeight*.8);
         var margin = {top: height/2, right: width/2, bottom: height/2, left: width/2},
             radius = Math.min(margin.top, margin.right, margin.bottom, margin.left) - 10;
 
-        function filter_min_arc_size_text(d, i) {return (d.dx*d.depth*radius/3)>14}; 
+        function filter_min_arc_size_text(d, i) {return (d.dx*d.depth*radius/3)>5}; 
 
         var hue = d3.scale.category10();
 
@@ -25,7 +25,7 @@ sunburstDirectiveModule.directive('sunburstChart', function(){
 
         //remove SVG before appending. To be replaced by transition.
         d3.select(ele).select("svg").remove();
-        
+        d3.select(ele).select("#tooltip").remove();
         var svg = d3.select(ele).append("svg")
             .attr("width", margin.left + margin.right)
             .attr("height", margin.top + margin.bottom)
@@ -126,12 +126,20 @@ sunburstDirectiveModule.directive('sunburstChart', function(){
           var texts = svg.selectAll("text")
               .data(partitioned_data)
             .enter().append("text")
-                        .filter(filter_min_arc_size_text)    	
-                .attr("transform", function(d) { return "rotate(" + computeTextRotation(d) + ")"; })
-                        .attr("x", function(d) { return radius / 3 * d.depth; })	
-                        .attr("dx", "6") // margin
-              .attr("dy", ".35em") // vertical-align	
-                        .text(function(d,i) {return d.name})
+                .attr("transform", function(d) { return computeTextRotation(d)<90?"rotate(" + computeTextRotation(d) + ")":"rotate(" + computeTextRotation(d) + ")rotate(-180)"; })
+                .attr("text-anchor", function(d){return computeTextRotation(d)<90? "start":"end";})
+                .attr("x", function(d) { return computeTextRotation(d)<90?radius / 3 * d.depth:radius/3*d.depth*-1; })	
+                .attr("dx", function(d) { return computeTextRotation(d)<90?"6":"-6"}) // margin
+                .attr("dy", ".35em") // vertical-align
+                .text(function(d) {
+                    var nameholder = null;
+                    var getWidth = radius/3 * .1;
+                    if (d.name.length > (getWidth)) {
+                        nameholder = d.name.substring(0,(getWidth)) + "...";
+                    }
+                    else nameholder = d.name;
+                    return nameholder;})
+                        //.text(function(d,i) {return d.name})
    
         function zoomIn(p, scope) {
 
@@ -210,15 +218,20 @@ sunburstDirectiveModule.directive('sunburstChart', function(){
                 .append("text")
 
             texts.style("opacity", 0)
-              .attr("transform", function(d) { return "rotate(" + computeTextRotation(d) + ")"; })
-                        .attr("x", function(d) { return radius / 3 * d.depth; })	
-                        .attr("dx", "6") // margin
-              .attr("dy", ".35em") // vertical-align
-              .filter(filter_min_arc_size_text)    	
-              .text(function(d,i) {return d.name})
-                        .transition().delay(750).style("opacity", 1)
-
-
+                .attr("transform", function(d) { return computeTextRotation(d)<90?"rotate(" + computeTextRotation(d) + ")":"rotate(" + computeTextRotation(d) + ")rotate(-180)"; })
+                .attr("text-anchor", function(d){return computeTextRotation(d)<90? "start":"end";})
+                .attr("x", function(d) { return computeTextRotation(d)<90?radius / 3 * d.depth:radius/3*d.depth*-1; })	
+                .attr("dx", function(d) { return computeTextRotation(d)<90?"6":"-6"}) // margin
+                .attr("dy", ".35em") // vertical-align  	
+                .text(function(d) {
+                    var nameholder = null;
+                    var getWidth = radius/3 * .1;
+                    if (d.name.length > (getWidth)) {
+                        nameholder = d.name.substring(0,(getWidth)) + "...";
+                    }
+                    else nameholder = d.name;
+                    return nameholder;})
+                .transition().delay(750).style("opacity", 1)
             }
         };
         function key(d) {
