@@ -22,7 +22,6 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
         //flag and function to toggle between doSearch and doAdvanceSearch when choosing rowNumber
         var searchFlag = true;
         $scope.searchOn = function(bool){
-            console.log(bool);
             searchFlag = bool;
         }
         //check if initPromise from resolve has data.
@@ -64,6 +63,10 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
         $scope.bools = [{name: 'AND'}, {name: 'OR'}, {name: 'NOT'}];
         $scope.myBool = $scope.bools[0];
         ////ADVANCE SEARCH FUNCTION///////////
+        $scope.calender = {};
+        $scope.$watch('calender.to', function(d){
+            console.log(d)
+        })
         $scope.doAdvanceSearch = function () {
             $scope.searchOn(false);
             if ((/[A-Za-z0-9]+:('|")[A-Za-z0-9]+('|")/.test($scope.advanceSearch)) &&
@@ -182,6 +185,37 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
         $scope.rowClick = function(rowData){
             $scope.sliderWindowData = rowData;
         };
+        function formatXml(xml) {
+            var formatted = '';
+            var reg = /(>)(<)(\/*)/g;
+            xml = xml.toString().replace(reg, '$1\r\n$2$3');
+            var pad = 0;
+            var nodes = xml.split('\r\n');
+            for(var n in nodes) {
+              var node = nodes[n];
+              var indent = 0;
+              if (node.match(/.+<\/\w[^>]*>$/)) {
+                indent = 0;
+              } else if (node.match(/^<\/\w/)) {
+                if (pad !== 0) {
+                  pad -= 1;
+                }
+              } else if (node.match(/^<\w[^>]*[^\/]>.*$/)) {
+                indent = 1;
+              } else {
+                indent = 0;
+              }
+
+              var padding = '';
+              for (var i = 0; i < pad; i++) {
+                padding += '  ';
+              }
+
+              formatted += padding + node + '\r\n';
+              pad += indent;
+            }
+            return formatted //.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/ /g, '&nbsp;');
+        }
         $scope.callPayload = function(data){ //from Database Page datalocation makes a call
             var dataLocationId = data;
             var payloadUrl = "http://172.16.120.170:8080/ES/payloadCollection/";
@@ -195,9 +229,9 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
 //                        var parsedJSON = jsonParse(response.payload);
 //                        $scope.payloadPageData.payload = parsedJSON;
 //                    }
-                    response.payload = response.payload.replace(/&quot;/g,"\"");
+                    response.payload = formatXml(response.payload);
                     $scope.payloadPageData = response;
-                    console.log($scope.payloadPageData)
+                    console.log(response.payload)
             });
         };
         $scope.restReplay = {};
