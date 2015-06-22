@@ -174,7 +174,7 @@ ultimotls.service("auditSearch",['$http', function ($http) {
         if (/:/.test(searchCriteria)) {
             if (/('|")[A-Za-z0-9]+('|"):('|")[A-Za-z0-9]+('|")/.test(searchCriteria)) {
                 var getUrl = postUrl + jsonSearch;
-                searchPromise = $http.get(getUrl).success(function (response) {
+                searchPromise = $http.get(getUrl, {timeout:3000}).success(function (response) {
 
                 }).error(function () {
                     console.log("error");
@@ -188,7 +188,7 @@ ultimotls.service("auditSearch",['$http', function ($http) {
         }
         else {
             var url = postUrl + textSearch;
-            searchPromise = $http.get(url).success;
+            searchPromise = $http.get(url, {timeout:3000}).success;
             audits.inputError = "";
         }
 
