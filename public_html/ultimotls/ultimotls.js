@@ -151,9 +151,9 @@ ultimotls.factory("mongoAggregateService", function ($http) {
         this.httpResponse = this.callHttp();
     };
     callAggregate.callHttp = function (payload) {
-        var promise = $http.post(postUrl, payload).success(function (result) {
+        var promise = $http.post(postUrl, payload, {timeout:3000}).success(function (result) {
             //console.log(result);
-        }).error(function () {
+        }).error(function () { //need to pass error message through the service???
             console.log("error");
         });
         return promise;
