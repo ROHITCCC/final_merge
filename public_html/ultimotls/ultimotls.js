@@ -21,49 +21,11 @@ ultimotls.controller('loginControllerModule', ['$scope', '$cookies', function($s
 
 ultimotls.run(function ($http) {
     $http.defaults.headers.common.Authorization = 'Basic YTph';
+     
 });
 
 
-ultimotls.filter('unique', function () {
-
-    return function (items, filterOn) {
-
-        if (filterOn === false) {
-            return items;
-        }
-
-        if ((filterOn || angular.isUndefined(filterOn)) && angular.isArray(items)) {
-            var hashCheck = {}, newItems = [];
-
-            var extractValueToCompare = function (item) {
-                if (angular.isObject(item) && angular.isString(filterOn)) {
-                    return item[filterOn];
-                } else {
-                    return item;
-                }
-            };
-
-            angular.forEach(items, function (item) {
-                var valueToCheck, isDuplicate = false;
-
-                for (var i = 0; i < newItems.length; i++) {
-                    if (angular.equals(extractValueToCompare(newItems[i]), extractValueToCompare(item))) {
-                        isDuplicate = true;
-                        break;
-                    }
-                }
-                if (!isDuplicate) {
-                    newItems.push(item);
-                }
-
-            });
-            items = newItems;
-        }
-        return items;
-    };
-});
-
-ultimotls.controller('getTabs', function($scope, $location){
+ultimotls.controller('getTabs', ['$scope','$location','$route', function($scope, $location, $route){
     $scope.tabBuilder = function(){
               $scope.tabs = [
                 { link : '#/sunburst', label : 'Dashboard' },
@@ -89,9 +51,14 @@ ultimotls.controller('getTabs', function($scope, $location){
               } else {
                 return "";
               }
+              $watch($location, function(){
+                  console.log("here");
+                $route.reload();  
+              })   
+              
             };
         }
-});
+}]);
 
 ultimotls.directive('tabsPanel', function () {
     return{
@@ -130,12 +97,10 @@ ultimotls.config(['$routeProvider', function ($routeProvider) {
                     
                 }).
                 when('/sunburst', {
-                    templateUrl: 'ultimotls/dashboard/sunburst/sunburstDashboard.html',
-                    controller: 'sunburstController'
+                    templateUrl: 'ultimotls/dashboard/sunburst/sunburstDashboard.html'
                 }).
                 when('/treemap', {
-                    templateUrl: 'ultimotls/dashboard/treemap/treemapDashboard.html',
-                    controller: 'treemapController'
+                    templateUrl: 'ultimotls/dashboard/treemap/treemapDashboard.html'
                 }).
                 otherwise({
                     redirectTo: '/sunburst'
@@ -144,7 +109,7 @@ ultimotls.config(['$routeProvider', function ($routeProvider) {
 
 
 ultimotls.factory("mongoAggregateService", function ($http) {
-    var postUrl = "http://172.16.120.170:8080/_logic/ES/ErrorSpotActual/aggregate";
+    var postUrl = "http://172.16.120.157:8080/_logic/ES/ErrorSpotActual/aggregate";
     var callAggregate = {};
     callAggregate.httpResponse = {};
     callAggregate.prepForBroadcast = function () {
@@ -162,7 +127,7 @@ ultimotls.factory("mongoAggregateService", function ($http) {
 });
 
 ultimotls.service("auditSearch",['$http', function ($http) {
-    var postUrl = "http://172.16.120.170:8080/ES/ErrorSpotActual?filter=";
+    var postUrl = "http://172.16.120.157:8080/ES/ErrorSpotActual?filter=";
 
 
     var audits = {};
@@ -205,14 +170,15 @@ ultimotls.service("auditQuery", function () {
 
     
     return {
-        query: function(param){
+        query: function(param, scope){
             
             if (param)
             {
                 queryParam =  param;
                 
             }
-        
+         console.log(scope);
+            //$route.reload();
             return queryParam;
         }
     }
