@@ -18,6 +18,7 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                 remakeFlag = true,
                 zoomFlag = false,
                 zoomFlag2 = false,
+                tempName = "",
                 transformArr = [{}];
                 
         var svg = d3.select("#treemapZoom").append("div")
@@ -180,7 +181,8 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
         }
         else{
             remakeFlag = true;
-            zoomFlag = true;
+            zoomFlag=false;
+            zoomFlag2=false;
             var newSvg = document.getElementById("treemapSVG")
             //svg.append(scope.treemapSaver.data[0])
             for(var i = 0; i < scope.treemapSaver.data.length; i++){
@@ -207,10 +209,11 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                 var arr = nameholder.split(" ");
                 return arr[0]
             })
-          
              d3.select("#zoomOut").style("opacity",1)
         }
             d3.select("#zoomOut").on("click", function() { zoom(root, "flag", "flag"); });
+
+
 
             function zoom(d, name, parent) {
                 var kx = w / d.dx, ky = h / d.dy;
@@ -219,7 +222,7 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                 var auditParam=null;
                 auditParam = parent + "." + name;
                console.log(auditParam);
-             
+               
                 if((name !== "flag" && parent !== "flag")){
                         d3.select("#zoomOut").transition().duration(750).style("opacity",1)
                         var zx = 0
@@ -242,6 +245,7 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                  remakeFlag = false;
                  if(zoomFlag)zoomFlag2=true;
                  zoomFlag = true; 
+                 tempName = name;
                 }
                 else{
                     d3.selectAll("g").select("text").remove()
@@ -277,8 +281,12 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                     .on("click", function(d) { return zoom((node === d.parent ? root : d.parent),(d3.select(this).attr("id")),(d3.select(this).attr("parent"))); })
                    //.style("opacity", function(d) { d.w = this.getComputedTextLength(); return d.dx > d.w ? 1 : 0; });
                  remakeFlag = true;
-                 if(zoomFlag2)zoomFlag2 = false
-                    zoomFlag = false;  
+                 if(!zoomFlag&&!zoomFlag2){
+                     $("#"+tempName).d3Click();
+                 }
+                 if(zoomFlag2)zoomFlag2 = false;
+                    zoomFlag = false;
+                    
                 }
                 
                 var t = svg.selectAll("g.cell").transition()
@@ -299,20 +307,32 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                     .attr("y", function(d) { return ky * d.dy / 2; })
                     //.style("opacity", function(d) { return kx * d.dx > d.w ? 1 : 0; });
                 //node = d;
-//                if(zoomFlag2 === false){
-//                   root = treeData;
-//                   
-//                console.log("here")
-//                }
-//                else{
-//                    console.log("here2" + d3.selectAll("g")[0][0].id)
-//                    root = d; 
-//                    console.log(zoomFlag + ", " + zoomFlag2)
-//                    zoomFlag = false;
-//                    zoomFlag2 = false;
-//                }
+                if(zoomFlag2 === false){
+                   root = treeData;
+                console.log("here");
+                //zoomFlag2 = true;
+                }
+                else{
+                    console.log("here2")
+                    //root = d; 
+                    console.log(zoomFlag + ", " + zoomFlag2)
+                    zoomFlag = false;
+                    zoomFlag2 = false;
+                    
+                }
                 
             }
+            jQuery.fn.d3Click = function () {
+                this.each(function (i, e) {
+                    setTimeout(
+                    function() 
+                    {var evt = document.createEvent("MouseEvents");
+                  evt.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+
+                  e.dispatchEvent(evt);}, 10);
+                  
+                });
+              };
             function sendAudit(parent, name){       //sends audits directly instead of through controller function
                 
                 //scope.getAuditsForInterface(auditParam);
