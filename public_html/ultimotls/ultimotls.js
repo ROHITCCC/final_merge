@@ -108,6 +108,11 @@ ultimotls.controller('getTabs', ['$scope', '$location', '$http', 'queryEnv', fun
               } else {
                 return "";
               }
+              $watch($location, function(){
+                  console.log("here");
+                $route.reload();  
+              })   
+              
             };
         }
 }]);
@@ -149,12 +154,10 @@ ultimotls.config(['$routeProvider', function ($routeProvider) {
                     
                 }).
                 when('/sunburst', {
-                    templateUrl: 'ultimotls/dashboard/sunburst/sunburstDashboard.html',
-                    controller: 'sunburstController'
+                    templateUrl: 'ultimotls/dashboard/sunburst/sunburstDashboard.html'
                 }).
                 when('/treemap', {
-                    templateUrl: 'ultimotls/dashboard/treemap/treemapDashboard.html',
-                    controller: 'treemapController'
+                    templateUrl: 'ultimotls/dashboard/treemap/treemapDashboard.html'
                 }).
                 otherwise({
                     redirectTo: '/sunburst'
