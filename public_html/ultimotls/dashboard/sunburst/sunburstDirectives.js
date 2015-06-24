@@ -111,62 +111,59 @@ sunburstDirectiveModule.directive('sunburstChart', function($location){
          
             
           
-          var path = svg.selectAll("path")
-              .data(partitioned_data)
-            .enter().append("path")
-              .attr("d", arc)
-              .style("fill", function(d) { return d.fill; })
-              .each(function(d) { this._current = updateArc(d); })
-              .on("click", function(d){zoomIn(d, scope);})
-              .on("mouseover", mouseOverArc)
-              .on("mousemove", mouseMoveArc)
-              .on("mouseout", mouseOutArc);
+            var path = svg.selectAll("path")
+                .data(partitioned_data)
+              .enter().append("path")
+                .attr("d", arc)
+                .style("fill", function(d) { return d.fill; })
+                .each(function(d) { this._current = updateArc(d); })
+                .on("click", function(d){zoomIn(d, scope);})
+                .on("mouseover", mouseOverArc)
+                .on("mousemove", mouseMoveArc)
+                .on("mouseout", mouseOutArc);
 
 
-          var texts = svg.selectAll("text")
-              .data(partitioned_data);
-          var enterText = texts.enter().append("text")
-                .attr("transform", function(d) { return computeTextRotation(d)<90?"rotate(" + computeTextRotation(d) + ")":"rotate(" + computeTextRotation(d) + ")rotate(-180)"; })
-                .attr("text-anchor", function(d){return computeTextRotation(d)<90? "start":"end";})
-                .attr("x", function(d) { return computeTextRotation(d)<90?radius / 3 * d.depth:radius/3*d.depth*-1; })	
-                //.attr("dx", function(d) { return computeTextRotation(d)<90?radius / 3 * .3:radius/3*-.3;}) // margin
-                .attr("dy", ".35em") // vertical-align       
-          enterText.append("tspan")
-                //.attr("x",function(d) { return computeTextRotation(d)<90?radius / 3 * d.depth:radius/3*d.depth*-1; })
-                //.attr("dx", function(d) { return computeTextRotation(d)<90?radius / 3 * .3:radius/3*-.3;}) // margin
-                .attr("dx",function(d) { return computeTextRotation(d)<90?radius / 3 * .12:radius/3*-.25;})
-                .text(function(d) {
-                    var nameholder = null;
-                    var getWidth = radius/3 * .1;
-                    if (d.name.length > (getWidth)) {
-                        nameholder = d.name.substring(0,(getWidth)) + "...";
-                    }
-                    else nameholder = d.name;
-                    return nameholder;
-                })
-          enterText.append("tspan")
-                //.attr("x",function(d) { return computeTextRotation(d)<90?radius / 3 * d.depth:radius/3*d.depth*-1; })
-                .attr("dx", radius/3*-.3) // margin 
-                .attr("dy", "1em")
-                .text(function(d) {
-                   return d.value
-                });
+            var texts = svg.selectAll("text")
+                .data(partitioned_data);
+            var enterText = texts.enter().append("text")
+                  .attr("transform", function(d) { return computeTextRotation(d)<90?"rotate(" + computeTextRotation(d) + ")":"rotate(" + computeTextRotation(d) + ")rotate(-180)"; })
+                  .attr("text-anchor", function(d){return computeTextRotation(d)<90? "start":"end";})
+                  .attr("x", function(d) { return computeTextRotation(d)<90?radius / 3 * d.depth:radius/3*d.depth*-1; })	
+                  //.attr("dx", function(d) { return computeTextRotation(d)<90?radius / 3 * .3:radius/3*-.3;}) // margin
+                  .attr("dy", ".35em") // vertical-align       
+            enterText.append("tspan")
+                  .attr("dx",function(d) { return computeTextRotation(d)<90?radius / 3 * .12:radius/3*-.25;})
+                  .text(function(d) {
+                      var nameholder = null;
+                      var getWidth = radius/3 * .1;
+                      if (d.name.length > (getWidth)) {
+                          nameholder = d.name.substring(0,(getWidth)) + "...";
+                      }
+                      else nameholder = d.name;
+                      return nameholder;
+                  })
+            enterText.append("tspan")
+                  .attr("dx", radius/3*-.3) // margin 
+                  .attr("dy", "1em")
+                  .text(function(d) {
+                     return d.value
+                  });
                         //.text(function(d,i) {return d.name})
    
-        function zoomIn(p, scope) {
+            function zoomIn(p, scope) {
 
-            if (p.depth > 1) p = p.parent;        
-            if (!p.children) {
-                //call controller function to make audit call
-                sendAudit(p.key);
+                if (p.depth > 1) p = p.parent;        
+                if (!p.children) {
+                    //call controller function to make audit call
+                    sendAudit(p.key);
+                }
+                zoom(p, p);
             }
-            zoom(p, p);
-          }
 
-          function zoomOut(p) {
-            if (!p.parent) return;
-            zoom(p.parent, p);
-          }
+            function zoomOut(p) {
+                if (!p.parent) return;
+                zoom(p.parent, p);
+            }
 
           // Zoom to the specified new root.
           function zoom(root, p) {
@@ -222,20 +219,22 @@ sunburstDirectiveModule.directive('sunburstChart', function($location){
                   .style("fill-opacity", 1)
                   .attrTween("d", function(d) { return arcTween.call(this, updateArc(d)); });
             });
+            //enterText.remove();
             texts = texts.data(new_data, function(d) { return d.key; })
+            console.log(texts)
             texts.exit().remove();
             texts.enter()
                 .append("text")
 
-            texts.style("opacity", 0)
+            var newText = texts.style("opacity", 0)
                 .attr("transform", function(d) { return computeTextRotation(d)<90?"rotate(" + computeTextRotation(d) + ")":"rotate(" + computeTextRotation(d) + ")rotate(-180)"; })
                 .attr("text-anchor", function(d){return computeTextRotation(d)<90? "start":"end";})
                 .attr("x", function(d) { return computeTextRotation(d)<90?radius / 3 * d.depth:radius/3*d.depth*-1; })	
-                .attr("dx", function(d) { return computeTextRotation(d)<90?"6":"-6"}) // margin
                 .attr("dy", ".35em") // vertical-align  	
-                .transition().delay(750).style("opacity", 1)
-            enterText.append("tspan")
-                .attr("dx",function(d) { return computeTextRotation(d)<90?radius / 3 * .12:radius/3*-.25;})
+                .transition().delay(750).style("opacity", 1);
+        
+            newText.append("tspan")
+                .attr("dx",function(d) { return computeTextRotation(d)<90? (-radius)/d.depth*.20:radius/3*-.25;})
                 .text(function(d) {
                     var nameholder = null;
                     var getWidth = radius/3 * .1;
@@ -245,13 +244,12 @@ sunburstDirectiveModule.directive('sunburstChart', function($location){
                     else nameholder = d.name;
                     return nameholder;
                 });
-            enterText.append("tspan")
+            newText.append("tspan")
                 .attr("dx", radius/3*-.3) // margin 
                 .attr("dy", "1em")
                 .text(function(d) {
                    return d.value
                 });
-                
             }
         };
         function key(d) {
