@@ -71,14 +71,25 @@ ultimotls.filter('unique', function () {
     };
 });
 
-ultimotls.controller('getTabs', function($scope, $location){
+ultimotls.controller('getTabs', ['$scope', '$location', '$http', 'queryEnv', function($scope, $location, $http, queryEnv){
     $scope.tabBuilder = function(){
-              $scope.tabs = [
+        $scope.env = [{name:"Pro", description: "Production", dbName:"PROD"}, 
+                   {name:"QA", description:"QA", dbName:"QA"}, 
+                   {name:"Dev", description: "Developement", dbName:"DEV"}];
+//        $scope.currentEnv = $scope.env[0]
+//        $scope.setCurrentEnv = function(setEnv){
+//            $scope.currentEnv = setEnv;
+//        };
+             $scope.tabs = [
                 { link : '#/sunburst', label : 'Dashboard' },
                 { link : '#/audits', label : 'Audits' },
                 { link : '#/treemap', label : 'Treemap Dashboard' }
               ]; 
-
+            $scope.setEnviroment = function(tab, env){
+                var rootTab = document.getElementById(tab);
+                rootTab.innerHTML = env.name+"-"+tab;
+                queryEnv.setEnv(env.dbName);
+            };
             $scope.setTab = null;
             
             $scope.currentPath = $location.path();
@@ -99,7 +110,7 @@ ultimotls.controller('getTabs', function($scope, $location){
               }
             };
         }
-});
+}]);
 
 ultimotls.directive('tabsPanel', function () {
     return{
@@ -168,6 +179,20 @@ ultimotls.factory("mongoAggregateService", function ($http) {
     };
     return callAggregate;
 });
+ultimotls.service("queryEnv", function(){ //getter and setter for environment 
+    var envid = "PROD";
+    return {
+        setEnv: function(env){
+            if(env){
+                envid = env;
+            }
+            return envid;
+        },
+        getEnv: function(){
+            return envid;
+        }
+    }
+})
 
 ultimotls.service("auditSearch",['$http', function ($http) {
     var postUrl =TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/"+TLS_DBNAME+"/"+TLS_AUDIT_COLLECTION+"?filter=";
