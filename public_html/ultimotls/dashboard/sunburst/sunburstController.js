@@ -17,7 +17,7 @@ sunburstControllerModule.controller('sunburstController', ['$scope', 'mongoAggre
                          {"time":48,"description":"48 hours"}];
    $scope.timeSelected = $scope.timeOptions[2];
    $scope.sunburstSaver = sunburstSaver;
-
+   $scope.auditQuery = auditQuery;
     if(!$scope.toDate){
         var currentDateTime = new Date();
         if(typeof $scope.sunburstSaver.slideVal !== 'undefined'){ //checks whether or not the slider value holder in the service exists yet

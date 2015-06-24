@@ -6,7 +6,7 @@
 
 var sunburstDirectiveModule = angular.module('sunburstDirectiveModule', ['sunburstControllerModule']);
 
-sunburstDirectiveModule.directive('sunburstChart', function(){
+sunburstDirectiveModule.directive('sunburstChart', function($location){
     function sunburstChart(data, element, scope){
         var ele = element[0];
         var width = (window.innerWidth*.8), height = (window.innerHeight*.8);
@@ -146,8 +146,7 @@ sunburstDirectiveModule.directive('sunburstChart', function(){
             if (p.depth > 1) p = p.parent;        
             if (!p.children) {
                 //call controller function to make audit call
-                scope.getAuditsForInterface(p.key);
-                return;
+                sendAudit(p.key);
             }
             zoom(p, p);
           }
@@ -256,6 +255,15 @@ sunburstDirectiveModule.directive('sunburstChart', function(){
         function updateArc(d) {
           return {depth: d.depth, x: d.x, dx: d.dx};
         };
+        function sendAudit(interface){              //sends audits directly instead of through controller function
+            //scope.getAuditsForInterface(p.key);
+            var keys = interface.split('.');
+            var interfaceQuery = '{"transactionType":"'+keys[0]+'","application":"'+keys[1]+'","interface1":"'+keys[2]+'","timestamp":{"$gte":{"$date":"'+scope.fromDate+'"},"$lt":{"$date":"'+scope.toDate+'"}},"$and":[{"severity":{"$ne":"null"}},{"severity":{"$exists":"true","$ne":""}}]}';
+
+            scope.auditQuery.query(interfaceQuery);
+            scope.$apply($location.path("/audits"));
+                return;
+        }
         d3.select(self.frameElement).style("height", margin.top + margin.bottom + "px");
         
         createSunburst(data, scope);

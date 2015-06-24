@@ -6,7 +6,7 @@
 
 var treemapDirectiveModule = angular.module('treemapDirectiveModule', ['treemapControllerModule']);
 
-treemapDirectiveModule.directive('treemapZoom', ['$http', function($http){
+treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location', function($http,$injector, $location){
         
          var w = window.innerWidth*.9,
                 h = window.innerHeight*.7,
@@ -17,6 +17,7 @@ treemapDirectiveModule.directive('treemapZoom', ['$http', function($http){
                 node,
                 remakeFlag = true,
                 zoomFlag = false,
+                zoomFlag2 = false,
                 transformArr = [{}];
                 
         var svg = d3.select("#treemapZoom").append("div")
@@ -79,6 +80,10 @@ treemapDirectiveModule.directive('treemapZoom', ['$http', function($http){
               
               var nodes = treemap.nodes(root)
                   .filter(function(d) { return !d.children; });
+          var parNodes = treemap.nodes(root)
+                  .filter(function(d) {if(d.name !== "tree") return d.children ? "tree" : d.children; });
+          
+          console.log(parNodes)
 
 //          if(remakeFlag === false){
 //              transformArr.pop();
@@ -91,24 +96,45 @@ treemapDirectiveModule.directive('treemapZoom', ['$http', function($http){
               var cell = svg.selectAll("g")
                   .data(nodes);
           
-          //if(remakeFlag !== false){
-          cell.enter().append("g").attr("class", "cell")
+          var parCell = svg.selectAll("g.parent")
+                  .data(parNodes);
+          
+          if(remakeFlag === true){
+          console.log(zoomFlag)
+          
+             cell.enter().append("g").attr("class", "cell")
+                  .attr("transform", function(d) {return "translate(" + d.x + "," + d.y + ")"; })
+                  .on("mouseover", mouseOverCell)
+                  .on("mouseout", mouseOutCell)
+                  .on("click", function(d) { return zoom((node === d.parent ? root : d.parent),(d3.select(this).attr("id")),(d3.select(this).attr("parent"))); })
+                  .on("dblclick", function(d){return sendAudit((d3.select(this).attr("id")),(d3.select(this).attr("parent")))});
+          
+                  cell.attr("class", "cell").transition().duration(500)
+                  .attr("id", function(d){return d.name;})
+                  .attr("parent",function(d){return d.parent.name})
+                  .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; }) 
+         /* }
+          else{
+              cell.enter().append("g").attr("class", "cell")
                   .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
-                .on("mouseover", mouseOverArc)
-              .on("mousemove", mouseMoveArc)
-              .on("mouseout", mouseOutArc)
-                  .on("click", function(d) { return zoom((node === d.parent ? root : d.parent),(d3.select(this).attr("id")),(d3.select(this).attr("parent"))); });
+                  .on("mouseover", mouseOverCell)
+                  .on("mousemove", mouseMoveCell)
+                  .on("mouseout", mouseOutCell)
+                  .on("click", function(d) { return zoom((node === d.parent ? root : d),(d3.select(this).attr("id")),(d3.select(this).attr("parent"))); })
+                  .on("dblclick", function(d){sendAudit((d3.select(this).attr("id")),(d3.select(this).attr("parent")))});
           
                   cell.attr("class", "cell").transition().duration(500)
                   .attr("id", function(d){return d.name;})
                   .attr("parent",function(d){return d.parent.name})
                   .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
+          }*/
+          
             /*  }
             else{
                       cell.data(transformArr).attr("transform", function(d) {console.log(d); return d})
                   cell.data(nodes)
              }*/
-          
+          cell.select("text").remove()
               cell.append("rect");
               cell.append("text");
             
@@ -125,50 +151,65 @@ treemapDirectiveModule.directive('treemapZoom', ['$http', function($http){
                   .attr("text-anchor", "middle")
                   .attr("width", function(d) { return d.dx - 1; })
          
+          .each(function (d) {
+                var nameholder = null;
+                var getWidth = d.dx;
+                if (d.name.length > (getWidth)*.1) {
+                    nameholder = d.name.substring(0,(getWidth*.1)) + "... " + d.size;
+                }
+                else nameholder = d.name + " " + d.size;
+                var arr = nameholder.split(" ");
+                if (arr !== undefined) {
+                    for (i = 0; i < arr.length; i++) {
+                        d3.select(this).append("tspan")
+                            .text(arr[i])
+                            .attr("dy", i ? "1.2em" : 0)
+                            .attr("y", function(d) { return d.dy / 2; })
+                            .attr("x", function(d) { return d.dx / 2; })
+                            .attr("text-anchor", "middle")
+                            .attr("class", "tspan" + i);
+                    }
+                }
+            })
+
             cell.exit().attr("class", "exit")
                   .transition().style("width", 0)
-                                .style("height", 0)
+                    .style("height", 0)
                     .style("fill-opacity", 0)
                     .transition().remove();
-          cell.select("text")
-              .text(function(d) {
-                    var nameholder = null;
-                    var getWidth = d.dx;
-                    if (d.name.length > (getWidth)*.1) {
-                        nameholder = d.name.substring(0,(getWidth*.1)) + "...";
-                    }
-                    else nameholder = d.name;
-                    return nameholder;})
-                .style("opacity", function(d) { d.w = this.getComputedTextLength(); return d.dx > d.w ? 1 : 0; });
-        /*}
+        }
         else{
             remakeFlag = true;
             zoomFlag = true;
             var newSvg = document.getElementById("treemapSVG")
-            
-            console.log(scope.treemapSaver.data)
+            //svg.append(scope.treemapSaver.data[0])
             for(var i = 0; i < scope.treemapSaver.data.length; i++){
                 newSvg.appendChild(scope.treemapSaver.data[i]);
             }
-             d3.select("#zoomOut").transition().duration(750).style("opacity",1)
-            cell.select("g").attr("class", "cell")
-                  .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
-                .on("mouseover", mouseOverArc)
-                .on("mousemove", mouseMoveArc)
-              .on("mouseout", mouseOutArc)
-                  .on("click", function(d) { return zoom((node === d.parent ? root : d.parent),(d3.select(this).attr("id")),(d3.select(this).attr("parent"))); });
+            
+          var newCell = d3.selectAll("g");
+            newCell.on("mouseover", mouseOverCell)
+                .on("mouseout", mouseOutCell)
+                .on("click", function(d) { return zoom((node === d.parent ? root : d.parent),(d3.select(this).attr("id")),(d3.select(this).attr("parent"))); })
+                .on("dblclick", function(d){return sendAudit((d3.select(this).attr("id")),(d3.select(this).attr("parent")))});
           
-            cell.select("text")
-              .text(function(d) {
-                    var nameholder = null;
-                    var getWidth = d.dx;
-                    if (d.name.length > (getWidth)*.1) {
-                        nameholder = d.name.substring(0,(getWidth*.1)) + "...";
-                    }
-                    else nameholder = d.name;
-                    return nameholder;})
-                .style("opacity", function(d) { d.w = this.getComputedTextLength(); return d.dx > d.w ? 1 : 0; });
-        }*/
+            
+            var z = 0;
+            newCell.select("tspan").transition().duration(500)         
+          .text(function (d) {
+                var nameholder = null;
+                var getWidth =  scope.treemapSaver.wordLength[z];
+                z++
+                if (d.name.length > (getWidth)*.1) {
+                    nameholder = d.name.substring(0,(getWidth)*.1) + "... " + d.size;
+                }
+                else nameholder = d.name + " " + d.size;
+                var arr = nameholder.split(" ");
+                return arr[0]
+            })
+          
+             d3.select("#zoomOut").style("opacity",1)
+        }
             d3.select("#zoomOut").on("click", function() { zoom(root, "flag", "flag"); });
 
             function zoom(d, name, parent) {
@@ -181,31 +222,65 @@ treemapDirectiveModule.directive('treemapZoom', ['$http', function($http){
              
                 if((name !== "flag" && parent !== "flag")){
                         d3.select("#zoomOut").transition().duration(750).style("opacity",1)
-                        cell.select("text")
-                         .text(function(d) { return d.name;})
-                 scope.treemapSaver.data = d3.select("#treemapZoom").select("svg").selectAll("g")[0];
+                        var zx = 0
+                        d3.selectAll("g").select("tspan")
+                        .text(function(d) {
+                            var nameholder = null;
+                            var getWidth = kx * d.dx - 1;
+                            scope.treemapSaver.wordLength[zx] = (getWidth);
+                            zx++;
+                            if (d.name.length > (getWidth)*.1) {
+                                nameholder = d.name.substring(0,(getWidth*.1)) + "... ";
+                            }
+                            else nameholder = d.name;
+                            return nameholder;});
+                            
+                        d3.selectAll("g")
+                        .on("click", function(d) { return zoom((node === d.parent ? root : d),(d3.select(this).attr("id")),(d3.select(this).attr("parent"))); })
+                 
+                 //console.log(d3.select("#treemapZoom").select("svg").selectAll("g")[0])
                  remakeFlag = false;
-                     if (!d.parent) {
-                        // console.log(d.children[0].name);
-                       //call controller function to make audit call
-                       scope.getAuditsForInterface(auditParam);
-                       return;
-                   }
+                 if(zoomFlag)zoomFlag2=true;
+                 zoomFlag = true; 
                 }
                 else{
+                    d3.selectAll("g").select("text").remove()
                    d3.select("#zoomOut").transition().duration(750).style("opacity",0);
-                   cell.select("text")
-                   .text(function(d) {
-                       var nameholder = null;
-                       var getWidth = d.dx
-                       if (d.name.length > (getWidth)*.1) {
-                           nameholder = d.name.substring(0,(getWidth*.1)) + "...";
-                       }
-                       else nameholder = d.name;
-                       return nameholder;})
-                   .style("opacity", function(d) { d.w = this.getComputedTextLength(); return d.dx > d.w ? 1 : 0; });
+                   
+                   d3.selectAll("g").append("text").attr("x", function(d) { return d.dx / 2; })
+                  .attr("y", function(d) { return d.dy / 2; })
+                  .attr("dy", ".35em")
+                  .attr("text-anchor", "middle")
+                  .attr("width", function(d) { return d.dx - 1; })
+                   .each(function (d) {
+                        var nameholder = null;
+                        var getWidth = d.dx;
+                        if (d.name.length > (getWidth)*.1) {
+                            nameholder = d.name.substring(0,(getWidth*.1)) + "... " + d.size;
+                        }
+                        else nameholder = d.name + " " + d.size;
+                        var arr = nameholder.split(" ");
+                        if (arr !== undefined) {
+                            for (i = 0; i < arr.length; i++) {
+                                d3.select(this).append("tspan")
+                                    .text(arr[i])
+                                    .attr("dy", i ? "1.2em" : 0)
+                                    .attr("y", function(d) { return d.dy / 2; })
+                                    .attr("x", function(d) { return d.dx / 2; })
+                                    .attr("text-anchor", "middle")
+                                    .attr("id","new")
+                                    .attr("class", "tspan" + i);
+                            }
+                        }
+                    })
+                    d3.selectAll("g")
+                    .on("click", function(d) { return zoom((node === d.parent ? root : d.parent),(d3.select(this).attr("id")),(d3.select(this).attr("parent"))); })
+                   //.style("opacity", function(d) { d.w = this.getComputedTextLength(); return d.dx > d.w ? 1 : 0; });
+                 remakeFlag = true;
+                 if(zoomFlag2)zoomFlag2 = false
+                    zoomFlag = false;  
                 }
-        
+                
                 var t = svg.selectAll("g.cell").transition()
                     .duration(750)
                     .attr("transform", function(d) { return "translate(" + x(d.x) + "," + y(d.y) + ")"; });
@@ -217,35 +292,56 @@ treemapDirectiveModule.directive('treemapZoom', ['$http', function($http){
                 t.select("text")
                     .attr("x", function(d) { return kx * d.dx / 2; })
                     .attr("y", function(d) { return ky * d.dy / 2; })
-                    .style("opacity", function(d) { return kx * d.dx > d.w ? 1 : 0; });
-                node = d;
-              
+                    //.style("opacity", function(d) { return kx * d.dx > d.w ? 1 : 0; });
+            
+            t.selectAll("tspan")
+                    .attr("x", function(d) { return kx * d.dx / 2; })
+                    .attr("y", function(d) { return ky * d.dy / 2; })
+                    //.style("opacity", function(d) { return kx * d.dx > d.w ? 1 : 0; });
+                //node = d;
+//                if(zoomFlag2 === false){
+//                   root = treeData;
+//                   
+//                console.log("here")
+//                }
+//                else{
+//                    console.log("here2" + d3.selectAll("g")[0][0].id)
+//                    root = d; 
+//                    console.log(zoomFlag + ", " + zoomFlag2)
+//                    zoomFlag = false;
+//                    zoomFlag2 = false;
+//                }
+                
             }
-            function mouseOverArc(d) {
+            function sendAudit(parent, name){       //sends audits directly instead of through controller function
+                
+                //scope.getAuditsForInterface(auditParam);
+                scope.treemapSaver.data = d3.select("#treemapZoom").select("svg").selectAll("g")[0];
+                var interfaceQuery = '{"application":"'+name+'","interface1":"'+parent+'","timestamp":{"$gte":{"$date":"'+scope.fromDate+'"},"$lt":{"$date":"'+scope.toDate+'"}},"$and":[{"severity":{"$ne":"null"}},{"severity":{"$exists":"true","$ne":""}}]}';
+                console.log(interfaceQuery);
+                scope.auditQuery.query(interfaceQuery, scope);
+                scope.$apply($location.path("/audits"));
+                return;
+            }
+            function mouseOverCell(d) {
                 d3.select(this).style("opacity", .8)
-                tooltip.html("application: " + d.parent.name);
-            return tooltip.transition()
-            .duration(50)
-            .style("opacity", 0.9);
             };
-            function mouseOutArc(){
+            function mouseOutCell(){
             d3.select(this).style("opacity", 1)
             return tooltip.style("opacity", 0);
             };
-            function mouseMoveArc (d) {
-                return tooltip
-                .style("top", (d3.event.pageY-175)+"px")
-                .style("left", (d3.event.pageX+10)+"px");
-            };//location of tooltip
+            
         }
         function link(scope, element){ 
                 
                 scope.$watch('sliderDatePromise', function(){
                     scope.sliderDatePromise.then(function(getCall){ //handles the promise
                     //console.log(getCall);
-                    var temp = getCall.data._embedded['rh:doc']; //handles the data format
+                    var temp = getCall.data._embedded['rh:doc'];
+                    //handles the data format
                     //temp._embedded['rh:doc'].children = data.data._embedded['rh:doc']; //adds data to the new object structure 
-                    createZoomTree(temp, element, "true", scope); //("selects id of the graph in html","takes new data", "appends to the element", "calls the graph rendering function"
+                    
+                        createZoomTree(temp, element, "true", scope); //("selects id of the graph in html","takes new data", "appends to the element", "calls the graph rendering function"
                 //console.log(temp);
                 //createZoomTree(temp, element, scope);
             })})

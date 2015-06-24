@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-var treemapControllerModule = angular.module('treemapControllerModule', ['ultimotls', 'treemapControllerModule', 'auditControllerModule', 'ngRoute']);
+var treemapControllerModule = angular.module('treemapControllerModule', ['ultimotls', 'auditControllerModule', 'ngRoute']);
 
 treemapControllerModule.controller('treemapController', ['$scope', '$location', 'mongoAggregateService', 'treemapSaver', 'auditQuery',
     function($scope, $location, mongoAggregateService, treemapSaver, auditQuery){
@@ -14,6 +14,8 @@ treemapControllerModule.controller('treemapController', ['$scope', '$location', 
                          {"time":48,"description":"48 hours"}];
    $scope.timeSelected = $scope.timeOptions[2];
     $scope.treemapSaver = treemapSaver;
+    if($scope.treemapSaver.wordLength === undefined)$scope.treemapSaver.wordLength = []
+    $scope.auditQuery = auditQuery;
     if(!$scope.toDate){
         var currentDateTime = new Date();
         if(typeof $scope.treemapSaver.slideVal !== 'undefined'){ //checks whether or not the slider value holder in the service exists yet
@@ -43,21 +45,9 @@ treemapControllerModule.controller('treemapController', ['$scope', '$location', 
             var sliderDataQuery = "[ { '$match': { '$and': [ { 'timestamp': { '$gte': " +
                     "{'$date': '"+$scope.fromDate+"'}, '$lt': {'$date': '"+ $scope.toDate +"'} } }, { '$and': [ {'severity': {'$ne': null}}, {'severity': {'$exists': true, '$ne': ''}} ] } ] } },{ '$group': { '_id' : { 'interface1': '$interface1', 'application': '$application' }, 'count': {'$sum': 1} } } , { '$group': { '_id' : { 'application': '$_id.application' }, 'data': { '$addToSet':{ 'name': '$_id.interface1', 'size': '$count' } } } } , { '$project': { '_id': 1, 'name': '$_id.application', 'children': '$data' } } ]";
             
-            $scope.sliderDatePromise = mongoAggregateService.callHttp(sliderDataQuery);
+                $scope.sliderDatePromise = mongoAggregateService.callHttp(sliderDataQuery);
+            
+            
             $scope.treemapSaver.slideVal = $scope.timeSelected.time; //Saves TimeSelected when drop down value changes
-    };
-    $scope.replaceGraph = function(divID, newData, element, newGraph){
-        var elementExists = document.getElementById("treemapZoom");
-        //edit.removeChild(edit.childNodes[0]);
-        newGraph(newData,element, "true");
-    };
-    $scope.getAuditsForInterface = function(interface){
-        
-        var keys = interface.split('.');
-        var interfaceQuery = '{"application":"'+keys[0]+'","interface1":"'+keys[1]+'","timestamp":{"$gte":{"$date":"'+$scope.fromDate+'"},"$lt":{"$date":"'+$scope.toDate+'"}},"$and":[{"severity":{"$ne":"null"}},{"severity":{"$exists":"true","$ne":""}}]}';
-
-        auditQuery.query(interfaceQuery);
-        $scope.$apply($location.path("/audits"));
-        console.log("here")
     };
     }]);
