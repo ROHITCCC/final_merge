@@ -70,34 +70,33 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
         })
         $scope.doAdvanceSearch = function () {
             $scope.searchOn(false);
+            var getURL = TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/"+TLS_DBNAME+"/"+TLS_AUDIT_COLLECTION;
             if ((/[A-Za-z0-9]+:('|")[A-Za-z0-9]+('|")/.test($scope.advanceSearch)) &&
                     (/[A-Za-z0-9]+:('|")[A-Za-z0-9]+('|")/.test($scope.secondField))) {
                 $scope.errorWarning = "";
 
-                if($scope.myBool.name == "AND") {
-                    var url = "http://172.16.120.157:8080/ES/ErrorSpotActual?filter={$and:[{"+
-                        $scope.advanceSearch+"},{"+
+                if($scope.myBool.name === "AND") {
+                    var getAndUrl = getURL+"?filter={$and:[{"+$scope.advanceSearch+"},{"+
                         $scope.secondField+"}]}&count&pagesize="+$scope.rowNumber.rows;
-                    $http.get(url, {timeout:3000})
+                    $http.get(getAndUrl, {timeout:TLS_SERVER_TIMEOUT})
                             .success(function (response) {
                                 $scope.data = response;
                                 $log.info($scope.data);
                                 $log.info("name and value get passed");
                             }).error(function(d){
                                 console.log(d);
-                                $scope.errorWarning = "Call Timed Out"
+                                $scope.errorWarning = "Call Timed Out";
                             });
                     $scope.predicate = 'timestamp'; //by defualt it will order results by result
                 }
-                else if ($scope.myBool.name == "NOT") {
+                else if ($scope.myBool.name === "NOT") {
                     var str = $scope.secondField;
                     var n = str.search(":");
                     var name = str.substring(0,n+1);
                     var value = str.substring(n+1, str.length);
-                    var url = "http://172.16.120.157:8080/ES/ErrorSpotActual?filter={$and:[{"+
-                        $scope.advanceSearch+"},{"+
-                        name+"{$not:{$eq:"+value+"}}}]}&count&pagesize="+$scope.rowNumber.rows;
-                    $http.get(url, {timeout:3000})
+                    var getNotUrl = getURL+"?filter={$and:[{"+$scope.advanceSearch+"},{"+name+
+                            "{$not:{$eq:"+value+"}}}]}&count&pagesize="+$scope.rowNumber.rows;
+                    $http.get(getNotUrl, {timeout:TLS_SERVER_TIMEOUT})
                             .success(function (response) {
                                 $scope.data = response;
                                 $log.info($scope.data);
@@ -105,11 +104,10 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                             });
                     $scope.predicate = 'timestamp'; //by defualt it will order results by
                 }
-                else if($scope.myBool.name == "OR"){
-                    var url = "http://172.16.120.157:8080/ES/ErrorSpotActual?filter={$or:[{"+
-                        $scope.advanceSearch+"},{"+
+                else if($scope.myBool.name === "OR"){
+                    var getOrUrl = getURL+"?filter={$or:[{"+$scope.advanceSearch+"},{"+
                         $scope.secondField+"}]}}&count&pagesize="+$scope.rowNumber.rows;
-                    $http.get(url, {timeout:3000})
+                    $http.get(getOrUrl, {timeout:TLS_SERVER_TIMEOUT})
                             .success(function (response) {
                                 $scope.data = response;
                                 $log.info($scope.data);
@@ -134,9 +132,9 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                 alert("Row(s) has not been queried");
             }
             else {
-                var firstUrl = "http://172.16.120.157:8080" + firstLink;
+                var firstUrl = TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+firstLink;
                 try{
-                    $http.get(firstUrl, {timeout:3000})
+                    $http.get(firstUrl, {timeout:TLS_SERVER_TIMEOUT})
                         .success(function (response) {
                             $scope.data = response;
                         });
@@ -152,8 +150,8 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                 alert("No previous rows available");
             }
             else {
-                var previousUrl = "http://172.16.120.157:8080" + previousLink;
-                $http.get(previousUrl, {timeout:3000})
+                var previousUrl = TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+previousLink;
+                $http.get(previousUrl, {timeout:TLS_SERVER_TIMEOUT})
                         .success(function (response) {
                             $scope.data = response;
                         });
@@ -165,8 +163,8 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                 alert("No more rows available");
             }
             else {
-                var nextUrl = "http://172.16.120.157:8080" + nextLink;
-                $http.get(nextUrl, {timeout:3000})
+                var nextUrl = TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+nextLink;
+                $http.get(nextUrl, {timeout:TLS_SERVER_TIMEOUT})
                         .success(function (response) {
                             $scope.data = response;
                         });
@@ -174,8 +172,8 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
         }
         $scope.goToLast = function () {
             var lastLink = $scope.data._links.last.href;
-            var lastUrl = "http://172.16.120.157:8080" + lastLink;
-            $http.get(lastUrl, {timeout:3000})
+            var lastUrl = TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+lastLink;
+            $http.get(lastUrl, {timeout:TLS_SERVER_TIMEOUT})
                     .success(function (response) {
                         $scope.data = response;
                     });
@@ -227,8 +225,8 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
         }
         $scope.callPayload = function(data){ //from Database Page datalocation makes a call
             var dataLocationId = data;
-            var payloadUrl = "http://172.16.120.157:8080/ES/payloadCollection/";
-            $http.get(payloadUrl+dataLocationId)
+            var payloadUrl = TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/"+TLS_DBNAME+"/"+TLS_PAYLOAD_COLLECTION+"/";
+            $http.get(payloadUrl+dataLocationId, {timeout:TLS_SERVER_TIMEOUT})
                 .success(function (response){ 
 //                    if (response.payload is XML){ //Handle payload type to be properly parsed
 //                        var parsedXML = xmlParse(response.payload);
@@ -251,14 +249,14 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
             console.log($scope.methodTypes.types)
             $scope.restReplay.currentMethod = $scope.methodTypes;
         }
-        var replayPostUrl = "http://172.16.120.157:8080/_logic/ES/ErrorSpotActual/replay";
+        var replayPostUrl = TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/_logic/"+TLS_DBNAME+"/"+TLS_AUDIT_COLLECTION+"/replay";
         $scope.runRestService = function(){//only takes JSON files not 
             
             var restPayload = "type=REST~, endpoint="+$scope.restReplay.endpointUrl+"~, method="+
                     $scope.restReplay.currentMethod.types+"~, content-type="+$scope.restReplay.contentType+"~, payload="+$scope.payloadPageData.payload+
                     "~, header=['type'='"+$scope.restReplay.header.type+"', 'value'='"+$scope.restReplay.header.value+"']";
                     console.log(restPayload);
-            $http.post(replayPostUrl, restPayload)
+            $http.post(replayPostUrl, restPayload, {timeout:TLS_SERVER_TIMEOUT})
                     .success(function(d){console.log(d)});
         };
         $scope.fileReplay = {};
@@ -272,7 +270,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                     "~,  soapaction="+$scope.webServiceReplay.soapAction+"~, binding="+$scope.webServiceReplay.binding+"~, payload="+
                     $scope.payloadPageData.payload;
             console.log(webServicePayload);
-            $http.post(replayPostUrl, webServicePayload)
+            $http.post(replayPostUrl, webServicePayload, {timeout:TLS_SERVER_TIMEOUT})
                 .success(function(d){console.log(d)});
         };
     }]);

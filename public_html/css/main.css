@@ -286,10 +286,13 @@ polyline{
 .x.axis path {
   display: none;
 }
-//SUNBURST
+//////SUNBURST
 circle,
 path {
   cursor: pointer;
+}
+#row2{
+    min-height: 100%
 }
 
 circle {

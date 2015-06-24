@@ -71,14 +71,26 @@ ultimotls.filter('unique', function () {
     };
 });
 
-ultimotls.controller('getTabs', ['$scope','$location','$route', function($scope, $location, $route){
+ultimotls.controller('getTabs', ['$scope', '$location', '$http', 'queryEnv', function($scope, $location, $http, queryEnv){
     $scope.tabBuilder = function(){
-              $scope.tabs = [
+        $scope.env = [{name:"Pro", description: "Production", dbName:"PROD"}, 
+                   {name:"QA", description:"QA", dbName:"QA"}, 
+                   {name:"Dev", description: "Developement", dbName:"DEV"}];
+//        $scope.currentEnv = $scope.env[0]
+//        $scope.setCurrentEnv = function(setEnv){
+//            $scope.currentEnv = setEnv;
+//        };
+             $scope.tabs = [
                 { link : '#/sunburst', label : 'Dashboard' },
                 { link : '#/audits', label : 'Audits' },
                 { link : '#/treemap', label : 'Treemap Dashboard' }
               ]; 
-
+            $scope.setEnviroment = function(tab, env){
+                var rootTab = document.getElementById(tab);
+                rootTab.innerHTML = env.name+"-"+tab;
+                queryEnv.setEnv(env.dbName);
+                queryEnv.broadcast();
+            };
             $scope.setTab = null;
             
             $scope.currentPath = $location.path();
@@ -171,6 +183,24 @@ ultimotls.factory("mongoAggregateService", function ($http) {
     };
     return callAggregate;
 });
+ultimotls.service("queryEnv", function($rootScope){ //getter and setter for environment 
+    var envid = "PROD";
+    var environment = {};
+    
+    environment.setEnv = function(env){
+        if(env){
+            envid = env;
+        }
+        return envid;
+    };
+    environment.getEnv = function(){ //remove later
+        return envid;
+    };
+    environment.broadcast = function(){
+        $rootScope.$broadcast("envChangeBroadcast")
+    }
+    return environment;
+})
 
 ultimotls.service("auditSearch",['$http', function ($http) {
     var postUrl =TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/"+TLS_DBNAME+"/"+TLS_AUDIT_COLLECTION+"?filter=";

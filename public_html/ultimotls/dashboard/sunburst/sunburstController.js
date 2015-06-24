@@ -7,17 +7,23 @@
 
 var sunburstControllerModule = angular.module('sunburstControllerModule', ['ultimotls', 'auditControllerModule', 'ngRoute']);
 
-sunburstControllerModule.controller('sunburstController', ['$scope', 'mongoAggregateService', '$location', '$route','auditQuery', 'sunburstSaver',
-    function($scope, mongoAggregateService, $location, $route, auditQuery, sunburstSaver){
-   // $scope.toDate, $scope.fromDate;
-   $scope.toDate = null;
-   $scope.fromDate = null;
-   $scope.timeOptions = [{"time":.25, "description":"15 minutes"},{"time":.5, "description":"30 minutes"},
-                         {"time":1,"description":"1 hour"},{"time":24, "description":"24 hours"},
-                         {"time":48,"description":"48 hours"}];
-   $scope.timeSelected = $scope.timeOptions[2];
-   $scope.sunburstSaver = sunburstSaver;
-   $scope.auditQuery = auditQuery;
+sunburstControllerModule.controller('sunburstController', ['$scope', 'mongoAggregateService', '$location', '$route','auditQuery', 'sunburstSaver', 'queryEnv',
+    function($scope, mongoAggregateService, $location, $route, auditQuery, sunburstSaver, queryEnv){
+    // $scope.toDate, $scope.fromDate;
+    $scope.toDate = null;
+    $scope.fromDate = null;
+    $scope.timeOptions = [{"time":.25, "description":"15 minutes"},{"time":.5, "description":"30 minutes"},
+                          {"time":1,"description":"1 hour"},{"time":24, "description":"24 hours"},
+                          {"time":48,"description":"48 hours"}];
+    $scope.timeSelected = $scope.timeOptions[2];
+    $scope.sunburstSaver = sunburstSaver;
+    $scope.env = queryEnv.getEnv();
+    $scope.$on("envChangeBroadcast", function(){
+        $scope.env = queryEnv.getEnv();
+        console.log($scope.env);
+        $scope.fromDateChange();
+    })
+        
     if(!$scope.toDate){
         var currentDateTime = new Date();
         if(typeof $scope.sunburstSaver.slideVal !== 'undefined'){ //checks whether or not the slider value holder in the service exists yet
@@ -36,7 +42,7 @@ sunburstControllerModule.controller('sunburstController', ['$scope', 'mongoAggre
     var dataQuery = "[{'$match':{'$and':[{'timestamp':{'$gte':{'$date':"+
                          "'"+$scope.fromDate+"'},'$lt':{'$date':'"+$scope.toDate+"'}}},"+
                          "{'$and':[{'severity':{'$ne':null}},{'severity':"+
-                         "{'$exists': true,'$ne':''}}]}]}},{'$group':{'_id':{'transactionType'"+
+                         "{'$exists': true,'$ne':''}},{'envid':'"+$scope.env+"'}]}]}},{'$group':{'_id':{'transactionType'"+
                          ":'$transactionType','interface1':'$interface1','application':"+
                          "'$application'},'count':{'$sum':1}}},{'$group':{'_id':{'transactionType"+
                          "':'$_id.transactionType','application':'$_id.application'},'data':"+
@@ -57,7 +63,7 @@ sunburstControllerModule.controller('sunburstController', ['$scope', 'mongoAggre
         var sliderDataQuery = "[{'$match':{'$and':[{'timestamp':{'$gte':{'$date':"+
                      "'"+$scope.fromDate+"'},'$lt':{'$date':'"+$scope.toDate+"'}}},"+
                      "{'$and':[{'severity':{'$ne':null}},{'severity':"+
-                     "{'$exists': true,'$ne':''}}]}]}},{'$group':{'_id':{'transactionType'"+
+                     "{'$exists': true,'$ne':''}},{'envid':'"+$scope.env+"'}]}]}},{'$group':{'_id':{'transactionType'"+
                      ":'$transactionType','interface1':'$interface1','application':"+
                      "'$application'},'count':{'$sum':1}}},{'$group':{'_id':{'transactionType"+
                      "':'$_id.transactionType','application':'$_id.application'},'data':"+

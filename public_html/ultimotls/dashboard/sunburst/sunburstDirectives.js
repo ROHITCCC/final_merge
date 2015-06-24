@@ -9,9 +9,9 @@ var sunburstDirectiveModule = angular.module('sunburstDirectiveModule', ['sunbur
 sunburstDirectiveModule.directive('sunburstChart', function($location){
     function sunburstChart(data, element, scope){
         var ele = element[0];
-        var width = (window.innerWidth*.8), height = (window.innerHeight*.8);
+        var width = (window.innerWidth), height = (window.innerHeight*.8);
         var margin = {top: height/2, right: width/2, bottom: height/2, left: width/2},
-            radius = Math.min(margin.top, margin.right, margin.bottom, margin.left) - 10;
+            radius = Math.min(margin.top, margin.right, margin.bottom, margin.left) - Math.min(height,width)*.15;
 
         function filter_min_arc_size_text(d, i) {return (d.dx*d.depth*radius/3)>5}; 
 
@@ -30,7 +30,7 @@ sunburstDirectiveModule.directive('sunburstChart', function($location){
             .attr("width", margin.left + margin.right)
             .attr("height", margin.top + margin.bottom)
           .append("g")
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+            .attr("transform", "translate(" + (width-60)/2 + "," + margin.top + ")");
     
     
     
@@ -111,50 +111,59 @@ sunburstDirectiveModule.directive('sunburstChart', function($location){
          
             
           
-          var path = svg.selectAll("path")
-              .data(partitioned_data)
-            .enter().append("path")
-              .attr("d", arc)
-              .style("fill", function(d) { return d.fill; })
-              .each(function(d) { this._current = updateArc(d); })
-              .on("click", function(d){zoomIn(d, scope);})
-              .on("mouseover", mouseOverArc)
-              .on("mousemove", mouseMoveArc)
-              .on("mouseout", mouseOutArc);
+            var path = svg.selectAll("path")
+                .data(partitioned_data)
+              .enter().append("path")
+                .attr("d", arc)
+                .style("fill", function(d) { return d.fill; })
+                .each(function(d) { this._current = updateArc(d); })
+                .on("click", function(d){zoomIn(d, scope);})
+                .on("mouseover", mouseOverArc)
+                .on("mousemove", mouseMoveArc)
+                .on("mouseout", mouseOutArc);
 
 
-          var texts = svg.selectAll("text")
-              .data(partitioned_data)
-            .enter().append("text")
-                .attr("transform", function(d) { return computeTextRotation(d)<90?"rotate(" + computeTextRotation(d) + ")":"rotate(" + computeTextRotation(d) + ")rotate(-180)"; })
-                .attr("text-anchor", function(d){return computeTextRotation(d)<90? "start":"end";})
-                .attr("x", function(d) { return computeTextRotation(d)<90?radius / 3 * d.depth:radius/3*d.depth*-1; })	
-                .attr("dx", function(d) { return computeTextRotation(d)<90?"6":"-6"}) // margin
-                .attr("dy", ".35em") // vertical-align
-                .text(function(d) {
-                    var nameholder = null;
-                    var getWidth = radius/3 * .1;
-                    if (d.name.length > (getWidth)) {
-                        nameholder = d.name.substring(0,(getWidth)) + "...";
-                    }
-                    else nameholder = d.name;
-                    return nameholder;})
+            var texts = svg.selectAll("text")
+                .data(partitioned_data);
+            var enterText = texts.enter().append("text")
+                  .attr("transform", function(d) { return computeTextRotation(d)<90?"rotate(" + computeTextRotation(d) + ")":"rotate(" + computeTextRotation(d) + ")rotate(-180)"; })
+                  .attr("text-anchor", function(d){return computeTextRotation(d)<90? "start":"end";})
+                  .attr("x", function(d) { return computeTextRotation(d)<90?radius / 3 * d.depth:radius/3*d.depth*-1; })	
+                  //.attr("dx", function(d) { return computeTextRotation(d)<90?radius / 3 * .3:radius/3*-.3;}) // margin
+                  .attr("dy", ".35em") // vertical-align       
+            enterText.append("tspan")
+                  .attr("dx",function(d) { return computeTextRotation(d)<90?radius / 3 * .12:radius/3*-.25;})
+                  .text(function(d) {
+                      var nameholder = null;
+                      var getWidth = radius/3 * .1;
+                      if (d.name.length > (getWidth)) {
+                          nameholder = d.name.substring(0,(getWidth)) + "...";
+                      }
+                      else nameholder = d.name;
+                      return nameholder;
+                  })
+            enterText.append("tspan")
+                  .attr("dx", radius/3*-.3) // margin 
+                  .attr("dy", "1em")
+                  .text(function(d) {
+                     return d.value
+                  });
                         //.text(function(d,i) {return d.name})
    
-        function zoomIn(p, scope) {
+            function zoomIn(p, scope) {
 
-            if (p.depth > 1) p = p.parent;        
-            if (!p.children) {
-                //call controller function to make audit call
-                sendAudit(p.key);
+                if (p.depth > 1) p = p.parent;        
+                if (!p.children) {
+                    //call controller function to make audit call
+                    sendAudit(p.key);
+                }
+                zoom(p, p);
             }
-            zoom(p, p);
-          }
 
-          function zoomOut(p) {
-            if (!p.parent) return;
-            zoom(p.parent, p);
-          }
+            function zoomOut(p) {
+                if (!p.parent) return;
+                zoom(p.parent, p);
+            }
 
           // Zoom to the specified new root.
           function zoom(root, p) {
@@ -210,18 +219,22 @@ sunburstDirectiveModule.directive('sunburstChart', function($location){
                   .style("fill-opacity", 1)
                   .attrTween("d", function(d) { return arcTween.call(this, updateArc(d)); });
             });
+            //enterText.remove();
             texts = texts.data(new_data, function(d) { return d.key; })
-            texts.exit()
-                .remove()    
+            console.log(texts)
+            texts.exit().remove();
             texts.enter()
                 .append("text")
 
-            texts.style("opacity", 0)
+            var newText = texts.style("opacity", 0)
                 .attr("transform", function(d) { return computeTextRotation(d)<90?"rotate(" + computeTextRotation(d) + ")":"rotate(" + computeTextRotation(d) + ")rotate(-180)"; })
                 .attr("text-anchor", function(d){return computeTextRotation(d)<90? "start":"end";})
                 .attr("x", function(d) { return computeTextRotation(d)<90?radius / 3 * d.depth:radius/3*d.depth*-1; })	
-                .attr("dx", function(d) { return computeTextRotation(d)<90?"6":"-6"}) // margin
                 .attr("dy", ".35em") // vertical-align  	
+                .transition().delay(750).style("opacity", 1);
+        
+            newText.append("tspan")
+                .attr("dx",function(d) { return computeTextRotation(d)<90? (-radius)/d.depth*.20:radius/3*-.25;})
                 .text(function(d) {
                     var nameholder = null;
                     var getWidth = radius/3 * .1;
@@ -229,8 +242,14 @@ sunburstDirectiveModule.directive('sunburstChart', function($location){
                         nameholder = d.name.substring(0,(getWidth)) + "...";
                     }
                     else nameholder = d.name;
-                    return nameholder;})
-                .transition().delay(750).style("opacity", 1)
+                    return nameholder;
+                });
+            newText.append("tspan")
+                .attr("dx", radius/3*-.3) // margin 
+                .attr("dy", "1em")
+                .text(function(d) {
+                   return d.value
+                });
             }
         };
         function key(d) {
@@ -271,12 +290,12 @@ sunburstDirectiveModule.directive('sunburstChart', function($location){
     function link(scope, element){
         scope.$watch('sunburstPromise', function(){
             scope.sunburstPromise.then(function(data){
-                console.log("data")
                 if(data.data._size === 0){
                     console.log("No Data available")
                     scope.errorMsg = "No data is available for this time selected"
                 }
                 else {
+                    scope.errorMsg = ""
                     var temp = {"_embedded":{"rh:doc":[{"children":[]}]}};
                     temp._embedded['rh:doc'].children = data.data._embedded['rh:doc'];
                     sunburstChart(temp._embedded['rh:doc'], element,scope);
