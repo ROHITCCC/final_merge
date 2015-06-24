@@ -18,6 +18,7 @@ sunburstControllerModule.controller('sunburstController', ['$scope', 'mongoAggre
     $scope.timeSelected = $scope.timeOptions[2];
     $scope.sunburstSaver = sunburstSaver;
     $scope.env = queryEnv.getEnv();
+    $scope.auditQuery = auditQuery;
     $scope.$on("envChangeBroadcast", function(){
         $scope.env = queryEnv.getEnv();
         console.log($scope.env);
