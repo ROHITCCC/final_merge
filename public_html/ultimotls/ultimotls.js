@@ -3,7 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
+//GLOBAL VARIABLES FOR INTITIAL SETUP
+var TLS_PROTOCOL = "http"
+var TLS_AUDIT_COLLECTION = "ErrorSpotActual"
+var TLS_PAYLOAD_COLLECTION = "payloadCollection";
+var TLS_SERVER = "172.16.120.157";
+var TLS_PORT = "8080";
+var TLS_DBNAME = "ES";
+var TLS_SERVER_TIMEOUT = 3000;
+   
 //(function(angular){
 var ultimotls = angular.module('ultimotls', ['auditControllerModule', 'sunburstDirectiveModule', 'auditDirectiveModule' , 'treemapDirectiveModule', 'ngRoute', 'ngCookies']);
 
@@ -109,16 +117,16 @@ ultimotls.config(['$routeProvider', function ($routeProvider) {
 
 
 ultimotls.factory("mongoAggregateService", function ($http) {
-    var postUrl = "http://172.16.120.157:8080/_logic/ES/ErrorSpotActual/aggregate";
+    var postUrl = TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/_logic/"+TLS_DBNAME+"/"+TLS_AUDIT_COLLECTION+"/aggregate";
     var callAggregate = {};
     callAggregate.httpResponse = {};
     callAggregate.prepForBroadcast = function () {
         this.httpResponse = this.callHttp();
     };
     callAggregate.callHttp = function (payload) {
-        var promise = $http.post(postUrl, payload).success(function (result) {
+        var promise = $http.post(postUrl, payload, {timeout:TLS_SERVER_TIMEOUT}).success(function (result) {
             //console.log(result);
-        }).error(function () {
+        }).error(function () { //need to pass error message through the service???
             console.log("error");
         });
         return promise;
@@ -127,9 +135,7 @@ ultimotls.factory("mongoAggregateService", function ($http) {
 });
 
 ultimotls.service("auditSearch",['$http', function ($http) {
-    var postUrl = "http://172.16.120.157:8080/ES/ErrorSpotActual?filter=";
-
-
+    var postUrl =TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/"+TLS_DBNAME+"/"+TLS_AUDIT_COLLECTION+"?filter=";
     var audits = {};
     audits.doSearch = function (searchCriteria, rowNumber) {
     //this.doSearch = function (searchCriteria, rowNumber) {
@@ -139,7 +145,7 @@ ultimotls.service("auditSearch",['$http', function ($http) {
         if (/:/.test(searchCriteria)) {
             if (/('|")[A-Za-z0-9]+('|"):('|")[A-Za-z0-9]+('|")/.test(searchCriteria)) {
                 var getUrl = postUrl + jsonSearch;
-                searchPromise = $http.get(getUrl).success(function (response) {
+                searchPromise = $http.get(getUrl, {timeout:TLS_SERVER_TIMEOUT}).success(function (response) {
 
                 }).error(function () {
                     console.log("error");
@@ -153,7 +159,7 @@ ultimotls.service("auditSearch",['$http', function ($http) {
         }
         else {
             var url = postUrl + textSearch;
-            searchPromise = $http.get(url).success;
+            searchPromise = $http.get(url, {timeout:TLS_SERVER_TIMEOUT}).success;
             audits.inputError = "";
         }
 

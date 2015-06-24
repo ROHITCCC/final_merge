@@ -94,7 +94,7 @@ sunburstDirectiveModule.directive('sunburstChart', function($location){
           // Now redefine the value function to use the previously-computed sum.
             partition
                 .children(function(d, depth) { 
-                    return depth < 2 ? d._children : null; 
+                    return depth < 3 ? d._children : null; 
                 })
                 .value(function(d) { return d.sum; });
 
@@ -271,23 +271,18 @@ sunburstDirectiveModule.directive('sunburstChart', function($location){
     function link(scope, element){
         scope.$watch('sunburstPromise', function(){
             scope.sunburstPromise.then(function(data){
-                var temp = {"_embedded":{"rh:doc":[{"children":[]}]}};
-                temp._embedded['rh:doc'].children = data.data._embedded['rh:doc'];
-                sunburstChart(temp._embedded['rh:doc'], element,scope);
-                
-                //scope.replaceGraph("sunburstChart", temp._embedded['rh:doc'], element, sunburstChart)
-                //sunburstChart(temp._embedded['rh:doc'], element);
+                console.log("data")
+                if(data.data._size === 0){
+                    console.log("No Data available")
+                    scope.errorMsg = "No data is available for this time selected"
+                }
+                else {
+                    var temp = {"_embedded":{"rh:doc":[{"children":[]}]}};
+                    temp._embedded['rh:doc'].children = data.data._embedded['rh:doc'];
+                    sunburstChart(temp._embedded['rh:doc'], element,scope);
+                }
             });
         });
-      
-    /*    scope.$watch('sliderDatePromise', function(){
-            scope.sliderDatePromise.then(function(data){
-                var temp = {"_embedded":{"rh:doc":[{"children":[]}]}};
-                temp._embedded['rh:doc'].children = data.data._embedded['rh:doc'];
-                scope.replaceGraph("sunburstChart", temp._embedded['rh:doc'], element, sunburstChart)
-            });
-        });
-        */
     }
     return{
         link: link,

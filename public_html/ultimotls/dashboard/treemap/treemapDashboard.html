@@ -7,12 +7,17 @@ and open the template in the editor.
 
 <div class="container-fluid">
     <div id="row1" class="row">
-        <label class="control-label">
-            <select ng-model="timeSelected" class="timeOptions"
-                data-ng-options="t as t.description for t in timeOptions"
-                ng-change="fromDateChange()">
-            </select>
-        </label><button id="zoomOut" style="float: right; opacity: 0">zoom out</button>
+        <div  class="col-sm-offset-10 col-sm-2">
+            <label class="control-label">
+                <b>LAST - </b>
+            </label>
+            <label class="control-label">
+                <select ng-model="timeSelected" class="timeOptions"
+                    data-ng-options="t as t.description for t in timeOptions"
+                    ng-change="fromDateChange()">
+                </select>
+            </label><button id="zoomOut" style="float: right; opacity: 0">zoom out</button>
+        </div>
     </div>
     <div id="row2" class="row">
         <div id="treemapDiv" class="col-sm-8">

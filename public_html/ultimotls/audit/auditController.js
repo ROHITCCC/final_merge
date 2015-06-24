@@ -22,7 +22,6 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
         //flag and function to toggle between doSearch and doAdvanceSearch when choosing rowNumber
         var searchFlag = true;
         $scope.searchOn = function(bool){
-            console.log(bool);
             searchFlag = bool;
         }
         //check if initPromise from resolve has data.
@@ -50,6 +49,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
             var searchPromise = auditSearch.doSearch(query, $scope.rowNumber);
                     $scope.inputError = "";
                     searchPromise.then(function (response) {
+                        console.log(response);
                         $scope.data = response.data;
                     });
 
@@ -64,21 +64,28 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
         $scope.bools = [{name: 'AND'}, {name: 'OR'}, {name: 'NOT'}];
         $scope.myBool = $scope.bools[0];
         ////ADVANCE SEARCH FUNCTION///////////
+        $scope.calender = {};
+        $scope.$watch('calender.to', function(d){
+            console.log(d)
+        })
         $scope.doAdvanceSearch = function () {
             $scope.searchOn(false);
             if ((/[A-Za-z0-9]+:('|")[A-Za-z0-9]+('|")/.test($scope.advanceSearch)) &&
                     (/[A-Za-z0-9]+:('|")[A-Za-z0-9]+('|")/.test($scope.secondField))) {
-                $scope.inputWarning2 = "";
+                $scope.errorWarning = "";
 
                 if($scope.myBool.name == "AND") {
-                    var url = "http://172.16.120.170:8080/ES/ErrorSpotActual?filter={$and:[{"+
+                    var url = "http://172.16.120.157:8080/ES/ErrorSpotActual?filter={$and:[{"+
                         $scope.advanceSearch+"},{"+
                         $scope.secondField+"}]}&count&pagesize="+$scope.rowNumber.rows;
-                    $http.get(url)
+                    $http.get(url, {timeout:3000})
                             .success(function (response) {
                                 $scope.data = response;
                                 $log.info($scope.data);
                                 $log.info("name and value get passed");
+                            }).error(function(d){
+                                console.log(d);
+                                $scope.errorWarning = "Call Timed Out"
                             });
                     $scope.predicate = 'timestamp'; //by defualt it will order results by result
                 }
@@ -87,10 +94,10 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                     var n = str.search(":");
                     var name = str.substring(0,n+1);
                     var value = str.substring(n+1, str.length);
-                    var url = "http://172.16.120.170:8080/ES/ErrorSpotActual?filter={$and:[{"+
+                    var url = "http://172.16.120.157:8080/ES/ErrorSpotActual?filter={$and:[{"+
                         $scope.advanceSearch+"},{"+
                         name+"{$not:{$eq:"+value+"}}}]}&count&pagesize="+$scope.rowNumber.rows;
-                    $http.get(url)
+                    $http.get(url, {timeout:3000})
                             .success(function (response) {
                                 $scope.data = response;
                                 $log.info($scope.data);
@@ -99,10 +106,10 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                     $scope.predicate = 'timestamp'; //by defualt it will order results by
                 }
                 else if($scope.myBool.name == "OR"){
-                    var url = "http://172.16.120.170:8080/ES/ErrorSpotActual?filter={$or:[{"+
+                    var url = "http://172.16.120.157:8080/ES/ErrorSpotActual?filter={$or:[{"+
                         $scope.advanceSearch+"},{"+
                         $scope.secondField+"}]}}&count&pagesize="+$scope.rowNumber.rows;
-                    $http.get(url)
+                    $http.get(url, {timeout:3000})
                             .success(function (response) {
                                 $scope.data = response;
                                 $log.info($scope.data);
@@ -112,12 +119,12 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                 }
                 else {
                     $log.info("Not passing Current value");
-                    $scope.inputWarning2 = "Most likely not your fault";
+                    $scope.errorWarning = "Most likely not your fault";
                 }
             }
             else {
                 $log.info("text was input incorrectly");
-                $scope.inputWarning2 = "Text was input Incorrectly (ex. name:'value')";
+                $scope.errorWarning = "Text was input Incorrectly (ex. name:'value')";
             }
         };
         //First, Previous, Next, Last are button function for Pagination to render new view
@@ -127,11 +134,16 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                 alert("Row(s) has not been queried");
             }
             else {
-                var firstUrl = "http://172.16.120.170:8080" + firstLink;
-                $http.get(firstUrl)
+                var firstUrl = "http://172.16.120.157:8080" + firstLink;
+                try{
+                    $http.get(firstUrl, {timeout:3000})
                         .success(function (response) {
                             $scope.data = response;
                         });
+                }
+                catch(err){
+                    console.log(err);
+                }
             }
         }
         $scope.goToPrevious = function () {
@@ -140,8 +152,8 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                 alert("No previous rows available");
             }
             else {
-                var previousUrl = "http://172.16.120.170:8080" + previousLink;
-                $http.get(previousUrl)
+                var previousUrl = "http://172.16.120.157:8080" + previousLink;
+                $http.get(previousUrl, {timeout:3000})
                         .success(function (response) {
                             $scope.data = response;
                         });
@@ -153,8 +165,8 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                 alert("No more rows available");
             }
             else {
-                var nextUrl = "http://172.16.120.170:8080" + nextLink;
-                $http.get(nextUrl)
+                var nextUrl = "http://172.16.120.157:8080" + nextLink;
+                $http.get(nextUrl, {timeout:3000})
                         .success(function (response) {
                             $scope.data = response;
                         });
@@ -162,8 +174,8 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
         }
         $scope.goToLast = function () {
             var lastLink = $scope.data._links.last.href;
-            var lastUrl = "http://172.16.120.170:8080" + lastLink;
-            $http.get(lastUrl)
+            var lastUrl = "http://172.16.120.157:8080" + lastLink;
+            $http.get(lastUrl, {timeout:3000})
                     .success(function (response) {
                         $scope.data = response;
                     });
@@ -182,9 +194,40 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
         $scope.rowClick = function(rowData){
             $scope.sliderWindowData = rowData;
         };
+        function formatXml(xml) {
+            var formatted = '';
+            var reg = /(>)(<)(\/*)/g;
+            xml = xml.toString().replace(reg, '$1\r\n$2$3');
+            var pad = 0;
+            var nodes = xml.split('\r\n');
+            for(var n in nodes) {
+              var node = nodes[n];
+              var indent = 0;
+              if (node.match(/.+<\/\w[^>]*>$/)) {
+                indent = 0;
+              } else if (node.match(/^<\/\w/)) {
+                if (pad !== 0) {
+                  pad -= 1;
+                }
+              } else if (node.match(/^<\w[^>]*[^\/]>.*$/)) {
+                indent = 1;
+              } else {
+                indent = 0;
+              }
+
+              var padding = '';
+              for (var i = 0; i < pad; i++) {
+                padding += '  ';
+              }
+
+              formatted += padding + node + '\r\n';
+              pad += indent;
+            }
+            return formatted //.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/ /g, '&nbsp;');
+        }
         $scope.callPayload = function(data){ //from Database Page datalocation makes a call
             var dataLocationId = data;
-            var payloadUrl = "http://172.16.120.170:8080/ES/payloadCollection/";
+            var payloadUrl = "http://172.16.120.157:8080/ES/payloadCollection/";
             $http.get(payloadUrl+dataLocationId)
                 .success(function (response){ 
 //                    if (response.payload is XML){ //Handle payload type to be properly parsed
@@ -195,9 +238,9 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
 //                        var parsedJSON = jsonParse(response.payload);
 //                        $scope.payloadPageData.payload = parsedJSON;
 //                    }
-                    response.payload = response.payload.replace(/&quot;/g,"\"");
+                    response.payload = formatXml(response.payload);
                     $scope.payloadPageData = response;
-                    console.log($scope.payloadPageData)
+                    console.log(response.payload)
             });
         };
         $scope.restReplay = {};
@@ -208,7 +251,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
             console.log($scope.methodTypes.types)
             $scope.restReplay.currentMethod = $scope.methodTypes;
         }
-        var replayPostUrl = "http://172.16.120.170:8080/_logic/ES/ErrorSpotActual/replay";
+        var replayPostUrl = "http://172.16.120.157:8080/_logic/ES/ErrorSpotActual/replay";
         $scope.runRestService = function(){//only takes JSON files not 
             
             var restPayload = "type=REST~, endpoint="+$scope.restReplay.endpointUrl+"~, method="+
