@@ -89,6 +89,7 @@ ultimotls.controller('getTabs', ['$scope', '$location', '$http', 'queryEnv', fun
                 var rootTab = document.getElementById(tab);
                 rootTab.innerHTML = env.name+"-"+tab;
                 queryEnv.setEnv(env.dbName);
+                queryEnv.broadcast();
             };
             $scope.setTab = null;
             
@@ -182,19 +183,23 @@ ultimotls.factory("mongoAggregateService", function ($http) {
     };
     return callAggregate;
 });
-ultimotls.service("queryEnv", function(){ //getter and setter for environment 
+ultimotls.service("queryEnv", function($rootScope){ //getter and setter for environment 
     var envid = "PROD";
-    return {
-        setEnv: function(env){
-            if(env){
-                envid = env;
-            }
-            return envid;
-        },
-        getEnv: function(){
-            return envid;
+    var environment = {};
+    
+    environment.setEnv = function(env){
+        if(env){
+            envid = env;
         }
+        return envid;
+    };
+    environment.getEnv = function(){ //remove later
+        return envid;
+    };
+    environment.broadcast = function(){
+        $rootScope.$broadcast("envChangeBroadcast")
     }
+    return environment;
 })
 
 ultimotls.service("auditSearch",['$http', function ($http) {
