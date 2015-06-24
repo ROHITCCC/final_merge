@@ -29,11 +29,49 @@ ultimotls.controller('loginControllerModule', ['$scope', '$cookies', function($s
 
 ultimotls.run(function ($http) {
     $http.defaults.headers.common.Authorization = 'Basic YTph';
-     
 });
 
 
-ultimotls.controller('getTabs', ['$scope','$location','$route', function($scope, $location, $route){
+ultimotls.filter('unique', function () {
+
+    return function (items, filterOn) {
+
+        if (filterOn === false) {
+            return items;
+        }
+
+        if ((filterOn || angular.isUndefined(filterOn)) && angular.isArray(items)) {
+            var hashCheck = {}, newItems = [];
+
+            var extractValueToCompare = function (item) {
+                if (angular.isObject(item) && angular.isString(filterOn)) {
+                    return item[filterOn];
+                } else {
+                    return item;
+                }
+            };
+
+            angular.forEach(items, function (item) {
+                var valueToCheck, isDuplicate = false;
+
+                for (var i = 0; i < newItems.length; i++) {
+                    if (angular.equals(extractValueToCompare(newItems[i]), extractValueToCompare(item))) {
+                        isDuplicate = true;
+                        break;
+                    }
+                }
+                if (!isDuplicate) {
+                    newItems.push(item);
+                }
+
+            });
+            items = newItems;
+        }
+        return items;
+    };
+});
+
+ultimotls.controller('getTabs', function($scope, $location){
     $scope.tabBuilder = function(){
               $scope.tabs = [
                 { link : '#/sunburst', label : 'Dashboard' },
@@ -59,14 +97,9 @@ ultimotls.controller('getTabs', ['$scope','$location','$route', function($scope,
               } else {
                 return "";
               }
-              $watch($location, function(){
-                  console.log("here");
-                $route.reload();  
-              })   
-              
             };
         }
-}]);
+});
 
 ultimotls.directive('tabsPanel', function () {
     return{
@@ -105,10 +138,12 @@ ultimotls.config(['$routeProvider', function ($routeProvider) {
                     
                 }).
                 when('/sunburst', {
-                    templateUrl: 'ultimotls/dashboard/sunburst/sunburstDashboard.html'
+                    templateUrl: 'ultimotls/dashboard/sunburst/sunburstDashboard.html',
+                    controller: 'sunburstController'
                 }).
                 when('/treemap', {
-                    templateUrl: 'ultimotls/dashboard/treemap/treemapDashboard.html'
+                    templateUrl: 'ultimotls/dashboard/treemap/treemapDashboard.html',
+                    controller: 'treemapController'
                 }).
                 otherwise({
                     redirectTo: '/sunburst'
@@ -176,15 +211,14 @@ ultimotls.service("auditQuery", function () {
 
     
     return {
-        query: function(param, scope){
+        query: function(param){
             
             if (param)
             {
                 queryParam =  param;
                 
             }
-         console.log(scope);
-            //$route.reload();
+        
             return queryParam;
         }
     }
