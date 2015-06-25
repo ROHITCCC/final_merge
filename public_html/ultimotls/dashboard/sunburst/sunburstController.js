@@ -14,7 +14,7 @@ sunburstControllerModule.controller('sunburstController', ['$scope', 'mongoAggre
     $scope.fromDate = null;
     $scope.timeOptions = [{"time":.25, "description":"15 minutes"},{"time":.5, "description":"30 minutes"},
                           {"time":1,"description":"1 hour"},{"time":24, "description":"24 hours"},
-                          {"time":48,"description":"48 hours"}];
+                          {"time":48,"description":"48 hours"}, {"time":"Calender", "description":"Custom"}];
     $scope.timeSelected = $scope.timeOptions[2];
     $scope.sunburstSaver = sunburstSaver;
     $scope.env = queryEnv.getEnv();
@@ -27,13 +27,13 @@ sunburstControllerModule.controller('sunburstController', ['$scope', 'mongoAggre
         
     if(!$scope.toDate){
         var currentDateTime = new Date();
-        if(typeof $scope.sunburstSaver.slideVal !== 'undefined'){ //checks whether or not the slider value holder in the service exists yet
+        if(typeof $scope.sunburstSaver.dropdownVal !== 'undefined'){ //checks whether or not the slider value holder in the service exists yet
             for(var i =0; i< $scope.timeOptions.length; i++){
-                if ($scope.sunburstSaver.slideVal === $scope.timeOptions[i].time){
+                if ($scope.sunburstSaver.dropdownVal === $scope.timeOptions[i].time){
                     $scope.timeSelected = $scope.timeOptions[i]; 
                 }
             }  
-            $scope.fromDate = new Date(currentDateTime - ($scope.sunburstSaver.slideVal*60*60*1000)).toISOString();  //changes the time accordingly
+            $scope.fromDate = new Date(currentDateTime - ($scope.sunburstSaver.dropdownVal*60*60*1000)).toISOString();  //changes the time accordingly
         }
         else{
             $scope.fromDate = new Date(currentDateTime - 7200000).toISOString(); //Current minus 2 hours           
@@ -77,7 +77,7 @@ sunburstControllerModule.controller('sunburstController', ['$scope', 'mongoAggre
                      "'}}}},{'$project':{'_id':1,'name':'$_id.transactionType','description'"+
                      ":{'$literal':'Transaction Type'},'children':'$children.children'}}]";
         $scope.sunburstPromise = mongoAggregateService.callHttp(sliderDataQuery);
-        $scope.sunburstSaver.slideVal = $scope.timeSelected.time;//Saves TimeSelected when drop down value changes
+        $scope.sunburstSaver.dropdownVal = $scope.timeSelected.time;//Saves TimeSelected when drop down value changes
     };
     
     //get the interface and get the audits. display in audit window
