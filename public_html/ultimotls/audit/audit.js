@@ -40,7 +40,9 @@ $("html").dblclick(function(){
 $('body').on('click', '.mainmodal .close', function() {
     $('#replayPage').modal('hide');
     $('#payloadPage').modal('hide');
+    $('#transactionPage').modal('hide');
 }).on('click', '.mainmodal .modal-footer .btn', function() {
     $('#replayPage').modal('hide');
     $('#payloadPage').modal('hide');
+    $('#transactionPage').modal('hide');
 });
