@@ -223,6 +223,20 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
             }
             return formatted //.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/ /g, '&nbsp;');
         }
+        //makes a http call for related transactionId
+        $scope.relatedTransaction = function(transactionID){
+            var getData = "{\"transactionId\":\""+transactionID+"\"}";
+            var getURL = TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/"+TLS_DBNAME+"/"+TLS_AUDIT_COLLECTION+"?filter=";
+            $http.get(getURL+getData,{timeout:TLS_SERVER_TIMEOUT})
+                .success(function(response){
+                    $scope.relatedTransactionData = response._embedded['rh:doc'];
+                    console.log($scope.relatedTransactionData);
+            })
+        }
+        //From relatedTransaction a click function will open a new Modal page and populated new data
+        $scope.relatedSearch = function(rowData){
+            $scope.relatedSearchData = rowData;
+        };
         $scope.callPayload = function(data){ //from Database Page datalocation makes a call
             var dataLocationId = data;
             var payloadUrl = TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/"+TLS_DBNAME+"/"+TLS_PAYLOAD_COLLECTION+"/";

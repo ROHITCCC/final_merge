@@ -124,15 +124,13 @@ sunburstDirectiveModule.directive('sunburstChart', function($location){
 
 
             var texts = svg.selectAll("text")
-                .data(partitioned_data);
-            var enterText = texts.enter().append("text")
+              .data(partitioned_data)
+            .enter().append("text")
                   .attr("transform", function(d) { return computeTextRotation(d)<90?"rotate(" + computeTextRotation(d) + ")":"rotate(" + computeTextRotation(d) + ")rotate(-180)"; })
                   .attr("text-anchor", function(d){return computeTextRotation(d)<90? "start":"end";})
                   .attr("x", function(d) { return computeTextRotation(d)<90?radius / 3 * d.depth:radius/3*d.depth*-1; })	
-                  //.attr("dx", function(d) { return computeTextRotation(d)<90?radius / 3 * .3:radius/3*-.3;}) // margin
+                .attr("dx", function(d) { return computeTextRotation(d)<90?"6":"-6"}) // margin
                   .attr("dy", ".35em") // vertical-align       
-            enterText.append("tspan")
-                  .attr("dx",function(d) { return computeTextRotation(d)<90?radius / 3 * .12:radius/3*-.25;})
                   .text(function(d) {
                       var nameholder = null;
                       var getWidth = radius/3 * .1;
@@ -140,14 +138,7 @@ sunburstDirectiveModule.directive('sunburstChart', function($location){
                           nameholder = d.name.substring(0,(getWidth)) + "...";
                       }
                       else nameholder = d.name;
-                      return nameholder;
-                  })
-            enterText.append("tspan")
-                  .attr("dx", radius/3*-.3) // margin 
-                  .attr("dy", "1em")
-                  .text(function(d) {
-                     return d.value
-                  });
+                    return nameholder;})
                         //.text(function(d,i) {return d.name})
    
             function zoomIn(p, scope) {
@@ -219,22 +210,18 @@ sunburstDirectiveModule.directive('sunburstChart', function($location){
                   .style("fill-opacity", 1)
                   .attrTween("d", function(d) { return arcTween.call(this, updateArc(d)); });
             });
-            //enterText.remove();
             texts = texts.data(new_data, function(d) { return d.key; })
-            console.log(texts)
-            texts.exit().remove();
+            texts.exit()
+                .remove()    
             texts.enter()
                 .append("text")
 
-            var newText = texts.style("opacity", 0)
+            texts.style("opacity", 0)
                 .attr("transform", function(d) { return computeTextRotation(d)<90?"rotate(" + computeTextRotation(d) + ")":"rotate(" + computeTextRotation(d) + ")rotate(-180)"; })
                 .attr("text-anchor", function(d){return computeTextRotation(d)<90? "start":"end";})
                 .attr("x", function(d) { return computeTextRotation(d)<90?radius / 3 * d.depth:radius/3*d.depth*-1; })	
+                .attr("dx", function(d) { return computeTextRotation(d)<90?"6":"-6"}) // margin
                 .attr("dy", ".35em") // vertical-align  	
-                .transition().delay(750).style("opacity", 1);
-        
-            newText.append("tspan")
-                .attr("dx",function(d) { return computeTextRotation(d)<90? (-radius)/d.depth*.20:radius/3*-.25;})
                 .text(function(d) {
                     var nameholder = null;
                     var getWidth = radius/3 * .1;
@@ -242,14 +229,8 @@ sunburstDirectiveModule.directive('sunburstChart', function($location){
                         nameholder = d.name.substring(0,(getWidth)) + "...";
                     }
                     else nameholder = d.name;
-                    return nameholder;
-                });
-            newText.append("tspan")
-                .attr("dx", radius/3*-.3) // margin 
-                .attr("dy", "1em")
-                .text(function(d) {
-                   return d.value
-                });
+                    return nameholder;})
+                .transition().delay(750).style("opacity", 1)
             }
         };
         function key(d) {
