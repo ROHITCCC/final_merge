@@ -225,7 +225,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
         }
         //makes a http call for related transactionId
         $scope.relatedTransaction = function(transactionID){
-            var getData = "{\"transactionId\":\""+transactionID+"\"}";
+            var getData = "{\"transactionId\":\""+transactionID+"\"}&count&pagesize=25";
             var getURL = TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/"+TLS_DBNAME+"/"+TLS_AUDIT_COLLECTION+"?filter=";
             $http.get(getURL+getData,{timeout:TLS_SERVER_TIMEOUT})
                 .success(function(response){
