@@ -81,6 +81,7 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
               
               var nodes = treemap.nodes(root)
                   .filter(function(d) { return !d.children; });
+          
           var parNodes = treemap.nodes(root)
                   .filter(function(d) {if(d.name !== "tree") return d.children ? "tree" : d.children; });
           
@@ -102,6 +103,8 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
           
           if(remakeFlag === true){
           console.log(zoomFlag)
+          
+            
           
              cell.enter().append("g").attr("class", "cell")
                   .attr("transform", function(d) {return "translate(" + d.x + "," + d.y + ")"; })
@@ -143,7 +146,8 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                   .attr("width", function(d) { return d.dx - 1; })
                   .attr("height", function(d) { return d.dy - 1; })
                   .style("fill", function(d) { return color(d.parent.name); });
-          
+              
+              
 
               cell.select("text").transition().duration(500)
                   .attr("x", function(d) { return d.dx / 2; })
@@ -174,6 +178,39 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
             })
 
             cell.exit().attr("class", "exit")
+                  .transition().style("width", 0)
+                    .style("height", 0)
+                    .style("fill-opacity", 0)
+                    .transition().remove();
+            
+            parCell.enter().append("g").attr("class", "cellParent")
+                  .attr("transform", function(d) {return "translate(" + d.x + "," + d.y + ")"; })
+                  .on("mouseover", mouseOverCell)
+                  .on("mouseout", mouseOutCell)
+                  .on("click", function(d) { return zoom((node === d ? root : d),"0","0"); });
+          
+                  parCell.attr("class", "cellParent")
+                  .attr("id", function(d){return d.name;})
+                  .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; }) 
+            
+            parCell.append("rect")
+            parCell.append("text")
+              
+              parCell.select("rect").transition().duration(500)
+                  .attr("width", function(d) { return d.dx - 1; })
+                  .attr("height", "18px")
+                  .style("fill", "lightgrey");
+          
+          parCell.select("text").transition().duration(500)
+                  .attr("x", function(d) { return d.dx /2; })
+                  .attr("y", "9px")
+                  .attr("dy", ".35em")
+                  .attr("text-anchor", "middle")
+                  .attr("id",function(d){return d.name})
+                  .attr("width", function(d) { return d.dx - 1; })
+                  .text(function(d){return d.name})
+          
+          parCell.exit().attr("class", "exit")
                   .transition().style("width", 0)
                     .style("height", 0)
                     .style("fill-opacity", 0)
@@ -226,7 +263,7 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                 if((name !== "flag" && parent !== "flag")){
                         d3.select("#zoomOut").transition().duration(750).style("opacity",1)
                         var zx = 0
-                        d3.selectAll("g").select("tspan")
+                        d3.selectAll("g.cell").select("tspan")
                         .text(function(d) {
                             var nameholder = null;
                             var getWidth = kx * d.dx - 1;
@@ -238,7 +275,7 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                             else nameholder = d.name;
                             return nameholder;});
                             
-                        d3.selectAll("g")
+                        d3.selectAll("g.cell")
                         .on("click", function(d) { return zoom((node === d.parent ? root : d),(d3.select(this).attr("id")),(d3.select(this).attr("parent"))); })
                  
                  //console.log(d3.select("#treemapZoom").select("svg").selectAll("g")[0])
@@ -248,10 +285,10 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                  tempName = name;
                 }
                 else{
-                    d3.selectAll("g").select("text").remove()
+                    d3.selectAll("g.cell").select("text").remove()
                    d3.select("#zoomOut").transition().duration(750).style("opacity",0);
                    
-                   d3.selectAll("g").append("text").attr("x", function(d) { return d.dx / 2; })
+                   d3.selectAll("g.cell").append("text").attr("x", function(d) { return d.dx / 2; })
                   .attr("y", function(d) { return d.dy / 2; })
                   .attr("dy", ".35em")
                   .attr("text-anchor", "middle")
@@ -274,11 +311,12 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                                     .attr("text-anchor", "middle")
                                     .attr("id","new")
                                     .attr("class", "tspan" + i);
-                            }
                         }
+                            }
                     })
-                    d3.selectAll("g")
+                    d3.selectAll("g.cell")
                     .on("click", function(d) { return zoom((node === d.parent ? root : d.parent),(d3.select(this).attr("id")),(d3.select(this).attr("parent"))); })
+                    
                    //.style("opacity", function(d) { d.w = this.getComputedTextLength(); return d.dx > d.w ? 1 : 0; });
                  remakeFlag = true;
                  if(!zoomFlag&&!zoomFlag2){
@@ -288,13 +326,13 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                     zoomFlag = false;
                     
                 }
-                
+                var widthSaver=0;
                 var t = svg.selectAll("g.cell").transition()
                     .duration(750)
-                    .attr("transform", function(d) { return "translate(" + x(d.x) + "," + y(d.y) + ")"; });
-
+                    .attr("transform", function(d) {widthSaver=x(d.x); return "translate(" + x(d.x) + "," + y(d.y) + ")"; 
+            });  
                 t.select("rect")
-                    .attr("width", function(d) { return kx * d.dx - 1; })
+                    .attr("width", function(d) {return kx * d.dx - 1; })
                     .attr("height", function(d) { return ky * d.dy - 1; })
 
                 t.select("text")
@@ -304,18 +342,47 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
             
             t.selectAll("tspan")
                     .attr("x", function(d) { return kx * d.dx / 2; })
-                    .attr("y", function(d) { return ky * d.dy / 2; })
+                    .attr("y", function(d) { return ky * d.dy / 2; });
                     //.style("opacity", function(d) { return kx * d.dx > d.w ? 1 : 0; });
+            
+            var tPar = svg.selectAll("g.cellParent").transition()
+                    .duration(750)
+                    .attr("transform", function(d) {
+                        if(d3.select(this).attr("id") === parent){
+                            if(zoomFlag && zoomFlag2){
+                                return "translate(0,0)"; 
+                            }
+                            else{
+                                return "translate(" + x(d.x) + "," + y(d.y) + ")";
+                            }
+                        }
+                        else{
+                            return "translate(" + x(d.x) + "," + y(d.y) + ")";
+                        }
+            });   
+        
+                tPar.select("rect")
+                    .attr("width", function(d) { return kx * d.dx - 1; })
+                    .attr("height", "18px");
+
+                tPar.selectAll("text")
+                    .attr("x", function(d) {
+                            if(zoomFlag){
+                               return w/2; 
+                            }
+                            else{
+                                return kx * d.dx / 2; 
+                            }
+                        
+                })
+                    .attr("y", "9px")        
+            console.log(zoomFlag)
                 //node = d;
                 if(zoomFlag2 === false){
                    root = treeData;
-                console.log("here");
                 //zoomFlag2 = true;
                 }
                 else{
-                    console.log("here2")
-                    //root = d; 
-                    console.log(zoomFlag + ", " + zoomFlag2)
                     zoomFlag = false;
                     zoomFlag2 = false;
                     
