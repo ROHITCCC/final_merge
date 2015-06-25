@@ -335,6 +335,37 @@ and open the template in the editor.
                 </div>
             </div>
             <div class="modal-body">
+                <div class="container-fluid">
+                    <div id="paginationNav" style="float: right">
+                        <ul class="pagination">
+                            <li ng-if="data._links.first != null || data._links.first != undefined">
+                                <a ng-click="goToFirst()"> First </a>
+                            </li>
+                            <li ng-if="data._links.first == null || data._links.first == undefined" class="disabled">
+                                <a ng-click="goToFirst()"> First </a>
+                            </li>
+                            <li  ng-if="data._links.previous != null || data._links.previous != undefined">
+                                <a ng-click="goToPrevious()"> Previous </a>
+                            </li>
+                            <li  ng-if="data._links.previous == null || data._links.previous == undefined" class="disabled">
+                                <a ng-click="goToPrevious()"> Previous </a>
+                            </li>
+                            <li   ng-if="data._links.next != null || data._links.next != undefined">
+                                <a ng-click="goToNext()"> Next </a>
+                            </li>
+                            <li ng-if="data._links.next == null || data._links.next == undefined" class="disabled">
+                                <a ng-click="goToNext()"> Next </a>
+                            </li>
+                            <li ng-if="data._links.last != null || data._links.last != undefined">
+                                <a ng-click="goToLast()" > Last </a>
+                            </li>
+                            <li ng-if="data._links.last == null || data._links.last == undefined" class="disabled">
+                                <a ng-click="goToLast()" > Last </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                
                 <div id="tableContainer" class="container-fluid"> 
                     <table id="table" class="table table-striped table-bordered table-hover">
                         <thead id="tableHeader">
@@ -352,11 +383,6 @@ and open the template in the editor.
                                 <th>
                                     <a href="" ng-click="predicate = 'transactionType'; reverse=!reverse">
                                     <span class="caret"></span> Transaction Type
-                                    </a>
-                                </th>
-                                <th>
-                                    <a href="" ng-click="predicate = 'transactionId'; reverse=!reverse">
-                                        <span class="caret"></span> TransactionID
                                     </a>
                                 </th>
                                 <th>
@@ -382,7 +408,6 @@ and open the template in the editor.
                                 <td>{{d.timestamp.$date | date:'EEE MMM dd, yyyy hh:mm:ss'}}</td>
                                 <td>{{d.transactionDomain}}</td>
                                 <td>{{d.transactionType}}</td>
-                                <td>{{d.transactionId}}</td>
                                 <td>{{d.application}}</td>
                                 <td>{{d.interface1}}</td>
                                 <td>
