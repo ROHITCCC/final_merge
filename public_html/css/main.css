@@ -150,6 +150,12 @@ a .glyphicon .glyphicon-remove {
                 padding-left: 10px;
                 float: center;
             }
+            #formBorder {
+                border-bottom: #000 solid thin;
+                margin-bottom: 20px;
+            }
+            
+///////PAGINATION/////////         
 #pagination {
         background-color: #E6E6E6;
         margin: 0;
@@ -318,4 +324,21 @@ html {
 /////////MODAL WINDOWS///////////////////
 .modal #replayPage{
     top: 50%; 
+}
+
+//////TIME SELECTED DROP DOWN MENU//////
+.dropdown-menu{
+  min-width: 100px;
+  float: right;
+  border-left-width: 45px;
+  border-right-width: 0px;
+  padding-right: 15px;
+  padding-left: 15px;
+}
+
+#currentTimeSelect{
+  border: ridge;
+  padding: 0 15px;
+  width: 265px;
+  margin: 0 15px;
 }
