@@ -24,7 +24,6 @@ sunburstControllerModule.controller('sunburstController', ['$scope', 'mongoAggre
         console.log($scope.env);
         $scope.fromDateChange();
     })
-        
     if(!$scope.toDate){
         var currentDateTime = new Date();
         if(typeof $scope.sunburstSaver.dropdownVal !== 'undefined'){ //checks whether or not the slider value holder in the service exists yet
@@ -34,6 +33,9 @@ sunburstControllerModule.controller('sunburstController', ['$scope', 'mongoAggre
                 }
             }  
             $scope.fromDate = new Date(currentDateTime - ($scope.sunburstSaver.dropdownVal*60*60*1000)).toISOString();  //changes the time accordingly
+        }
+        else if($scope.timeSelected.time === "Calender"){
+            console.log("new event")
         }
         else{
             $scope.fromDate = new Date(currentDateTime - 7200000).toISOString(); //Current minus 2 hours           
@@ -56,8 +58,41 @@ sunburstControllerModule.controller('sunburstController', ['$scope', 'mongoAggre
                          "'}}}},{'$project':{'_id':1,'name':'$_id.transactionType','description'"+
                          ":{'$literal':'Transaction Type'},'children':'$children.children'}}]";
     $scope.sunburstPromise = mongoAggregateService.callHttp(dataQuery);
-    //date slider Config
-    $scope.fromDateChange = function(){
+    //date dropdown Config
+    $scope.customDate = function(fromDate, toDate){
+        if(!fromDate || !toDate){ //Error handling - A valid date must be entered
+            alert("A valid date must be entered for both fields");
+            return
+        }
+        console.log(fromDate, toDate);
+        $scope.fromDate = new Date(fromDate).toISOString();
+        $scope.toDate = new Date(toDate).toISOString();
+        var customDateQuery = "[{'$match':{'$and':[{'timestamp':{'$gte':{'$date':"+
+                     "'"+$scope.fromDate+"'},'$lt':{'$date':'"+$scope.toDate+"'}}},"+
+                     "{'$and':[{'severity':{'$ne':null}},{'severity':"+
+                     "{'$exists': true,'$ne':''}},{'envid':'"+$scope.env+"'}]}]}},{'$group':{'_id':{'transactionType'"+
+                     ":'$transactionType','interface1':'$interface1','application':"+
+                     "'$application'},'count':{'$sum':1}}},{'$group':{'_id':{'transactionType"+
+                     "':'$_id.transactionType','application':'$_id.application'},'data':"+
+                     "{'$addToSet':{'name':'$_id.interface1','description':{'$literal':"+
+                     "'Interface Name'},'size':'$count'}}}},{'$project':{'_id':0,"+
+                     "'transactionType':'$_id.transactionType','application':{'name':"+
+                     "'$_id.application','description':{'$literal':'Application Name'},"+
+                     "'children':'$data'}}},{'$group':{'_id':{'transactionType':"+
+                     "'$transactionType'},'children':{'$addToSet':{'children':'$application"+
+                     "'}}}},{'$project':{'_id':1,'name':'$_id.transactionType','description'"+
+                     ":{'$literal':'Transaction Type'},'children':'$children.children'}}]";
+        $scope.sunburstPromise = mongoAggregateService.callHttp(customDateQuery);
+    }
+    $scope.fromDateChange = function(time){
+        $scope.timeSelected = time;
+        if($scope.timeSelected.time === "Calender"){
+            $(document).ready(function(){
+                $("#calendarPage").modal();
+            });
+            return
+            
+        }
         var currentDateTime = new Date();
         $scope.fromDate = new Date(currentDateTime - ($scope.timeSelected.time*60*60*1000)).toISOString();
         $scope.toDate = new Date(currentDateTime).toISOString(); 
