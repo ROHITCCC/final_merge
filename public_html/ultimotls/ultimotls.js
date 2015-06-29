@@ -13,23 +13,95 @@ var TLS_DBNAME = "ES";
 var TLS_SERVER_TIMEOUT = 3000;
    
 //(function(angular){
-var ultimotls = angular.module('ultimotls', ['auditControllerModule', 'sunburstDirectiveModule', 'auditDirectiveModule' , 'treemapDirectiveModule', 'ngRoute', 'ngCookies']);
+var ultimotls = angular.module('ultimotls', ['auditControllerModule', 'sunburstDirectiveModule', 'auditDirectiveModule' , 'treemapDirectiveModule', 'ngRoute', 'ngCookies', 'base64', 'LocalStorageModule']);
+ 
+ultimotls.controller('loginControllerModule', ['$scope', '$http', '$q', '$base64', 'localStorageService',
+    function ($scope, $http, $q, $base64, localStorageService){ //loging Controller
+        
+        //$scope.cred.screen = true; //default
+        
+        console.log('*************** LoginCtrl');
+        
+        $scope.isLoggedin = function () {
+            var _credentials = $sessionStorage.get('creds');
 
-ultimotls.controller('loginControllerModule', ['$scope', '$cookies', function($scope, $cookieStore){ //loging Controller
-    $scope.login = {};
-    $scope.login.screen = true; //default
-    $scope.validateUser = function(){ //Going to be use to validate users
-        $scope.login.screen = false;
-        console.log($scope.login);
-        //cookies to store and pull passwords and user names 
-        //$cookieStore.put($scope.login);
-        //$cookies.put($scope.login);
-    } 
+            if (ultimotls.isUndefined(_credentials) || _credentials === null) {
+                return false;
+            }
+            else {
+                return true;
+            }
+        }
+        $scope.login = function () {
+            $scope.cred.screen = false;
+            $scope.authError = false;
+            $scope.authWrongCredentials = false;
+
+            var credentials = $base64.encode($scope.cred.username + ":" + $scope.cred.password);
+
+            console.log('*** authorization header: ' + credentials);
+
+            $http.defaults.headers.common["Authorization"] = 'Basic ' + credentials;
+
+            //promise to return
+            var deferred = $q.defer();
+
+            var request = $http.get(TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/_logic/roles/"+$scope.cred.username, {});
+            request.success(function (data, status, header, config) {
+                var auth_token = header()['auth-token'] //pulling our auth-token
+                //creating credentials based off of username and auth-token
+                credentials = $base64.encode($scope.cred.username + ":" + auth_token);
+                
+                if (!angular.isUndefined(data) && data !== null && !angular.isUndefined(data.authenticated) && data.authenticated) {
+                    console.log('*** authenticated.');
+                    console.log('*** user roles: ' + data.roles);
+                    console.log(credentials)
+                    $http.defaults.headers.common["Authorization"] = 'Basic ' + credentials;
+                    localStorageService.set('creds', credentials);
+                    
+                    //Change location to Dashboard Page
+                    //$location.path('/posts/');
+
+                    deferred.resolve();
+                }
+                else {
+                    console.log('*** authentication failed. wrong credentials.');
+                    localStorageService.remove('creds');
+                    delete $http.defaults.headers.common["Authorization"];
+                    $scope.authWrongCredentials = true;
+
+                    //reject promise
+                    deferred.reject('authentication failed..');
+                }
+            });
+//
+            request.error(function (data, status, header, config) {
+                console.log('authentication error');
+                console.log(status);
+                console.log(data);
+                console.log(header);
+                console.log(config);
+
+                localStorageService.remove('creds');
+                delete $http.defaults.headers.common["Authorization"];
+                $scope.authError = true;
+
+                //reject promise
+                deferred.reject('authentication failed..');
+            });
+        };
+
+        $scope.logout = function () {
+            localStorageService.remove('creds');
+            $http.delete(TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/_authtokens/"+$scope.cred.username)
+            delete $http.defaults.headers.common["Authorization"];
+            $scope.auth = false;
+        };
 }]);
 
-ultimotls.run(function ($http) {
-    $http.defaults.headers.common.Authorization = 'Basic YTph';
-});
+//ultimotls.run(function ($http) {
+//    $http.defaults.headers.common.Authorization = 'Basic YTph';
+//});
 
 
 ultimotls.filter('unique', function () {
