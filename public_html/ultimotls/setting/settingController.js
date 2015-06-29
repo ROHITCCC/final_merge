@@ -21,13 +21,13 @@ settingModule.controller('SettingsController', function ($scope, $http) {
     $scope.settings = {};
     $scope.reports = {};
     $scope.settingPromise = function () {
-        var promise = $http.get('setting.json').success(function (data) {
+        var promise = $http.get('ultimotls/setting/setting.json').success(function (data) {
             //var promise = $http.get('http://172.16.120.38:8080/_logic/ES/EC/SettingService?object=setting').success(function (data) {
         });
         return promise;
     };
     $scope.reportPromise = function () {
-        var reportpromise = $http.get('reports.json').success(function (data) {
+        var reportpromise = $http.get('ultimotls/setting/reports.json').success(function (data) {
             //var promise = $http.get('http://172.16.120.38:8080/_logic/ES/EC/SettingService?object=setting').success(function (data) {
         });
         return reportpromise;

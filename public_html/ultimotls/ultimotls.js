@@ -247,6 +247,7 @@ ultimotls.config(['$routeProvider', function ($routeProvider) {
                 }).
                 when('/setting', {
                     templateUrl: 'ultimotls/setting/settings.html'
+                }).
                 when('/login', {
                     templateUrl: 'ultimotls/login.html',
                     controller: 'loginControllerModule'
