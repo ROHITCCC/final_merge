@@ -1,0 +1,314 @@
+        <div id="settingpage" ng-controller="SettingsController">
+            <div class="[ col-xs-10 col-sm-offset-1 col-sm-10 ]"> <!-- REST API SETUP -->
+                <div class="[ panel panel-default ] panel-google-plus">
+                    <div class="panel-heading">
+                        <h4>REST API SETUP</h4>
+                    </div>
+                    <div class="panel-body" >
+                        <form class="form-horizontal" role="form">
+                            <div class="col-sm-12">
+                                <h4>Collections</h4>
+                            </div>
+                            <div class="form-group col-sm-12"> 
+                                <div class="col-sm-1">
+                                    <label class="control-label">Payload:</label>
+                                </div>
+                                <div class="col-sm-3">
+                                    <input type="text" class="form-control" id="payload" value="{{settings.apisetup.collections.payload}}" placeholder="Payload Collection...">
+                                </div>
+                                <div class="col-sm-1">
+                                    <label class="control-label">Audits:</label>
+                                </div>
+                                <div class="col-sm-3">
+                                    <input type="text" class="form-control" id="audits" value="{{settings.apisetup.collections.audits}}" placeholder="Audits Collection...">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-1">
+                                    <label class="control-label">Database:</label>
+                                </div>
+                                <div class="col-sm-3">
+                                    <input type="text" class="form-control" id="database" value="{{settings.apisetup.database}}" placeholder="Database...">
+                                </div>
+                                <div class="col-sm-1">
+                                    <label class="control-label">Hostname:</label>
+                                </div>
+                                <div class="col-sm-3">
+                                    <input type="text" class="form-control" id="hostname" value="{{settings.apisetup.hostname}}" placeholder="Hostname...">
+                                </div>
+                                <div class="col-sm-1">
+                                    <label class="control-label">Port:</label>
+                                </div>
+                                <div class="col-sm-3">
+                                    <input type="text" class="form-control" id="port" value="{{settings.apisetup.port}}" placeholder="Port...">
+                                </div>
+                                <div class="col-sm-2">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div> <!-- REST API SETUP -->
+
+            <div class="[ col-xs-12 col-sm-offset-1 col-sm-10 ]"> <!-- ENV SETUP -->
+                <div class="[ panel panel-default ] panel-google-plus">
+                    <div class="panel-heading">
+                        <h4>Enviroment Setup</h4>
+                    </div>
+                    <div class="panel-body" >
+                        <form class="" role="form">
+                            <div class="form-group bordertab ng-scope col-sm-3" data-ng-repeat="enviroment in environments|pagination: curPage * pageSize|limitTo: pageSize">
+
+                                <div class="form-group col-sm-12"> 
+                                    <div class="col-sm-4">
+                                        <label class="control-label">Name</label>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control" id="name" value="{{enviroment.name}}" placeholder="Name...">
+                                    </div>
+                                </div>
+
+                                <div class="form-group col-sm-12"> 
+                                    <div class="col-sm-4">
+                                        <label class="control-label">Description</label>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control" id="name" value="{{enviroment.description}}" placeholder="Description...">
+                                    </div>
+                                </div>
+
+                                <div class="form-group col-sm-12"> 
+                                    <div class="col-sm-4">
+                                        <label class="control-label">Label</label>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control" id="name" value="{{enviroment.label}}" placeholder="Label...">
+                                    </div>
+                                </div>
+                                <div class="form-group col-sm-12"> 
+                                    <button class=" btn btn-danger" ng-click="removeEnv($index)">Remove Environment</button>
+                                </div>
+                            </div>
+                            <div class="col-sm-12">
+                                    <button class="btn addfields" ng-click="addNewEnv()">New Environment</button>
+                                    <div class="pagination pagination_env pagination-centered" ng-show="environments">
+                                        <ul class="pagination-controle pagination">
+                                            <li>
+                                                <button type="button" class="btn btn-primary" ng-disabled="curPage == 0"ng-click="curPage = curPage - 1"> &lt; PREV</button>
+                                            </li>
+                                            <li>
+                                                <span>Page {{curPage + 1}} of {{ numberOfPagesEnv()}}</span>
+                                            </li>
+                                            <li>
+                                                <button type="button" class="btn btn-primary" ng-disabled="curPage >= environments.length / pageSize - 1" ng-click="curPage = curPage + 1">NEXT &gt;</button>
+                                            </li>
+                                        </ul>
+                                    </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div> <!-- END ENV SETUP -->
+
+            <!-- ---------- -->    
+            <!-- DOWN BELOW -->
+            <!-- ---------- -->
+
+            <div class="[ col-xs-12 col-sm-offset-1 col-sm-10 ]"> <!-- both div container -->
+                <div class="[ panel panel-default ] panel-google-plus"> <!-- Panel todo -->
+                    <div class="panel-heading">
+                        <h4>Notification</h4>
+                    </div>
+                    <div class="panel-body"> <!-- Container todo -->
+                        <form class="form-inline" role="form"> <!-- form todo -->
+                            <div class="col-sm-12"> <!--immidate todo div -->
+                                <button type="button" class="btn tabselector" data-toggle="collapse" data-target="#immidate" aria-expanded="false" aria-controls="immidate">Immidate Notification</button>
+                                <div id="immidate" class="collapse"> <!--immidate fields div -->
+                                    <div class="form-group bordertab col-sm-8">                                       
+                                        <div class="col-sm-2">
+                                            <label class="control-label">Frequency:</label>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <input type="text" class="form-control" id="imm_freq" value="{{notifications.immidate.frequency.duration}}" placeholder="Frequency">
+                                        </div>
+                                        <div class="col-sm-1">
+                                            <label class="control-label">Unit:</label>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <input type="text" class="form-control" id="imm_freq_unit" value="{{notifications.immidate.frequency.unit}}" placeholder="unit">
+                                        </div>
+                                    </div><!-- frequency div -->
+                                    <div class="form-group bordertab col-sm-3">                                       
+                                        <div class="col-sm-12">
+                                            <label class="control-label">Items per page :</label>
+                                            <select class="form-control" ng-model='selectedNumber'  ng-options='number for number in numbers'></select>
+                                        </div>
+                                    </div>
+                                    <div id="immi_{{$index}}" class="col-sm-12  bordertab ng-scope" data-ng-repeat="notification in notifications.immidate.notification|pagination: curPageImmi * pageSizeImmi|limitTo: pageSizeImmi">
+
+                                        <div class="form-group">
+                                            <div class="col-sm-1">
+                                                <label class="control-label">Severity</label>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <input type="text" class="form-control" id="immi_severity" value="{{notification.severity}}" placeholder="Severity">
+                                            </div>
+                                            <div class="col-sm-1">
+                                                <label class="control-label">Email</label>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <input type="text" class="form-control" id="immi_email" value="{{notification.email}}" placeholder="Email"> 
+                                            </div>
+
+                                            <div class="col-sm-1">
+                                                <label class="control-label">App</label>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <input type="text" class="form-control" id="immi_application" value="{{notification.application.name}}" placeholder="Application">
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <label class="control-label">Interfaces</label>
+                                            </div>
+                                            <div class="row row-centered">
+                                                <div class="entry input-group col-sm-3" data-ng-repeat="interface in notification.application.interfaces track by $index">
+                                                    <input type="text" class="form-control"  value="{{interface}}" placeholder="Interfaces">
+                                                    <span class="input-group-btn"><button class="btn btn-remove btn-danger" ng-click="removeImmidateInterface($parent.$index, $index)">-</button></span>
+                                                    <button class="btn btn-success btn-add col-sm-11" ng-show="$last" ng-click="addImmidateInterface($parent.$index, $index)">+</button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <br>
+                                        <button class="btn btn-danger" ng-click="removeImmidate($index)">Remove Notification</button>
+                                    </div><!-- notifications div -->
+
+                                    <button class="btn addfields" ng-click="addNewImmidate()">New Notification</button>
+
+
+                                    <div class="pagination pagination-centered" ng-show="notifications.immidate.notification"><!-- Pagination -->
+                                        <ul class="pagination-controle pagination">
+                                            <li>
+                                                <button type="button" class="btn btn-primary" ng-disabled="curPageImmi == 0"ng-click="curPageImmi = curPageImmi - 1"> &lt; PREV</button>
+
+                                            </li>
+                                            <li>
+                                                <span>Page {{curPageImmi + 1}} of {{ numberOfPagesImmi()}}</span>
+                                            </li>
+                                            <li>
+                                                <button type="button" class="btn btn-primary" ng-disabled="curPageImmi >= notifications.immidate.notification.length / pageSizeImmi - 1" ng-click="curPageImmi = curPageImmi + 1">NEXT &gt;</button>
+                                            </li>
+
+                                        </ul>
+                                    </div><!-- END Pagination -->
+                                </div><!--immidate fields div -->
+                                <div class="spacer20"> <!-- spacer -->
+                                    <div class="divider"></div>
+                                </div> <!-- spacer -->
+                            </div><!--immidate todo div -->
+
+                            <!-- ---------- -->
+                            <!-- Aggrigated -->
+                            <!-- ---------- -->
+
+                            <div class="col-sm-12"> <!--aggridated todo div -->
+                                <button type="button" class="btn tabselector" data-toggle="collapse" data-target="#aggrigated">Aggrigated Periodic Report</button>
+                                <div id="aggrigated" class="collapse"> <!--aggrigated fields div -->
+                                    <div class="form-group bordertab" >
+                                        <div class="col-sm-3">
+                                            <label class="control-label">Frequency:</label>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <input type="text" class="form-control" id="aggri_freq" value="" placeholder="Frequency">
+                                        </div>
+                                        <div class="col-sm-1">
+                                            <label class="control-label">Unit:</label>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <input type="text" class="form-control" id="aggri_freq_unit" value=""placeholder="unit">
+                                        </div>
+                                    </div><!-- frequency div -->
+                                    <div >
+                                        <div class="form-group bordertab ng-scope" id="aggri_{{$index}}" data-ng-repeat="report in reports|pagination: curPageAggri * pageSizeAggri|limitTo: pageSizeAggri">
+                                            
+                                            <div class="row">
+                                                <div class="col-sm-3">
+                                                    <label class="control-label">Application</label>
+                                                </div>
+                                                <div class="col-sm-6">
+                                                    <input type="text" class="form-control" id="aggri_name"  value="{{report.reports.application}}" placeholder="Name">
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-sm-3">
+                                                    <label class="control-label">Interface</label>
+                                                </div>
+                                                <div class="col-sm-6">
+                                                    <input type="text" class="form-control" id="aggri_interface" value="{{report.reports.interface}}" placeholder="interface">
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-sm-3">
+                                                    <label class="control-label">ErrorType</label>
+                                                </div>
+                                                <div class="col-sm-6">
+                                                    <input type="text" class="form-control" id="aggri_errortype" value="{{report.reports.errortype}}" placeholder="ErrorType">
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-sm-3">
+                                                    <label class="control-label">Duration</label>
+                                                </div>
+                                                <div class="col-sm-6">
+                                                    <input type="text" class="form-control" value="{{report.reports.frequency.duration}}" placeholder="Duration">
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-sm-3">
+                                                    <label class="control-label">Unit</label>
+                                                </div>
+                                                <div class="col-sm-6">
+                                                    <input type="text" class="form-control" value="{{report.reports.frequency.unit}}" placeholder="Unit">
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-sm-3">
+                                                    <label class="control-label">Email</label>
+                                                </div>
+                                                <div class="col-sm-6">
+                                                    <input type="text" class="form-control" value="{{report.reports.email}}" placeholder="Email">
+                                                </div>
+                                            </div>
+                                            <br>
+                                            <button class="btn btn-success" ng-click="removeAggrigated($index)">Save</button>
+                                            <button class="btn btn-danger pull-right" ng-click="removeAggrigated($index)">Remove Report</button>
+
+                                        </div><!-- notifications div -->
+                                        <div class="col-sm-12">
+                                            <button class="btn addfields" ng-click="addNewAggrigated()">New Report</button>
+                                            <div class="pagination pagination-centered" ng-show="reports"> <!-- Pagination Aggrigated -->
+                                                <ul class="pagination-controle pagination">
+                                                    <li>
+                                                        <button type="button" class="btn btn-primary" ng-disabled="curPageAggri == 0"ng-click="curPageAggri = curPageAggri - 1"> &lt; PREV</button>
+                                                    </li>
+                                                    <li>
+                                                        <span>Page {{curPageAggri + 1}} of {{ numberOfPagesAggri()}}</span>
+                                                    </li>
+                                                    <li>
+                                                        <button type="button" class="btn btn-primary" ng-disabled="curPageAggri >= reports.length / pageSizeAggri - 1" ng-click="curPageAggri = curPageAggri + 1">NEXT &gt;</button>
+                                                    </li>
+                                                </ul>
+                                            </div><!-- END Pagination Aggrigated -->
+                                        </div>
+                                    </div> <!-- aggrigated div -->
+                                </div><!--aggrigated fields div -->
+                            </div> <!--aggridated todo div -->
+                        </form> <!-- form todo -->
+                    </div> <!--Container todo -->
+                </div> <!-- Panel todo -->      
+            </div> <!-- both div container -->
+        </div> <!--end controller -->

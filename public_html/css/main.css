@@ -342,3 +342,74 @@ html {
   width: 265px;
   margin: 0 15px;
 }
+
+/////////////////Setting ///////////
+
+.tabselector{
+                margin-bottom: 10px;
+            }
+            .bordertab {
+                border: #cdcdcd medium solid;
+                border-radius: 10px;
+                -moz-border-radius: 10px;
+                -webkit-border-radius: 10px;
+                padding: 10px;
+            }
+            .row-centered {
+                text-align:center;
+                padding-left: 27px;
+                padding-right: 20px;
+            }
+            .pagination_env{margin-top: 0px !important}
+
+            #settingpage .panel-heading h4 {
+                font-size: 12px;
+            }
+            
+            #settingpage .panel-heading{
+                margin-bottom: 10px;
+            }
+
+            #settingpage .panel-body {
+                padding: 0px;
+                ;} 
+
+            #settingpage .panel-body form h4 {
+                font-size: 11px;
+            }
+
+            #settingpage .panel-body label {
+                font-size: 11px;
+            }
+            #settingpage .form-control{
+                height: 25px !important;
+                font-size: 10px;
+            }
+
+            #settingpage .pagination{
+                font-size: 10px;
+            }
+
+            #settingpage .btn {
+                font-size: 10px !important;
+            }
+
+            #settingpage .form-inline .form-control {
+                font-size: 10px !important;
+            }
+            .spacer20 { 
+                height: 20px; 
+                width: 100%; 
+                font-size: 0; 
+                margin: 0; 
+                padding: 0; 
+                border: 0; 
+                display: block; 
+            }
+            
+            .divider {
+                height: 1px;
+                width: 100%;
+                margin-top: 25px;
+                background-color: #e5e5e5;
+              }
