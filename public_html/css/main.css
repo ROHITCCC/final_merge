@@ -345,8 +345,8 @@ html {
 
 /////////////////Setting ///////////
 
-.tabselector{
-    margin-bottom: 10px;
+#settingpage .tabselector {
+  margin-bottom: 10px;
 }
 .bordertab {
     border: #cdcdcd medium solid;
@@ -360,7 +360,9 @@ html {
     padding-left: 27px;
     padding-right: 20px;
 }
-.pagination_env{margin-top: 0px !important}
+.pagination_env{
+    margin-top: 0px !important;
+}
 
 #settingpage .panel-heading h4 {
     font-size: 12px;
@@ -372,7 +374,7 @@ html {
 
 #settingpage .panel-body {
     padding: 0px;
-    ;} 
+} 
 
 #settingpage .panel-body form h4 {
     font-size: 11px;
