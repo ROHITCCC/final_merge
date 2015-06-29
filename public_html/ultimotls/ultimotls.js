@@ -39,7 +39,7 @@ ultimotls.controller('loginControllerModule', ['$scope', '$http', '$q', '$base64
             $scope.authWrongCredentials = false;
             
             var credentials = $base64.encode($scope.cred.username + ":" + $scope.cred.password);
-
+            $scope.treemapSaver.nameSaver = $scope.cred.username;
             console.log('*** authorization header: ' + credentials);
 
             $http.defaults.headers.common["Authorization"] = 'Basic ' + credentials;
@@ -97,15 +97,24 @@ ultimotls.controller('loginControllerModule', ['$scope', '$http', '$q', '$base64
 
         $scope.logout = function () {
             $scope.$apply($location.path("/login"));
+            console.log($http.defaults.headers.common["Authorization"])
+            $scope.auth = false;
+            
+            //UNTESTED DELETE FUNCTION
+            $http({method: 'DELETE',headers: {'Authorization': $http.defaults.headers.common["Authorization"]},
+                url: TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/_authtokens/" +$scope.treemapSaver.nameSaver                
+            })
+            //UNTESTED DELETE FUNCTION
+            
             localStorageService.remove('creds');
             delete $http.defaults.headers.common["Authorization"];
-            $scope.auth = false;
-            $http.delete(TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/_authtokens/"+$scope.cred.username)
+            
         };
 }]);
 
 ultimotls.run(['$rootScope', '$location', 'treemapSaver', function ($rootScope, $location, treemapSaver) {
-    $rootScope.$on('$routeChangeStart', function (event) {
+    
+        $rootScope.$on('$routeChangeStart', function (event) {
         
         if (!treemapSaver.showNav) {
             console.log('ACCESS DENIED');
@@ -247,6 +256,7 @@ ultimotls.config(['$routeProvider', function ($routeProvider) {
                 }).
                 when('/setting', {
                     templateUrl: 'ultimotls/setting/settings.html'
+                }).
                 when('/login', {
                     templateUrl: 'ultimotls/login.html',
                     controller: 'loginControllerModule'
