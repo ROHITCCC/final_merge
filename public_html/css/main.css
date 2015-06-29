@@ -345,8 +345,8 @@ html {
 
 /////////////////Setting ///////////
 
-.tabselector{
-    margin-bottom: 10px;
+#settingpage .tabselector {
+  margin-bottom: 10px;
 }
 .bordertab {
     border: #cdcdcd medium solid;
