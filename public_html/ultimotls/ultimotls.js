@@ -13,7 +13,7 @@ var TLS_DBNAME = "ES";
 var TLS_SERVER_TIMEOUT = 3000;
    
 //(function(angular){
-var ultimotls = angular.module('ultimotls', ['auditControllerModule', 'sunburstDirectiveModule', 'auditDirectiveModule' , 'treemapDirectiveModule', 'ngRoute', 'ngCookies', 'base64', 'LocalStorageModule']);
+var ultimotls = angular.module('ultimotls', ['auditControllerModule', 'sunburstDirectiveModule', 'auditDirectiveModule' , 'treemapDirectiveModule', 'ngRoute', 'ngCookies', 'base64', 'LocalStorageModule', 'settingModule']);
  
 ultimotls.controller('loginControllerModule', ['$scope', '$http', '$q', '$base64', 'localStorageService',
     function ($scope, $http, $q, $base64, localStorageService){ //loging Controller
@@ -227,6 +227,9 @@ ultimotls.config(['$routeProvider', function ($routeProvider) {
                 }).
                 when('/treemap', {
                     templateUrl: 'ultimotls/dashboard/treemap/treemapDashboard.html'
+                }).
+                when('/setting', {
+                    templateUrl: 'ultimotls/setting/settings.html'
                 }).
                 otherwise({
                     redirectTo: '/sunburst'
