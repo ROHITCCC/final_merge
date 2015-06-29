@@ -86,8 +86,8 @@ ultimotls.controller('getTabs', ['$scope', '$location', '$http', 'queryEnv', fun
                 { link : '#/treemap', label : 'Treemap Dashboard' }
               ]; 
             $scope.setEnviroment = function(tab, env){
-                var rootTab = document.getElementById(tab);
-                rootTab.innerHTML = env.name+"-"+tab;
+                $scope.rootTab = document.getElementById(tab);
+                $scope.rootTab.innerHTML = env.name+"-"+tab;
                 queryEnv.setEnv(env.dbName);
                 queryEnv.broadcast();
             };
@@ -108,11 +108,7 @@ ultimotls.controller('getTabs', ['$scope', '$location', '$http', 'queryEnv', fun
                 return "active";
               } else {
                 return "";
-              }
-              $watch($location, function(){
-                  console.log("here");
-                $route.reload();  
-              })   
+              } 
               
             };
         }

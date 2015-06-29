@@ -11,12 +11,15 @@ module.exports = function (config) {
             '../public_html/lib/js/angular/angular-route.js',
             'lib/js/angular/angular-mocks.js',
             '../public_html/lib/js/angular/ng-slider.min.js',
+            '../public_html/lib/js/angular/angular-cookies.js',
             '../public_html/lib/js/jquery/*.js',
             '../public_html/lib/js/jsonPath/*.js',
             '../public_html/ultimotls/audit/*.js',
             '../public_html/ultimotls/ultimotls.js',
             '../public_html/ultimotls/dashboard/sunburst/*.js',
+            '../public_html/ultimotls/dashboard/treemap/*.js',
             'sunburstDashboardUnitTest/*.js',
+            'treemapDashboardUnitTest/*.js',
             'ultimotlsUnitTest/*.js',
             'lib/js/angular/*.js'
   
