@@ -99,6 +99,8 @@ ultimotls.controller('loginControllerModule', ['$scope', '$http', '$q', '$base64
             $scope.$apply($location.path("/login"));
             console.log($http.defaults.headers.common["Authorization"])
             $scope.auth = false;
+            localStorageService.remove('creds');
+            delete $http.defaults.headers.common["Authorization"];
             
             //UNTESTED DELETE FUNCTION
             $http({method: 'DELETE',headers: {'Authorization': $http.defaults.headers.common["Authorization"]},
@@ -106,8 +108,6 @@ ultimotls.controller('loginControllerModule', ['$scope', '$http', '$q', '$base64
             })
             //UNTESTED DELETE FUNCTION
             
-            localStorageService.remove('creds');
-            delete $http.defaults.headers.common["Authorization"];
             
         };
 }]);
