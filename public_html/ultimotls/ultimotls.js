@@ -15,11 +15,12 @@ var TLS_SERVER_TIMEOUT = 3000;
 //(function(angular){
 var ultimotls = angular.module('ultimotls', ['auditControllerModule', 'sunburstDirectiveModule', 'auditDirectiveModule' , 'treemapDirectiveModule', 'ngRoute', 'ngCookies', 'base64', 'LocalStorageModule', 'settingModule']);
  
-ultimotls.controller('loginControllerModule', ['$scope', '$http', '$q', '$base64', 'localStorageService',
-    function ($scope, $http, $q, $base64, localStorageService){ //loging Controller
+ultimotls.controller('loginControllerModule', ['$scope', '$http', '$q', '$base64', '$location','localStorageService', 'treemapSaver',
+    function ($scope, $http, $q, $base64, $location, localStorageService, treemapSaver){ //loging Controller
         
         //$scope.cred.screen = true; //default
-        
+        $scope.treemapSaver = treemapSaver;
+        $scope.treemapSaver.showNav = false;
         console.log('*************** LoginCtrl');
         
         $scope.isLoggedin = function () {
@@ -36,7 +37,7 @@ ultimotls.controller('loginControllerModule', ['$scope', '$http', '$q', '$base64
             $scope.cred.screen = false;
             $scope.authError = false;
             $scope.authWrongCredentials = false;
-
+            
             var credentials = $base64.encode($scope.cred.username + ":" + $scope.cred.password);
 
             console.log('*** authorization header: ' + credentials);
@@ -55,9 +56,12 @@ ultimotls.controller('loginControllerModule', ['$scope', '$http', '$q', '$base64
                 if (!angular.isUndefined(data) && data !== null && !angular.isUndefined(data.authenticated) && data.authenticated) {
                     console.log('*** authenticated.');
                     console.log('*** user roles: ' + data.roles);
-                    console.log(credentials)
+                    console.log(credentials);
+                    $scope.treemapSaver.showNav = true;
                     $http.defaults.headers.common["Authorization"] = 'Basic ' + credentials;
                     localStorageService.set('creds', credentials);
+                    $scope.$apply($location.path("/sunburst"));
+                    
                     
                     //Change location to Dashboard Page
                     //$location.path('/posts/');
@@ -92,16 +96,27 @@ ultimotls.controller('loginControllerModule', ['$scope', '$http', '$q', '$base64
         };
 
         $scope.logout = function () {
+            $scope.$apply($location.path("/login"));
             localStorageService.remove('creds');
-            $http.delete(TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/_authtokens/"+$scope.cred.username)
             delete $http.defaults.headers.common["Authorization"];
             $scope.auth = false;
+            $http.delete(TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/_authtokens/"+$scope.cred.username)
         };
 }]);
 
-//ultimotls.run(function ($http) {
-//    $http.defaults.headers.common.Authorization = 'Basic YTph';
-//});
+ultimotls.run(['$rootScope', '$location', 'treemapSaver', function ($rootScope, $location, treemapSaver) {
+    $rootScope.$on('$routeChangeStart', function (event) {
+        
+        if (!treemapSaver.showNav) {
+            console.log('ACCESS DENIED');
+            if(document.getElementById("loginContainter") !== null)event.preventDefault();
+            $location.path('/login');
+        }
+        else {
+            console.log('ACCESS GRANTED');
+        }
+    });
+}]);
 
 
 ultimotls.filter('unique', function () {
@@ -143,8 +158,10 @@ ultimotls.filter('unique', function () {
     };
 });
 
-ultimotls.controller('getTabs', ['$scope', '$location', '$http', 'queryEnv', function($scope, $location, $http, queryEnv){
+ultimotls.controller('getTabs', ['$scope', '$location', '$http', 'queryEnv', 'treemapSaver',
+    function($scope, $location, $http, queryEnv, treemapSaver){
     $scope.tabBuilder = function(){
+        
         $scope.env = [{name:"Pro", description: "Production", dbName:"PROD"}, 
                    {name:"QA", description:"QA", dbName:"QA"}, 
                    {name:"Dev", description: "Developement", dbName:"DEV"}];
@@ -230,6 +247,9 @@ ultimotls.config(['$routeProvider', function ($routeProvider) {
                 }).
                 when('/setting', {
                     templateUrl: 'ultimotls/setting/settings.html'
+                when('/login', {
+                    templateUrl: 'ultimotls/login.html',
+                    controller: 'loginControllerModule'
                 }).
                 otherwise({
                     redirectTo: '/sunburst'
