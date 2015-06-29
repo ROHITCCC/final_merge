@@ -397,6 +397,25 @@ html {
 #settingpage .form-inline .form-control {
     font-size: 10px !important;
 }
+
+#settingpage .paginationclass{
+    margin: 19px 28px;
+}
+#settingpage .paginationclass span{
+    margin-left:15px;
+    display:inline-block;
+}            
+#settingpage .pagination-controle li{
+    display: inline-block;
+}
+#settingpage .pagination-controle button{
+    font-size: 12px;
+    margin-top: -22px;
+    cursor:pointer;    
+}
+#settingpage .pagination{
+    margin:5px 12px !important;
+}
 .spacer20 { 
     height: 20px; 
     width: 100%; 
