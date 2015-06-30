@@ -258,7 +258,7 @@ sunburstDirectiveModule.directive('sunburstChart', function($location){
         function sendAudit(interface){              //sends audits directly instead of through controller function
             //scope.getAuditsForInterface(p.key);
             var keys = interface.split('.');
-            var interfaceQuery = '{"transactionType":"'+keys[0]+'","application":"'+keys[1]+'","interface1":"'+keys[2]+'","timestamp":{"$gte":{"$date":"'+scope.fromDate+'"},"$lt":{"$date":"'+scope.toDate+'"}},"$and":[{"severity":{"$ne":"null"}},{"severity":{"$exists":"true","$ne":""}}]}';
+            var interfaceQuery = '{"transactionType":"'+keys[0]+'","application":"'+keys[1]+'","interface1":"'+keys[2]+'","envid":"'+scope.env+'","timestamp":{"$gte":{"$date":"'+scope.fromDate+'"},"$lt":{"$date":"'+scope.toDate+'"}},"$and":[{"severity":{"$ne":"null"}},{"severity":{"$exists":"true","$ne":""}}]}';
 
             scope.auditQuery.query(interfaceQuery);
             scope.$apply($location.path("/audits"));
