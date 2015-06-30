@@ -113,17 +113,5 @@ sunburstControllerModule.controller('sunburstController', ['$scope', 'mongoAggre
                      ":{'$literal':'Transaction Type'},'children':'$children.children'}}]";
         $scope.sunburstPromise = mongoAggregateService.callHttp(sliderDataQuery);
         $scope.sunburstSaver.dropdownVal = $scope.timeSelected.time;//Saves TimeSelected when drop down value changes
-    };
-    
-    //get the interface and get the audits. display in audit window
-    $scope.getAuditsForInterface = function(interface){
-
-        var keys = interface.split('.');
-        var interfaceQuery = '{"transactionType":"'+keys[0]+'","application":"'+keys[1]+'","interface1":"'+keys[2]+'","timestamp":{"$gte":{"$date":"'+$scope.fromDate+'"},"$lt":{"$date":"'+$scope.toDate+'"}},"$and":[{"severity":{"$ne":"null"}},{"severity":{"$exists":"true","$ne":""}}]}';
-
-        auditQuery.query(interfaceQuery);
-        $scope.$apply($location.path("/audits"));
-        
-    };
-    
+    };    
 }]);
