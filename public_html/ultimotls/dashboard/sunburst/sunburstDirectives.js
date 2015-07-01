@@ -8,6 +8,7 @@ var sunburstDirectiveModule = angular.module('sunburstDirectiveModule', ['sunbur
 
 sunburstDirectiveModule.directive('sunburstChart', function($location){
     function sunburstChart(data, element, scope){
+        console.log(data);
         var ele = element[0];
         var width = (window.innerWidth), height = (window.innerHeight*.8);
         var margin = {top: height/2, right: width/2, bottom: height/2, left: width/2},
@@ -22,7 +23,11 @@ sunburstDirectiveModule.directive('sunburstChart', function($location){
             .clamp(true)
             .range([90, 20]);
 
-
+        //if no data is available show a message
+        if (data === 0){
+            console.log("no data")
+            
+        }
         //remove SVG before appending. To be replaced by transition.
         d3.select(ele).select("svg").remove();
         d3.select(ele).select("#tooltip").remove();
@@ -272,8 +277,7 @@ sunburstDirectiveModule.directive('sunburstChart', function($location){
         scope.$watch('sunburstPromise', function(){
             scope.sunburstPromise.then(function(data){
                 if(data.data._size === 0){
-                    console.log("No Data available")
-                    scope.errorMsg = "No data is available for this time selected"
+                    sunburstChart(0, element, scope);
                 }
                 else {
                     scope.errorMsg = ""
