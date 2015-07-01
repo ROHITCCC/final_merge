@@ -3,13 +3,12 @@
         <li ng-class="tabClass(tab)" ng-repeat="tab in tabs" tab="tab" style="margin-right: 25px">
             <div class="dropdown" ng-model='env' >
                 <div class="dropdown-toggle" data-toggle="dropdown">
-                    <a href="{{tab.link}}" ng-click="setSelectedTab(tab)"><h4 id="{{tab.label}}">{{tab.label}}</h4></a>
-                    <span class='caret' onclick='data-toogle'></span>
+                    <a onclick='data-toogle'><h4 id="{{tab.label}}">{{tab.label}}</h4></a>
                 </div>
                 <ul class="dropdown-menu" >
                     <li>
-                        <a ng-repeat="id in env"  href="{{tab.link}}">
-                            <p ng-click="setEnviroment(tab.label,id)">{{id.description}}</p>
+                        <a ng-repeat="id in env" href="{{tab.link}}" ng-click="setEnvironment(tab.label,id);setSelectedTab(tab)">
+                            <p >{{id.description}}</p>
                         </a>
                     </li>
                 </ul>
