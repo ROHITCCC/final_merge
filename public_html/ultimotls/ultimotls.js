@@ -18,6 +18,7 @@ var ultimotls = angular.module('ultimotls', ['auditControllerModule', 'sunburstD
  
 ultimotls.controller('loginControllerModule', ['$scope', '$http', '$q', '$base64', '$location','localStorageService', 'treemapSaver',
     function ($scope, $http, $q, $base64, $location, localStorageService, treemapSaver ){ //loging Controller
+        $scope.cred;
         $scope.treemapSaver = treemapSaver;
         $scope.treemapSaver.showNav = false;
         console.log('*************** LoginCtrl');
