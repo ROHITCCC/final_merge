@@ -12,7 +12,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
         $scope.rowsOptions = [{rows: 5}, {rows: 10}, {rows: 25}, {rows: 50}, {rows: 100}];
         $scope.rowNumber = $scope.rowsOptions[2];
         $scope.searchCriteria = "{\"transactionId\":\"BBQ1234\"}";
-        $scope.predicate = 'timestamp';
+        $scope.predicate = 'timestamp.$date';
         //Replay Page Options
         $scope.replayOptions = [{type: "REST"}, {type: "FILE"}, {type: "WS"}];
         $scope.replayType = $scope.replayOptions[0];
@@ -85,7 +85,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                                         }).error(function(d){
                                             $scope.errorWarning = "Call Timed Out";
                                         });
-                                $scope.predicate = 'timestamp'; //by defualt it will order results by result
+                                $scope.predicate = 'timestamp.$date'; //by defualt it will order results by result
                             }
                             else if($scope.myBool.name === "OR"){
                                 var getOrUrl = getURL+"?filter={$or:["+$scope.advanceSearch+","+
@@ -98,7 +98,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                                         }).error(function(d){
                                             $scope.errorWarning = "Call Timed Out";
                                         });
-                                $scope.predicate = 'timestamp'; //by defualt it will order results by date
+                                $scope.predicate = 'timestamp.$date'; //by defualt it will order results by date
                             }
                             else if ($scope.myBool.name === "NOT") {
                                 var str = $scope.secondField;
@@ -115,7 +115,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                                         }).error(function(d){
                                             $scope.errorWarning = "Call Timed Out";
                                         });
-                                $scope.predicate = 'timestamp'; //by defualt it will order results by
+                                $scope.predicate = 'timestamp.$date'; //by defualt it will order results by
                             }
                         }
                         else if(( toDate || fromDate ) && !( toDate && fromDate )){
@@ -132,7 +132,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                                         }).error(function(d){
                                             $scope.errorWarning = "Call Timed Out";
                                         });
-                                $scope.predicate = 'timestamp'; //by defualt it will order results by result
+                                $scope.predicate = 'timestamp.$date'; //by defualt it will order results by result
                             }
                             else if ($scope.myBool.name === "NOT") {
                                 var str = $scope.secondField;
@@ -148,7 +148,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                                         }).error(function(d){
                                             $scope.errorWarning = "Call Timed Out";
                                         });
-                                $scope.predicate = 'timestamp'; //by defualt it will order results by
+                                $scope.predicate = 'timestamp.$date'; //by defualt it will order results by
                             }
                             else if($scope.myBool.name === "OR"){
                                 var getOrUrl = getURL+"?filter={$or:["+$scope.advanceSearch+","+
@@ -160,7 +160,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                                         }).error(function(d){
                                             $scope.errorWarning = "Call Timed Out";
                                         });
-                                $scope.predicate = 'timestamp'; //by defualt it will order results by date
+                                $scope.predicate = 'timestamp.$date'; //by defualt it will order results by date
                             }
                             else {
                                 $log.info("Not passing Current value");
@@ -186,7 +186,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                         }).error(function(d){
                             $scope.errorWarning = "Call Timed Out";
                         });
-                    $scope.predicate = 'timestamp'; //by defualt it will order results by date
+                    $scope.predicate = 'timestamp.$date'; //by defualt it will order results by date
                 }
                 else{
                     $scope.errorWarning = "A valid date must be entered for BOTH fields";
