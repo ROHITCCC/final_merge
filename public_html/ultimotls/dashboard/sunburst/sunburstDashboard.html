@@ -8,7 +8,7 @@
                     </div>
                     <ul class="dropdown-menu" ng-model="timeOptions" style="min-width: 100px;  left: 42px;">
                         <li ng-repeat="time in timeOptions">
-                            <a><p ng-click="fromDateChange(time)">{{time.description}}</p></a>
+                            <a ng-click="fromDateChange(time)"><p>{{time.description}}</p></a>
                         </li>
                     </ul>
             </div>

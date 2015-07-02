@@ -498,7 +498,7 @@ html {
 }
 
 .form-control {
-    font-size: 10px;
+    font-size: 12px;
 }
 
 #advSearchDiv .form-group {
@@ -559,4 +559,8 @@ div#legend {
 
 #landingPageHeader .dropdown-menu {
   min-width: 20px;
+}
+#timedropdown{
+    margin: 0px;
+    padding-top: 0px;
 }

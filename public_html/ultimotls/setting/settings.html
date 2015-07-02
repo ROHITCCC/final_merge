@@ -122,7 +122,7 @@
             <div class="panel-body"> <!-- Container todo -->
                 <form class="form-inline" role="form"> <!-- form todo -->
                     <div class="col-sm-12"> <!--immidate todo div -->
-                        <button type="button" class="btn tabselector" data-toggle="collapse" data-target="#immidate" aria-expanded="false" aria-controls="immidate">Immidate Notification</button>
+                        <button type="button" class="btn tabselector" data-toggle="collapse" data-target="#immidate"  aria-controls="immidate">Immidate Notification</button>
                         <div id="immidate" class="collapse"> <!--immidate fields div -->
                             <div class="form-group bordertab col-sm-8">                                       
                                 <div class="col-sm-2">
@@ -215,29 +215,23 @@
                     <div class="col-sm-12"> <!--aggridated todo div -->
                         <button type="button" class="btn tabselector" data-toggle="collapse" data-target="#aggrigated">Aggrigated Periodic Report</button>
                         <div id="aggrigated" class="collapse"> <!--aggrigated fields div -->
-                            <div class="form-group bordertab" >
-                                <div class="col-sm-3">
-                                    <label class="control-label">Frequency:</label>
-                                </div>
-                                <div class="col-sm-4">
-                                    <input type="text" class="form-control" id="aggri_freq" value="" placeholder="Frequency">
-                                </div>
-                                <div class="col-sm-1">
-                                    <label class="control-label">Unit:</label>
-                                </div>
-                                <div class="col-sm-2">
-                                    <input type="text" class="form-control" id="aggri_freq_unit" value=""placeholder="unit">
-                                </div>
-                            </div><!-- frequency div -->
-                            <div >
-                                <div class="form-group bordertab ng-scope col-sm-3" id="aggri_{{$index}}" data-ng-repeat="report in reports|pagination: curPageAggri * pageSizeAggri|limitTo: pageSizeAggri">
+                            <div class="form-group bordertab ng-scope col-sm-3" id="aggri_{{$index}}" data-ng-repeat="report in reports|pagination: curPageAggri * pageSizeAggri|limitTo: pageSizeAggri">
+                                <form id="formAggri{{$index}}">
+                                    <div class="row">
+                                        <div class="col-sm-3">
+                                            <label class="control-label">Environment</label>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <input type="text" class="form-control" id="aggri_env"  value="{{report.reports.environment}}" placeholder="Environment" required>
+                                        </div>
+                                    </div>
 
                                     <div class="row">
                                         <div class="col-sm-3">
                                             <label class="control-label">Application</label>
                                         </div>
                                         <div class="col-sm-6">
-                                            <input type="text" class="form-control" id="aggri_name"  value="{{report.reports.application}}" placeholder="Name">
+                                            <input type="text" class="form-control" id="aggri_name"  value="{{report.reports.application}}" placeholder="Name" required>
                                         </div>
                                     </div>
 
@@ -274,10 +268,20 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-sm-3">
+                                            <label class="control-label">Duration</label>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <input type="text" class="form-control" value="{{report.reports.frequency.duration}}" placeholder="Duration" required>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-3">
                                             <label class="control-label">Unit</label>
                                         </div>
                                         <div class="col-sm-6">
-                                            <input type="text" class="form-control" value="{{report.reports.frequency.unit}}" placeholder="Unit">
+                                            <select class="form-control" ng-model='selectedUnit'  ng-options='unit for unit in units'>
+                                                <option value="{{report.reports.frequency.unit}}" selected="selected">{{report.reports.frequency.unit}}</option>
+                                            </select>
                                         </div>
                                     </div>
                                     <div class="row">
@@ -289,31 +293,30 @@
                                         </div>
                                     </div>
                                     <br>
-                                    <button class="btn btn-success" ng-click="removeAggrigated($index)">Save</button>
+                                    <button type="submit" class="btn btn-success" ng-click="saveAggrigated($index)">Save</button>
                                     <button class="btn btn-danger pull-right" ng-click="removeAggrigated($index)">Remove Report</button>
-
-                                </div><!-- notifications div -->
-                                <div class="col-sm-12">
-                                    <button class="btn addfields" ng-click="addNewAggrigated()">New Report</button>
-                                    <div class="pagination pagination-centered" ng-show="reports"> <!-- Pagination Aggrigated -->
-                                        <ul class="pagination-controle pagination">
-                                            <li>
-                                                <button type="button" class="btn btn-primary" ng-disabled="curPageAggri == 0"ng-click="curPageAggri = curPageAggri - 1"> &lt; PREV</button>
-                                            </li>
-                                            <li>
-                                                <span>Page {{curPageAggri + 1}} of {{ numberOfPagesAggri()}}</span>
-                                            </li>
-                                            <li>
-                                                <button type="button" class="btn btn-primary" ng-disabled="curPageAggri >= reports.length / pageSizeAggri - 1" ng-click="curPageAggri = curPageAggri + 1">NEXT &gt;</button>
-                                            </li>
-                                        </ul>
-                                    </div><!-- END Pagination Aggrigated -->
-                                </div>
-                            </div> <!-- aggrigated div -->
-                        </div><!--aggrigated fields div -->
-                    </div> <!--aggridated todo div -->
-                </form> <!-- form todo -->
-            </div> <!--Container todo -->
-        </div> <!-- Panel todo -->      
-    </div> <!-- both div container -->
+                            </div><!-- notifications div -->
+                            <div class="col-sm-12">
+                                <button class="btn addfields" ng-click="addNewAggrigated()">New Report</button>
+                                <div class="pagination pagination-centered" ng-show="reports"> <!-- Pagination Aggrigated -->
+                                    <ul class="pagination-controle pagination">
+                                        <li>
+                                            <button type="button" class="btn btn-primary" ng-disabled="curPageAggri == 0"ng-click="curPageAggri = curPageAggri - 1"> &lt; PREV</button>
+                                        </li>
+                                        <li>
+                                            <span>Page {{curPageAggri + 1}} of {{ numberOfPagesAggri()}}</span>
+                                        </li>
+                                        <li>
+                                            <button type="button" class="btn btn-primary" ng-disabled="curPageAggri >= reports.length / pageSizeAggri - 1" ng-click="curPageAggri = curPageAggri + 1">NEXT &gt;</button>
+                                        </li>
+                                    </ul>
+                                </div><!-- END Pagination Aggrigated -->
+                            </div>
+                        </div> <!-- aggrigated div -->
+                    </div><!--aggrigated fields div -->
+            </div> <!--aggridated todo div -->
+            </form> <!-- form todo -->
+        </div> <!--Container todo -->
+    </div> <!-- Panel todo -->      
+</div> <!-- both div container -->
 </div> <!--end controller -->

@@ -11,7 +11,7 @@ var TLS_SERVER = "172.16.120.157";
 var TLS_PORT = "8080";
 var TLS_DBNAME = "ES";
 var TLS_SERVER_TIMEOUT = 3000;
-var TLS_EXPIRATION_TIME =  1 //in minutes
+var TLS_EXPIRATION_TIME =  30 //in minutes
    
 //(function(angular){
 var ultimotls = angular.module('ultimotls', ['auditControllerModule', 'sunburstDirectiveModule', 'auditDirectiveModule' , 'treemapDirectiveModule', 'base64', 'LocalStorageModule', 'settingModule', 'ui.router']);
