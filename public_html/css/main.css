@@ -302,8 +302,7 @@ path {
     cursor: pointer;
 }
 #row2{
-    min-height: 100%
-}
+    /* min-height: 100% */}
 
 circle {
     fill: none;
@@ -550,7 +549,7 @@ button[disabled] {
 }
 
 button#zoomOut {
-  padding-top: 10px;
+  /* padding-top: 10px; */
 }
 div#legend {
   margin-bottom: 15px;
