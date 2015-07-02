@@ -20,7 +20,7 @@ treemapControllerModule.controller('treemapController', ['$scope', '$location', 
     $scope.$on("envChangeBroadcast", function(){
         $scope.env = queryEnv.getEnv();
         console.log($scope.env);
-        $scope.fromDateChange();
+        $scope.fromDateChange($scope.timeSelected);
     })
     if($scope.treemapSaver.wordLength === undefined)$scope.treemapSaver.wordLength = []
     if(!$scope.toDate){
