@@ -8,7 +8,7 @@ var treemapDirectiveModule = angular.module('treemapDirectiveModule', ['treemapC
 
 treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location', function($http,$injector, $location){
         
-         var w = window.innerWidth*.9,
+         var w = window.innerWidth*.9, w2=w*.8,
                 h = window.innerHeight*.7,
                 x = d3.scale.linear().range([0, w]),
                 y = d3.scale.linear().range([0, h]),
@@ -22,7 +22,8 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                 transformArr = [{}],
                 svgDivider = 0,
                 parCellSpacer=0,
-                parCellCounter=1;
+                parCellCounter=1,
+                headerFlag = false;
                 
         var svg = d3.select("#treemapZoom").append("div")
                 .attr("class", "chart")
@@ -40,14 +41,16 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
         var parSvg = d3.select("#legend").append("div")
                 .attr("class", "chart")
                 .attr("id", "treemapLegend")
-                .style("width", w + "px")
+                .style("width", w2 + "px")
                 .style("height","20px")
-              .append("svg")
-                .attr("width", w)
+              .append("svg").attr("class", "chart")
+                .attr("id", "treemapLegend")
+                .attr("width", w2)
                 .attr("height", "19px")
                 .attr("id", "treemapLegendSVG");
     function updateSize(resizeTemp, element, scope){
             w=window.innerWidth*.9;
+            w2 = w*.8;
             h=window.innerHeight*.7;
             x = d3.scale.linear().range([0, w]);
             y = d3.scale.linear().range([0, h]);
@@ -61,13 +64,13 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
         
         parCellCounter=1;
             d3.select("#legend").select("div")
-                .style("width", w + "px")
+                .style("width", w2 + "px")
                 .style("height","20px")
             .select("svg")
-                .attr("width", w)
+                .attr("width", w2)
                 .attr("height", "19px")
             .selectAll("g")
-                .attr("transform", function(d) {parCellSpacer = w*(parCellCounter/scope.treemapSaver.dividerSaver)*.8;
+                .attr("transform", function(d) {parCellSpacer = w2*(parCellCounter/scope.treemapSaver.dividerSaver)*.8;
                 parCellCounter++;return "translate(" + parCellSpacer + ",0)"; });
         
             
@@ -113,10 +116,10 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                 parSvg = d3.select("#legend").append("div")
                 .attr("class", "chart")
                 .attr("id", "treemapLegend")
-                .style("width", w + "px")
+                .style("width", w2 + "px")
                 .style("height","20px")
               .append("svg")
-                .attr("width", w)
+                .attr("width", w2)
                 .attr("height", "19px")
                 .attr("id", "treemapLegendSVG");
             }
@@ -149,7 +152,7 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
             
             parCell.enter().append("g").attr("class", "cellParent")     //creates header titles
                     .attr("id", function(d){svgDivider++;return d.name;})
-                    .attr("transform", function(d) {parCellSpacer = w*(parCellCounter/svgDivider)*.8;
+                    .attr("transform", function(d) {parCellSpacer = w2*(parCellCounter/svgDivider)*.8;
                         parCellCounter++;return "translate(" + parCellSpacer + ",0)"; })
                     .on("mouseover", mouseOverCell)
                     .on("mouseout", mouseOutCell)
@@ -169,8 +172,8 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
             svgDivider=0;
                 parCell.select("rect")
                     .attr("id",function(d){svgDivider++;return d.name;})
-                    .attr("width", (w/(svgDivider))*.7 )
-                    .attr("height", "25px")
+                    .attr("width", (w2/(svgDivider))*.7 )
+                    .attr("height", "20px")
                     .style("fill", function(d) { return color(d.name); });
             scope.treemapSaver.dividerSaver = svgDivider;
                 parCell.exit().remove();
@@ -322,8 +325,8 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                 y.domain([d.y, d.y + d.dy]);
                 var auditParam=null;
                 auditParam = parent + "." + name;       //string to send to audit service
-                if(auditParam !== "flag.flag")console.log(auditParam);
-               
+                console.log(auditParam);
+               if(auditParam === "0.0")headerFlag = true;
                 if((name !== "flag" && parent !== "flag")){     //checks if zoomout was not clicked
                     d3.select("#zoomOut").transition().duration(750).style("opacity",1)
                     var zx = 0;
@@ -386,6 +389,11 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                        //.style("opacity", function(d) { d.w = this.getComputedTextLength(); return d.dx > d.w ? 1 : 0; });
                         remakeFlag = true;
                         
+                        if(headerFlag){
+                            $("#"+tempName).d3Click();
+                               $("#zoomOut").d3Click();
+                               headerFlag=false;
+                           }
                         if(resized === true){
                             if(!zoomFlag&&!zoomFlag2){      //if a single cell is zoomed in on, clicks the cell once after zooming out
                                 $("#"+tempName).d3Click();  //to return to the parent node
@@ -393,6 +401,7 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                         }
                         if(zoomFlag2)zoomFlag2 = false;
                            zoomFlag = false;
+                           
 
                     }
                     
@@ -493,8 +502,7 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                 //temp._embedded['rh:doc'].children = data.data._embedded['rh:doc']; //adds data to the new object structure 
 
                     createZoomTree(temp, element, "true", scope, true); //("selects id of the graph in html","takes new data", "appends to the element", "calls the graph rendering function"
-            //console.log(temp);
-            //createZoomTree(temp, element, scope);
+            
             });
         $(window).resize(function(){
                updateSize(scope.treemapSaver.resizeTemp, element, scope);

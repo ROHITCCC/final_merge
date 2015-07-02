@@ -22,9 +22,10 @@ ultimotls.controller('loginControllerModule', ['$scope', '$http', '$q', '$base64
         $scope.treemapSaver = treemapSaver;
         $scope.treemapSaver.showNav = false;
         console.log('*************** LoginCtrl');
-        
+        $scope.treemapSaver.nameSaver=localStorageService.cookie.get('name')
         $scope.isLoggedin = function () {
             var _credentials = localStorageService.cookie.get('creds');
+            
             if (angular.isUndefined(_credentials) || _credentials === null) {
                 return false;
                 
@@ -53,6 +54,7 @@ ultimotls.controller('loginControllerModule', ['$scope', '$http', '$q', '$base64
                 var auth_token = header()['auth-token'] //pulling our auth-token
                 //creating credentials based off of username and auth-token
                 credentials = $base64.encode($scope.cred.username + ":" + auth_token);
+                localStorageService.cookie.add('name', $scope.cred.username, TLS_EXPIRATION_TIME/(24*60));
                 if (!angular.isUndefined(data) && data !== null && !angular.isUndefined(data.authenticated) && data.authenticated) {
                     $scope.loginError = ""
                     console.log('*** authenticated.');
