@@ -11,26 +11,27 @@ var TLS_SERVER = "172.16.120.157";
 var TLS_PORT = "8080";
 var TLS_DBNAME = "ES";
 var TLS_SERVER_TIMEOUT = 3000;
+var TLS_EXPIRATION_TIME =  1 //in minutes
    
 //(function(angular){
-var ultimotls = angular.module('ultimotls', ['auditControllerModule', 'sunburstDirectiveModule', 'auditDirectiveModule' , 'treemapDirectiveModule', 'ngRoute', 'ngCookies', 'base64', 'LocalStorageModule', 'settingModule']);
+var ultimotls = angular.module('ultimotls', ['auditControllerModule', 'sunburstDirectiveModule', 'auditDirectiveModule' , 'treemapDirectiveModule', 'base64', 'LocalStorageModule', 'settingModule', 'ui.router']);
  
-ultimotls.controller('loginControllerModule', ['$scope', '$http', '$q', '$base64', '$location','localStorageService', 'treemapSaver',
-    function ($scope, $http, $q, $base64, $location, localStorageService, treemapSaver){ //loging Controller
-        
-        //$scope.cred.screen = true; //default
+ultimotls.controller('loginControllerModule', ['$scope', '$http', '$q', '$base64', '$location','localStorageService', 'treemapSaver','$timeout',
+    function ($scope, $http, $q, $base64, $location, localStorageService, treemapSaver, $timeout ){ //loging Controller
+        $scope.cred;
         $scope.treemapSaver = treemapSaver;
         $scope.treemapSaver.showNav = false;
         console.log('*************** LoginCtrl');
         
         $scope.isLoggedin = function () {
-            var _credentials = $sessionStorage.get('creds');
-
-            if (ultimotls.isUndefined(_credentials) || _credentials === null) {
+            var _credentials = localStorageService.cookie.get('creds');
+            if (angular.isUndefined(_credentials) || _credentials === null) {
                 return false;
+                
             }
             else {
                 return true;
+                
             }
         }
         $scope.login = function () {
@@ -52,15 +53,20 @@ ultimotls.controller('loginControllerModule', ['$scope', '$http', '$q', '$base64
                 var auth_token = header()['auth-token'] //pulling our auth-token
                 //creating credentials based off of username and auth-token
                 credentials = $base64.encode($scope.cred.username + ":" + auth_token);
-                
                 if (!angular.isUndefined(data) && data !== null && !angular.isUndefined(data.authenticated) && data.authenticated) {
+                    $scope.loginError = ""
                     console.log('*** authenticated.');
                     console.log('*** user roles: ' + data.roles);
                     console.log(credentials);
                     $scope.treemapSaver.showNav = true;
+                    localStorageService.cookie.add('showNav', $scope.treemapSaver.showNav, TLS_EXPIRATION_TIME/(24*60));
                     $http.defaults.headers.common["Authorization"] = 'Basic ' + credentials;
-                    localStorageService.set('creds', credentials);
-                    $scope.$apply($location.path("/sunburst"));
+                    localStorageService.cookie.add('creds', credentials, TLS_EXPIRATION_TIME/(24*60));
+                    $timeout(function() {
+                        delete $http.defaults.headers.common["Authorization"];
+                        console.log('Authorization Expired')
+                    }, TLS_EXPIRATION_TIME*60*1000);
+                    $scope.$apply($location.path("/treemap"));
                     
                     
                     //Change location to Dashboard Page
@@ -69,8 +75,9 @@ ultimotls.controller('loginControllerModule', ['$scope', '$http', '$q', '$base64
                     deferred.resolve();
                 }
                 else {
+                    $scope.loginError = "Username and/or password is incorrect"
                     console.log('*** authentication failed. wrong credentials.');
-                    localStorageService.remove('creds');
+                    localStorageService.cookie.remove('creds');
                     delete $http.defaults.headers.common["Authorization"];
                     $scope.authWrongCredentials = true;
 
@@ -80,6 +87,7 @@ ultimotls.controller('loginControllerModule', ['$scope', '$http', '$q', '$base64
             });
 //
             request.error(function (data, status, header, config) {
+                $scope.loginError = "Username and/or password is incorrect"
                 console.log('authentication error');
                 console.log(status);
                 console.log(data);
@@ -99,31 +107,46 @@ ultimotls.controller('loginControllerModule', ['$scope', '$http', '$q', '$base64
             $scope.$apply($location.path("/login"));
             console.log($http.defaults.headers.common["Authorization"])
             $scope.auth = false;
-            localStorageService.remove('creds');
+            localStorageService.cookie.remove('creds');
+            localStorageService.cookie.remove('showNav');
             delete $http.defaults.headers.common["Authorization"];
             
             //UNTESTED DELETE FUNCTION
-            $http({method: 'DELETE',headers: {'Authorization': $http.defaults.headers.common["Authorization"]},
-                url: TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/_authtokens/" +$scope.treemapSaver.nameSaver                
-            })
+//            $http({method: 'DELETE',headers: {'Authorization': $http.defaults.headers.common["Authorization"]},
+//                url: TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/_authtokens/" +$scope.treemapSaver.nameSaver                
+//            })
             //UNTESTED DELETE FUNCTION
             
             
         };
 }]);
 
-ultimotls.run(['$rootScope', '$location', 'treemapSaver', function ($rootScope, $location, treemapSaver) {
-    
-        $rootScope.$on('$routeChangeStart', function (event) {
+ultimotls.run(['$rootScope', '$location', 'treemapSaver', 'localStorageService', '$http', 
+    function ($rootScope, $location, treemapSaver, localStorageService, $http) {
         
-        if (!treemapSaver.showNav) {
-            console.log('ACCESS DENIED');
-            if(document.getElementById("loginContainter") !== null)event.preventDefault();
-            $location.path('/login');
-        }
-        else {
-            console.log('ACCESS GRANTED');
-        }
+        $rootScope.$on('$stateChangeStart', function (event) {
+            var _credentials = localStorageService.cookie.get('creds');
+            treemapSaver.showNav = localStorageService.cookie.get('showNav');
+            if (angular.isUndefined(_credentials) || _credentials === null) {
+                console.log('NO CREDENTIALS');
+                if(document.getElementById("loginContainter") !== null)event.preventDefault();
+                delete $http.defaults.headers.common["Authorization"];
+                $location.path('/login');
+                return false;
+                
+            }
+            else {
+                if (!treemapSaver.showNav) {
+                    console.log('ACCESS DENIED');
+                    if(document.getElementById("loginContainter") !== null)event.preventDefault();
+                    $location.path('/login');
+                }
+                else {
+                    $http.defaults.headers.common["Authorization"] = 'Basic ' + _credentials;
+                    console.log('ACCESS GRANTED');
+                }
+            }
+            
     });
 }]);
 
@@ -167,25 +190,22 @@ ultimotls.filter('unique', function () {
     };
 });
 
-ultimotls.controller('getTabs', ['$scope', '$location', '$http', 'queryEnv', 'treemapSaver',
-    function($scope, $location, $http, queryEnv, treemapSaver){
+ultimotls.controller('getTabs', ['$scope', '$location', 'queryEnv',
+    function($scope, $location, queryEnv){
     $scope.tabBuilder = function(){
         
         $scope.env = [{name:"Pro", description: "Production", dbName:"PROD"}, 
                    {name:"QA", description:"QA", dbName:"QA"}, 
                    {name:"Dev", description: "Developement", dbName:"DEV"}];
-//        $scope.currentEnv = $scope.env[0]
-//        $scope.setCurrentEnv = function(setEnv){
-//            $scope.currentEnv = setEnv;
 //        };
              $scope.tabs = [
-                { link : '#/sunburst', label : 'Dashboard' },
+                { link : '#/treemap', label : 'Dashboard' },
                 { link : '#/audits', label : 'Audits' },
-                { link : '#/treemap', label : 'Treemap Dashboard' }
+                { link : '#/sunburst', label : 'Sunburst Dashboard' }
               ]; 
-            $scope.setEnviroment = function(tab, env){
+            $scope.setEnvironment = function(tab, env){
                 $scope.rootTab = document.getElementById(tab);
-                $scope.rootTab.innerHTML = env.name+"-"+tab;
+                $scope.rootTab.innerHTML = env.name+" "+tab;
                 queryEnv.setEnv(env.dbName);
                 queryEnv.broadcast();
             };
@@ -227,45 +247,51 @@ ultimotls.directive('tabsPanel', function () {
     };
 });
 
-ultimotls.config(['$routeProvider', function ($routeProvider) {
-        $routeProvider.
-                when('/audits', {
-                    templateUrl: 'ultimotls/audit/searchApp.html',
-                    controller: 'DataRetrieve',
-                    resolve: {
-                        initPromise:['auditSearch','auditQuery', function(auditSearch, auditQuery){
-                            var rowNumber = {'rows': 25};
-                            var query = auditQuery.query();
-                            
-                            if( query!= ''){
-                                var data = auditSearch.doSearch(query, rowNumber);
-                               
-                               return data;
-                            }
-                            
-                            return;
-                        }]
-                    } 
-                    
-                }).
-                when('/sunburst', {
-                    templateUrl: 'ultimotls/dashboard/sunburst/sunburstDashboard.html'
-                }).
-                when('/treemap', {
-                    templateUrl: 'ultimotls/dashboard/treemap/treemapDashboard.html'
-                }).
-                when('/setting', {
-                    templateUrl: 'ultimotls/setting/settings.html'
-                }).
-                when('/login', {
-                    templateUrl: 'ultimotls/login.html',
-                    controller: 'loginControllerModule'
-                }).
-                otherwise({
-                    redirectTo: '/sunburst'
-                });
-    }]);
+ultimotls.config(function ($stateProvider, $urlRouterProvider) {
+    
+    $urlRouterProvider.otherwise("/login");
+    
+    $stateProvider
+        .state('sunburst',{
+            url: "/sunburst",
+            templateUrl: 'ultimotls/dashboard/sunburst/sunburstDashboard.html'
+        })
+        .state('audits', {
+            url: "/audits",
+            templateUrl: 'ultimotls/audit/searchApp.html',
+            controller: 'DataRetrieve',
+            resolve: {
+                initPromise:['auditSearch','auditQuery', function(auditSearch, auditQuery){
+                    var rowNumber = {'rows': 25};
+                    var query = auditQuery.query();
 
+                    if( query!= ''){
+                        var data = auditSearch.doSearch(query, rowNumber);
+
+                       return data;
+                    }
+
+                    return;
+                }]
+            }
+        })
+        .state('treemap', {
+            url: "/treemap",
+            templateUrl: 'ultimotls/dashboard/treemap/treemapDashboard.html'
+        })
+        .state('setting', {
+            url: "/setting",
+            templateUrl: 'ultimotls/setting/settings.html'
+        })
+        .state('login', {
+            url:"/login",
+            templateUrl: 'ultimotls/login.html',
+            controller: 'loginControllerModule'
+        })
+    // this trick must be done so that we don't receive
+    // `Uncaught Error: [$injector:cdep] Circular dependency found`
+
+});
 
 ultimotls.factory("mongoAggregateService", function ($http) {
     var postUrl = TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/_logic/"+TLS_DBNAME+"/"+TLS_AUDIT_COLLECTION+"/aggregate";
@@ -284,6 +310,7 @@ ultimotls.factory("mongoAggregateService", function ($http) {
     };
     return callAggregate;
 });
+
 ultimotls.service("queryEnv", function($rootScope){ //getter and setter for environment 
     var envid = "PROD";
     var environment = {};
@@ -301,7 +328,7 @@ ultimotls.service("queryEnv", function($rootScope){ //getter and setter for envi
         $rootScope.$broadcast("envChangeBroadcast")
     }
     return environment;
-})
+});
 
 ultimotls.service("auditSearch",['$http', function ($http) {
     var postUrl =TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/"+TLS_DBNAME+"/"+TLS_AUDIT_COLLECTION+"?filter=";

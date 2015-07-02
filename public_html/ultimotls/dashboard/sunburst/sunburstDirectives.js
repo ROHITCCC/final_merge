@@ -8,6 +8,7 @@ var sunburstDirectiveModule = angular.module('sunburstDirectiveModule', ['sunbur
 
 sunburstDirectiveModule.directive('sunburstChart', function($location){
     function sunburstChart(data, element, scope){
+        console.log(data);
         var ele = element[0];
         var width = (window.innerWidth), height = (window.innerHeight*.8);
         var margin = {top: height/2, right: width/2, bottom: height/2, left: width/2},
@@ -22,7 +23,21 @@ sunburstDirectiveModule.directive('sunburstChart', function($location){
             .clamp(true)
             .range([90, 20]);
 
-
+        //if no data is available show a message
+        if (data === 0){
+            console.log("no data")
+            d3.select(ele).select("svg").remove();
+            d3.select(ele).select("#tooltip").remove();
+          var svg = d3.select(ele).append("svg")
+                .attr("width", margin.left + margin.right)
+                .attr("height", margin.top + margin.bottom)
+              .append("g")
+                .attr("transform", "translate(" + (width-60)/2 + "," + margin.top + ")");
+              
+          svg.append("text")
+                .text("No Data Available")
+          return;
+        }
         //remove SVG before appending. To be replaced by transition.
         d3.select(ele).select("svg").remove();
         d3.select(ele).select("#tooltip").remove();
@@ -258,7 +273,7 @@ sunburstDirectiveModule.directive('sunburstChart', function($location){
         function sendAudit(interface){              //sends audits directly instead of through controller function
             //scope.getAuditsForInterface(p.key);
             var keys = interface.split('.');
-            var interfaceQuery = '{"transactionType":"'+keys[0]+'","application":"'+keys[1]+'","interface1":"'+keys[2]+'","timestamp":{"$gte":{"$date":"'+scope.fromDate+'"},"$lt":{"$date":"'+scope.toDate+'"}},"$and":[{"severity":{"$ne":"null"}},{"severity":{"$exists":"true","$ne":""}}]}';
+            var interfaceQuery = '{"transactionType":"'+keys[0]+'","application":"'+keys[1]+'","interface1":"'+keys[2]+'","envid":"'+scope.env+'","timestamp":{"$gte":{"$date":"'+scope.fromDate+'"},"$lt":{"$date":"'+scope.toDate+'"}},"$and":[{"severity":{"$ne":"null"}},{"severity":{"$exists":"true","$ne":""}}]}';
 
             scope.auditQuery.query(interfaceQuery);
             scope.$apply($location.path("/audits"));
@@ -272,8 +287,7 @@ sunburstDirectiveModule.directive('sunburstChart', function($location){
         scope.$watch('sunburstPromise', function(){
             scope.sunburstPromise.then(function(data){
                 if(data.data._size === 0){
-                    console.log("No Data available")
-                    scope.errorMsg = "No data is available for this time selected"
+                    sunburstChart(0, element, scope);
                 }
                 else {
                     scope.errorMsg = ""

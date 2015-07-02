@@ -96,11 +96,10 @@ describe("Testing ultimotls controllers", function(){
           controller = $controller('loginControllerModule', {'$scope': scope});
         }));
         
-        it('loginControllerModule controller functions testing',
-          function() {
-            expect(scope.login.screen).toBeTruthy(); 
-            scope.validateUser();
-            expect(scope.login.screen).toBeFalsy();
+        it('loginControllerModule controller functions testing', function() {
+            //scope.validateUser();
+            expect(scope.isLoggedin).toBeTruthy();
+            expect(scope.login.authError).toBe("");
           });
       });
 });
