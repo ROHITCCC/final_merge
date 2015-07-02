@@ -1,0 +1,106 @@
+{
+  "_embedded": {
+    "rh_doc": [
+      {
+        "_embedded": {},
+        "_links": {
+          "self": {
+            "href": "/_logic/ES/EC/SettingService/558db28c4d2698d76f7a422d"
+          },
+          "rh:coll": {
+            "href": "/_logic/ES/EC"
+          },
+          "curies": [
+            {
+              "href": "http://www.restheart.org/docs/v0.10/#api-doc-{rel}",
+              "name": "rh"
+            }
+          ]
+        },
+        "_type": "DOCUMENT",
+        "_id": {
+          "$oid": "558db28c4d2698d76f7a422d"
+        },
+        "reports": {
+          "application": "SOA",
+          "interface": "UpdateCustomerService",
+          "errortype": "Technical",
+          "frequency": {
+            "duration": "1",
+            "unit": "hrs"
+          },
+          "email": "anteneh@ultimosoft.com"
+        }
+      },
+      {
+        "_embedded": {},
+        "_links": {
+          "self": {
+            "href": "/_logic/ES/EC/SettingService/558db2b34d2698d76f7a422e"
+          },
+          "rh:coll": {
+            "href": "/_logic/ES/EC"
+          },
+          "curies": [
+            {
+              "href": "http://www.restheart.org/docs/v0.10/#api-doc-{rel}",
+              "name": "rh"
+            }
+          ]
+        },
+        "_type": "DOCUMENT",
+        "_id": {
+          "$oid": "558db2b34d2698d76f7a422e"
+        },
+        "reports": {
+          "application": "EBS",
+          "interface": "CreateCustomerPLSQL",
+          "errortype": "Buisness",
+          "frequency": {
+            "duration": "2",
+            "unit": "hrs"
+          },
+          "email": "anteneh@ultimosoft.com"
+        }
+      }
+    ]
+  },
+  "_links": {
+    "self": {
+      "href": "/_logic/ES/EC/SettingService"
+    },
+    "rh:db": {
+      "href": "/_logic/ES/EC"
+    },
+    "rh:filter": {
+      "href": "/_logic/ES/EC/SettingService/{?filter}",
+      "templated": true
+    },
+    "rh:sort": {
+      "href": "/_logic/ES/EC/SettingService/{?sort_by}",
+      "templated": true
+    },
+    "rh:paging": {
+      "href": "/_logic/ES/EC/SettingService/{?page}{&pagesize}",
+      "templated": true
+    },
+    "rh:countandpaging": {
+      "href": "/_logic/ES/EC/SettingService/{?page}{&pagesize}&count",
+      "templated": true
+    },
+    "rh:indexes": {
+      "href": "/_logic/ES/EC/SettingService/_indexes"
+    },
+    "curies": [
+      {
+        "href": "http://www.restheart.org/docs/v0.10/#api-coll-{rel}",
+        "templated": true,
+        "name": "rh"
+      }
+    ]
+  },
+  "_type": "DOCUMENT",
+  "_size": 2,
+  "_total_pages": 1,
+  "_returned": 2
+}
