@@ -95,6 +95,8 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                                         .success(function (response) {
                                             $scope.data = response;
                                             $scope.errorWarning = "";
+                                        }).error(function(d){
+                                            $scope.errorWarning = "Call Timed Out";
                                         });
                                 $scope.predicate = 'timestamp'; //by defualt it will order results by date
                             }
@@ -110,6 +112,8 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                                         .success(function (response) {
                                             $scope.data = response;
                                             $scope.errorWarning = "";
+                                        }).error(function(d){
+                                            $scope.errorWarning = "Call Timed Out";
                                         });
                                 $scope.predicate = 'timestamp'; //by defualt it will order results by
                             }
@@ -141,6 +145,8 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                                         .success(function (response) {
                                             $scope.data = response;
                                             $scope.errorWarning = "";
+                                        }).error(function(d){
+                                            $scope.errorWarning = "Call Timed Out";
                                         });
                                 $scope.predicate = 'timestamp'; //by defualt it will order results by
                             }
@@ -151,6 +157,8 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                                         .success(function (response) {
                                             $scope.data = response;
                                             $scope.errorWarning = "";
+                                        }).error(function(d){
+                                            $scope.errorWarning = "Call Timed Out";
                                         });
                                 $scope.predicate = 'timestamp'; //by defualt it will order results by date
                             }
@@ -175,7 +183,9 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                         .success(function (response){
                             $scope.data = response;
                             $scope.errorWarning = "";
-                    });
+                        }).error(function(d){
+                            $scope.errorWarning = "Call Timed Out";
+                        });
                     $scope.predicate = 'timestamp'; //by defualt it will order results by date
                 }
                 else{
@@ -197,7 +207,9 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                 .success(function (response){
                     $scope.data = response;
                     $scope.errorWarning = "";
-            });
+                }).error(function(d){
+                    $scope.errorWarning = "Call Timed Out";
+                });
             $scope.errorWarning = "";
         }
         //First, Previous, Next, Last are button function for Pagination to render new view

@@ -21,8 +21,7 @@ sunburstControllerModule.controller('sunburstController', ['$scope', 'mongoAggre
     $scope.auditQuery = auditQuery;
     $scope.$on("envChangeBroadcast", function(){
         $scope.env = queryEnv.getEnv();
-        console.log($scope.env);
-        $scope.fromDateChange();
+        $scope.fromDateChange($scope.timeSelected);
     })
     if(!$scope.toDate){
         var currentDateTime = new Date();
@@ -85,6 +84,7 @@ sunburstControllerModule.controller('sunburstController', ['$scope', 'mongoAggre
         $scope.sunburstPromise = mongoAggregateService.callHttp(customDateQuery);
     }
     $scope.fromDateChange = function(time){
+        console.log($scope.env)
         $scope.timeSelected = time;
         if($scope.timeSelected.time === "Calender"){
             $(document).ready(function(){

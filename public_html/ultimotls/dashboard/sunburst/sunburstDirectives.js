@@ -26,7 +26,17 @@ sunburstDirectiveModule.directive('sunburstChart', function($location){
         //if no data is available show a message
         if (data === 0){
             console.log("no data")
-            
+            d3.select(ele).select("svg").remove();
+            d3.select(ele).select("#tooltip").remove();
+          var svg = d3.select(ele).append("svg")
+                .attr("width", margin.left + margin.right)
+                .attr("height", margin.top + margin.bottom)
+              .append("g")
+                .attr("transform", "translate(" + (width-60)/2 + "," + margin.top + ")");
+              
+          svg.append("text")
+                .text("No Data Available")
+          return;
         }
         //remove SVG before appending. To be replaced by transition.
         d3.select(ele).select("svg").remove();
