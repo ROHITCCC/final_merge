@@ -61,7 +61,7 @@ ultimotls.controller('loginControllerModule', ['$scope', '$http', '$q', '$base64
                     localStorageService.cookie.add('showNav', $scope.treemapSaver.showNav, TLS_EXPIRATION_TIME/(24*60));
                     $http.defaults.headers.common["Authorization"] = 'Basic ' + credentials;
                     localStorageService.cookie.add('creds', credentials, TLS_EXPIRATION_TIME/(24*60));
-                    $scope.$apply($location.path("/sunburst"));
+                    $scope.$apply($location.path("/treemap"));
                     
                     
                     //Change location to Dashboard Page
@@ -198,9 +198,9 @@ ultimotls.controller('getTabs', ['$scope', '$location', '$http', 'queryEnv',
                    {name:"Dev", description: "Developement", dbName:"DEV"}];
 //        };
              $scope.tabs = [
-                { link : '#/sunburst', label : 'Dashboard' },
+                { link : '#/treemap', label : 'Dashboard' },
                 { link : '#/audits', label : 'Audits' },
-                { link : '#/treemap', label : 'Treemap Dashboard' }
+                { link : '#/sunburst', label : 'Sunburst Dashboard' }
               ]; 
             $scope.setEnviroment = function(tab, env){
                 $scope.rootTab = document.getElementById(tab);
