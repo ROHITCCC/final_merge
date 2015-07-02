@@ -342,10 +342,16 @@ html {
 }
 
 #currentTimeSelect{
-    border: ridge;
-    padding: 0 15px;
-    width: 265px;
-    margin: 0 15px;
+    /* border: ridge; */
+    padding: 5px;
+    width: 108px;
+    /* margin: 0 15px; */
+    background-color: white;
+    border-radius: 4px;
+    text-decoration: none;
+    text-align: center;
+    display: inline-block;
+    border: 1px solid #e3e3e3;
 }
 
 /////////////////Setting ///////////
@@ -525,7 +531,32 @@ button[disabled] {
     background-color: white;
     border-color: #ddd;
 }
-
 .form-signin .btn {
   font-size: 18px !important;
+}
+.menutitle{
+    display: inline;
+    font-size: 14px;
+    margin: 10px;
+    font-weight: bold;
+}
+
+.menuselector a {
+  text-decoration: none;
+}
+
+.nav li.titlemenu:hover{
+    background-color: #E2E2E2;
+}
+
+button#zoomOut {
+  padding-top: 10px;
+}
+div#legend {
+  margin-bottom: 15px;
+  /* height: 0px; */
+}
+
+#landingPageHeader .dropdown-menu {
+  min-width: 20px;
 }
