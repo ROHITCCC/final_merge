@@ -46,3 +46,16 @@ $('body').on('click', '.mainmodal .close', function() {
     $('#payloadPage').modal('hide');
     $('#transactionPage').modal('hide');
 });
+
+(function($){$.fn.waitUntilExists=function(handler,shouldRunHandlerOnce,isChild){var found='found';var $this=$(this.selector);var $elements=$this.not(function(){return $(this).data(found);}).each(handler).data(found,true);if(!isChild) {(window.waitUntilExists_Intervals=window.waitUntilExists_Intervals||{})[this.selector]=window.setInterval(function(){$this.waitUntilExists(handler,shouldRunHandlerOnce,true);},500);} else if(shouldRunHandlerOnce&&$elements.length) {window.clearInterval(window.waitUntilExists_Intervals[this.selector]);} return $this;}}(jQuery));
+
+$(".nav li.titlemenu").waitUntilExists(function(){
+    $(this).on({
+        mouseenter: function () {
+            $(this).children('div.menuselector').addClass('open');
+        },
+        mouseleave: function () {
+            $(this).children('div.menuselector').removeClass('open');
+        }
+    });
+});

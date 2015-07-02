@@ -1,16 +1,16 @@
 <div id="sunburstDashborad" class="container-fluid">
     <div id="row1" class="row">
-        <div  class="col-sm-offset-10">
+        <div  class="col-sm-8" style="margin-left:55px">
             <div class="dropdown" >
-                <div class="dropdown-toggle" data-toggle="dropdown" ng-model="timeSelected">
-                    <span onclick='data-toogle'><b>Last - </b></span>
-                    <a id="currentTimeSelect" style="border: ridge; min-width: 250px;">{{timeSelected.description}}</a>
-                </div>
-                <ul class="dropdown-menu" ng-model="timeOptions" style="min-width: 100px; width: 121.22px; left: 42px;">
-                    <li ng-repeat="time in timeOptions" style="float: left">
-                        <a><p ng-click="fromDateChange(time)">{{time.description}}</p></a>
-                    </li>
-                </ul>
+                    <div class="dropdown-toggle" data-toggle="dropdown" ng-model="timeSelected">
+                        <span onclick='data-toogle'><b>Last - </b></span>
+                        <a id="currentTimeSelect">{{timeSelected.description}}</a><span class="caret" style="margin-left: -15px;"></span>
+                    </div>
+                    <ul class="dropdown-menu" ng-model="timeOptions" style="min-width: 100px;  left: 42px;">
+                        <li ng-repeat="time in timeOptions">
+                            <a><p ng-click="fromDateChange(time)">{{time.description}}</p></a>
+                        </li>
+                    </ul>
             </div>
         </div>
     </div>
