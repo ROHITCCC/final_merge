@@ -34,12 +34,10 @@ settingModule.controller('SettingsController', function ($scope, $http) {
     };
     $scope.reportPromise().then(function (data) {
         $scope.reports = data.data._embedded.rh_doc;
-        console.log($scope.reports);
         //Aggrigated tools
         $scope.addNewAggrigated = function () {
             newaggrison = newson = {reports: {application: null, email: null, interface: null, errortype: null, frequency: {duration: null, unit: null}}};
             $scope.reports.push(newson);
-            console.log($scope.reports);
         };
         $scope.removeAggrigated = function (index) {
             $scope.reports.splice(index, 1);
@@ -47,6 +45,36 @@ settingModule.controller('SettingsController', function ($scope, $http) {
         $scope.numberOfPagesAggri = function () {
             return Math.ceil($scope.reports.length / $scope.pageSizeAggri);
         };
+
+        $scope.dates = {
+            date3: new Date()
+        };
+
+        $scope.open = {
+            date3: false
+        };
+
+        $scope.disabled = function (date, mode) {
+            return (mode === 'day' && (new Date().toDateString() == date.toDateString()));
+        };
+
+        $scope.dateOptions = {
+            showWeeks: false,
+            startingDay: 1
+        };
+
+        $scope.timeOptions = {
+            readonlyInput: true,
+            showMeridian: false
+        };
+
+        $scope.openCalendar = function (e, date) {
+            $scope.isOpen = false;
+            e.preventDefault();
+            e.stopPropagation();
+            $scope.open[date] = true;
+        };
+
     });
     $scope.settingPromise().then(function (data) {
         $scope.settings = data.data.setting;
@@ -103,3 +131,5 @@ settingModule.controller('SettingsController', function ($scope, $http) {
     $scope.pageSizeAggri = 4;
     //END pagination setup
 });
+
+   
