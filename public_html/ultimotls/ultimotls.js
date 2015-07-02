@@ -66,7 +66,7 @@ ultimotls.controller('loginControllerModule', ['$scope', '$http', '$q', '$base64
                         delete $http.defaults.headers.common["Authorization"];
                         console.log('Authorization Expired')
                     }, TLS_EXPIRATION_TIME*60*1000);
-                    $scope.$apply($location.path("/sunburst"));
+                    $scope.$apply($location.path("/treemap"));
                     
                     
                     //Change location to Dashboard Page
