@@ -317,6 +317,9 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
             $http.get(getURL+getData,{timeout:TLS_SERVER_TIMEOUT})
                 .success(function(response){
                     $scope.relatedTransactionData = response._embedded['rh:doc'];
+                    if($scope.relatedTransactionData.length === 1){//need a service to check for duplicate values and single returns
+                        //console.log($scope.relatedTransactionData._id.$oid)
+                    }
             })
         }
         //From relatedTransaction a click function will open a new Modal page and populated new data
