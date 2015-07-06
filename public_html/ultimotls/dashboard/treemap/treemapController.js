@@ -14,6 +14,10 @@ treemapControllerModule.controller('treemapController', ['$scope', '$location', 
                           {"time":1,"description":"1 hour"},{"time":24, "description":"24 hours"},
                           {"time":48,"description":"48 hours"}, {"time":"Calender", "description":"Custom"}];
     $scope.timeSelected = $scope.timeOptions[2];
+    $scope.envOptions = [{name:"Prod", description: "Production", dbName:"PROD"}, 
+                         {name:"QA", description:"QA", dbName:"QA"}, 
+                         {name:"Dev", description: "Developement", dbName:"DEV"}];
+    $scope.envSelected = $scope.envOptions[0];                 
     $scope.treemapSaver = treemapSaver;
     $scope.env = queryEnv.getEnv();
     $scope.auditQuery = auditQuery;
@@ -73,5 +77,10 @@ treemapControllerModule.controller('treemapController', ['$scope', '$location', 
             
         $scope.treemapPromise = mongoAggregateService.callHttp(sliderDataQuery);
         $scope.treemapSaver.dropdownVal = $scope.timeSelected.time;//Saves TimeSelected when drop down value changes
+    };
+    $scope.setEnvironment = function(env){
+        $scope.envSelected = env
+        queryEnv.setEnv(env);
+        queryEnv.broadcast();
     };
     }]);
