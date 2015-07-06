@@ -46,35 +46,6 @@ settingModule.controller('SettingsController', function ($scope, $http) {
             return Math.ceil($scope.reports.length / $scope.pageSizeAggri);
         };
 
-        $scope.dates = {
-            date3: new Date()
-        };
-
-        $scope.open = {
-            date3: false
-        };
-
-        $scope.disabled = function (date, mode) {
-            return (mode === 'day' && (new Date().toDateString() == date.toDateString()));
-        };
-
-        $scope.dateOptions = {
-            showWeeks: false,
-            startingDay: 1
-        };
-
-        $scope.timeOptions = {
-            readonlyInput: true,
-            showMeridian: false
-        };
-
-        $scope.openCalendar = function (e, date) {
-            $scope.isOpen = false;
-            e.preventDefault();
-            e.stopPropagation();
-            $scope.open[date] = true;
-        };
-
     });
     $scope.settingPromise().then(function (data) {
         $scope.settings = data.data.setting;
@@ -125,6 +96,7 @@ settingModule.controller('SettingsController', function ($scope, $http) {
     $scope.curPage = 0;
     $scope.pageSize = 4;
     $scope.curPageImmi = 0;
+    $scope.units = ['s', 'm', 'hrs', 'day'];
     $scope.numbers = ['3', '5', '10', '15', '20', '30', '40', '50', '100', '200'];
     $scope.selectedNumber = $scope.numbers[0];
     $scope.curPageAggri = 0;

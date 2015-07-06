@@ -302,8 +302,7 @@ path {
     cursor: pointer;
 }
 #row2{
-    min-height: 100%
-}
+    /* min-height: 100% */}
 
 circle {
     fill: none;
@@ -498,7 +497,7 @@ html {
 }
 
 .form-control {
-    font-size: 10px;
+    font-size: 12px;
 }
 
 #advSearchDiv .form-group {
@@ -550,7 +549,7 @@ button[disabled] {
 }
 
 button#zoomOut {
-  padding-top: 10px;
+  /* padding-top: 10px; */
 }
 div#legend {
   margin-bottom: 15px;
@@ -559,4 +558,8 @@ div#legend {
 
 #landingPageHeader .dropdown-menu {
   min-width: 20px;
+}
+#timedropdown{
+    margin: 0px;
+    padding-top: 0px;
 }

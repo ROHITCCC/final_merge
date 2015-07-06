@@ -7,16 +7,16 @@ and open the template in the editor.
 
 <div class="container-fluid">
     <div id="row1" class="row">
-        <div id="legend" style="float: left" ></div>
-        <div  class="col-sm-offset-10">
+        <div id="legend" class="col-sm-12"></div>
+        <div  class="col-sm-8" style="margin-left:55px">
             <div class="dropdown" >
                 <div class="dropdown-toggle" data-toggle="dropdown" ng-model="timeSelected">
                     <span onclick='data-toogle'><b>Last - </b></span>
                     <a id="currentTimeSelect">{{timeSelected.description}}</a><span class="caret" style="margin-left: -15px;"></span>
                 </div>
-                <ul class="dropdown-menu" ng-model="timeOptions" style=" width: 121.22px; left: 42px;">
-                    <li ng-repeat="time in timeOptions" style="float: left">
-                        <a><p ng-click="fromDateChange(time)">{{time.description}}</p></a>
+                <ul  id="timedropdown" class="dropdown-menu" ng-model="timeOptions" style="min-width: 100px; left: 42px;">
+                    <li ng-repeat="time in timeOptions">
+                        <a ng-click="fromDateChange(time)"><p>{{time.description}}</p></a>
                     </li>
                 </ul>
             </div>
@@ -28,6 +28,9 @@ and open the template in the editor.
     <div id="row2" class="row col-sm-10 col-xs-12">
         <div id="treemapDiv" class="col-sm-12">
             <treemap-zoom id="treemapZoom" ></treemap-zoom>
+        </div>
+        <div id="columnDiv" class="col-sm-4">
+            
         </div>
     </div>  
 </div>
