@@ -196,9 +196,9 @@ ultimotls.controller('getTabs', ['$scope', '$location', 'queryEnv',
     function($scope, $location, queryEnv){
     $scope.tabBuilder = function(){
         
-        $scope.env = [{name:"Pro", description: "Production", dbName:"PROD"}, 
-                   {name:"QA", description:"QA", dbName:"QA"}, 
-                   {name:"Dev", description: "Developement", dbName:"DEV"}];
+        $scope.env = [{name:"Prod", description: "Production", dbName:"PROD"}, 
+                     {name:"QA", description:"QA", dbName:"QA"}, 
+                     {name:"Dev", description: "Developement", dbName:"DEV"}];
 //        };
              $scope.tabs = [
                 { link : '#/treemap', label : 'Dashboard' },
