@@ -38,9 +38,9 @@ and open the template in the editor.
                         <div class="col-xs-10 col-sm-10">
                             <h1>LOGO</h1>
                         </div>
-                        <div class="col-xs-2 col-sm-2">
+                        <div class="col-xs-2 col-sm-2" ng-model="cred">
                             <div class="row">
-                                <div id="userName">Anthony Fernandez</div>
+                                <div id="userName">{{cred.username}}</div>
                                 <div class="container-fluid">
                                     <div id="logoutButton">
                                         <button type="button" ng-click="logout()" class="btn-primary">Logout</button>
