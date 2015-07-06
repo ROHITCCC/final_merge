@@ -8,7 +8,8 @@ var sunburstDirectiveModule = angular.module('sunburstDirectiveModule', ['sunbur
 
 sunburstDirectiveModule.directive('sunburstChart', function($location){
     function sunburstChart(data, element, scope){
-        console.log(data);
+        //sunburstSaver.resizeTemp = data;
+        //scope.sunburstSaver.resizeTemp = sunburstSaver.resizeTemp;
         var ele = element[0];
         var width = (window.innerWidth), height = (window.innerHeight*.8);
         var margin = {top: height/2, right: width/2, bottom: height/2, left: width/2},
@@ -280,7 +281,7 @@ sunburstDirectiveModule.directive('sunburstChart', function($location){
                 return;
         }
         d3.select(self.frameElement).style("height", margin.top + margin.bottom + "px");
-        
+
         createSunburst(data, scope);
     }
     function link(scope, element){
@@ -297,6 +298,9 @@ sunburstDirectiveModule.directive('sunburstChart', function($location){
                 }
             });
         });
+//        $(window).resize(function(){
+//            updateSize(scope.sunburstSaver.resizeTemp, element, scope)
+//        })
     }
     return{
         link: link,
