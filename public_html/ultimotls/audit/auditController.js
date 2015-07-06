@@ -11,7 +11,6 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
         //Initialize scope data 
         $scope.rowsOptions = [{rows: 5}, {rows: 10}, {rows: 25}, {rows: 50}, {rows: 100}];
         $scope.rowNumber = $scope.rowsOptions[2];
-        $scope.searchCriteria = "{\"transactionId\":\"BBQ1234\"}";
         $scope.predicate = 'timestamp.$date';
         //Replay Page Options
         $scope.replayOptions = [{type: "REST"}, {type: "FILE"}, {type: "WS"}];
@@ -196,22 +195,6 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                 $scope.errorWarning = "No fields have been entered"
             }
         };
-        $scope.searchDocumentId = function(documentId){
-            getURL = TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/"+TLS_DBNAME+"/"+TLS_AUDIT_COLLECTION;
-            if(!documentId){
-                $scope.errorWarning = "A document ID must be entered";
-                return;
-            }
-            var getDocURL = getURL+"?filter={'_id':{'$eq':{'$oid':'"+documentId+"'}}}";
-            $http.get(getDocURL, {timeout:TLS_SERVER_TIMEOUT})
-                .success(function (response){
-                    $scope.data = response;
-                    $scope.errorWarning = "";
-                }).error(function(d){
-                    $scope.errorWarning = "Call Timed Out";
-                });
-            $scope.errorWarning = "";
-        }
         //First, Previous, Next, Last are button function for Pagination to render new view
         $scope.goToFirst = function(){
             var firstLink = $scope.data._links.first.href;
@@ -318,7 +301,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                 .success(function(response){
                     $scope.relatedTransactionData = response._embedded['rh:doc'];
                     if($scope.relatedTransactionData.length === 1){//need a service to check for duplicate values and single returns
-                        //console.log($scope.relatedTransactionData._id.$oid)
+                        console.log($scope.relatedTransactionData._id.$oid)
                     }
             })
         }
