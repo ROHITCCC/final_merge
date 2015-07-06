@@ -166,8 +166,7 @@ and open the template in the editor.
             <thead id="tableHeader">
                 <tr> 
                     <th>
-                        <a href="" ng-click="predicate = 'timestamp.$date';
-                                    reverse = !reverse">
+                        <a href="" ng-click="reverse = !reverse">
                             <span class="caret"></span> Timestamp
                         </a>
                     </th> 
@@ -186,7 +185,7 @@ and open the template in the editor.
                     <th>
                         <a href="" ng-click="predicate = 'transactionId';
                                     reverse = !reverse">
-                            <span class="caret"></span> TransactionID
+                            <span class="caret"></span> Transaction ID
                         </a>
                     </th>
                     <th>
@@ -252,7 +251,7 @@ and open the template in the editor.
                     <div class="list-group container-fluid">
                         <ul class="list-group">
                             <li class="list-group-item" ng-if="sliderWindowData.envid">
-                                <b>Environment Id:</b> {{sliderWindowData.envid}}
+                                <b>Environment ID:</b> {{sliderWindowData.envid}}
                             </li>
                             <li class="list-group-item" ng-if="sliderWindowData.application">
                                 <b>Application:</b> {{sliderWindowData.application}}
@@ -270,7 +269,7 @@ and open the template in the editor.
                                 <b>Transaction Type:</b> {{sliderWindowData.transactionType}}
                             </li>
                             <li class="list-group-item" ng-if="sliderWindowData.transactionId">
-                                <b>Transaction Id:</b> {{sliderWindowData.transactionId}}
+                                <b>Transaction ID</b> {{sliderWindowData.transactionId}}
                                 <button style="float: right" ng-click="relatedTransaction(sliderWindowData.transactionId)" 
                                         data-toggle="modal" data-target="#transactionPage">
                                     Related Search
@@ -292,7 +291,7 @@ and open the template in the editor.
                                 <b>Activity Name:</b> {{sliderWindowData.activityName}}
                             </li>
                             <li class="list-group-item" ng-if="sliderWindowData.processId">
-                                <b>Process Id:</b> {{sliderWindowData.processId}}
+                                <b>Process ID:</b> {{sliderWindowData.processId}}
                             </li>
                             <li class="list-group-item" ng-if="sliderWindowData.engineName">
                                 <b>Engine Name:</b> {{sliderWindowData.engineName}}
@@ -397,8 +396,7 @@ and open the template in the editor.
                         <thead id="tableHeader">
                             <tr> 
                                 <th>
-                                    <a href="" ng-click="predicate = 'timestamp.$date';
-                                                reverse = !reverse">
+                                    <a href="" ng-click="reverse = !reverse">
                                         <span class="caret"></span> Timestamp
                                     </a>
                                 </th> 
@@ -474,7 +472,7 @@ and open the template in the editor.
                     <div class="list-group container-fluid">
                         <ul class="list-group">
                             <li class="list-group-item" ng-if="relatedSearchData.envid">
-                                <b>Environment Id:</b> {{relatedSearchData.envid}}
+                                <b>Environment ID:</b> {{relatedSearchData.envid}}
                             </li>
                             <li class="list-group-item" ng-if="relatedSearchData.application">
                                 <b>Application:</b> {{relatedSearchData.application}}
@@ -492,7 +490,7 @@ and open the template in the editor.
                                 <b>Transaction Type:</b> {{relatedSearchData.transactionType}}
                             </li>
                             <li class="list-group-item" ng-if="relatedSearchData.transactionId">
-                                <b>Transaction Id:</b> {{relatedSearchData.transactionId}}
+                                <b>Transaction ID:</b> {{relatedSearchData.transactionId}}
                             </li>
                             <li class="list-group-item" ng-if="relatedSearchData.severity">
                                 <b>Severity:</b> {{relatedSearchData.severity}}
@@ -510,7 +508,7 @@ and open the template in the editor.
                                 <b>Activity Name:</b> {{relatedSearchData.activityName}}
                             </li>
                             <li class="list-group-item" ng-if="relatedSearchData.processId">
-                                <b>Process Id:</b> {{relatedSearchData.processId}}
+                                <b>Process ID:</b> {{relatedSearchData.processId}}
                             </li>
                             <li class="list-group-item" ng-if="relatedSearchData.engineName">
                                 <b>Engine Name:</b> {{relatedSearchData.engineName}}
