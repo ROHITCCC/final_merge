@@ -36,9 +36,6 @@ treemapControllerModule.controller('treemapController', ['$scope', '$location', 
         else if($scope.timeSelected.time === "Calender"){
             console.log("new event")
         }
-        else{
-            $scope.fromDate = new Date(currentDateTime - 7200000).toISOString(); //Current minus 2 hours           
-        }
         $scope.toDate = new Date(currentDateTime).toISOString();
     }
     var dataQuery = "[ { '$match': { '$and': [ { 'timestamp': { '$gte': " +
