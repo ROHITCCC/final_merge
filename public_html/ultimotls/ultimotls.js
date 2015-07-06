@@ -194,21 +194,22 @@ ultimotls.filter('unique', function () {
 
 ultimotls.controller('getTabs', ['$scope', '$location', 'queryEnv',
     function($scope, $location, queryEnv){
-    $scope.tabBuilder = function(){
+        $scope.tabBuilder = function(){
         
         $scope.env = [{name:"Prod", description: "Production", dbName:"PROD"}, 
                      {name:"QA", description:"QA", dbName:"QA"}, 
                      {name:"Dev", description: "Developement", dbName:"DEV"}];
 //        };
+            var env = queryEnv.getEnv()
              $scope.tabs = [
-                { link : '#/treemap', label : 'Dashboard' },
+                { link : '#/treemap', env:env.name, label : ' Dashboard' },
                 { link : '#/audits', label : 'Audits' },
-                { link : '#/sunburst', label : 'Sunburst Dashboard' }
+                { link : '#/sunburst', env:env.name, label : ' Sunburst Dashboard' }
               ]; 
             $scope.setEnvironment = function(tab, env){
                 $scope.rootTab = document.getElementById(tab);
                 $scope.rootTab.innerHTML = env.name+" "+tab;
-                queryEnv.setEnv(env.dbName);
+                queryEnv.setEnv(env);
                 queryEnv.broadcast();
             };
             $scope.setTab = null;
@@ -314,12 +315,14 @@ ultimotls.factory("mongoAggregateService", function ($http) {
 });
 
 ultimotls.service("queryEnv", function($rootScope){ //getter and setter for environment 
-    var envid = "PROD";
+    var envid = {}
+    envid.name = "Prod", envid.dbName = "PROD"
     var environment = {};
     
     environment.setEnv = function(env){
         if(env){
-            envid = env;
+            envid.name = env.name;
+            envid.dbName = env.dbName
         }
         return envid;
     };
@@ -389,10 +392,14 @@ ultimotls.service("auditQuery", function () {
 });
 
 ultimotls.factory("treemapSaver", function() {
-    return {};
+    var treemapSaver = {};
+    treemapSaver.dropdownVal = 1;
+    return treemapSaver;
 });
 ultimotls.factory("sunburstSaver", function() {
-    return {};
+    var sunburstSaver = {};
+    sunburstSaver.dropdownVal = 1;
+    return sunburstSaver;
 });
 
 //})(window.angular);
