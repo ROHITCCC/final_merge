@@ -1,0 +1,531 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : May 21, 2015, 2:23:04 PM
+    Author     : Ultimo User
+*/
+.css-class-add, .css-class-remove {
+    -webkit-transition:all linear 0.3s;
+    -moz-transition:all linear 0.3s;
+    -ms-transition:all linear 0.3s;
+    -o-transition:all linear 0.3s;
+    transition:all linear 0.3s;
+}
+.nav, .pagination, .carousel, .panel-title a {
+    cursor: pointer; 
+}
+body {
+    background-color: #F8F8FC;
+    overflow-x: hidden;
+    position: relative;
+    overflow-y: auto;
+    height: auto;
+}
+a:hover{
+    cursor: pointer;
+}
+.glyphicon .glyphicon-remove:hover{
+    cursor: pointer;
+}
+a .glyphicon .glyphicon-remove {
+    color: black;
+}
+//LOGIN PAGE
+#loginFormContainer {
+    padding-top: 40px;
+    padding-bottom: 40px;
+    background-color: #eee;
+}
+.form-signin {
+    max-width: 330px;
+    padding: 15px;
+    margin: 0 auto;
+}
+.form-signin .form-signin-heading,
+.form-signin .checkbox {
+    margin-bottom: 10px;
+}
+.form-signin .checkbox {
+    font-weight: normal;
+}
+.form-signin .form-control {
+    position: relative;
+    height: auto;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    padding: 10px;
+    font-size: 16px;
+}
+.form-signin .form-control:focus {
+    z-index: 2;
+}
+.form-signin input[type="email"] {
+    margin-bottom: -1px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+}
+.form-signin input[type="password"] {
+    margin-bottom: 10px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+
+#mainBody {
+    margin: 0;
+    padding: 0;
+}
+#header {
+    background-color: white;
+    height: 20%;
+    /* min-height: 90px; */
+}
+center {
+    /* margin: 15px 0 0 0; */
+}
+#header a{
+
+}
+.css-hide-searchBox, 
+.css-class-add.css-class-add-active {
+    opacity: 0;
+    top: -50px;
+    height: 0px;
+}
+.css-show-searchBox, 
+.css-class-remove.css-class-remove-active {
+    opacity: 1;
+    top: 0;
+    height: 30px;
+}
+#searchBar {
+    margin-bottom: 0;
+}
+#searchBar p {
+    color: red;
+    font-size: 10px;
+}
+a#advanceSearch {
+    padding: 10px;
+}
+#advSearchBox{
+    width: 70%;
+    display: none;
+    margin-top: -20px;
+}
+.css-hide-advSearchBox, 
+.css-class-add.css-class-add-active {
+    opacity: 0;
+    top: -50px;
+    height: 0px;
+}
+.css-show-advSearchBox, 
+.css-class-remove.css-class-remove-active {
+    opacity: 1;
+    top: 0;
+    height: 30px;
+}
+
+
+#advSearchBox p {
+    color: red;
+
+    margin-bottom: 0px;
+}
+#advSearchBox .form-group {
+    margin-bottom: 5px;
+}
+#advSearchBox h3 {
+    border-bottom: 1px solid black;
+}
+#advSearchBox #extraField {
+    margin-top: 5px;
+    padding-right: 10px;
+    float: center;
+    border-right: 2px solid rgb(52,122,183);
+}
+#advSearchBox #closeAdvanceField {
+    margin-top: 5px;
+    padding-left: 10px;
+    float: center;
+}
+#formBorder {
+    border-bottom: #000 solid thin;
+    margin-bottom: 20px;
+}
+
+///////PAGINATION/////////         
+#pagination {
+    background-color: #E6E6E6;
+    margin: 0;
+    padding: 0;
+    min-height: 40px;
+}
+.pagination {
+    margin: 0 0 4px 0;
+    float: right;
+    font-size: 10px;
+}
+
+#paginationNav{
+    padding-right: 0;
+}
+#paginationTitle{
+    padding: 0;
+}
+#paginationDropDown{
+    padding-left: 5px;
+    padding-right: 0;
+}
+#tableContainer {
+    background-color: #E6E6E6;
+    padding: 0;  
+    overflow: scroll;
+    overflow-x: auto;
+    overflow-y: auto;
+    /* max-height: 300px; */ 
+}
+#table {
+    margin-bottom: 0;
+    height: auto;
+}
+thead {
+    background-color: lightgrey;    
+}
+.row div h3 {
+    text-align: left;
+    text-indent: 20px;
+}
+.row div p {
+    text-align: center;
+}
+.row div:last-child {
+    /* margin-right: 0; */
+}
+
+#blockChart {
+    height: auto;
+    background-color: #E6E6E6;
+}
+#statusPieChartDiv{
+    height: 350px;
+}
+status-pie-chart{
+    width: 100%;
+    height: 100%;
+}
+#severityPieChartDiv {
+    height: 350px;
+}
+#appBarChartDiv {
+    height: 350px
+}
+#treemapChartDiv{
+    height: 350px;
+}
+#stackBarChartContainer{
+    overflow: scroll;
+    overflow-x: hidden;
+    overflow-y: auto;
+    height: 150px;
+}
+#stackBarChartLabel {
+    max-height: 50px;
+}
+#interfaceStackBarChart .axis{
+    min-width: 600px
+}
+treemap-chart{
+    width:25%;
+    height:25%;
+}
+
+.node {
+    border: solid 1px white;
+    line-height: 1;
+    overflow: hidden;
+    position: absolute;
+    border-radius: 6px;
+}
+
+.node div {
+    padding: 6px 4%;
+}
+.node:hover {
+    background-color: red;
+}
+text{
+    color: white;
+    height: 130px;
+}
+svg{
+    width: 100%;
+    height: auto;
+    /* min-height: 250px; */
+}
+path .slice{
+    stroke-width: 2px;
+}
+path:hover {
+    fill: red;
+}
+polyline{
+    opacity: .3;
+    stroke: black;
+    stroke-width: 2px;
+    fill: none;
+}
+.bar {
+    fill: steelblue;
+}
+.bar:hover {
+    fill: red;
+}
+.axis {
+    font: 10px sans-serif;
+}
+.axis path,
+.axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+}
+.x.axis path {
+    display: none;
+}
+//////SUNBURST
+circle,
+path {
+    cursor: pointer;
+}
+#row2{
+    min-height: 100%
+}
+
+circle {
+    fill: none;
+    pointer-events: all;
+}
+
+#tooltip { 
+    background-color: white;
+    padding: 3px 5px;
+    border: 1px solid black;
+    text-align: center;
+}
+html {
+    font-family: sans-serif;
+    /* height: auto; */
+}
+
+//Drop Down TimeSelection
+.timeOptions{
+    float: right;
+}
+
+/////////MODAL WINDOWS///////////////////
+.modal #replayPage{
+    top: 50%; 
+}
+
+//////TIME SELECTED DROP DOWN MENU//////
+.dropdown-menu{
+    min-width: 100px;
+    float: right;
+    border-left-width: 45px;
+    border-right-width: 0px;
+    padding-right: 15px;
+    padding-left: 15px;
+}
+
+#currentTimeSelect{
+    border: ridge;
+    padding: 0 15px;
+    width: 265px;
+    margin: 0 15px;
+}
+
+/////////////////Setting ///////////
+
+#settingpage .tabselector {
+    margin-bottom: 10px;
+}
+.bordertab {
+    border: #cdcdcd medium solid;
+    border-radius: 10px;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    padding: 10px;
+}
+.row-centered {
+    text-align:center;
+    padding-left: 27px;
+    padding-right: 20px;
+}
+.pagination_env{
+    margin-top: 0px !important;
+}
+
+.panel-heading h4 {
+    font-size: 12px;
+    text-align: left;
+}
+
+.panel-heading{
+    margin-bottom: 10px;
+}
+
+.panel-body {
+    padding: 0px;
+} 
+
+.panel-body form h4 {
+    font-size: 11px;
+}
+
+.panel-body label {
+    font-size: 11px;
+}
+#settingpage .form-control{
+    height: 25px !important;
+    font-size: 10px;
+}
+
+#settingpage .pagination{
+    font-size: 10px;
+}
+
+#settingpage .btn {
+    font-size: 10px !important;
+}
+
+#settingpage .form-inline .form-control {
+    font-size: 10px !important;
+}
+
+#settingpage .paginationclass{
+    margin: 19px 28px;
+}
+#settingpage .paginationclass span{
+    margin-left:15px;
+    display:inline-block;
+}            
+#settingpage .pagination-controle li{
+    display: inline-block;
+}
+#settingpage .pagination-controle button{
+    font-size: 12px;
+    margin-top: -22px;
+    cursor:pointer;    
+}
+#settingpage .pagination{
+    margin:5px 12px !important;
+}
+.spacer20 { 
+    height: 20px; 
+    width: 100%; 
+    font-size: 0; 
+    margin: 0; 
+    padding: 0; 
+    border: 0; 
+    display: block; 
+}
+
+.divider {
+    height: 1px;
+    width: 100%;
+    margin-top: 25px;
+    background-color: #e5e5e5;
+}
+
+#settingsButton{
+    /* margin-top: 3px; */
+    display: inline-block;
+}
+
+#settingsButton a{
+    background-color: #337ab7;
+    border: 2px #2e6da4 outset;
+    padding: 1px 4px;
+    color: white;
+    font-family: inherit;
+    font-size: inherit;
+    text-decoration: none;
+    line-height: inherit;
+}
+#settingsButton a:hover{
+    border-style: inset;
+    background-color: #286090;
+    padding: 2px 3px 0 5px;
+}
+
+
+/////////FIX styles ////////////
+#bodyContainer {
+    background-color: white !important;
+}
+#username{
+    text-align: right;
+}
+#userinfo{
+    margin-top: 10px;
+}
+
+#logoutButton{
+    display: inline-block;
+}
+
+#header.bordertab{
+    background-color: #F8F8FC;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    -webkit-box-shadow: 0 1px 1px rgba(0,0,0,.05);
+    box-shadow: 0 1px 1px rgba(0,0,0,.05);
+    padding-bottom: 0px;
+}
+
+#paginationTitle h5.pull-right {
+    font-size: 11px;
+}
+
+.form-control {
+    font-size: 10px;
+}
+
+#advSearchDiv .form-group {
+    margin: 2px;
+}
+
+#advSearchDiv .panel {
+    margin-bottom: 10px;
+}
+
+#advSearchDiv p {
+    color: red;
+    font-size: 10px;
+}
+select.input-xs {
+    height: 28px;
+}
+
+button[disabled] {
+    cursor: not-allowed !important;
+}
+
+#settingpage button[disabled] {
+    color: #777;
+    background-color: #fff;
+    border-color: #ddd;
+}
+#settingpage .btn-primary{
+    color: #23527c;
+    background-color: white;
+    border-color: #ddd;
+}
+
+.form-signin .btn {
+  font-size: 18px !important;
+}

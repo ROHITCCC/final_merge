@@ -8,46 +8,96 @@ var treemapDirectiveModule = angular.module('treemapDirectiveModule', ['treemapC
 
 treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location', function($http,$injector, $location){
         
-         var w = window.innerWidth*.9,
+         var w = window.innerWidth*.9, w2=w*.8,
                 h = window.innerHeight*.7,
                 x = d3.scale.linear().range([0, w]),
                 y = d3.scale.linear().range([0, h]),
-                color = d3.scale.category20c(),
+                color = d3.scale.category20(),
                 root,
                 node,
                 remakeFlag = true,
                 zoomFlag = false,
                 zoomFlag2 = false,
                 tempName = "",
-                transformArr = [{}];
+                transformArr = [{}],
+                svgDivider = 0,
+                parCellSpacer=0,
+                parCellCounter=1,
+                headerFlag = false;
                 
         var svg = d3.select("#treemapZoom").append("div")
                 .attr("class", "chart")
                 .attr("id", "treemapChart")
                 .style("width", w + "px")
                 .style("height", h + "px")
-                .style("margin-top", 15 + "px")
-                .style("margin-bottom", 200 + "px")
+                //.style("margin-top", 15 + "px")
+                //.style("margin-bottom", 20 + "px")
                 .style("margin-left", 40 + "px")
               .append("svg")
                 .attr("width", w)
                 .attr("height", h)
                 .attr("id", "treemapSVG");
         
+        var parSvg = d3.select("#legend").append("div")
+                .attr("class", "chart")
+                .attr("id", "treemapLegend")
+                .style("width", w2 + "px")
+                .style("height","20px")
+              .append("svg").attr("class", "chart")
+                .attr("id", "treemapLegend")
+                .attr("width", w2)
+                .attr("height", "19px")
+                .attr("id", "treemapLegendSVG");
+    function updateSize(resizeTemp, element, scope){
+            w=window.innerWidth*.9;
+            w2 = w*.8;
+            h=window.innerHeight*.7;
+            x = d3.scale.linear().range([0, w]);
+            y = d3.scale.linear().range([0, h]);
+            
+            d3.select("#treemapZoom").select("div")
+                .style("width", w + "px")
+                .style("height", h + "px")
+            .select("svg")
+                .attr("width", w)
+                .attr("height", h);
         
-    function createZoomTree(treeData, element, flag, scope){
+        parCellCounter=1;
+            d3.select("#legend").select("div")
+                .style("width", w2 + "px")
+                .style("height","20px")
+            .select("svg")
+                .attr("width", w2)
+                .attr("height", "19px")
+            .selectAll("g")
+                .attr("transform", function(d) {parCellSpacer = w2*(parCellCounter/scope.treemapSaver.dividerSaver)*.8;
+                parCellCounter++;return "translate(" + parCellSpacer + ",0)"; });
+        
+            
+        $("#zoomOut").d3Click();
+        
+            createZoomTree(resizeTemp, element, "true", scope, false);
+    }    
+        
+    function createZoomTree(treeData, element, flag, scope, resizedWin){
+            var resized = resizedWin;
             var jsonRaw = treeData;
             var treeData = {name:"tree", children:[{}]};
             var treeChildren = [{}];
             //scope.treemapSaver.data = jsonRaw;
-            
+            if(jsonRaw !== undefined){
             for(var a=0;a<jsonRaw.length;a++){          //Formats incoming data to treemap friendly format
                 for(var b = 0; b < jsonRaw[a].children.length; b++){
                     treeChildren[b] = ({size:jsonRaw[a].children[b].size, name:jsonRaw[a].children[b].name });
                 }
                 treeData.children[a] = ({children:treeChildren, name:jsonRaw[a].name});
                 treeChildren = [{}];
-            };
+            };}
+            if(scope.treemapSaver.envSave !== undefined){
+                if(scope.treemapSaver.envSave !== scope.env){
+                    remakeFlag = true;
+                }
+            }
             if(document.getElementById("treemapChart") === null){   //checks for treemap on recreation
                 
                 svg = d3.select("#treemapZoom").append("div")
@@ -62,6 +112,17 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                 .attr("height", h)
                 .attr("id", "treemapSVG");
             }
+            if(document.getElementById("treemapLegend") === null){
+                parSvg = d3.select("#legend").append("div")
+                .attr("class", "chart")
+                .attr("id", "treemapLegend")
+                .style("width", w2 + "px")
+                .style("height","20px")
+              .append("svg")
+                .attr("width", w2)
+                .attr("height", "19px")
+                .attr("id", "treemapLegendSVG");
+            }
             
             var treemap = d3.layout.treemap()       //sets parameters and sorting methods for treemap
                 .size([w, h])
@@ -70,46 +131,80 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                 .sort(function(a,b) {
                     return a.value - b.value;
                 });
-
+                
             node = root = treeData;
-              
+            svgDivider = 0 ;
             var nodes = treemap.nodes(root)         //pulls out parent nodes
                   .filter(function(d) { return !d.children; });
           
             var parNodes = treemap.nodes(root)      //pulls out child nodes
-                .filter(function(d) {if(d.name !== "tree") return d.children ? "tree" : d.children; });
+                .filter(function(d) {if(d.name !== "tree"){return d.children ? "tree" : d.children;} });
           
-            console.log(parNodes)
-
+            
             var cell = svg.selectAll("g")
                 .data(nodes);
           
-            var parCell = svg.selectAll("g.parent")
+            var parCell = parSvg.selectAll("g")
                 .data(parNodes);
+            
+            parCellSpacer=0;
+            parCellCounter=1;
+            
+            parCell.enter().append("g").attr("class", "cellParent")     //creates header titles
+                    .attr("id", function(d){svgDivider++;return d.name;})
+                    .attr("transform", function(d) {parCellSpacer = w2*(parCellCounter/svgDivider)*.8;
+                        parCellCounter++;return "translate(" + parCellSpacer + ",0)"; })
+                    .on("mouseover", mouseOverCell)
+                    .on("mouseout", mouseOutCell)
+                    .on("click", function(d) { return zoom((node === d ? root : d),"0","0"); });
           
-            if(remakeFlag === true){                //checks if the scope is preserved
-            console.log(zoomFlag)
-          
+            parCellCounter=1;
+                parCell.append("rect");
+                parCell.append("text");
+                
+                parCell.select("text")
+                    .attr("x","0")
+                    .attr("y", "9px")
+                    .attr("dy", ".35em")
+                    .attr("transform", function(d) {return "translate(0,0)"; })
+                    .attr("id",function(d){return d.name;})
+                    .text(function(d){return d.name;});
+            svgDivider=0;
+                parCell.select("rect")
+                    .attr("id",function(d){svgDivider++;return d.name;})
+                    .attr("width", (w2/(svgDivider))*.7 )
+                    .attr("height", "20px")
+                    .style("fill", function(d) { return color(d.name); });
+            scope.treemapSaver.dividerSaver = svgDivider;
+                parCell.exit().remove();
+            
+        if(jsonRaw !== undefined)
+        {
+            if(remakeFlag === true){                //checks if the scope is preserve
+                
+            svg.selectAll("text").remove();
                 cell.enter().append("g").attr("class", "cell")      //modifies all basic g elements
                      .attr("transform", function(d) {return "translate(" + d.x + "," + d.y + ")"; })
                      .on("mouseover", mouseOverCell)
                      .on("mouseout", mouseOutCell)
                      .on("click", function(d) { return zoom((node === d.parent ? root : d.parent),(d3.select(this).attr("id")),(d3.select(this).attr("parent"))); })
-                     .on("dblclick", function(d){return sendAudit((d3.select(this).attr("id")),(d3.select(this).attr("parent")))});
+                     .on("dblclick", function(d){return sendAudit((d3.select(this).attr("id")),(d3.select(this).attr("parent")));});
 
                 cell.attr("class", "cell").transition().duration(500)
                     .attr("id", function(d){return d.name;})
-                    .attr("parent",function(d){return d.parent.name})
-                    .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; }) 
+                    .attr("parent",function(d){return d.parent.name;})
+                    .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; }) ;
          
-                cell.select("text").remove()
-                    cell.append("rect");            //creates as many blank texts and rects as are needed
-                    cell.append("text");
+                cell.select("text").remove();
+                
+                cell.append("rect");            //creates as many blank texts and rects as are needed
+                cell.append("text");
             
                 cell.select("rect").transition().duration(500)
                     .attr("width", function(d) { return d.dx - 1; })
                     .attr("height", function(d) { return d.dy - 1; })
                     .style("fill", function(d) { return color(d.parent.name); });
+            
               
                 cell.select("text").transition().duration(500)
                     .attr("x", function(d) { return d.dx / 2; })
@@ -136,14 +231,12 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                                     .attr("class", "tspan" + i);
                             }
                         }
-                    })
+                    });
 
-                cell.exit().attr("class", "exit")       //remove unused or leftover elements
-                    .transition().style("width", 0)
-                    .style("height", 0)
-                    .style("fill-opacity", 0)
-                    .transition().remove();
+                cell.exit().remove();
             
+            
+            /*
                 parCell.enter().append("g").attr("class", "cellParent")     //creates header titles
                     .attr("transform", function(d) {return "translate(" + d.x + "," + d.y + ")"; })
                     .on("mouseover", mouseOverCell)
@@ -176,55 +269,67 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                     .style("height", 0)
                     .style("fill-opacity", 0)
                     .transition().remove();
+                    */
             }
             else{       //if the scope was preserved
+                //if(resizedCheck)resized = true;
                 
                 remakeFlag = true;
                 zoomFlag=false;
                 zoomFlag2=false;
-                var newSvg = document.getElementById("treemapSVG")
+                var newSvg = document.getElementById("treemapSVG");
                 //svg.append(scope.treemapSaver.data[0])
                 for(var i = 0; i < scope.treemapSaver.data.length; i++){        //appends old DOM elements into new DOM
                     newSvg.appendChild(scope.treemapSaver.data[i]);
                 }
             
-                var newCell = d3.selectAll("g");        //add lost functionality
+                var newCell = d3.selectAll("g.cell");        //add lost functionality
                   newCell.on("mouseover", mouseOverCell)
                       .on("mouseout", mouseOutCell)
                       .on("click", function(d) { return zoom((node === d.parent ? root : d.parent),(d3.select(this).attr("id")),(d3.select(this).attr("parent"))); })
-                      .on("dblclick", function(d){return sendAudit((d3.select(this).attr("id")),(d3.select(this).attr("parent")))});
+                      .on("dblclick", function(d){return sendAudit((d3.select(this).attr("id")),(d3.select(this).attr("parent")));});
           
                 var z = 0;
                 newCell.select("tspan").transition().duration(500)         
                     .text(function (d) {            //text truncation again
                         var nameholder = null;
                         var getWidth =  scope.treemapSaver.wordLength[z];
-                        z++
+                        z++;
                         if (d.name.length > (getWidth)*.1) {
                             nameholder = d.name.substring(0,(getWidth)*.1) + "... " + d.size;
                         }
                         else nameholder = d.name + " " + d.size;
                         var arr = nameholder.split(" ");
-                        return arr[0]
-                    })
-                d3.select("#zoomOut").style("opacity",1)
+                        return arr[0];
+                    });
+                d3.select("#zoomOut").style("opacity",1);
             }
+        }
+        else{
+            
+            svg.selectAll("rect").remove();
+            svg.selectAll("text").remove();
+            svg.append("text")
+                .attr("x", w/3)
+                .attr("y", h/3)
+                .text("No Data Available");
+        }
             
             d3.select("#zoomOut").on("click", function() { zoom(root, "flag", "flag"); });
 
 
 
-            function zoom(d, name, parent) {            //function for zooming in
+            function zoom(d, name, parent, resize) {            //function for zooming in
                 var kx = w / d.dx, ky = h / d.dy;
                 x.domain([d.x, d.x + d.dx]);
                 y.domain([d.y, d.y + d.dy]);
                 var auditParam=null;
                 auditParam = parent + "." + name;       //string to send to audit service
                 console.log(auditParam);
-               
+               if(auditParam === "0.0")headerFlag = true;
                 if((name !== "flag" && parent !== "flag")){     //checks if zoomout was not clicked
                     d3.select("#zoomOut").transition().duration(750).style("opacity",1)
-                    var zx = 0
+                    var zx = 0;
                     d3.selectAll("g.cell").select("tspan")
                     .text(function(d) {         //text truncation check
                         var nameholder = null;
@@ -238,16 +343,17 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                     return nameholder;});
                             
                     d3.selectAll("g.cell")          //replaces click event to zoom in on individual cells once within a parent node
-                    .on("click", function(d) { return zoom((node === d.parent ? root : d),(d3.select(this).attr("id")),(d3.select(this).attr("parent"))); })
+                    .on("click", function(d) { return zoom((node === d.parent ? root : d),(d3.select(this).attr("id")),(d3.select(this).attr("parent"))); });
 
                      //console.log(d3.select("#treemapZoom").select("svg").selectAll("g")[0])
+                     scope.treemapSaver.envSave = scope.env;
                     remakeFlag = false;
                     if(zoomFlag)zoomFlag2=true;
                     zoomFlag = true; 
                     tempName = name;
                 }
                 else{           //zoom out button clicked
-                    d3.selectAll("g.cell").select("text").remove()
+                    d3.selectAll("g.cell").select("text").remove();
                     d3.select("#zoomOut").transition().duration(750).style("opacity",0);
                    
                     d3.selectAll("g.cell").append("text").attr("x", function(d) { return d.dx / 2; }) //return text to original
@@ -275,18 +381,27 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                                         .attr("class", "tspan" + i);
                                 }
                             }
-                        })
+                        });
                         
                         d3.selectAll("g.cell")      //return click event to original
-                        .on("click", function(d) { return zoom((node === d.parent ? root : d.parent),(d3.select(this).attr("id")),(d3.select(this).attr("parent"))); })
+                        .on("click", function(d) { return zoom((node === d.parent ? root : d.parent),(d3.select(this).attr("id")),(d3.select(this).attr("parent"))); });
 
                        //.style("opacity", function(d) { d.w = this.getComputedTextLength(); return d.dx > d.w ? 1 : 0; });
                         remakeFlag = true;
-                        if(!zoomFlag&&!zoomFlag2){      //if a single cell is zoomed in on, clicks the cell once after zooming out
-                            $("#"+tempName).d3Click();  //to return to the parent node
+                        
+                        if(headerFlag){
+                            $("#"+tempName).d3Click();
+                               $("#zoomOut").d3Click();
+                               headerFlag=false;
+                           }
+                        if(resized === true){
+                            if(!zoomFlag&&!zoomFlag2){      //if a single cell is zoomed in on, clicks the cell once after zooming out
+                                $("#"+tempName).d3Click();  //to return to the parent node
+                            }
                         }
                         if(zoomFlag2)zoomFlag2 = false;
                            zoomFlag = false;
+                           
 
                     }
                     
@@ -296,11 +411,11 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                     .attr("transform", function(d) {widthSaver=x(d.x); return "translate(" + x(d.x) + "," + y(d.y) + ")";});  
                 t.select("rect")
                     .attr("width", function(d) {return kx * d.dx - 1; })
-                    .attr("height", function(d) { return ky * d.dy - 1; })
+                    .attr("height", function(d) { return ky * d.dy - 1; });
 
                 t.select("text")
                     .attr("x", function(d) { return kx * d.dx / 2; })
-                    .attr("y", function(d) { return ky * d.dy / 2; })
+                    .attr("y", function(d) { return ky * d.dy / 2; });
                     //.style("opacity", function(d) { return kx * d.dx > d.w ? 1 : 0; });
             
                 t.selectAll("tspan")
@@ -336,9 +451,8 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                             else{
                                 return kx * d.dx / 2; 
                             }})
-                    .attr("y", "9px")
+                    .attr("y", "9px");
             
-                console.log(zoomFlag)
                 //node = d;
                 if(zoomFlag2 === false){
                    root = treeData;
@@ -358,38 +472,43 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                     {var evt = document.createEvent("MouseEvents");
                     evt.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
 
-                    e.dispatchEvent(evt);}, 10);
+                    e.dispatchEvent(evt);}, 1);
                 });
               };
             function sendAudit(parent, name){       //sends audits directly instead of through controller function
                 //scope.getAuditsForInterface(auditParam);
                 scope.treemapSaver.data = d3.select("#treemapZoom").select("svg").selectAll("g")[0];
-                var interfaceQuery = '{"application":"'+name+'","interface1":"'+parent+'","timestamp":{"$gte":{"$date":"'+scope.fromDate+'"},"$lt":{"$date":"'+scope.toDate+'"}},"$and":[{"severity":{"$ne":"null"}},{"severity":{"$exists":"true","$ne":""}}]}';
+                var interfaceQuery = '{"application":"'+name+'","interface1":"'+parent+'","envid":"'+scope.env+'","timestamp":{"$gte":{"$date":"'+scope.fromDate+'"},"$lt":{"$date":"'+scope.toDate+'"}},"$and":[{"severity":{"$ne":"null"}},{"severity":{"$exists":"true","$ne":""}}]}';
                 console.log(interfaceQuery);
                 scope.auditQuery.query(interfaceQuery, scope);
                 scope.$apply($location.path("/audits"));
                 return;
-            }
-            function mouseOverCell(d) {
-                d3.select(this).style("opacity", .8)
-            };
-            function mouseOutCell(){
-            d3.select(this).style("opacity", 1)
-            };
             
+            }
         }
-        function link(scope, element){ 
-            scope.$watch('sliderDatePromise', function(){
-                scope.sliderDatePromise.then(function(getCall){ //handles the promise
+        function mouseOverCell(d) {
+                d3.select(this).style("opacity", .8);
+            };
+        function mouseOutCell(){
+            d3.select(this).style("opacity", 1);
+            };
+        function link(scope, element){
+            scope.$watch('treemapPromise', function(){
+                scope.treemapPromise.then(function(getCall){ //handles the promise
                 //console.log(getCall);
                 var temp = getCall.data._embedded['rh:doc'];
+                scope.treemapSaver.resizeTemp = temp;
                 //handles the data format
                 //temp._embedded['rh:doc'].children = data.data._embedded['rh:doc']; //adds data to the new object structure 
 
-                    createZoomTree(temp, element, "true", scope); //("selects id of the graph in html","takes new data", "appends to the element", "calls the graph rendering function"
-            //console.log(temp);
-            //createZoomTree(temp, element, scope);
-            })})
+                    createZoomTree(temp, element, "true", scope, true); //("selects id of the graph in html","takes new data", "appends to the element", "calls the graph rendering function"
+            
+            });
+        $(window).resize(function(){
+               updateSize(scope.treemapSaver.resizeTemp, element, scope);
+               //createZoomTree(scope.treemapSaver.resizeTemp, element, "true", scope);
+        });
+            });
             }
         return { 
             restrict: 'E',

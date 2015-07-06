@@ -18,6 +18,7 @@ and open the template in the editor.
     cursor: pointer; 
 }
 body {
+    background-color: #F8F8FC;
     overflow-x: hidden;
     position: relative;
     overflow-y: auto;
@@ -78,12 +79,12 @@ a .glyphicon .glyphicon-remove {
     padding: 0;
 }
 #header {
-    background-color: skyblue;
+    background-color: white;
     height: 20%;
-    min-height: 90px;
+    /* min-height: 90px; */
 }
 center {
-    margin: 15px 0 0 0;
+    /* margin: 15px 0 0 0; */
 }
 #header a{
 
@@ -105,6 +106,7 @@ center {
 }
 #searchBar p {
     color: red;
+    font-size: 10px;
 }
 a#advanceSearch {
     padding: 10px;
@@ -165,6 +167,7 @@ a#advanceSearch {
 .pagination {
     margin: 0 0 4px 0;
     float: right;
+    font-size: 10px;
 }
 
 #paginationNav{
@@ -181,12 +184,13 @@ a#advanceSearch {
     background-color: #E6E6E6;
     padding: 0;  
     overflow: scroll;
-    overflow-x: hidden;
+    overflow-x: auto;
     overflow-y: auto;
-    max-height: 300px; 
+    /* max-height: 300px; */ 
 }
 #table {
     margin-bottom: 0;
+    height: auto;
 }
 thead {
     background-color: lightgrey;    
@@ -199,7 +203,7 @@ thead {
     text-align: center;
 }
 .row div:last-child {
-    margin-right: 0;
+    /* margin-right: 0; */
 }
 
 #blockChart {
@@ -298,8 +302,7 @@ path {
     cursor: pointer;
 }
 #row2{
-    min-height: 100%
-}
+    /* min-height: 100% */}
 
 circle {
     fill: none;
@@ -314,6 +317,7 @@ circle {
 }
 html {
     font-family: sans-serif;
+    /* height: auto; */
 }
 
 //Drop Down TimeSelection
@@ -337,16 +341,22 @@ html {
 }
 
 #currentTimeSelect{
-    border: ridge;
-    padding: 0 15px;
-    width: 265px;
-    margin: 0 15px;
+    /* border: ridge; */
+    padding: 5px;
+    width: 108px;
+    /* margin: 0 15px; */
+    background-color: white;
+    border-radius: 4px;
+    text-decoration: none;
+    text-align: center;
+    display: inline-block;
+    border: 1px solid #e3e3e3;
 }
 
 /////////////////Setting ///////////
 
 #settingpage .tabselector {
-  margin-bottom: 10px;
+    margin-bottom: 10px;
 }
 .bordertab {
     border: #cdcdcd medium solid;
@@ -364,23 +374,24 @@ html {
     margin-top: 0px !important;
 }
 
-#settingpage .panel-heading h4 {
+.panel-heading h4 {
     font-size: 12px;
+    text-align: left;
 }
 
-#settingpage .panel-heading{
+.panel-heading{
     margin-bottom: 10px;
 }
 
-#settingpage .panel-body {
+.panel-body {
     padding: 0px;
 } 
 
-#settingpage .panel-body form h4 {
+.panel-body form h4 {
     font-size: 11px;
 }
 
-#settingpage .panel-body label {
+.panel-body label {
     font-size: 11px;
 }
 #settingpage .form-control{
@@ -435,18 +446,120 @@ html {
     background-color: #e5e5e5;
 }
 
+#settingsButton{
+    /* margin-top: 3px; */
+    display: inline-block;
+}
+
 #settingsButton a{
-background-color: #337ab7;
-border: 2px #2e6da4 outset;
-padding: 1px 4px;
-color: white;
-font-family: inherit;
-font-size: inherit;
-text-decoration: none;
-line-height: inherit;
+    background-color: #337ab7;
+    border: 2px #2e6da4 outset;
+    padding: 1px 4px;
+    color: white;
+    font-family: inherit;
+    font-size: inherit;
+    text-decoration: none;
+    line-height: inherit;
 }
 #settingsButton a:hover{
-border-style: inset;
-background-color: #286090;
-padding: 2px 3px 0 5px;
+    border-style: inset;
+    background-color: #286090;
+    padding: 2px 3px 0 5px;
+}
+
+
+/////////FIX styles ////////////
+#bodyContainer {
+    background-color: white !important;
+}
+#username{
+    text-align: right;
+}
+#userinfo{
+    margin-top: 10px;
+}
+
+#logoutButton{
+    display: inline-block;
+}
+
+#header.bordertab{
+    background-color: #F8F8FC;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    -webkit-box-shadow: 0 1px 1px rgba(0,0,0,.05);
+    box-shadow: 0 1px 1px rgba(0,0,0,.05);
+    padding-bottom: 0px;
+}
+
+#paginationTitle h5.pull-right {
+    font-size: 11px;
+}
+
+.form-control {
+    font-size: 12px;
+}
+
+#advSearchDiv .form-group {
+    margin: 2px;
+}
+
+#advSearchDiv .panel {
+    margin-bottom: 10px;
+}
+
+#advSearchDiv p {
+    color: red;
+    font-size: 10px;
+}
+select.input-xs {
+    height: 28px;
+}
+
+button[disabled] {
+    cursor: not-allowed !important;
+}
+
+#settingpage button[disabled] {
+    color: #777;
+    background-color: #fff;
+    border-color: #ddd;
+}
+#settingpage .btn-primary{
+    color: #23527c;
+    background-color: white;
+    border-color: #ddd;
+}
+.form-signin .btn {
+  font-size: 18px !important;
+}
+.menutitle{
+    display: inline;
+    font-size: 14px;
+    margin: 10px;
+    font-weight: bold;
+}
+
+.menuselector a {
+  text-decoration: none;
+}
+
+.nav li.titlemenu:hover{
+    background-color: #E2E2E2;
+}
+
+button#zoomOut {
+  /* padding-top: 10px; */
+}
+div#legend {
+  margin-bottom: 15px;
+  /* height: 0px; */
+}
+
+#landingPageHeader .dropdown-menu {
+  min-width: 20px;
+}
+#timedropdown{
+    margin: 0px;
+    padding-top: 0px;
 }

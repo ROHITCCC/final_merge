@@ -34,12 +34,10 @@ settingModule.controller('SettingsController', function ($scope, $http) {
     };
     $scope.reportPromise().then(function (data) {
         $scope.reports = data.data._embedded.rh_doc;
-        console.log($scope.reports);
         //Aggrigated tools
         $scope.addNewAggrigated = function () {
             newaggrison = newson = {reports: {application: null, email: null, interface: null, errortype: null, frequency: {duration: null, unit: null}}};
             $scope.reports.push(newson);
-            console.log($scope.reports);
         };
         $scope.removeAggrigated = function (index) {
             $scope.reports.splice(index, 1);
@@ -47,6 +45,7 @@ settingModule.controller('SettingsController', function ($scope, $http) {
         $scope.numberOfPagesAggri = function () {
             return Math.ceil($scope.reports.length / $scope.pageSizeAggri);
         };
+
     });
     $scope.settingPromise().then(function (data) {
         $scope.settings = data.data.setting;
@@ -97,9 +96,12 @@ settingModule.controller('SettingsController', function ($scope, $http) {
     $scope.curPage = 0;
     $scope.pageSize = 4;
     $scope.curPageImmi = 0;
+    $scope.units = ['s', 'm', 'hrs', 'day'];
     $scope.numbers = ['3', '5', '10', '15', '20', '30', '40', '50', '100', '200'];
     $scope.selectedNumber = $scope.numbers[0];
     $scope.curPageAggri = 0;
     $scope.pageSizeAggri = 4;
     //END pagination setup
 });
+
+   
