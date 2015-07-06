@@ -330,7 +330,7 @@ html {
     top: 50%; 
 }
 
-//////TIME SELECTED DROP DOWN MENU//////
+//////TIME SELECTED AND ENV SELECTED DROP DOWN MENU//////
 .dropdown-menu{
     min-width: 100px;
     float: right;
@@ -344,6 +344,18 @@ html {
     /* border: ridge; */
     padding: 5px;
     width: 108px;
+    /* margin: 0 15px; */
+    background-color: white;
+    border-radius: 4px;
+    text-decoration: none;
+    text-align: center;
+    display: inline-block;
+    border: 1px solid #e3e3e3;
+}
+#currentEnvSelect{
+    /* border: ridge; */
+    padding: 5px;
+    width: 133px;
     /* margin: 0 15px; */
     background-color: white;
     border-radius: 4px;
