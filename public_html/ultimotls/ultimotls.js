@@ -195,23 +195,13 @@ ultimotls.filter('unique', function () {
 ultimotls.controller('getTabs', ['$scope', '$location', 'queryEnv',
     function($scope, $location, queryEnv){
         $scope.tabBuilder = function(){
-        
-        $scope.env = [{name:"Prod", description: "Production", dbName:"PROD"}, 
-                     {name:"QA", description:"QA", dbName:"QA"}, 
-                     {name:"Dev", description: "Developement", dbName:"DEV"}];
 //        };
             var env = queryEnv.getEnv()
              $scope.tabs = [
                 { link : '#/treemap', env:env.name, label : ' Dashboard' },
-                { link : '#/audits', label : 'Audits' },
-                { link : '#/sunburst', env:env.name, label : ' Sunburst Dashboard' }
+                { link : '#/audits', label : 'Audits' }
+                //{ link : '#/sunburst', env:env.name, label : ' Sunburst Dashboard' }
               ]; 
-            $scope.setEnvironment = function(tab, env){
-                $scope.rootTab = document.getElementById(tab);
-                $scope.rootTab.innerHTML = env.name+" "+tab;
-                queryEnv.setEnv(env);
-                queryEnv.broadcast();
-            };
             $scope.setTab = null;
             
             $scope.currentPath = $location.path();
