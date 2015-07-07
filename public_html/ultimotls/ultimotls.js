@@ -350,7 +350,11 @@ ultimotls.service("auditSearch",['$http', function ($http) {
         }
         else {
             var url = postUrl + textSearch;
-            searchPromise = $http.get(url, {timeout:TLS_SERVER_TIMEOUT}).success;
+            searchPromise = $http.get(url, {timeout:TLS_SERVER_TIMEOUT}).success(function(response){
+                
+            }).error(function () {
+                console.log("error");
+            });
             audits.inputError = "";
         }
 
