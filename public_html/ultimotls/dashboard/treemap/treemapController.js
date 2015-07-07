@@ -85,7 +85,8 @@ treemapControllerModule.controller('treemapController', ['$scope', '$location', 
             }
         }  
     }
-    $scope.setEnvironment = function(env){
+    $scope.setEnvironment = function(env){//Set the environment when changed
+        document.getElementById(" Dashboard").innerHTML = env.name + " Dashboard"  //Edits Dashbord in the landingPageNav
         $scope.envSelected = env
         $scope.treemapSaver.env = env
         queryEnv.setEnv(env);
