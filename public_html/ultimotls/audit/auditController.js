@@ -40,7 +40,6 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                     return;
                 }
             }
-            
             var searchPromise = auditSearch.doSearch(query, $scope.rowNumber);
             $scope.inputError = "";
             searchPromise.then(function (response) {
