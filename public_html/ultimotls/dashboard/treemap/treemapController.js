@@ -78,8 +78,16 @@ treemapControllerModule.controller('treemapController', ['$scope', '$location', 
         $scope.treemapPromise = mongoAggregateService.callHttp(sliderDataQuery);
         $scope.treemapSaver.dropdownVal = $scope.timeSelected.time;//Saves TimeSelected when drop down value changes
     };
+    if(typeof $scope.treemapSaver.env !== 'undefined'){ //checks whether or not the env value holder in the service exists yet
+        for(var i =0; i< $scope.envOptions.length; i++){
+            if ($scope.treemapSaver.env.name === $scope.envOptions[i].name){
+                $scope.envSelected = $scope.envOptions[i]; 
+            }
+        }  
+    }
     $scope.setEnvironment = function(env){
         $scope.envSelected = env
+        $scope.treemapSaver.env = env
         queryEnv.setEnv(env);
         queryEnv.broadcast();
     };
