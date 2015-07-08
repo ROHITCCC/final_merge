@@ -6,8 +6,8 @@
 var auditControllerModule = angular.module('auditControllerModule', []);
 
 
-auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'auditSearch', 'initPromise',
-    function ($scope, $log, $http, auditSearch, initPromise) {
+auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'auditSearch', 'initPromise', 'queryEnv',
+    function ($scope, $log, $http, auditSearch, initPromise, queryEnv) {
         //Initialize scope data 
         $scope.rowsOptions = [{rows: 5}, {rows: 10}, {rows: 25}, {rows: 50}, {rows: 100}];
         $scope.rowNumber = $scope.rowsOptions[2];
@@ -23,12 +23,25 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
         //check if initPromise from resolve has data.
         if (initPromise && initPromise.data) {
             var queryFromResolve = initPromise.config.url;
-            $scope.searchCriteria = queryFromResolve.substring(queryFromResolve.indexOf('{'), queryFromResolve.lastIndexOf('}') + 1);
+            $scope.searchCriteria = queryFromResolve.substring(queryFromResolve.indexOf(',')+1, queryFromResolve.lastIndexOf('}') - 1);
             $scope.data = initPromise.data;
         }
         clearError = function(){ //onKeyPress error message will clear
             $scope.inputError = "";
         }
+        $scope.$on("envChangeBroadcast", function(){//Listens for Environment Change
+            console.log("on change service")
+            $scope.env = queryEnv.getEnv();
+            if($scope.searchCriteria && searchFlag){
+                console.log("dosearch function")
+                $scope.doSearch($scope.searchCriteria);    
+            }
+            else if($scope.advanceSearch && !searchFlag){
+                console.log("advSearch function")
+                $scope.doAdvanceSearch($scope.calender.to, $scope.calender.from)
+            }
+            
+        })
         $scope.doSearch = function (query) {
             $scope.searchOn(true);
             if (/:/.test(query)) {
@@ -47,53 +60,66 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
             });
 
         };
-        
+        var keywordFlag = false
+        var keyPhrase = ""
         function checkObj(advanceSearch) {
             /* function to validate the existence of each key in the object to get the number of valid keys. */
-            var flag = false
-            if (advanceSearch.application) {
-                flag = true
-                console.log("app " + flag)
+            var flag = false;
+            if(advanceSearch.text) {
+                keywordFlag = true;
+                flag = true;
+                console.log("text " + flag);
+            }
+            else if (advanceSearch.application) {
+                keywordFlag = false;
+                flag = true;
+                console.log("app " + flag);
             }
             else if(advanceSearch.interface) {
-                flag = true
-                console.log("interface " + flag)
+                keywordFlag = false;
+                flag = true;
+                console.log("interface " + flag);
             }
             else if(advanceSearch.hostname) {
-                flag = true
-                console.log("hostname " + flag)
+                keywordFlag = false;
+                flag = true;
+                console.log("hostname " + flag);
             }
             else if(advanceSearch.txDomain) {
-                flag = true
-                console.log("txDomain " + flag)
+                keywordFlag = false;
+                flag = true;
+                console.log("txDomain " + flag);
             }
             else if(advanceSearch.txType) {
-                flag = true
-                console.log("txType " + flag)
+                keywordFlag = false;
+                flag = true;
+                console.log("txType " + flag);
             }
             else if(advanceSearch.txID) {
-                flag = true
-                console.log("txID " + flag)
+                keywordFlag = false;
+                flag = true;
+                console.log("txID " + flag);
             }
             else if(advanceSearch.severity) {
-                flag = true
-                console.log("severity " + flag)
+                keywordFlag = false;
+                flag = true;
+                console.log("severity " + flag);
             }
             else if(advanceSearch.errorType) {
-                flag = true
-                console.log("errorType " + flag)
-            }
-            else if(advanceSearch.text) {
-                flag = true
-                console.log("text " + flag)
+                keywordFlag = false;
+                flag = true;
+                console.log("errorType " + flag);
             }
             else {
                 flag = false;
+                keywordFlag = false;
             }
             return flag;
         };
         function appendFields(advanceSearch){
             var string = ""
+            var env = queryEnv.getEnv();
+            string = "\"envid\":\""+env.dbName+"\","
             if (advanceSearch.application) {
                 var appendApp = "\"application\":\""+advanceSearch.application+"\",";
                 string = appendApp
@@ -129,9 +155,11 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
             if(advanceSearch.text) {
                 var appendText = "$text:{$search:\""+advanceSearch.text+"\"},";
                 string = string+appendText;
+                //DELETE THE TOP AND REPLACE WITH
+                //keyPhrase = advanceSearch.text
             }
             return string;
-        }
+        };
         /////ADVANCE SEARCH INITIALIZATION////////
         //$scope.advanceSearch = {}
         ////ADVANCE SEARCH FUNCTION///////////
@@ -141,7 +169,11 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
             
             try {
                 var flag = checkObj($scope.advanceSearch)
-                console.log(flag)
+//                replace the end of the URL's with endURL when service is ready
+//                var endURL = "&searchtype=advance&count&pagesize=" + rowNumber.rows;
+//                if (keywordFlag){
+//                    endURL = "&searchtype=advance&count&pagesize=" + rowNumber.rows+"&searchkeyword="+keyPhrase;
+//                }
                 if (flag){ //if one both fields have been touched
                     var query = appendFields($scope.advanceSearch).slice(0,-1);
                     console.log(query);
