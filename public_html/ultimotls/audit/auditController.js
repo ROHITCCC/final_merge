@@ -48,150 +48,184 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
 
         };
         
+        function checkObj(advanceSearch) {
+            /* function to validate the existence of each key in the object to get the number of valid keys. */
+            var flag = false
+            if (advanceSearch.application) {
+                flag = true
+                console.log("app " + flag)
+            }
+            else if(advanceSearch.interface) {
+                flag = true
+                console.log("interface " + flag)
+            }
+            else if(advanceSearch.hostname) {
+                flag = true
+                console.log("hostname " + flag)
+            }
+            else if(advanceSearch.txDomain) {
+                flag = true
+                console.log("txDomain " + flag)
+            }
+            else if(advanceSearch.txType) {
+                flag = true
+                console.log("txType " + flag)
+            }
+            else if(advanceSearch.txID) {
+                flag = true
+                console.log("txID " + flag)
+            }
+            else if(advanceSearch.severity) {
+                flag = true
+                console.log("severity " + flag)
+            }
+            else if(advanceSearch.errorType) {
+                flag = true
+                console.log("errorType " + flag)
+            }
+            else if(advanceSearch.text) {
+                flag = true
+                console.log("text " + flag)
+            }
+            else {
+                flag = false;
+            }
+            return flag;
+        };
+        function appendFields(advanceSearch){
+            var string = ""
+            if (advanceSearch.application) {
+                var appendApp = "\"application\":\""+advanceSearch.application+"\",";
+                string = appendApp
+            }
+            if(advanceSearch.interface) {
+                var appendInterface = "\"interface1\":\""+advanceSearch.interface+"\",";
+                string = string+appendInterface;
+            }
+            if(advanceSearch.hostname) {
+                var appendHostname = "\"hostname\":\""+advanceSearch.hostname+"\",";
+                string = string+appendHostname;
+            }
+            if(advanceSearch.txDomain) {
+                var appendTxDomain = "\"transactionDomain\":\""+advanceSearch.txDomain+"\",";
+                string = string+appendTxDomain;
+            }
+            if(advanceSearch.txType) {
+                var appendTxType = "\"transactionType\":\""+advanceSearch.txType+"\",";
+                string = string+appendTxType;
+            }
+            if(advanceSearch.txID) {
+                var appendTxID = "\"transactionId\":\""+advanceSearch.txID+"\",";
+                string = string+appendTxID;
+            }
+            if(advanceSearch.severity) {
+                var appendSeverity = "\"severity\":\""+advanceSearch.severity+"\",";
+                string = string+appendSeverity;
+            }
+            if(advanceSearch.errorType) {
+                var appendErrorType = "\"errorType\":\""+advanceSearch.errorType+"\",";
+                string = string+appendErrorType;
+            }
+            if(advanceSearch.text) {
+                var appendText = "$text:{$search:\""+advanceSearch.text+"\"},";
+                string = string+appendText;
+            }
+            return string;
+        }
         /////ADVANCE SEARCH INITIALIZATION////////
-        $scope.advanceSearch = "{\"transactionId\":\"BBQ1234\"}";
-        $scope.secondField = "{\"application\":\"Salesforce\"}";
-        ////NGOPTIONS///////
-        $scope.bools = [{name: 'AND'}, {name: 'OR'}, {name: 'NOT'}];
-        $scope.myBool = $scope.bools[0];
+        //$scope.advanceSearch = {}
         ////ADVANCE SEARCH FUNCTION///////////
         $scope.doAdvanceSearch = function (toDate, fromDate) {
             $scope.searchOn(false);
             var getURL = TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/"+TLS_DBNAME+"/"+TLS_AUDIT_COLLECTION;
-            if ($scope.advanceSearch || $scope.secondField){ //if one both fields have been touched
-                if($scope.advanceSearch && $scope.secondField){ //check to see if both fields are filled
-                    if ((/:/.test($scope.advanceSearch)) && (/:/.test($scope.secondField))) { 
-                        try { //validate both fields
-                            JSON.parse($scope.advanceSearch);
-                            JSON.parse($scope.secondField)
-                        }
-                        catch (err) {
-                            $scope.errorWarning = "Input should be valid JSON. eg. {\"transactionId\":\"BBQ1234\"} ";
-                            return;
-                        }
-                        if(toDate && fromDate){
-                            fromDate = new Date(fromDate).toISOString();
-                            toDate = new Date(toDate).toISOString();
-                            if($scope.myBool.name === "AND") {
-                                var getAndUrl = getURL+"?filter={$and:["+$scope.advanceSearch+","+
-                                    $scope.secondField+",{'timestamp':{'$gte':{'$date':'"+fromDate+"'}"+
+            
+            try {
+                var flag = checkObj($scope.advanceSearch)
+                console.log(flag)
+                if (flag){ //if one both fields have been touched
+                    var query = appendFields($scope.advanceSearch).slice(0,-1);
+                    console.log(query);
+                    $scope.errorWarning = ""
+                    if(toDate && fromDate){
+                        fromDate = new Date(fromDate).toISOString();
+                        toDate = new Date(toDate).toISOString();
+                        var getByDateUrl = getURL+"?filter={$and:[{"+query+"},{'timestamp':{'$gte':{'$date':'"+fromDate+"'}"+
                                     ",'$lt':{'$date':'"+toDate+"'}}}]}&count&pagesize="+$scope.rowNumber.rows;
-                                $http.get(getAndUrl, {timeout:TLS_SERVER_TIMEOUT})
-                                        .success(function (response) {
-                                            $scope.data = response;
-                                            $scope.errorWarning = "";
-                                        }).error(function(d){
-                                            $scope.errorWarning = "Call Timed Out";
-                                        });
-                                $scope.predicate = 'timestamp.$date'; //by defualt it will order results by result
-                            }
-                            else if($scope.myBool.name === "OR"){
-                                var getOrUrl = getURL+"?filter={$or:["+$scope.advanceSearch+","+
-                                    $scope.secondField+"],$and:[{'timestamp':{'$gte':{'$date':'"+fromDate+"'}"+
-                                    ",'$lt':{'$date':'"+toDate+"'}}}]}}&count&pagesize="+$scope.rowNumber.rows;
-                                $http.get(getOrUrl, {timeout:TLS_SERVER_TIMEOUT})
-                                        .success(function (response) {
-                                            $scope.data = response;
-                                            $scope.errorWarning = "";
-                                        }).error(function(d){
-                                            $scope.errorWarning = "Call Timed Out";
-                                        });
-                                $scope.predicate = 'timestamp.$date'; //by defualt it will order results by date
-                            }
-                            else if ($scope.myBool.name === "NOT") {
-                                var str = $scope.secondField;
-                                var n = str.search(":");
-                                var name = str.substring(0,n+1);
-                                var value = str.substring(n+1, str.length);
-                                var getNotUrl = getURL+"?filter={$and:["+$scope.advanceSearch+","+name+
-                                        "{$not:{$eq:"+value+"}},{'timestamp':{'$gte':{'$date':'"+fromDate+"'}"+
-                                    ",'$lt':{'$date':'"+toDate+"'}}}]}&count&pagesize="+$scope.rowNumber.rows;
-                                $http.get(getNotUrl, {timeout:TLS_SERVER_TIMEOUT})
-                                        .success(function (response) {
-                                            $scope.data = response;
-                                            $scope.errorWarning = "";
-                                        }).error(function(d){
-                                            $scope.errorWarning = "Call Timed Out";
-                                        });
-                                $scope.predicate = 'timestamp.$date'; //by defualt it will order results by
-                            }
-                        }
-                        else if(( toDate || fromDate ) && !( toDate && fromDate )){
-                            $scope.errorWarning = "A valid date must be entered for BOTH fields";
-                        }
-                        else{// run bool search only
-                            if($scope.myBool.name === "AND") {
-                                var getAndUrl = getURL+"?filter={$and:["+$scope.advanceSearch+","+
-                                    $scope.secondField+"]}&count&pagesize="+$scope.rowNumber.rows;
-                                $http.get(getAndUrl, {timeout:TLS_SERVER_TIMEOUT})
-                                        .success(function (response) {
-                                            $scope.data = response;
-                                            $scope.errorWarning = "";
-                                        }).error(function(d){
-                                            $scope.errorWarning = "Call Timed Out";
-                                        });
-                                $scope.predicate = 'timestamp.$date'; //by defualt it will order results by result
-                            }
-                            else if ($scope.myBool.name === "NOT") {
-                                var str = $scope.secondField;
-                                var n = str.search(":");
-                                var name = str.substring(0,n+1);
-                                var value = str.substring(n+1, str.length);
-                                var getNotUrl = getURL+"?filter={$and:["+$scope.advanceSearch+","+name+
-                                        "{$not:{$eq:"+value+"}}]}&count&pagesize="+$scope.rowNumber.rows;
-                                $http.get(getNotUrl, {timeout:TLS_SERVER_TIMEOUT})
-                                        .success(function (response) {
-                                            $scope.data = response;
-                                            $scope.errorWarning = "";
-                                        }).error(function(d){
-                                            $scope.errorWarning = "Call Timed Out";
-                                        });
-                                $scope.predicate = 'timestamp.$date'; //by defualt it will order results by
-                            }
-                            else if($scope.myBool.name === "OR"){
-                                var getOrUrl = getURL+"?filter={$or:["+$scope.advanceSearch+","+
-                                    $scope.secondField+"]}}&count&pagesize="+$scope.rowNumber.rows;
-                                $http.get(getOrUrl, {timeout:TLS_SERVER_TIMEOUT})
-                                        .success(function (response) {
-                                            $scope.data = response;
-                                            $scope.errorWarning = "";
-                                        }).error(function(d){
-                                            $scope.errorWarning = "Call Timed Out";
-                                        });
-                                $scope.predicate = 'timestamp.$date'; //by defualt it will order results by date
-                            }
-                            else {
-                                $log.info("Not passing Current value");
-                                $scope.errorWarning = "Most likely not your fault";
-                            }
-                        }
+                        $http.get(getByDateUrl, {timeout:TLS_SERVER_TIMEOUT})
+                            .success(function (response){
+                                $scope.data = response;
+                                $scope.errorWarning = "";
+                            }).error(function(d){
+                                $scope.errorWarning = "Call Timed Out";
+                            });
+                        $scope.predicate = 'timestamp.$date'; //by defualt it will order results by date
+                    }
+                    else if(( toDate || fromDate ) && !( toDate && fromDate )){
+                        $scope.errorWarning = "A valid date must be entered for BOTH fields";
+                    }
+                    else if(!toDate && !fromDate ){
+                        
+                        var url = "?filter={$and:[{"+query+"}]}&count&pagesize="+$scope.rowNumber.rows;
+                        $http.get(getURL+url,{timeout:TLS_SERVER_TIMEOUT})
+                            .success(function(response){
+                                $scope.data = response;
+                                $scope.errorWarning = "";
+                            }).error(function(d){
+                                $scope.errorWarning = "Call Timed Out";
+                            })
+                            $scope.predicate = 'timestamp.$date'; //by defualt it will order results by date
+                    }
+                    else{
+                        $scope.errorWarning = "No criteria was given"
+                    }
+                }
+                else if(toDate || fromDate){
+                    console.log("am i here")
+                    if(toDate && fromDate){
+                        fromDate = new Date(fromDate).toISOString();
+                        toDate = new Date(toDate).toISOString();
+                        var getByDateUrl = getURL+"?filter={'timestamp':{'$gte':{'$date':'"+fromDate+"'}"+
+                                    ",'$lt':{'$date':'"+toDate+"'}}}&count&pagesize="+$scope.rowNumber.rows;
+                        $http.get(getByDateUrl, {timeout:TLS_SERVER_TIMEOUT})
+                            .success(function (response){
+                                $scope.data = response;
+                                $scope.errorWarning = "";
+                            }).error(function(d){
+                                $scope.errorWarning = "Call Timed Out";
+                            });
+                        $scope.predicate = 'timestamp.$date'; //by defualt it will order results by date
+                    }
+                    else{
+                        $scope.errorWarning = "A valid date must be entered for BOTH fields";
                     }
                 }
                 else{
-                    $scope.errorWarning = "Both search fields need to have an entry"
+                    $scope.errorWarning = "No fields have been entered"
                 }
             }
-            else if(!$scope.advanceSearch && !$scope.secondField && ( toDate || fromDate )){
-                if(toDate && fromDate){
-                    fromDate = new Date(fromDate).toISOString();
-                    toDate = new Date(toDate).toISOString();
-                    var getByDateUrl = getURL+"?filter={'timestamp':{'$gte':{'$date':'"+fromDate+"'}"+
-                                              ",'$lt':{'$date':'"+toDate+"'}}}&count&pagesize="+$scope.rowNumber.rows;
-                    $http.get(getByDateUrl, {timeout:TLS_SERVER_TIMEOUT})
-                        .success(function (response){
-                            $scope.data = response;
-                            $scope.errorWarning = "";
-                        }).error(function(d){
-                            $scope.errorWarning = "Call Timed Out";
-                        });
-                    $scope.predicate = 'timestamp.$date'; //by defualt it will order results by date
+            catch(err){
+                if(toDate || fromDate){
+                    if(toDate && fromDate){
+                        fromDate = new Date(fromDate).toISOString();
+                        toDate = new Date(toDate).toISOString();
+                        var getByDateUrl = getURL+"?filter={'timestamp':{'$gte':{'$date':'"+fromDate+"'}"+
+                                                  ",'$lt':{'$date':'"+toDate+"'}}}&count&pagesize="+$scope.rowNumber.rows;
+                        $http.get(getByDateUrl, {timeout:TLS_SERVER_TIMEOUT})
+                            .success(function (response){
+                                $scope.data = response;
+                                $scope.errorWarning = "";
+                            }).error(function(d){
+                                $scope.errorWarning = "Call Timed Out";
+                            });
+                        $scope.predicate = 'timestamp.$date'; //by defualt it will order results by date
+                    }
+                    else{
+                        $scope.errorWarning = "A valid date must be entered for BOTH fields";
+                    }
                 }
                 else{
-                    $scope.errorWarning = "A valid date must be entered for BOTH fields";
+                    $scope.errorWarning = "No fields have been entered"
                 }
-            }
-            else{
-                $scope.errorWarning = "No fields have been entered"
             }
         };
         //First, Previous, Next, Last are button function for Pagination to render new view
