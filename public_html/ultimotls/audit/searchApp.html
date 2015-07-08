@@ -41,26 +41,53 @@ and open the template in the editor.
                         <div class="panel-body">
                             <form class="form-horizontal" role="form">
                                 <div class="form-group col-sm-12">
-
-                                    <div class="col-sm-10 bordertab col-sm-offset-1">    
+                                    <div class="col-sm-12 bordertab">  
                                         <div class="row">
-                                            <div class="form-group col-sm-12">
-                                                <div class="col-sm-5">
-                                                    <input ng-model="advanceSearch" type="text" ng-enter="doAdvanceSearch(calender.to, calender.from)"
-                                                           class="form-control input-sm" id="text" placeholder="Search for...">
+                                                <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 form-inline">
+                                                    <label class="control-label col-sm-6">Application</label>
+                                                    <input ng-model="advanceSearch.application" class="form-control input-sm col-sm-6" 
+                                                           type="text" placeholder="Application..."  />
                                                 </div>
-                                                <div id="appendHere">
-                                                    <label class="control-label col-sm-2">
-                                                        <select ng-model="myBool" 
-                                                                data-ng-options="b as b.name for b in bools">
-                                                        </select>
-                                                    </label>
+                                                <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 form-inline">
+                                                    <label class="control-label col-sm-6">Interface</label>
+                                                    <input ng-model="advanceSearch.interface" class="form-control input-sm col-sm-6" 
+                                                           type="text" placeholder="Interface...">
                                                 </div>
-                                                <div class="col-sm-5">
-                                                    <input ng-model="secondField" type="text" ng-enter="doAdvanceSearch(calender.to, calender.from, documentId)"
-                                                           class="form-control input-sm" id="text" placeholder="Search for...">
+                                                <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 form-inline">
+                                                    <label class="control-label col-sm-6">Hostname</label>
+                                                    <input ng-model="advanceSearch.hostname" class="form-control input-sm col-sm-6" 
+                                                           type="text" placeholder="Hostname...">
                                                 </div>
-                                            </div>  
+                                                <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 form-inline">
+                                                    <label class="control-label col-sm-6">Transaction_Domain</label>
+                                                    <input ng-model="advanceSearch.txDomain" class="form-control input-sm col-sm-6" 
+                                                           type="text" placeholder="Transaction Domain...">
+                                                </div>
+                                                <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 form-inline">
+                                                    <label class="control-label col-sm-6">Transaction_Type</label>
+                                                    <input ng-model="advanceSearch.txType" class="form-control input-sm col-sm-6" 
+                                                           type="text" placeholder="Transaction Type...">
+                                                </div>
+                                                <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 form-inline">
+                                                    <label class="control-label col-sm-6">Transaction_ID</label>
+                                                    <input ng-model="advanceSearch.txID" class="form-control input-sm col-sm-6" 
+                                                           type="text" placeholder="Transaction ID...">
+                                                </div>
+                                                <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 form-inline">
+                                                    <label class="control-label col-sm-6">Severity</label>
+                                                    <input ng-model="advanceSearch.severity" class="form-control input-sm col-sm-6" 
+                                                           type="text" placeholder="Severity...">
+                                                </div>
+                                                <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 form-inline">
+                                                    <label class="control-label col-sm-6">Error_Type</label>
+                                                    <input ng-model="advanceSearch.errorType" class="form-control input-sm col-sm-6" 
+                                                           type="text" placeholder="Error Type...">
+                                                </div>
+                                                <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 form-inline">
+                                                    <label class="control-label col-sm-6">Keyword</label>
+                                                    <input ng-model="advanceSearch.text" class="form-control input-sm col-sm-6" 
+                                                           type="text" placeholder="Keyword...">
+                                                </div>
                                         </div>
                                         <div  class="row form-group"> 
                                             <label class="control-label col-sm-1">
