@@ -13,17 +13,11 @@ treemapControllerModule.controller('treemapController', ['$scope', '$location', 
     $scope.timeOptions = [{"time":.25, "description":"15 minutes"},{"time":.5, "description":"30 minutes"},
                           {"time":1,"description":"1 hour"},{"time":24, "description":"24 hours"},
                           {"time":48,"description":"48 hours"}, {"time":"Calender", "description":"Custom"}];
-    $scope.timeSelected = $scope.timeOptions[2];
-    $scope.envOptions = [{name:"Prod", description: "Production", dbName:"PROD"}, 
-                         {name:"QA", description:"QA", dbName:"QA"}, 
-                         {name:"Dev", description: "Developement", dbName:"DEV"}];
-    $scope.envSelected = $scope.envOptions[0];                 
+    $scope.timeSelected = $scope.timeOptions[2];                
     $scope.treemapSaver = treemapSaver;
-    $scope.env = queryEnv.getEnv();
     $scope.auditQuery = auditQuery;
-    $scope.$on("envChangeBroadcast", function(){
+    $scope.$on("envChangeBroadcast", function(){//Listens for Environment Change
         $scope.env = queryEnv.getEnv();
-        console.log($scope.env);
         $scope.fromDateChange($scope.timeSelected);
     })
     if($scope.treemapSaver.wordLength === undefined)$scope.treemapSaver.wordLength = []
@@ -77,19 +71,5 @@ treemapControllerModule.controller('treemapController', ['$scope', '$location', 
             
         $scope.treemapPromise = mongoAggregateService.callHttp(sliderDataQuery);
         $scope.treemapSaver.dropdownVal = $scope.timeSelected.time;//Saves TimeSelected when drop down value changes
-    };
-    if(typeof $scope.treemapSaver.env !== 'undefined'){ //checks whether or not the env value holder in the service exists yet
-        for(var i =0; i< $scope.envOptions.length; i++){
-            if ($scope.treemapSaver.env.name === $scope.envOptions[i].name){
-                $scope.envSelected = $scope.envOptions[i]; 
-            }
-        }  
-    }
-    $scope.setEnvironment = function(env){//Set the environment when changed
-        document.getElementById(" Dashboard").innerHTML = env.name + " Dashboard"  //Edits Dashbord in the landingPageNav
-        $scope.envSelected = env
-        $scope.treemapSaver.env = env
-        queryEnv.setEnv(env);
-        queryEnv.broadcast();
     };
     }]);
