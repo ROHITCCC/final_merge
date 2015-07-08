@@ -16,8 +16,8 @@ var TLS_EXPIRATION_TIME =  15 //in minutes
 //(function(angular){
 var ultimotls = angular.module('ultimotls', ['auditControllerModule', 'sunburstDirectiveModule', 'auditDirectiveModule' , 'treemapDirectiveModule', 'base64', 'LocalStorageModule', 'settingModule', 'ui.router']);
  
-ultimotls.controller('loginControllerModule', ['$scope', '$http', '$q', '$base64', '$location','localStorageService', 'treemapSaver','$timeout',
-    function ($scope, $http, $q, $base64, $location, localStorageService, treemapSaver, $timeout ){ //loging Controller
+ultimotls.controller('loginControllerModule', ['$scope', '$http', '$q', '$base64', '$location','localStorageService', 'treemapSaver','$timeout','queryEnv',
+    function ($scope, $http, $q, $base64, $location, localStorageService, treemapSaver, $timeout, queryEnv ){ //loging Controller
         $scope.cred;
         $scope.treemapSaver = treemapSaver;
         $scope.treemapSaver.showNav = false;
@@ -121,6 +121,25 @@ ultimotls.controller('loginControllerModule', ['$scope', '$http', '$q', '$base64
             
             
         };
+        
+        $scope.envOptions = [{name:"Prod", description: "Production", dbName:"PROD"}, 
+                         {name:"QA", description:"QA", dbName:"QA"}, 
+                         {name:"Dev", description: "Developement", dbName:"DEV"}];
+        $scope.envSelected = $scope.envOptions[0]; 
+        $scope.env = queryEnv.getEnv();
+        if(typeof $scope.treemapSaver.env !== 'undefined'){ //checks whether or not the env value holder in the service exists yet
+            for(var i =0; i< $scope.envOptions.length; i++){
+                if ($scope.treemapSaver.env.name === $scope.envOptions[i].name){
+                    $scope.envSelected = $scope.envOptions[i]; 
+                }
+            }  
+        };
+        $scope.setEnvironment = function(env){//Set the environment when changed
+            $scope.envSelected = env
+            $scope.treemapSaver.env = env
+            queryEnv.setEnv(env);
+            queryEnv.broadcast();
+        };
 }]);
 
 ultimotls.run(['$rootScope', '$location', 'treemapSaver', 'localStorageService', '$http', 
@@ -192,37 +211,35 @@ ultimotls.filter('unique', function () {
     };
 });
 
-ultimotls.controller('getTabs', ['$scope', '$location', 'queryEnv',
-    function($scope, $location, queryEnv){
-        $scope.tabBuilder = function(){
+ultimotls.controller('getTabs', ['$scope', '$location', function($scope, $location){
+    $scope.tabBuilder = function(){
 //        };
-            var env = queryEnv.getEnv()
-             $scope.tabs = [
-                { link : '#/treemap', env:env.name, label : ' Dashboard' },
-                { link : '#/audits', label : 'Audits' }
-                //{ link : '#/sunburst', env:env.name, label : ' Sunburst Dashboard' }
-              ]; 
-            $scope.setTab = null;
-            
-            $scope.currentPath = $location.path();
-            for(var tabCounter = 0; tabCounter < $scope.tabs.length; tabCounter++){
-                if($scope.currentPath === $scope.tabs[tabCounter].link.substring(1)){
-                    $scope.setTab = tabCounter;
-                }
+         $scope.tabs = [
+            { link : '#/treemap', label : ' Dashboard' },
+            { link : '#/audits', label : 'Audits' }
+            //{ link : '#/sunburst', env:env.name, label : ' Sunburst Dashboard' }
+          ]; 
+        $scope.setTab = null;
+
+        $scope.currentPath = $location.path();
+        for(var tabCounter = 0; tabCounter < $scope.tabs.length; tabCounter++){
+            if($scope.currentPath === $scope.tabs[tabCounter].link.substring(1)){
+                $scope.setTab = tabCounter;
             }
-            $scope.selectedTab = $scope.tabs[$scope.setTab];    
-            $scope.setSelectedTab = function(tab) {
-              $scope.selectedTab = tab;
-            };
-            $scope.tabClass = function(tab) {
-              if ($scope.selectedTab === tab) {
-                return "active";
-              } else {
-                return "";
-              } 
-              
-            };
         }
+        $scope.selectedTab = $scope.tabs[$scope.setTab];    
+        $scope.setSelectedTab = function(tab) {
+          $scope.selectedTab = tab;
+        };
+        $scope.tabClass = function(tab) {
+          if ($scope.selectedTab === tab) {
+            return "active";
+          } else {
+            return "";
+          } 
+
+        };
+    }
 }]);
 
 ultimotls.directive('tabsPanel', function () {
@@ -325,13 +342,16 @@ ultimotls.service("queryEnv", function($rootScope){ //getter and setter for envi
     return environment;
 });
 
-ultimotls.service("auditSearch",['$http', function ($http) {
+ultimotls.service("auditSearch",['$http','queryEnv', function ($http, queryEnv) {
     var postUrl =TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/"+TLS_DBNAME+"/"+TLS_AUDIT_COLLECTION+"?filter=";
     var audits = {};
+    var env = queryEnv.getEnv();
     audits.doSearch = function (searchCriteria, rowNumber) {
-    //this.doSearch = function (searchCriteria, rowNumber) {
-        var textSearch = "{$text:{$search:'" + searchCriteria + "'}}&count&pagesize=" + rowNumber.rows;
-        var jsonSearch = searchCriteria + "&count&pagesize=" + rowNumber.rows;
+//    textSearch and jsonSearch WILL BE SWAPPED WITH THESE
+//    var textSearch = "{\"$and\":[{\"envid\":\""+env.dbName+"\"},{$text:{$search:'" + searchCriteria + "'}}]}&searchtype=basic&count&pagesize=" + rowNumber.rows;
+//    var jsonSearch = "{\"$and\":[{\"envid\":\""+env.dbName+"\"},"+searchCriteria + "]}&searchtype=basic&count&pagesize=" + rowNumber.rows;
+        var textSearch = "{\"$and\":[{\"envid\":\""+env.dbName+"\"},{$text:{$search:'" + searchCriteria + "'}}]}&count&pagesize=" + rowNumber.rows;
+        var jsonSearch = "{\"$and\":[{\"envid\":\""+env.dbName+"\"},"+searchCriteria + "]}&count&pagesize=" + rowNumber.rows;
         var searchPromise = {};
         if (/:/.test(searchCriteria)) {
             if (/('|")[A-Za-z0-9]+('|"):('|")[A-Za-z0-9]+('|")/.test(searchCriteria)) {
