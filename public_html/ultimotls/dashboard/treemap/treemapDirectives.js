@@ -8,7 +8,7 @@ var treemapDirectiveModule = angular.module('treemapDirectiveModule', ['treemapC
 
 treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location', function($http,$injector, $location){
         
-         var w = window.innerWidth*.9, w2=w*.8,
+         var w = window.innerWidth*.70, w2=w*.8,
                 h = window.innerHeight*.7,
                 x = d3.scale.linear().range([0, w]),
                 y = d3.scale.linear().range([0, h]),
@@ -49,7 +49,7 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                 .attr("height", "19px")
                 .attr("id", "treemapLegendSVG");
     function updateSize(resizeTemp, element, scope){
-            w=window.innerWidth*.9;
+            w=window.innerWidth*.70;
             w2 = w*.8;
             h=window.innerHeight*.7;
             x = d3.scale.linear().range([0, w]);
