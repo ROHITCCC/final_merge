@@ -276,7 +276,7 @@ ultimotls.config(function ($stateProvider, $urlRouterProvider) {
                     var query = auditQuery.query();
 
                     if( query!= ''){
-                        var data = auditSearch.doSearch(query, rowNumber);
+                        var data = auditSearch.doSearch(query, rowNumber, "audit");
 
                        return data;
                     }
@@ -342,35 +342,53 @@ ultimotls.service("queryEnv", function($rootScope){ //getter and setter for envi
     return environment;
 });
 
+ultimotls.service("timeService", function($rootScope){ //getter and setter for drop down value 
+    var currentDateTime = new Date();
+    var timeSelected = {};
+    timeSelected.toDate = new Date(currentDateTime).toISOString(); 
+    timeSelected.fromDate = new Date(currentDateTime - (1*60*60*1000)).toISOString(); //default one hour if no setTime 
+    timeSelected.value = 1 //default 1 hour
+    var time = {};
+    
+    time.setTime = function(fromDate, toDate){
+        if(time){
+            timeSelected.toDate = toDate
+            timeSelected.fromDate = fromDate
+        }
+        return timeSelected;
+    };
+    time.getTime = function(){ //remove later
+        return timeSelected;
+    };
+    time.broadcast = function(){
+        $rootScope.$broadcast("timeChangeBroadcast")
+    }
+    return time;
+});
+
 ultimotls.service("auditSearch",['$http','queryEnv', function ($http, queryEnv) {
-    var postUrl =TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/"+TLS_DBNAME+"/"+TLS_AUDIT_COLLECTION+"?filter=";
+    var postUrl = TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/_logic/SearchService?filter=";
     var audits = {};
     var env = queryEnv.getEnv();
-    audits.doSearch = function (searchCriteria, rowNumber) {
+    audits.doSearch = function (searchCriteria, rowNumber, dbType) {
 //    textSearch and jsonSearch WILL BE SWAPPED WITH THESE
-//    var textSearch = "{\"$and\":[{\"envid\":\""+env.dbName+"\"},{$text:{$search:'" + searchCriteria + "'}}]}&searchtype=basic&count&pagesize=" + rowNumber.rows;
-//    var jsonSearch = "{\"$and\":[{\"envid\":\""+env.dbName+"\"},"+searchCriteria + "]}&searchtype=basic&count&pagesize=" + rowNumber.rows;
-        var textSearch = "{\"$and\":[{\"envid\":\""+env.dbName+"\"},{$text:{$search:'" + searchCriteria + "'}}]}&count&pagesize=" + rowNumber.rows;
-        var jsonSearch = "{\"$and\":[{\"envid\":\""+env.dbName+"\"},"+searchCriteria + "]}&count&pagesize=" + rowNumber.rows;
+    var textSearch = "{\"$and\":[{\"envid\":\""+env.dbName+"\"},{$text:{$search:'" + searchCriteria + "'}}]}&searchtype=basic&searchdb="+dbType+"&count&pagesize=" + rowNumber.rows;
+    var jsonSearch = "{\"$and\":[{\"envid\":\""+env.dbName+"\"},"+searchCriteria + "]}&searchtype=basic&searchdb="+dbType+"&count&pagesize=" + rowNumber.rows;
+//        var textSearch = "{\"$and\":[{\"envid\":\""+env.dbName+"\"},{$text:{$search:'" + searchCriteria + "'}}]}&count&pagesize=" + rowNumber.rows;
+//        var jsonSearch = "{\"$and\":[{\"envid\":\""+env.dbName+"\"},"+searchCriteria + "]}&count&pagesize=" + rowNumber.rows;
         var searchPromise = {};
         if (/:/.test(searchCriteria)) {
-            if (/('|")[A-Za-z0-9]+('|"):('|")[A-Za-z0-9]+('|")/.test(searchCriteria)) {
-                var getUrl = postUrl + jsonSearch;
-                searchPromise = $http.get(getUrl, {timeout:TLS_SERVER_TIMEOUT}).success(function (response) {
+                var jsonUrl = postUrl + jsonSearch;
+                searchPromise = $http.get(jsonUrl, {timeout:TLS_SERVER_TIMEOUT}).success(function (response) {
 
                 }).error(function () {
                     console.log("error");
                 });
                 audits.inputError = "";
-            }
-            else {
-                audits.inputError = "Need to add quotes to value (ex. name:'value')";
-
-            }
         }
         else {
-            var url = postUrl + textSearch;
-            searchPromise = $http.get(url, {timeout:TLS_SERVER_TIMEOUT}).success(function(response){
+            var textUrl = postUrl + textSearch;
+            searchPromise = $http.get(textUrl, {timeout:TLS_SERVER_TIMEOUT}).success(function(response){
                 
             }).error(function () {
                 console.log("error");
