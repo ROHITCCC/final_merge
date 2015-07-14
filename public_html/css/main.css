@@ -1233,6 +1233,12 @@ select.inputable{
 //ADVANCE SEARCH CUSTOM AND NAME VALUE FIELD
 
 //ADVANCE SEARCH CUSTOM FIELD
+#customField button.btn{
+    font-size: 11px;  
+}
+#customField .pagination li span{
+    float: none;
+}
 .collapseCustom .bordertab .col-sm-6{
     max-width: 49%;
 }
