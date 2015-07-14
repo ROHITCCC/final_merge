@@ -575,3 +575,27 @@ div#legend {
     margin: 0px;
     padding-top: 0px;
 }
+//ADVANCE SEARCH CUSTOM AND NAME VALUE FIELD
+
+//ADVANCE SEARCH CUSTOM FIELD
+.collapseCustom .bordertab .col-sm-6{
+    max-width: 49%;
+}
+.collapseCustom .btn{
+    font-size: 11px;
+    height: 27.5px;
+}
+.collapseCustom a{
+    font-size: 11px;
+}
+//ADVANCE SEARCH NAME VALUE FIELD
+.collapseNameValue .bordertab{
+    max-width: 49%;
+}
+.collapseNameValue .btn{
+    font-size: 11px;
+    height: 27.5px;
+}
+.collapseNameValue a{
+    font-size: 11px;
+}
