@@ -6,8 +6,8 @@
 
 var treemapControllerModule = angular.module('treemapControllerModule', ['ultimotls', 'auditControllerModule', 'ngRoute']);
 
-treemapControllerModule.controller('treemapController', ['$scope', '$location', 'mongoAggregateService', 'treemapSaver', 'auditQuery','queryEnv',
-    function($scope, $location, mongoAggregateService, treemapSaver, auditQuery, queryEnv){
+treemapControllerModule.controller('treemapController', ['$scope', '$location', 'mongoAggregateService', 'treemapSaver', 'auditQuery','queryEnv','timeService',
+    function($scope, $location, mongoAggregateService, treemapSaver, auditQuery, queryEnv, timeService){
     $scope.toDate = null;
     $scope.fromDate = null;
     $scope.timeOptions = [{"time":.25, "description":"15 minutes"},{"time":.5, "description":"30 minutes"},
@@ -20,6 +20,13 @@ treemapControllerModule.controller('treemapController', ['$scope', '$location', 
         $scope.env = queryEnv.getEnv();
         $scope.fromDateChange($scope.timeSelected);
     })
+    calculateTime = function(timeSelected){
+        timeObj = {};
+        var currentDateTime = new Date();
+        timeObj.fromDate = new Date(currentDateTime - (timeSelected*60*60*1000)).toISOString();
+        timeObj.toDate = new Date(currentDateTime).toISOString();
+        return timeObj;
+    }
     if($scope.treemapSaver.wordLength === undefined)$scope.treemapSaver.wordLength = []
     if(!$scope.toDate){
         var currentDateTime = new Date();
@@ -35,6 +42,8 @@ treemapControllerModule.controller('treemapController', ['$scope', '$location', 
             console.log("new event")
         }
         $scope.toDate = new Date(currentDateTime).toISOString();
+        timeService.setTime($scope.fromDate, $scope.toDate);
+        timeService.broadcast();
     }
     var dataQuery = "[ { '$match': { '$and': [ { 'timestamp': { '$gte': " +
                     "{'$date': '"+$scope.fromDate+"'}, '$lt': {'$date': '"+ $scope.toDate +"'} } }, { '$and': [ {'severity': {'$ne': null}}, {'severity': {'$exists': true, '$ne': ''}},{'envid':'"+$scope.env.dbName+"'} ] } ] } },{ '$group': { '_id' : { 'interface1': '$interface1', 'application': '$application' }, 'count': {'$sum': 1} } } , { '$group': { '_id' : { 'application': '$_id.application' }, 'data': { '$addToSet':{ 'name': '$_id.interface1', 'size': '$count' } } } } , { '$project': { '_id': 1, 'name': '$_id.application', 'children': '$data' } } ]";
@@ -49,6 +58,8 @@ treemapControllerModule.controller('treemapController', ['$scope', '$location', 
         console.log(fromDate, toDate);
         $scope.fromDate = new Date(fromDate).toISOString();
         $scope.toDate = new Date(toDate).toISOString();
+        timeService.setTime($scope.fromDate, $scope.toDate);
+        timeService.broadcast();
         var customDateQuery = "[ { '$match': { '$and': [ { 'timestamp': { '$gte': " +
                     "{'$date': '"+$scope.fromDate+"'}, '$lt': {'$date': '"+ $scope.toDate +"'} } }, { '$and': [ {'severity': {'$ne': null}}, {'severity': {'$exists': true, '$ne': ''}},{'envid':'"+$scope.env.dbName+"'} ] } ] } },{ '$group': { '_id' : { 'interface1': '$interface1', 'application': '$application' }, 'count': {'$sum': 1} } } , { '$group': { '_id' : { 'application': '$_id.application' }, 'data': { '$addToSet':{ 'name': '$_id.interface1', 'size': '$count' } } } } , { '$project': { '_id': 1, 'name': '$_id.application', 'children': '$data' } } ]";
             
@@ -61,11 +72,12 @@ treemapControllerModule.controller('treemapController', ['$scope', '$location', 
                 $("#calendarPage").modal();
             });
             return
-            
         }
-        var currentDateTime = new Date();
-        $scope.fromDate = new Date(currentDateTime - ($scope.timeSelected.time*60*60*1000)).toISOString();
-        $scope.toDate = new Date(currentDateTime).toISOString(); 
+        var timeCalulated = calculateTime(time.time)
+        $scope.fromDate = timeCalulated.fromDate;
+        $scope.toDate = timeCalulated.toDate;
+        timeService.setTime($scope.fromDate, $scope.toDate);
+        timeService.broadcast();
         var sliderDataQuery = "[ { '$match': { '$and': [ { 'timestamp': { '$gte': " +
                     "{'$date': '"+$scope.fromDate+"'}, '$lt': {'$date': '"+ $scope.toDate +"'} } }, { '$and': [ {'severity': {'$ne': null}}, {'severity': {'$exists': true, '$ne': ''}},{'envid':'"+$scope.env.dbName+"'} ] } ] } },{ '$group': { '_id' : { 'interface1': '$interface1', 'application': '$application' }, 'count': {'$sum': 1} } } , { '$group': { '_id' : { 'application': '$_id.application' }, 'data': { '$addToSet':{ 'name': '$_id.interface1', 'size': '$count' } } } } , { '$project': { '_id': 1, 'name': '$_id.application', 'children': '$data' } } ]";
             
