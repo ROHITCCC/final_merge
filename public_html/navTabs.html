@@ -1,17 +1,10 @@
 <section>
     <ul class="nav navbar-nav" >
         <li ng-class="tabClass(tab)" class="titlemenu" ng-repeat="tab in tabs" tab="tab" style="margin-right: 25px; padding: 5px;">
-            <div class="dropdown menuselector" ng-model='env' >
+            <div class="dropdown menuselector">
                 <div class="dropdown-toggle" data-toggle="dropdown">
-                    <a onclick='data-toogle'><h4 id="{{tab.label}}" class="menutitle">{{tab.label}}</h4><span class="caret"></span></a>
+                    <a href="{{tab.link}}" ng-click="setSelectedTab(tab)"><h4 id="{{tab.label}}" class="menutitle">{{tab.label}}</h4></a>
                 </div>
-                <ul class="dropdown-menu" >
-                    <li>
-                        <a ng-repeat="id in env" href="{{tab.link}}" ng-click="setEnvironment(tab.label,id);setSelectedTab(tab)">
-                            <p >{{id.description}}</p>
-                        </a>
-                    </li>
-                </ul>
             </div>
         </li>
     </ul>

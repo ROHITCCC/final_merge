@@ -478,7 +478,7 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
             function sendAudit(parent, name){       //sends audits directly instead of through controller function
                 //scope.getAuditsForInterface(auditParam);
                 scope.treemapSaver.data = d3.select("#treemapZoom").select("svg").selectAll("g")[0];
-                var interfaceQuery = '{"application":"'+name+'","interface1":"'+parent+'","envid":"'+scope.env+'","timestamp":{"$gte":{"$date":"'+scope.fromDate+'"},"$lt":{"$date":"'+scope.toDate+'"}},"$and":[{"severity":{"$ne":"null"}},{"severity":{"$exists":"true","$ne":""}}]}';
+                var interfaceQuery = '{"application":"'+name+'","interface1":"'+parent+'","timestamp":{"$gte":{"$date":"'+scope.fromDate+'"},"$lt":{"$date":"'+scope.toDate+'"}},"$and":[{"severity":{"$ne":"null"}},{"severity":{"$exists":"true","$ne":""}}]}';
                 console.log(interfaceQuery);
                 scope.auditQuery.query(interfaceQuery, scope);
                 scope.$apply($location.path("/audits"));
