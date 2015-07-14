@@ -1255,4 +1255,8 @@ select.inputable{
 }
 .collapseNameValue a{
     font-size: 11px;
-}*/
+}
+
+#customField button {
+  font-size: 10px;
+}
