@@ -103,9 +103,9 @@
                             <div class="col-sm-12">
                                 <button class="btn addfields" ng-click="addNewEnv()">New Environment</button>
                                 <button class="btn btn-success" ng-click="savesetting()" ng-disabled="EnvForm.name.$error.required || EnvForm.description.$error.required || EnvForm.label.$error.required">Save Environments</button>
-                                
+
                                 <span style="color: red;" ng-show="EnvForm.name.$error.required || EnvForm.description.$error.required || EnvForm.label.$error.required"> Values for </span>
-                                
+
                                 <span style="color: red;" ng-show="EnvForm.name.$error.required">Name, </span>
                                 <span style="color: red;" ng-show="EnvForm.description.$error.required">Description, </span>
                                 <span style="color: red;" ng-show="EnvForm.label.$error.required">Label, </span>
@@ -158,7 +158,7 @@
                                         </div>
                                         <div class="col-sm-1">
                                             <select class="form-control"  name="immUnit" ng-options='unit for unit in units' ng-model="notifications.immidate.frequency.unit" required>
-                                                    <option value="" disabled selected style='display:none;'>{{notifications.immidate.frequency.unit}}</option>
+                                                <option value="" disabled selected style='display:none;'>{{notifications.immidate.frequency.unit}}</option>
                                             </select>
                                         </div>
                                     </div>
@@ -170,21 +170,24 @@
                                         <table class="table table-striped table-bordered table-hover" id="table">
                                             <thead id="tableHeader">
                                                 <tr>
+                                                    <th>Environment</th>
                                                     <th>Severity</th>
-                                                    <th>Email</th>
                                                     <th>Application</th>
                                                     <th>Interfaces</th>
+                                                    <th>Email</th>
                                                     <th>Template</th>
                                                     <th></th>
                                                 </tr>
                                             </thead>
                                             <tdbody>
                                                 <tr data-toggle="collapse" class="immidateinfo" data-ng-repeat="notification in notifications.immidate.notification| pagination: curPageImmi * pageSizeImmi | limitTo: pageSizeImmi">
+                                                    <td>
+                                                        <select class="form-control inputable"   name="envid" ng-options='name.name as name.name for name in envDropdown' ng-model="notification.envid" required>
+                                                            <option value="" selected style='display:none;'>{{notification.envid}}</option>
+                                                        </select>
+                                                    </td>    
                                                     <td col-sm-1>
                                                         <input type="text" class="form-control inputable" id="immi_severity"  name="severity" ng-model="notification.severity" value="{{notification.severity}}" placeholder="Severity" required>
-                                                    </td>
-                                                    <td>
-                                                        <input type="email" class="form-control inputable" id="immi_email" name="email" ng-model="notification.email" value="{{notification.email}}" placeholder="Email" required> 
                                                     </td>
                                                     <td>
                                                         <input type="text" class="form-control inputable" id="immi_application" name="name" ng-model="notification.application.name" value="{{notification.application.name}}" placeholder="Application" required>
@@ -197,7 +200,10 @@
                                                         </div>
                                                     </td>
                                                     <td>
-                                                       <input type="text" class="form-control inputable" name="template" ng-model="notification.template" value="{{notification.template}}" placeholder="Template" required> 
+                                                        <input type="email" class="form-control inputable" id="immi_email" name="email" ng-model="notification.email" value="{{notification.email}}" placeholder="Email" required> 
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" class="form-control inputable" name="template" ng-model="notification.template" value="{{notification.template}}" placeholder="Template" required> 
                                                     </td>
                                                     <td>
                                                         <button class="btn btn-danger" ng-click="removeImmidate($index)">Remove</button>
@@ -209,7 +215,7 @@
                                 </form>
                             </div>
                             <button class="btn addfields" ng-click="addNewImmidate()">New Notification</button>
-                            <button class="btn btn-success" ng-click="savesetting()" ng-disabled="ImmiForm.template.$error.required || ImmiForm.interface.$error.required || ImmiForm.name.$error.required || ImmiForm.email.$error.required || ImmiForm.email.$error.email || ImmiForm.severity.$error.required || FreqForm.immDuration.$error.required || FreqForm.immUnit.$error.required">Save Notifications</button>
+                            <button class="btn btn-success" ng-click="savesetting()" ng-disabled="ImmiForm.envid.$error.required || ImmiForm.template.$error.required || ImmiForm.interface.$error.required || ImmiForm.name.$error.required || ImmiForm.email.$error.required || ImmiForm.email.$error.email || ImmiForm.severity.$error.required || FreqForm.immDuration.$error.required || FreqForm.immUnit.$error.required">Save Notifications</button>
                             <div class="pagination pagination-centered" ng-show="notifications.immidate.notification"><!-- Pagination -->
                                 <ul class="pagination-controle pagination">
                                     <li>
@@ -351,7 +357,7 @@
             </div>
         </div>
     </div>
-    
+
     <div class="modal fade" id="savefail" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -370,7 +376,7 @@
             </div>
         </div>
     </div>
-    
+
     <div class="modal fade" id="savesuccess" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -389,7 +395,7 @@
             </div>
         </div>
     </div>
-    
+
     <div class="modal fade" id="deletesuccess" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -408,8 +414,8 @@
             </div>
         </div>
     </div>
-    
-        <div class="modal fade" id="deletefail" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+
+    <div class="modal fade" id="deletefail" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">

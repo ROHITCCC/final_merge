@@ -82,12 +82,12 @@ $('tr.immidateinfo').waitUntilExists(function () {
         mouseenter: function () {
             $('input', this).removeClass('inputable');
             $('select', this).removeClass('inputable');
-            $('td:last', this).prev().prev('td').css('white-space', 'normal').removeClass('hideinterfacebtn');
+            $('td:last', this).prev().prev().prev('td').css('white-space', 'normal').removeClass('hideinterfacebtn');
         },
         mouseleave: function () {
             $('input', this).addClass('inputable');
             $('select', this).addClass('inputable');
-            $('td:last', this).prev().prev('td').css('white-space', 'nowrap').addClass('hideinterfacebtn');
+            $('td:last', this).prev().prev().prev('td').css('white-space', 'nowrap').addClass('hideinterfacebtn');
         }
     });
 });
