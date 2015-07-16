@@ -22,8 +22,7 @@ treemapControllerModule.controller('treemapController', ['$scope', '$location', 
     })
     $scope.$on("newFilterAppended", function(){
         $scope.env = queryEnv.getEnv();
-        var newFilter = queryFilter.appendQuery()
-        console.log(newFilter);
+        var newFilter = queryFilter.appendQuery();
         var newDataQuery = "[{\"$match\":{\"$and\":[{\"timestamp\":{\"$gte\":{\"$date\":\""+$scope.fromDate+"\"},\"$lt\":{\"$date\":\""+
                             $scope.toDate +"\"}}},{\"$and\":[{\"severity\":{\"$ne\": null}},{\"severity\":{\"$exists\":true,\"$ne\":\"\"}},{\"envid\":\""+
                             $scope.env.dbName+"\","+newFilter+"}]}]}},{\"$group\":{\"_id\":{\"interface1\":\"$interface1\",\"application\":\"$application\"},"+
