@@ -261,10 +261,9 @@ text{
     color: white;
     height: 130px;
 }
-svg{
+//Sidebar CHARTS
+.columnDiv .row, .columnDiv svg{
     width: 100%;
-    height: auto;
-    /* min-height: 250px; */
 }
 path .slice{
     stroke-width: 2px;
@@ -1233,13 +1232,13 @@ select.inputable{
 //ADVANCE SEARCH CUSTOM AND NAME VALUE FIELD
 
 //ADVANCE SEARCH CUSTOM FIELD
-#customField .pagination li span{
+.customField .pagination li span{
     float: none;
 }
-#customField button, #customField th, #customField td {
+.customField button, .customField th, .customField td {
   font-size: 10px;
+} 
+.customField input{
+    width: 100%;
 }
 //ADVANCE SEARCH NAME VALUE FIELD
-#nameValueField button, #nameValueField th{
-    font-size: 10px;
-};
