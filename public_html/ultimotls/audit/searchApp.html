@@ -92,95 +92,117 @@ and open the template in the editor.
                                                            type="text" placeholder="Keyword...">
                                                 </div>
                                         </div>
-                                        <div id="customField" class="col-sm-6">
-                                            <div class="row">
-                                                <form name="ImmiForm" role="form" class="form-inline">
-                                                    <div id="tableContainer" class="container-fluid"> 
-                                                        <table class="table table-striped table-bordered table-hover" id="table">
-                                                            <thead id="tableHeader">
-                                                                <tr>
-                                                                    <th>Name</th>
-                                                                    <th>Value</th>
-                                                                    <th></th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tdbody>
-                                                                <tr data-toggle="collapse" class="immidateinfo" data-ng-repeat="custom in customField|pagination: curCustomPage * pageSize|limitTo: pageSize">
-                                                                    <td col-sm-1>
-                                                                        <input type="text" class="form-control inputable" ng-model="custom.name" placeholder="Name..." required>
-                                                                    </td>
-                                                                    <td>
-                                                                        <input type="text" class="form-control inputable" ng-model="custom.value" placeholder="Value..." required>
-                                                                    </td>
-                                                                    <td>
-                                                                        <button class="btn btn-danger" ng-click="removeCustom($index)">Remove</button>
-                                                                    </td>
-                                                                </tr>
-                                                            </tdbody>
-                                                        </table>
-                                                    </div>
-                                                </form>
+                                        <div class="panel panel-default col-lg-6 col-sm-12">
+                                            <div class="panel-heading">
+                                                <h4 class="panel-title">
+                                                    <button type="button" class="tabselector col-sm-12" data-toggle="collapse" data-target="#custom" aria-controls="custom">Custom Field</button>
+                                                </h4>
                                             </div>
-                                            <div class="col-sm-12">
-                                                <button class="btn addfields pull-left" ng-click="addNewCustom()">New Field</button>
-                                                <div class="pagination pagination_custom pagination-centered">
-                                                    <ul class="pagination-controle pagination">
-                                                        <li>
-                                                            <button type="button" class="btn btn-primary" ng-disabled="curCustomPage == 0"ng-click="curCustomPage = curCustomPage - 1"> &lt; PREV</button>
-                                                        </li>
-                                                        <li>
-                                                            <span>Page {{curCustomPage + 1}} of {{ numberOfPagesCustom()}}</span>
-                                                        </li>
-                                                        <li>
-                                                            <button type="button" class="btn btn-primary" ng-disabled="curCustomPage >= customFieldLength / pageSize - 1" ng-click="curCustomPage = curCustomPage + 1">NEXT &gt;</button>
-                                                        </li>
-                                                    </ul>
+                                            <div id="custom" class="panel-collapse collapse">
+                                                <div class="panel-body">
+                                                    <div class="customField">
+                                                        <div class="row">
+                                                            <form name="ImmiForm" role="form" class="form-inline">
+                                                                <div id="tableContainer" class="container-fluid"> 
+                                                                    <table class="table table-striped table-bordered table-hover" id="table">
+                                                                        <thead id="tableHeader">
+                                                                            <tr>
+                                                                                <th>Name</th>
+                                                                                <th>Value</th>
+                                                                                <th></th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tdbody>
+                                                                            <tr data-toggle="collapse" class="immidateinfo" data-ng-repeat="custom in customField|pagination: curCustomPage * pageSize|limitTo: pageSize">
+                                                                                <td>
+                                                                                    <input type="text" class="form-control inputable col-sm-12" ng-model="custom.name" placeholder="Name...">
+                                                                                </td>
+                                                                                <td>
+                                                                                    <input type="text" class="form-control inputable col-sm-12" ng-model="custom.value" placeholder="Value...">
+                                                                                </td>
+                                                                                <td>
+                                                                                    <button class="btn btn-danger" ng-click="removeCustom($index)">Remove</button>
+                                                                                </td>
+                                                                            </tr>
+                                                                        </tdbody>
+                                                                    </table>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                        <div class="col-sm-12">
+                                                            <button class="btn addfields pull-left" ng-click="addNewCustom()">New Field</button>
+                                                            <div class="pagination pagination_custom pagination-centered">
+                                                                <ul class="pagination-controle pagination">
+                                                                    <li>
+                                                                        <button type="button" class="btn btn-primary" ng-disabled="curCustomPage == 0"ng-click="curCustomPage = curCustomPage - 1"> &lt; PREV</button>
+                                                                    </li>
+                                                                    <li>
+                                                                        <span>Page {{curCustomPage + 1}} of {{ numberOfPagesCustom()}}</span>
+                                                                    </li>
+                                                                    <li>
+                                                                        <button type="button" class="btn btn-primary" ng-disabled="curCustomPage >= customFieldLength / pageSize - 1" ng-click="curCustomPage = curCustomPage + 1">NEXT &gt;</button>
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div id="nameValueField" class="col-sm-6">
-                                            <div class="row">
-                                                <form name="ImmiForm" role="form" class="form-inline">
-                                                    <div id="tableContainer" class="container-fluid"> 
-                                                        <table class="table table-striped table-bordered table-hover" id="table">
-                                                            <thead id="tableHeader">
-                                                                <tr>
-                                                                    <th>Name</th>
-                                                                    <th>Value</th>
-                                                                    <th></th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tdbody>
-                                                                <tr data-toggle="collapse" class="immidateinfo" data-ng-repeat="nameValue in nameValueField|pagination: curNameValuePage * pageSize|limitTo: pageSize">
-                                                                    <td col-sm-1>
-                                                                        <input type="text" class="form-control inputable" ng-model="nameValue.name" placeholder="Name..." required>
-                                                                    </td>
-                                                                    <td>
-                                                                        <input type="text" class="form-control inputable" ng-model="nameValue.value" placeholder="Value..." required>
-                                                                    </td>
-                                                                    <td>
-                                                                        <button class="btn btn-danger" ng-click="removeNameValue($index)">Remove</button>
-                                                                    </td>
-                                                                </tr>
-                                                            </tdbody>
-                                                        </table>
-                                                    </div>
-                                                </form>
+                                        <div class="panel panel-default col-lg-6 col-sm-12">
+                                            <div class="panel-heading">
+                                                <h4 class="panel-title">
+                                                    <button type="button" class="tabselector col-sm-12" data-toggle="collapse" data-target="#nameValue" aria-controls="nameValue">Name Value Field</button>
+                                                </h4>
                                             </div>
-                                            <div class="col-sm-12">
-                                                <button class="btn addfields pull-left" ng-click="addNewNameValue()">New Field</button>
-                                                <div class="pagination pagination_env pagination-centered">
-                                                    <ul class="pagination-controle pagination">
-                                                        <li>
-                                                            <button type="button" class="btn btn-primary" ng-disabled="curNameValuePage == 0"ng-click="curNameValuePage = curNameValuePage - 1"> &lt; PREV</button>
-                                                        </li>
-                                                        <li>
-                                                            <span>Page {{curNameValuePage + 1}} of {{ numberOfPagesNameValue()}}</span>
-                                                        </li>
-                                                        <li>
-                                                            <button type="button" class="btn btn-primary" ng-disabled="curNameValuePage >= nameValueFieldLength / pageSize - 1" ng-click="curNameValuePage = curNameValuePage + 1">NEXT &gt;</button>
-                                                        </li>
-                                                    </ul>
+                                            <div id="nameValue" class="panel-collapse collapse">
+                                                <div class="panel-body">
+                                                    <div class="customField">
+                                                        <div class="row">
+                                                            <form name="ImmiForm" role="form" class="form-inline">
+                                                                <div id="tableContainer" class="container-fluid"> 
+                                                                    <table class="table table-striped table-bordered table-hover" id="table">
+                                                                        <thead id="tableHeader">
+                                                                            <tr>
+                                                                                <th>Name</th>
+                                                                                <th>Value</th>
+                                                                                <th></th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tdbody>
+                                                                            <tr data-toggle="collapse" class="immidateinfo" data-ng-repeat="nameValue in nameValueField|pagination: curNameValuePage * pageSize|limitTo: pageSize">
+                                                                                <td>
+                                                                                    <input type="text" class="form-control inputable col-sm-12" ng-model="nameValue.name" placeholder="Name...">
+                                                                                </td>
+                                                                                <td>
+                                                                                    <input type="text" class="form-control inputable col-sm-12" ng-model="nameValue.value" placeholder="Value...">
+                                                                                </td>
+                                                                                <td>
+                                                                                    <button class="btn btn-danger" ng-click="removeNameValue($index)">Remove</button>
+                                                                                </td>
+                                                                            </tr>
+                                                                        </tdbody>
+                                                                    </table>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                        <div class="col-sm-12">
+                                                            <button class="btn addfields pull-left" ng-click="addNewNameValue()">New Field</button>
+                                                            <div class="pagination pagination_env pagination-centered">
+                                                                <ul class="pagination-controle pagination">
+                                                                    <li>
+                                                                        <button type="button" class="btn btn-primary" ng-disabled="curNameValuePage == 0"ng-click="curNameValuePage = curNameValuePage - 1"> &lt; PREV</button>
+                                                                    </li>
+                                                                    <li>
+                                                                        <span>Page {{curNameValuePage + 1}} of {{ numberOfPagesNameValue()}}</span>
+                                                                    </li>
+                                                                    <li>
+                                                                        <button type="button" class="btn btn-primary" ng-disabled="curNameValuePage >= nameValueFieldLength / pageSize - 1" ng-click="curNameValuePage = curNameValuePage + 1">NEXT &gt;</button>
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
