@@ -5,216 +5,280 @@
  */
 var severityPieChartDirectiveModule = angular.module('severityPieChartDirectiveModule', ['severityPieChartControllerModule']);
 
-severityPieChartDirectiveModule.directive('severityPieChart', function(){
-    function pieChart(data, element){
+severityPieChartDirectiveModule.directive('severityPieChart',['queryFilter', function(queryFilter){
+    function pieChart(data, element, scope){
         var ele = element[0];
-        var svg = d3.select("#severityPieChart").append("svg");
-        var art = svg.append("g").attr("id","art");
-        var labels = svg.append("g").attr("id", "labels");
-        var arc = d3.svg.arc()
-            .startAngle(function(d) { return d.x; })
-            .endAngle(function(d) { return d.x + d.dx - .01 / (d.depth + .5); })
-            .innerRadius(function(d) { return radius / 3 * d.depth; })
-            .outerRadius(function(d) { return radius / 3 * (d.depth + 1) - 1; });
-        // Create the pie layout function.
-        // This function will add convenience
-        // data to our existing data, like 
-        // the start angle and end angle
-        // for each data element.
-        jhw_pie = d3.layout.pie()
-        jhw_pie.value(function (d, i) {
-            // Tells the layout function what
-            // property of our data object to
-            // use as the value.
-            return d.count; 
-        });
-        function computeTextRotation(d) {
-            console.log(d)
-            var angle=(d.x + d.dx/2)*180/Math.PI - 90	
-            return angle;
-        };
-        // Store our chart dimensions
-        cDim = {
-            height: window.innerHeight*.25, 
-            width: window.innerWidth*.25,
-            innerRadius: window.innerWidth*.03,
-            outerRadius: window.innerWidth*.10,
-            labelRadius: window.innerWidth*.05
-        }
-        // Set the size of our SVG element
-        svg.attr({
-            height: cDim.height,
-            width: cDim.width
-        });
-
-        // This translate property moves the origin of the group's coordinate
-        // space to the center of the SVG element, saving us translating every
-        // coordinate individually. 
-        art.attr("transform", "translate(" + (cDim.width*2 / 2) + "," + (cDim.width / 2) + ")");
-        labels.attr("transform", "translate(" + (cDim.width*2 / 2) + "," + (cDim.width / 2) + ")");
+        var width = (window.innerWidth*.43), height = (window.innerHeight*.33);
+        var color = d3.scale.category20();
+        d3.select(ele).select("svg").remove();
+        var svg = d3.select(ele).append("svg").attr("width",width).attr("height",height);
+        svg.append("g").attr("id","severity");
+        svg.append("text").attr("transform", "translate(0,15)").text("Severity Chart")
         
-        pied_data = jhw_pie(data);
-
-        // The pied_arc function we make here will calculate the path
-        // information for each wedge based on the data set. This is 
-        // used in the "d" attribute.
-        pied_arc = d3.svg.arc()
-            .innerRadius(window.innerWidth*.03)
-            .outerRadius(window.innerWidth*.07);
-
-        // This is an ordinal scale that returns 10 predefined colors.
-        // It is part of d3 core.
-        pied_colors = d3.scale.category10();
-
-        // Let's start drawing the arcs.
-        enteringArcs = art.selectAll(".wedge").data(pied_data).enter();
-
-        enteringArcs.append("path")
-            .attr("class", "wedge")
-            .attr("d", pied_arc)
-            .style("fill", function (d, i) {
-            return pied_colors(i);
-        });
-
-        // Now we'll draw our label lines, etc.
-        enteringLabels = labels.selectAll(".label").data(pied_data).enter();
-        labelGroups = enteringLabels.append("g").attr("class", "label");
-        labelGroups.append("circle").attr({
-            x: 0,
-            y: 0,
-            r: 2,
-            fill: "#000",
-            transform: function (d, i) {
-                centroid = pied_arc.centroid(d);
-                return "translate(" + pied_arc.centroid(d) + ")";
-            },
-                'class': "label-circle"
-        });
-
-        var texts = labels.selectAll(".circle")
-              .data(pied_data)
-            .enter().append("text")
-                  .attr("transform", function(d) { return computeTextRotation(d)<90?"rotate(" + computeTextRotation(d) + ")":"rotate(" + computeTextRotation(d) + ")rotate(-180)"; })
-                  .attr("text-anchor", function(d){return computeTextRotation(d)<90? "start":"end";})
-                  .attr("x", function(d) { return computeTextRotation(d)<90?cDim.innerRadius / 3 :(cDim.innerRadius/3)-1; })	
-                .attr("dx", function(d) { return computeTextRotation(d)<90?"6":"-6"}) // margin
-                  .attr("dy", ".35em") // vertical-align       
-                  .text(function(d) {
-                      var nameholder = null;
-                      var getWidth = cDim.innerRadius/3 * .1;
-                      if (d.data._id.length > (getWidth)) {
-                          nameholder = d.data._id.substring(0,(getWidth)) + "...";
-                      }
-                      else nameholder = d.data._id ;
-                    return nameholder;})
-                        //.text(function(d,i) {return d.name})
-        // "When am I ever going to use this?" I said in 
-        // 10th grade trig.
-//        textLines = labelGroups.append("line").attr({
-//            x1: function (d, i) {
-//                return pied_arc.centroid(d)[0];
-//            },
-//            y1: function (d, i) {
-//                return pied_arc.centroid(d)[1];
-//            },
-//            x2: function (d, i) {
-//                centroid = pied_arc.centroid(d);
-//                midAngle = Math.atan2(centroid[1], centroid[0]);
-//                x = Math.cos(midAngle) * cDim.labelRadius;
-//                return x;
-//            },
-//            y2: function (d, i) {
-//                centroid = pied_arc.centroid(d);
-//                midAngle = Math.atan2(centroid[1], centroid[0]);
-//                y = Math.sin(midAngle) * cDim.labelRadius;
-//                return y;
-//            },
-//                'class': "label-line"
-//        });
-
-//        textLabels = labelGroups.append("text").attr({
-//            x: function (d, i) {
-//                centroid = pied_arc.centroid(d);
-//                midAngle = Math.atan2(centroid[1], centroid[0]);
-//                x = Math.cos(midAngle) * cDim.labelRadius;
-//                sign = (x > 0) ? 1 : -1
-//                labelX = x + (5 * sign)
-//                return labelX;
-//            },
-//            y: function (d, i) {
-//                centroid = pied_arc.centroid(d);
-//                midAngle = Math.atan2(centroid[1], centroid[0]);
-//                y = Math.sin(midAngle) * cDim.labelRadius;
-//                return y;
-//            },
-//                'text-anchor': function (d, i) {
-//                centroid = pied_arc.centroid(d);
-//                midAngle = Math.atan2(centroid[1], centroid[0]);
-//                x = Math.cos(midAngle) * cDim.labelRadius;
-//                return (x > 0) ? "start" : "end";
-//            },
-//                'class': 'label-text'
-//        }).text(function (d) {
-//            return d.data._id //names
-//        });
-
-        alpha = 0.5;
-        spacing = 12;
-
-        function relax() {
-            again = false;
-            textLabels.each(function (d, i) {
-                a = this;
-                da = d3.select(a);
-                y1 = da.attr("y");
-                textLabels.each(function (d, j) {
-                    b = this;
-                    // a & b are the same element and don't collide.
-                    if (a == b) return;
-                    db = d3.select(b);
-                    // a & b are on opposite sides of the chart and
-                    // don't collide
-                    if (da.attr("text-anchor") != db.attr("text-anchor")) return;
-                    // Now let's calculate the distance between
-                    // these elements. 
-                    y2 = db.attr("y");
-                    deltaY = y1 - y2;
-
-                    // Our spacing is greater than our specified spacing,
-                    // so they don't collide.
-                    if (Math.abs(deltaY) > spacing) return;
-
-                    // If the labels collide, we'll push each 
-                    // of the two labels up and down a little bit.
-                    again = true;
-                    sign = deltaY > 0 ? 1 : -1;
-                    adjust = sign * alpha;
-                    da.attr("y",+y1 + adjust);
-                    db.attr("y",+y2 - adjust);
-                });
-            });
-            // Adjust our line leaders here
-            // so that they follow the labels. 
-            if(again) {
-                labelElements = textLabels[0];
-                textLines.attr("y2",function(d,i) {
-                    labelForLine = d3.select(labelElements[i]);
-                    return labelForLine.attr("y");
-                });
-                setTimeout(relax,20)
-            }
+        var Donut3D = {};
+        function upDateTreemap(filterCriteria){
+            console.log(filterCriteria)
+            queryFilter.appendQuery("severity",filterCriteria.data._id);
+            queryFilter.broadcast();
         }
+        //randomData();
+        function pieTop(d, rx, ry, ir){
+            if(d.endAngle - d.startAngle == 0 ) return "M 0 0";
+            var sx = rx*Math.cos(d.startAngle),
+                sy = ry*Math.sin(d.startAngle),
+                ex = rx*Math.cos(d.endAngle),
+                ey = ry*Math.sin(d.endAngle);
 
-        //relax();
+            var ret =[];
+            ret.push("M",sx,sy,"A",rx,ry,"0",(d.endAngle-d.startAngle > Math.PI? 1: 0),"1",ex,ey,"L",ir*ex,ir*ey);
+            ret.push("A",ir*rx,ir*ry,"0",(d.endAngle-d.startAngle > Math.PI? 1: 0), "0",ir*sx,ir*sy,"z");
+            return ret.join(" ");
+        }
+        function pieOuter(d, rx, ry, h ){
+            var startAngle = (d.startAngle > Math.PI ? Math.PI : d.startAngle);
+            var endAngle = (d.endAngle > Math.PI ? Math.PI : d.endAngle);
+
+            var sx = rx*Math.cos(startAngle),
+                sy = ry*Math.sin(startAngle),
+                ex = rx*Math.cos(endAngle),
+                ey = ry*Math.sin(endAngle);
+
+            var ret =[];
+            ret.push("M",sx,h+sy,"A",rx,ry,"0 0 1",ex,h+ey,"L",ex,ey,"A",rx,ry,"0 0 0",sx,sy,"z");
+            return ret.join(" ");
+	}
+        function pieInner(d, rx, ry, h, ir ){
+            var startAngle = (d.startAngle < Math.PI ? Math.PI : d.startAngle);
+            var endAngle = (d.endAngle < Math.PI ? Math.PI : d.endAngle);
+
+            var sx = ir*rx*Math.cos(startAngle),
+                sy = ir*ry*Math.sin(startAngle),
+                ex = ir*rx*Math.cos(endAngle),
+                ey = ir*ry*Math.sin(endAngle);
+
+            var ret =[];
+            ret.push("M",sx, sy,"A",ir*rx,ir*ry,"0 0 1",ex,ey, "L",ex,h+ey,"A",ir*rx, ir*ry,"0 0 0",sx,h+sy,"z");
+            return ret.join(" ");
+	}
+        Donut3D.draw=function(id, data, x /*center x*/, y/*center y*/, 
+			rx/*radius x*/, ry/*radius y*/, h/*height*/, ir/*inner radius*/){
+	
+		var _data = d3.layout.pie().sort(null).value(function(d) {return d.count;})(data);
+		
+		var slices = d3.select("#"+id).append("g").attr("transform", "translate(" + x + "," + y + ")")
+                    .attr("class", "slices");
+			
+		slices.selectAll(".innerSlice").data(_data).enter().append("path").attr("class", "innerSlice")
+                    .style("fill", function(d,i){return color(i);})
+                    .style("stroke", "rgb(0,0,0)")
+                    .attr("d",function(d){ return pieInner(d, rx+0.5,ry+0.5, h, ir);})
+                    .on("click", function(d){upDateTreemap(d);})
+                    .each(function(d){this._current=d;});
+		
+		slices.selectAll(".topSlice").data(_data).enter().append("path").attr("class", "topSlice")
+                    .style("fill", function(d,i){return color(i);})
+                    .style("stroke", "rgb(0,0,0)")
+                    .attr("d",function(d){ return pieTop(d, rx, ry, ir);})
+                    .on("click", function(d){upDateTreemap(d);})
+                    .each(function(d){this._current=d;});
+		
+		slices.selectAll(".outerSlice").data(_data).enter().append("path").attr("class", "outerSlice")
+                    .style("fill", function(d,i){return color(i);})
+                    .style("stroke", "rgb(0,0,0)")
+                    .attr("d",function(d){ return pieOuter(d, rx-.5,ry-.5, h);})
+                    .on("click", function(d){upDateTreemap(d);})
+                    .each(function(d){this._current=d;});
+
+		slices.selectAll(".label").data(_data).enter().append("text").attr("class", "label")
+			.attr("x",function(d){ return 0.6*rx*Math.cos(0.5*(d.startAngle+d.endAngle));})
+			.attr("y",function(d){ return 0.6*ry*Math.sin(0.5*(d.startAngle+d.endAngle));})
+			.text(function(d){return d.data._id}).each(function(d){this._current=d;});				
+	}
+        Donut3D.transition = function(id, data, rx, ry, h, ir){
+            function arcTweenInner(a) {
+                var i = d3.interpolate(this._current, a);
+                this._current = i(0);
+                return function(t) { return pieInner(i(t), rx+0.5, ry+0.5, h, ir);  };
+            }
+            function arcTweenTop(a) {
+              var i = d3.interpolate(this._current, a);
+              this._current = i(0);
+              return function(t) { return pieTop(i(t), rx, ry, ir);  };
+            }
+            function arcTweenOuter(a) {
+              var i = d3.interpolate(this._current, a);
+              this._current = i(0);
+              return function(t) { return pieOuter(i(t), rx-.5, ry-.5, h);  };
+            }
+            function textTweenX(a) {
+              var i = d3.interpolate(this._current, a);
+              this._current = i(0);
+              return function(t) { return 0.6*rx*Math.cos(0.5*(i(t).startAngle+i(t).endAngle));  };
+            }
+            function textTweenY(a) {
+              var i = d3.interpolate(this._current, a);
+              this._current = i(0);
+              return function(t) { return 0.6*rx*Math.sin(0.5*(i(t).startAngle+i(t).endAngle));  };
+            }
+
+            var _data = d3.layout.pie().sort(null).value(function(d) {return d.count;})(data);
+
+            d3.select("#"+id).selectAll(".innerSlice").data(_data)
+                    .transition().duration(750).attrTween("d", arcTweenInner); 
+
+            d3.select("#"+id).selectAll(".topSlice").data(_data)
+                    .transition().duration(750).attrTween("d", arcTweenTop); 
+
+            d3.select("#"+id).selectAll(".outerSlice").data(_data)
+                    .transition().duration(750).attrTween("d", arcTweenOuter); 	
+
+//            d3.select(ele).selectAll(".percent").data(_data).transition().duration(750)
+//                    .attrTween("x",textTweenX).attrTween("y",textTweenY).text(getPercent); 	
+	};
+        this.Donut3D = Donut3D;
+        Donut3D.draw("severity",data,150,150,130,100,30,0.4)
+        //if no data is available show a message
+        if (data === 0){
+            console.log("no data")
+            d3.select(ele).select("svg").remove();
+            d3.select(ele).select("#tooltip").remove();
+          var svg = d3.select(ele).append("svg")
+                .attr("width", width)
+                .attr("height", height)
+              .append("g")
+                .attr("transform", "translate(" + (width-60)/2 + "," + height/2 + ")");
+          svg.append("text")
+                .text("No Data Available")
+          return;
+        }
+        
+        //remove SVG before appending. To be replaced by transition.
+        //d3.select(ele).select("svg").remove();
+        
+//        var svg = d3.select(ele).append("svg").append("g")
+//        svg.append("g").attr("class","slices");
+//        svg.append("g").attr("class","labels");
+//        svg.append("g").attr("class","lines");
+//        svg.append("text").attr("transform", "translate(" + -width*.25 + "," + -height*.25 + ")").text("Severity Chart")
+//
+//        var pie = d3.layout.pie()
+//                .sort(null)
+//                .value(function(d){
+//                    return d.value;
+//                });
+//        var arc = d3.svg.arc().outerRadius(radius * 0.5).innerRadius(0);
+//        var outerArc = d3.svg.arc().outerRadius(radius * 0.5) .innerRadius(radius * 0.5);
+//        svg.attr("transform", "translate(" + width*.30+","+ height*.33+ ")" );
+//        var key = function(d){
+//            return d.data.label;
+//        };
+//        var color = d3.scale.category20();
+//        var temp = [];
+//        var colorTemp = [];
+//        for (var i = 0; i < data.length; i++) {
+//            temp.push(data[i]._id);
+//            colorTemp.push(color(i));
+//        }
+//        color.domain(temp).range(colorTemp);
+//        function aggregateData(data) {
+//            var labels = color.domain();
+//            var i = -1;
+//            return labels.map(function(label){
+//                i++;
+//                return{
+//                    label: label, value: data[i].count
+//                }
+//            });
+//        }
+//        function upDateTreemap(filterCriteria){
+//            queryFilter.appendQuery("severity",filterCriteria.data.label);
+//            queryFilter.broadcast();
+//        }
+//        function change(data) {
+//            var slice = svg.select(".slices")
+//                .selectAll("path.slice")
+//                .data(pie(data), key);
+//            slice.enter()
+//                .insert("path")
+//                .style("fill", function(d,i){return color(i);})
+//                .attr("class", "slice")
+//                .on("click", function(d){upDateTreemap(d);})
+//            slice.transition().duration(1000)
+//                .attrTween("d",function(d){
+//                    this._current = this._current || d;
+//                    var interpolate = d3.interpolate(this._current, d);
+//                    this._current = interpolate(0);
+//                    return function(t) {
+//                        return arc(interpolate(t));
+//                    };
+//            })
+//            slice.exit()
+//                .remove();
+//
+//        //////TEXT LABELS/////
+//        var text = svg.select(".labels").selectAll("text")
+//            .data(pie(data), key);
+//        text.enter()
+//            .append("text")
+//            .attr("dy", ".05em")
+//    //.attr("text-anchor", function(d){return computeTextRotation(d)<90? "start":"end";})
+//            .text(function(d) {
+//                return d.data.label +" "+ d.data.value;
+//        });
+//
+//        function midAngle(d) {
+//            return d.startAngle + (d.endAngle - d.startAngle)/2;
+//        }
+//
+//        text.transition().duration(1000)
+//            .attrTween("transform", function(d){
+//                this._current = this._current || d;
+//                var interpolate = d3.interpolate(this._current, d);
+//                this._current = interpolate(0);
+//                return function(t) {
+//                    var d2 = interpolate(t);
+//                    var pos = outerArc.centroid(d2);
+//                    pos[0] = radius *.45*(midAngle(d2) < Math.PI ? 1:-1); //Not Sure what this is for
+//                    return "translate("+ pos +")";
+//                };
+//            })
+//            .styleTween("text-anchor", function(d){
+//                this._current = this._current || d;
+//                var interpolate = d3.interpolate(this._current, d);
+//                this._current = interpolate(0);
+//                return function(t){
+//                    var d2 = interpolate(t);
+//                    return midAngle(d2) < Math.PI ? "end" : "start";
+//                };
+//            });
+//        text.exit()
+//            .remove();
+//
+//        /////////SLICE TO TEXT POLYLINES///////////
+//        var polyline = svg.select(".lines").selectAll("polyline").data(pie(data), key);
+//        polyline.enter().append("polyline");
+//        polyline.transition().duration(1000)
+//                .attrTween("points", function(d){
+//                this._current = this._current || d;
+//                var interpolate = d3.interpolate(this._current,d);
+//                this._current = interpolate(0);
+//                return function(t) {
+//                    var d2 = interpolate(t)
+//                    var pos = outerArc.centroid(d2);
+//                    pos[0] = radius * 0.45 * (midAngle(d2) < Math.PI ? 1 : -1);
+//                    return [arc.centroid(d2), outerArc.centroid(d2), pos];
+//                };
+//            });
+//        polyline.exit().remove();
+//        }
+//        //change(aggregateData(data));
+//        
     };
     function link(scope, element){
         scope.$watch('severityPieChartPromise', function(){
-            scope.severityPieChartPromise.then(function(getCall){ //handles the promise
-                //console.log(getCall);
+            scope.severityPieChartPromise.then(function(getCall){ //handles the promise\
                 var temp = getCall.data._embedded['rh:doc'];
-                //handles the data format
-                //temp._embedded['rh:doc'].children = data.data._embedded['rh:doc']; //adds data to the new object structure 
-                pieChart(temp, element)
+                pieChart(temp, element, scope);
             });
         });
     };
@@ -222,6 +286,6 @@ severityPieChartDirectiveModule.directive('severityPieChart', function(){
         restrict: 'E',
         link: link,
         controller: 'severityPieChartController'
-    }
-})
+    };
+}]);
 
