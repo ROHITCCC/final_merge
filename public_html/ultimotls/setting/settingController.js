@@ -66,7 +66,7 @@ settingModule.controller('SettingsController', function ($scope, $http) {
     });
     $scope.settingPromise().catch(function () {
         $scope.newsettingcreator = 1;
-        newsetting = {setting: {apisetup: {hostname: '', port: '', database: '', collections: {payload: '', audits: ''}}, notification: {immidate: {frequency: {duration: '', unit: ''}, notification: [{severity: '', email: '', application: {name: '', interfaces: ['']}}]}}, envsetup: [{name: '', description: '', label: ''}]}};
+        newsetting = {setting: {apisetup: {hostname: '', port: '', database: '', collections: {payload: '', audits: ''}}, notification: {immidate: {frequency: {duration: '', unit: ''}, notification: [{envid: '', severity: '', email: '', application: {name: '', interfaces: ['']}}]}}, envsetup: [{name: '', description: '', label: ''}]}};
         $scope.settings = newsetting;
         $scope.environments = $scope.settings.setting.envsetup;
         $scope.notifications = $scope.settings.setting.notification;
@@ -75,7 +75,7 @@ settingModule.controller('SettingsController', function ($scope, $http) {
 
         ////Immidate tools
         $scope.addNewImmidate = function () {
-            newson = {severity: '', email: '', template: '', application: {name: '', interfaces: ['']}};
+            newson = {envid: '', severity: '', email: '', template: '', application: {name: '', interfaces: ['']}};
             $scope.notifications.immidate.notification.push(newson);
         };
         $scope.addImmidateInterface = function (upindex) {
@@ -197,7 +197,7 @@ settingModule.controller('SettingsController', function ($scope, $http) {
             conAjax.success(function (response) {
                 $scope.envDropdown = angular.copy($scope.environments);
                 $('#savesuccess').modal();
-                if (index !== undefined || index !== ''){
+                if (typeof index !== "undefined"){
                     $scope.reports[index]._id = {$oid:response};
                 }
             });
@@ -218,5 +218,3 @@ settingModule.controller('SettingsController', function ($scope, $http) {
             });
     };
 });
-
-   
