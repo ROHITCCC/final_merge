@@ -342,7 +342,6 @@ ultimotls.service("queryEnv", function($rootScope){ //getter and setter for envi
     }
     return environment;
 });
-
 ultimotls.service("timeService", function($rootScope){ //getter and setter for drop down value 
     var currentDateTime = new Date();
     var timeSelected = {};
@@ -365,6 +364,21 @@ ultimotls.service("timeService", function($rootScope){ //getter and setter for d
         $rootScope.$broadcast("timeChangeBroadcast")
     }
     return time;
+});
+
+ultimotls.service("queryFilter", function($rootScope){
+    var filter = {};
+    var newFilter = ""
+    filter.appendQuery = function(name,value){
+        if(name && value){
+            newFilter = "\""+name+"\":\""+value+"\"";
+        }
+        return newFilter;
+    };
+    filter.broadcast = function(){
+        $rootScope.$broadcast("newFilterAppended")
+    };
+    return filter;
 });
 
 ultimotls.service("auditSearch",['$http','queryEnv', function ($http, queryEnv) {
