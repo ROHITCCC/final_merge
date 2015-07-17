@@ -1,9 +1,9 @@
 var transactionTypeBarChartDirectiveModule = angular.module('transactionTypeBarChartDirectiveModule', ['transactionTypeBarChartControllerModule']);
 
 transactionTypeBarChartDirectiveModule.directive('transactionTypeBarChart',['queryFilter', function(queryFilter){
-    function barChart(data, element){
+    function barChart(data,element){
         var ele = element[0];
-        var width = (window.innerWidth*.75), height = (window.innerHeight*.28);
+        var width = (window.innerWidth*.15), height = (window.innerHeight*.28);
         var color = d3.scale.category20();
         d3.select(ele).select("svg").remove();
         var svg = d3.select(ele).append("svg").attr("width",width).attr("height",height);
@@ -21,150 +21,75 @@ transactionTypeBarChartDirectiveModule.directive('transactionTypeBarChart',['que
             return;
         }
         
-        var Donut3D = {};
+        var barChart = {};
         function upDateTreemap(filterCriteria){
             console.log(filterCriteria)
-            queryFilter.appendQuery("transactionType",filterCriteria.data._id);
+            queryFilter.appendQuery("transactionType",filterCriteria._id);
             queryFilter.broadcast();
-        }
-        //randomData();
-        function pieTop(d, rx, ry, ir){
-            if(d.endAngle - d.startAngle == 0 ) return "M 0 0";
-            var sx = rx*Math.cos(d.startAngle),
-                sy = ry*Math.sin(d.startAngle),
-                ex = rx*Math.cos(d.endAngle),
-                ey = ry*Math.sin(d.endAngle);
-
-            var ret =[];
-            ret.push("M",sx,sy,"A",rx,ry,"0",(d.endAngle-d.startAngle > Math.PI? 1: 0),"1",ex,ey,"L",ir*ex,ir*ey);
-            ret.push("A",ir*rx,ir*ry,"0",(d.endAngle-d.startAngle > Math.PI? 1: 0), "0",ir*sx,ir*sy,"z");
-            return ret.join(" ");
-        }
-        function pieOuter(d, rx, ry, h ){
-            var startAngle = (d.startAngle > Math.PI ? Math.PI : d.startAngle);
-            var endAngle = (d.endAngle > Math.PI ? Math.PI : d.endAngle);
-
-            var sx = rx*Math.cos(startAngle),
-                sy = ry*Math.sin(startAngle),
-                ex = rx*Math.cos(endAngle),
-                ey = ry*Math.sin(endAngle);
-
-            var ret =[];
-            ret.push("M",sx,h+sy,"A",rx,ry,"0 0 1",ex,h+ey,"L",ex,ey,"A",rx,ry,"0 0 0",sx,sy,"z");
-            return ret.join(" ");
-	}
-        function pieInner(d, rx, ry, h, ir ){
-            var startAngle = (d.startAngle < Math.PI ? Math.PI : d.startAngle);
-            var endAngle = (d.endAngle < Math.PI ? Math.PI : d.endAngle);
-
-            var sx = ir*rx*Math.cos(startAngle),
-                sy = ir*ry*Math.sin(startAngle),
-                ex = ir*rx*Math.cos(endAngle),
-                ey = ir*ry*Math.sin(endAngle);
-
-            var ret =[];
-            ret.push("M",sx, sy,"A",ir*rx,ir*ry,"0 0 1",ex,ey, "L",ex,h+ey,"A",ir*rx, ir*ry,"0 0 0",sx,h+sy,"z");
-            return ret.join(" ");
-	}
-        Donut3D.draw=function(id, data, x /*center x*/, y/*center y*/, 
-			rx/*radius x*/, ry/*radius y*/, h/*height*/, ir/*inner radius*/){
-	
-		var _data = d3.layout.pie().sort(null).value(function(d) {return d.count;})(data);
-		
-		var slices = d3.select("#"+id).append("g").attr("transform", "translate(" + x + "," + y + ")")
-                    .attr("class", "slices");
-			
-		slices.selectAll(".innerSlice").data(_data).enter().append("path").attr("class", "innerSlice")
-                    .style("fill", function(d,i){return color(i);})
-                    .style("stroke", "rgb(0,0,0)")
-                    .attr("d",function(d){ return pieInner(d, rx+0.5,ry+0.5, h, ir);})
-                    .on("click", function(d){upDateTreemap(d);})
-                    .each(function(d){this._current=d;});
-		
-		slices.selectAll(".topSlice").data(_data).enter().append("path").attr("class", "topSlice")
-                    .style("fill", function(d,i){return color(i);})
-                    .style("stroke", "rgb(0,0,0)")
-                    .attr("d",function(d){ return pieTop(d, rx, ry, ir);})
-                    .on("click", function(d){upDateTreemap(d);})
-                    .each(function(d){this._current=d;});
-		
-		slices.selectAll(".outerSlice").data(_data).enter().append("path").attr("class", "outerSlice")
-                    .style("fill", function(d,i){return color(i);})
-                    .style("stroke", "rgb(0,0,0)")
-                    .attr("d",function(d){ return pieOuter(d, rx-.5,ry-.5, h);})
-                    .on("click", function(d){upDateTreemap(d);})
-                    .each(function(d){this._current=d;});
-
-		slices.selectAll(".label").data(_data).enter().append("text").attr("class", "label")
-                    .attr("x",function(d){ return .7*rx*Math.cos(0.5*(d.startAngle+d.endAngle));})
-                    .attr("y",function(d){ return 0.6*ry*Math.sin(0.5*(d.startAngle+d.endAngle));})
-                    .style("fill", "white")
-                    .style("font-size", "12px")
-                    .text(function(d){return d.data._id}).each(function(d){this._current=d;});			
-	}
-        Donut3D.transition = function(id, data, rx, ry, h, ir){
-            function arcTweenInner(a) {
-                var i = d3.interpolate(this._current, a);
-                this._current = i(0);
-                return function(t) { return pieInner(i(t), rx+0.5, ry+0.5, h, ir);  };
-            }
-            function arcTweenTop(a) {
-              var i = d3.interpolate(this._current, a);
-              this._current = i(0);
-              return function(t) { return pieTop(i(t), rx, ry, ir);  };
-            }
-            function arcTweenOuter(a) {
-              var i = d3.interpolate(this._current, a);
-              this._current = i(0);
-              return function(t) { return pieOuter(i(t), rx-.5, ry-.5, h);  };
-            }
-            function textTweenX(a) {
-              var i = d3.interpolate(this._current, a);
-              this._current = i(0);
-              return function(t) { return 0.6*rx*Math.cos(0.5*(i(t).startAngle+i(t).endAngle));  };
-            }
-            function textTweenY(a) {
-              var i = d3.interpolate(this._current, a);
-              this._current = i(0);
-              return function(t) { return 0.6*rx*Math.sin(0.5*(i(t).startAngle+i(t).endAngle));  };
-            }
-
-            var _data = d3.layout.pie().sort(null).value(function(d) {return d.count;})(data);
-
-            d3.select("#"+id).selectAll(".innerSlice").data(_data)
-                    .transition().duration(750).attrTween("d", arcTweenInner); 
-
-            d3.select("#"+id).selectAll(".topSlice").data(_data)
-                    .transition().duration(750).attrTween("d", arcTweenTop); 
-
-            d3.select("#"+id).selectAll(".outerSlice").data(_data)
-                    .transition().duration(750).attrTween("d", arcTweenOuter); 	
-
-//            d3.select(ele).selectAll(".percent").data(_data).transition().duration(750)
-//                    .attrTween("x",textTweenX).attrTween("y",textTweenY).text(getPercent); 	
-	};
-        this.Donut3D = Donut3D;
-        Donut3D.draw("transactionType",data,150,150,130,100,30,0.4)
-        //if no data is available show a message
-        if (data === 0){
-            console.log("no data")
-            d3.select(ele).select("svg").remove();
-            d3.select(ele).select("#tooltip").remove();
-          var svg = d3.select(ele).append("svg")
-                .attr("width", width)
-                .attr("height", height)
-              .append("g")
-                .attr("transform", "translate(" + (width-60)/2 + "," + height/2 + ")");
-          svg.append("text")
-                .text("No Data Available")
-          return;
-        }
+        };
+        barChart.createChart = function(data){
+            var margin= {top: 30, right: 20, bottom: 10, left: 40};
+            var x = d3.scale.ordinal().rangeRoundBands([0, width], .1);
+            var y = d3.scale.linear().range([height, 0]);
+            var xAxis = d3.svg.axis()
+                .scale(x)
+                .orient("bottom");
+            var yAxis = d3.svg.axis()
+                .scale(y)
+                .orient("left")
+                .ticks(5, "");
+            var svg = d3.select("#transactionType")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+                .append("g")
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+            x.domain(data.map(function(d) { return d._id; }));
+            y.domain([0, d3.max(data, function(d) { return d.count; })]);
+            
+            svg.append("g")
+                .attr("class", "x axis")
+                .attr("transform", "translate(0," + height + ")")
+                .call(xAxis);
+//}); 
+            svg.append("g")
+                .attr("class", "y axis")
+                .call(yAxis)
+              .append("text")
+                .attr("transform", "rotate(-90)")
+                .attr("y", 6)
+                .attr("dy", ".71em")
+                .style("text-anchor", "end")
+                .text("Frequency");
+        
+            svg.selectAll(".numLabel")
+              .data(data)
+            .enter().append("text")
+            .on("click", function(d){upDateTreemap(d);})
+              .attr("class", "numLabel")
+              .attr("x", function(d) { return x(d._id) + (x.rangeBand()/2)-10; })
+              .attr("y", function(d){return y(d.count)-5;})
+              .text(function(d) { return d._id; });
+      
+            svg.selectAll(".bar").data(data)
+                .enter().append("rect")
+                .on("click", function(d){upDateTreemap(d);})
+                .attr("class", "bar")
+                //.attr("x", function(d) { return x(d._id)+5; })
+                .attr("x", function(d){return x(d._id)+5;})
+                .attr("width", x.rangeBand())
+                .transition()
+                .delay(function(d,i){return i*300;})
+                .attr("y", function(d,i) { return y(d.count); })
+                .attr("height", function(d) { return (height - y(d.count)); });
+                
+        };
+        barChart.createChart(data);
     };
     function link(scope, element){
         scope.$watch('transactionTypeBarChartPromise', function(){
             scope.transactionTypeBarChartPromise.then(function(getCall){ //handles the promise\
                 if(getCall.data._size === 0){
-                    barChart(0,element);
+                    barChart(0, element);
                     return;
                 }
                 var temp = getCall.data._embedded['rh:doc'];
