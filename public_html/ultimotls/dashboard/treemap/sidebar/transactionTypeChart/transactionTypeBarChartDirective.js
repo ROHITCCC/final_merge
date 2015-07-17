@@ -73,6 +73,7 @@ transactionTypeBarChartDirectiveModule.directive('transactionTypeBarChart',['que
             svg.selectAll(".bar").data(data)
                 .enter().append("rect")
                 .on("click", function(d){upDateTreemap(d);})
+                .style("fill", function(d,i){return color(i);})
                 .attr("class", "bar")
                 //.attr("x", function(d) { return x(d._id)+5; })
                 .attr("x", function(d){return x(d._id)+5;})
