@@ -1,18 +1,28 @@
 var errorPieChartDirectiveModule = angular.module('errorPieChartDirectiveModule', ['errorPieChartControllerModule']);
 
 errorPieChartDirectiveModule.directive('errorPieChart',['queryFilter', function(queryFilter){
-    function pieChart(data, element, scope){
+    function pieChart(data, element){
         var ele = element[0];
-        var width = (window.innerWidth*.43), height = (window.innerHeight*.33);
+        var width = (window.innerWidth*.75), height = (window.innerHeight*.28);
         var color = d3.scale.category20();
         d3.select(ele).select("svg").remove();
         var svg = d3.select(ele).append("svg").attr("width",width).attr("height",height);
         svg.append("g").attr("id","errorType");
-        svg.append("text").attr("transform", "translate(0,15)").text("Error Type Chart")
+        svg.append("text").attr("transform", "translate(0,15)").text("Error Type Chart");
+        if (data === 0){ //Will append a Message for no data and return out of the function
+            d3.select(ele).select("svg").remove();
+            var svg = d3.select(ele).append("svg")
+                .attr("width", width)
+                .attr("height", height)
+                .append("g")
+                .attr("transform", "translate(" + width*.13 + "," + height*.5 + ")");
+            svg.append("text")
+                .text("No Data Available")
+            return;
+        }
         
         var Donut3D = {};
         function upDateTreemap(filterCriteria){
-            console.log(filterCriteria)
             queryFilter.appendQuery("errorType",filterCriteria.data._id);
             queryFilter.broadcast();
         }
@@ -85,8 +95,10 @@ errorPieChartDirectiveModule.directive('errorPieChart',['queryFilter', function(
                     .each(function(d){this._current=d;});
 
 		slices.selectAll(".label").data(_data).enter().append("text").attr("class", "label")
-                    .attr("x",function(d){ return 0.6*rx*Math.cos(0.5*(d.startAngle+d.endAngle));})
+                    .attr("x",function(d){ return .7*rx*Math.cos(0.5*(d.startAngle+d.endAngle));})
                     .attr("y",function(d){ return 0.6*ry*Math.sin(0.5*(d.startAngle+d.endAngle));})
+                    .style("fill", "white")
+                    .style("font-size", "12px")
                     .text(function(d){return d.data._id}).each(function(d){this._current=d;});			
 	}
         Donut3D.transition = function(id, data, rx, ry, h, ir){
@@ -150,8 +162,12 @@ errorPieChartDirectiveModule.directive('errorPieChart',['queryFilter', function(
     function link(scope, element){
         scope.$watch('errorPieChartPromise', function(){
             scope.errorPieChartPromise.then(function(getCall){ //handles the promise\
+                if(getCall.data._size === 0){
+                    pieChart(0,element);
+                    return;
+                }
                 var temp = getCall.data._embedded['rh:doc'];
-                pieChart(temp, element, scope);
+                pieChart(temp, element);
             });
         });
     };
