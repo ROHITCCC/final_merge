@@ -37,7 +37,7 @@ treemapControllerModule.controller('treemapController', ['$scope', '$location', 
             console.log("new event")
         }
         else{
-            $scope.fromDate = new Date(currentDateTime - 7200000).toISOString(); //Current minus 2 hours           
+            $scope.fromDate = new Date(currentDateTime - 3600000).toISOString(); //Current minus 2 hours           
         }
         $scope.toDate = new Date(currentDateTime).toISOString();
     }

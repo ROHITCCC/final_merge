@@ -7,8 +7,13 @@ and open the template in the editor.
 
 <div class="container-fluid">
     <div id="row1" class="row">
-        <div id="legend" class="col-sm-12"></div>
-        <div  class="col-sm-8" style="margin-left:55px">
+<!--        <div id="legend" class="col-sm-12">
+            
+        </div>-->
+        <div id="legendDropDown" >
+            
+        </div>
+        <div  class="col-sm-4" style="margin-left:55px">
             <div class="dropdown" >
                 <div class="dropdown-toggle" data-toggle="dropdown" ng-model="timeSelected">
                     <span onclick='data-toogle'><b>Last - </b></span>
@@ -22,6 +27,9 @@ and open the template in the editor.
             </div>
         </div>
         <div  class="col-sm-3" style="text-align: center">
+            <button type="button" id="zoomIn" class="btn btn-default" style=" opacity: 0"><span class="glyphicon glyphicon-zoom-in"></span>Custom Zoom</button>            
+        </div>
+        <div  class="col-sm-4" style="text-align: center">
             <button type="button" id="zoomOut" class="btn btn-default" style=" opacity: 0"><span class="glyphicon glyphicon-zoom-out"></span>Zoom out</button>            
         </div>
     </div>
