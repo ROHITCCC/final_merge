@@ -205,6 +205,7 @@ ultimotls.controller('getTabs', ['$scope', '$location', 'queryEnv',
                 { link : '#/audits', label : 'Audits' },
                 { link : '#/sunburst', label : 'Sunburst Dashboard' }
               ]; 
+              
             $scope.setEnvironment = function(tab, env){
                 $scope.rootTab = document.getElementById(tab);
                 $scope.rootTab.innerHTML = env.name+" "+tab;
