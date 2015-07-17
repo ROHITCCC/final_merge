@@ -16,7 +16,8 @@ var TLS_EXPIRATION_TIME =  15 //in minutes
    
 //(function(angular){
 var ultimotls = angular.module('ultimotls', ['auditControllerModule', 'sunburstDirectiveModule', 'auditDirectiveModule' , 'treemapDirectiveModule', 'base64', 
-                                             'LocalStorageModule', 'settingModule', 'ui.router', 'severityPieChartDirectiveModule', 'errorPieChartDirectiveModule']);
+                                             'LocalStorageModule', 'settingModule', 'ui.router', 'severityPieChartDirectiveModule', 'errorPieChartDirectiveModule',
+                                             'transactionTypeBarChartDirectiveModule']);
 ultimotls.controller('loginControllerModule', ['$scope', '$http', '$q', '$base64', '$location','localStorageService', 'treemapSaver','$timeout','queryEnv',
     function ($scope, $http, $q, $base64, $location, localStorageService, treemapSaver, $timeout, queryEnv ){ //loging Controller
         $scope.cred;
@@ -371,7 +372,7 @@ ultimotls.service("queryFilter", function($rootScope){
     var newFilter = ""
     filter.appendQuery = function(name,value){
         if(name && value){
-            newFilter = "\""+name+"\":\""+value+"\"";
+            newFilter = "\""+name+"\":\""+value+"\",";
         }
         return newFilter;
     };
