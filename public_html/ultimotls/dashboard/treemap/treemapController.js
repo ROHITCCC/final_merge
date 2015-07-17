@@ -22,10 +22,10 @@ treemapControllerModule.controller('treemapController', ['$scope', '$location', 
     })
     $scope.$on("newFilterAppended", function(){
         $scope.env = queryEnv.getEnv();
-        var newFilter = queryFilter.appendQuery();
+        $scope.newFilter = queryFilter.appendQuery();
         var newDataQuery = "[{\"$match\":{\"$and\":[{\"timestamp\":{\"$gte\":{\"$date\":\""+$scope.fromDate+"\"},\"$lt\":{\"$date\":\""+
-                            $scope.toDate +"\"}}},{\"$and\":[{\"severity\":{\"$ne\": null}},{\"severity\":{\"$exists\":true,\"$ne\":\"\"}},{\"envid\":\""+
-                            $scope.env.dbName+"\","+newFilter+"}]}]}},{\"$group\":{\"_id\":{\"interface1\":\"$interface1\",\"application\":\"$application\"},"+
+                            $scope.toDate +"\"}}},{\"$and\":[{\"severity\":{\"$ne\": null}},{\"severity\":{\"$exists\":true,\"$ne\":\"\"}},{"+$scope.newFilter+"\"envid\":\""+
+                            $scope.env.dbName+"\"}]}]}},{\"$group\":{\"_id\":{\"interface1\":\"$interface1\",\"application\":\"$application\"},"+
                             "\"count\":{\"$sum\":1}}},{\"$group\":{\"_id\":{\"application\":\"$_id.application\"},\"data\":{\"$addToSet\":{\"name\":\"$_id.interface1\""+
                             ",\"size\":\"$count\"}}}},{\"$project\":{\"_id\":1,\"name\":\"$_id.application\",\"children\":\"$data\"}}]";
         $scope.treemapPromise = mongoAggregateService.callHttp(newDataQuery);
