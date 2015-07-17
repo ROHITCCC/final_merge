@@ -36,15 +36,12 @@ sunburstControllerModule.controller('sunburstController', ['$scope', 'mongoAggre
         else if($scope.timeSelected.time === "Calender"){
             console.log("new event")
         }
-        else{
-            $scope.fromDate = new Date(currentDateTime - 7200000).toISOString(); //Current minus 2 hours           
-        }
         $scope.toDate = new Date(currentDateTime).toISOString();
     }
     var dataQuery = "[{'$match':{'$and':[{'timestamp':{'$gte':{'$date':"+
                          "'"+$scope.fromDate+"'},'$lt':{'$date':'"+$scope.toDate+"'}}},"+
                          "{'$and':[{'severity':{'$ne':null}},{'severity':"+
-                         "{'$exists': true,'$ne':''}},{'envid':'"+$scope.env+"'}]}]}},{'$group':{'_id':{'transactionType'"+
+                         "{'$exists': true,'$ne':''}},{'envid':'"+$scope.env.dbName+"'}]}]}},{'$group':{'_id':{'transactionType'"+
                          ":'$transactionType','interface1':'$interface1','application':"+
                          "'$application'},'count':{'$sum':1}}},{'$group':{'_id':{'transactionType"+
                          "':'$_id.transactionType','application':'$_id.application'},'data':"+
@@ -69,7 +66,7 @@ sunburstControllerModule.controller('sunburstController', ['$scope', 'mongoAggre
         var customDateQuery = "[{'$match':{'$and':[{'timestamp':{'$gte':{'$date':"+
                      "'"+$scope.fromDate+"'},'$lt':{'$date':'"+$scope.toDate+"'}}},"+
                      "{'$and':[{'severity':{'$ne':null}},{'severity':"+
-                     "{'$exists': true,'$ne':''}},{'envid':'"+$scope.env+"'}]}]}},{'$group':{'_id':{'transactionType'"+
+                     "{'$exists': true,'$ne':''}},{'envid':'"+$scope.env.dbName+"'}]}]}},{'$group':{'_id':{'transactionType'"+
                      ":'$transactionType','interface1':'$interface1','application':"+
                      "'$application'},'count':{'$sum':1}}},{'$group':{'_id':{'transactionType"+
                      "':'$_id.transactionType','application':'$_id.application'},'data':"+
@@ -99,7 +96,7 @@ sunburstControllerModule.controller('sunburstController', ['$scope', 'mongoAggre
         var sliderDataQuery = "[{'$match':{'$and':[{'timestamp':{'$gte':{'$date':"+
                      "'"+$scope.fromDate+"'},'$lt':{'$date':'"+$scope.toDate+"'}}},"+
                      "{'$and':[{'severity':{'$ne':null}},{'severity':"+
-                     "{'$exists': true,'$ne':''}},{'envid':'"+$scope.env+"'}]}]}},{'$group':{'_id':{'transactionType'"+
+                     "{'$exists': true,'$ne':''}},{'envid':'"+$scope.env.dbName+"'}]}]}},{'$group':{'_id':{'transactionType'"+
                      ":'$transactionType','interface1':'$interface1','application':"+
                      "'$application'},'count':{'$sum':1}}},{'$group':{'_id':{'transactionType"+
                      "':'$_id.transactionType','application':'$_id.application'},'data':"+

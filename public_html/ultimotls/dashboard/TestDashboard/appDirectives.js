@@ -64,8 +64,8 @@ appDirectives.directive('severityPieChart', ['$http', function($http){
         }
         function change(data) {
             var slice = svg.select(".slices")
-                            .selectAll("path.slice")
-                            .data(pie(data), key);
+                .selectAll("path.slice")
+                .data(pie(data), key);
             slice.enter()
                 .insert("path")
                 .style("fill", function(d){return color(d.data.label);})

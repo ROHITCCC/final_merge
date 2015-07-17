@@ -6,22 +6,37 @@
 
 var treemapControllerModule = angular.module('treemapControllerModule', ['ultimotls', 'auditControllerModule', 'ngRoute']);
 
-treemapControllerModule.controller('treemapController', ['$scope', '$location', 'mongoAggregateService', 'treemapSaver', 'auditQuery','queryEnv',
-    function($scope, $location, mongoAggregateService, treemapSaver, auditQuery, queryEnv){
+treemapControllerModule.controller('treemapController', ['$scope', '$location', 'mongoAggregateService', 'treemapSaver', 'auditQuery','queryEnv','timeService','queryFilter',
+    function($scope, $location, mongoAggregateService, treemapSaver, auditQuery, queryEnv, timeService, queryFilter){
     $scope.toDate = null;
     $scope.fromDate = null;
     $scope.timeOptions = [{"time":.25, "description":"15 minutes"},{"time":.5, "description":"30 minutes"},
                           {"time":1,"description":"1 hour"},{"time":24, "description":"24 hours"},
                           {"time":48,"description":"48 hours"}, {"time":"Calender", "description":"Custom"}];
-    $scope.timeSelected = $scope.timeOptions[2];
+    $scope.timeSelected = $scope.timeOptions[2];                
     $scope.treemapSaver = treemapSaver;
-    $scope.env = queryEnv.getEnv();
     $scope.auditQuery = auditQuery;
-    $scope.$on("envChangeBroadcast", function(){
+    $scope.$on("envChangeBroadcast", function(){//Listens for Environment Change
         $scope.env = queryEnv.getEnv();
-        console.log($scope.env);
         $scope.fromDateChange($scope.timeSelected);
     })
+    $scope.$on("newFilterAppended", function(){
+        $scope.env = queryEnv.getEnv();
+        $scope.newFilter = queryFilter.appendQuery();
+        var newDataQuery = "[{\"$match\":{\"$and\":[{\"timestamp\":{\"$gte\":{\"$date\":\""+$scope.fromDate+"\"},\"$lt\":{\"$date\":\""+
+                            $scope.toDate +"\"}}},{\"$and\":[{\"severity\":{\"$ne\": null}},{\"severity\":{\"$exists\":true,\"$ne\":\"\"}},{"+$scope.newFilter+"\"envid\":\""+
+                            $scope.env.dbName+"\"}]}]}},{\"$group\":{\"_id\":{\"interface1\":\"$interface1\",\"application\":\"$application\"},"+
+                            "\"count\":{\"$sum\":1}}},{\"$group\":{\"_id\":{\"application\":\"$_id.application\"},\"data\":{\"$addToSet\":{\"name\":\"$_id.interface1\""+
+                            ",\"size\":\"$count\"}}}},{\"$project\":{\"_id\":1,\"name\":\"$_id.application\",\"children\":\"$data\"}}]";
+        $scope.treemapPromise = mongoAggregateService.callHttp(newDataQuery);
+    })
+    calculateTime = function(timeSelected){
+        timeObj = {};
+        var currentDateTime = new Date();
+        timeObj.fromDate = new Date(currentDateTime - (timeSelected*60*60*1000)).toISOString();
+        timeObj.toDate = new Date(currentDateTime).toISOString();
+        return timeObj;
+    }
     if($scope.treemapSaver.wordLength === undefined)$scope.treemapSaver.wordLength = []
     if(!$scope.toDate){
         var currentDateTime = new Date();
@@ -40,9 +55,11 @@ treemapControllerModule.controller('treemapController', ['$scope', '$location', 
             $scope.fromDate = new Date(currentDateTime - 3600000).toISOString(); //Current minus 2 hours           
         }
         $scope.toDate = new Date(currentDateTime).toISOString();
+        timeService.setTime($scope.fromDate, $scope.toDate);
+        timeService.broadcast();
     }
     var dataQuery = "[ { '$match': { '$and': [ { 'timestamp': { '$gte': " +
-                    "{'$date': '"+$scope.fromDate+"'}, '$lt': {'$date': '"+ $scope.toDate +"'} } }, { '$and': [ {'severity': {'$ne': null}}, {'severity': {'$exists': true, '$ne': ''}},{'envid':'"+$scope.env+"'} ] } ] } },{ '$group': { '_id' : { 'interface1': '$interface1', 'application': '$application' }, 'count': {'$sum': 1} } } , { '$group': { '_id' : { 'application': '$_id.application' }, 'data': { '$addToSet':{ 'name': '$_id.interface1', 'size': '$count' } } } } , { '$project': { '_id': 1, 'name': '$_id.application', 'children': '$data' } } ]";
+                    "{'$date': '"+$scope.fromDate+"'}, '$lt': {'$date': '"+ $scope.toDate +"'} } }, { '$and': [ {'severity': {'$ne': null}}, {'severity': {'$exists': true, '$ne': ''}},{'envid':'"+$scope.env.dbName+"'} ] } ] } },{ '$group': { '_id' : { 'interface1': '$interface1', 'application': '$application' }, 'count': {'$sum': 1} } } , { '$group': { '_id' : { 'application': '$_id.application' }, 'data': { '$addToSet':{ 'name': '$_id.interface1', 'size': '$count' } } } } , { '$project': { '_id': 1, 'name': '$_id.application', 'children': '$data' } } ]";
             
     $scope.treemapPromise = mongoAggregateService.callHttp(dataQuery);
     //date dropdown Config
@@ -54,8 +71,10 @@ treemapControllerModule.controller('treemapController', ['$scope', '$location', 
         console.log(fromDate, toDate);
         $scope.fromDate = new Date(fromDate).toISOString();
         $scope.toDate = new Date(toDate).toISOString();
+        timeService.setTime($scope.fromDate, $scope.toDate);
+        timeService.broadcast();
         var customDateQuery = "[ { '$match': { '$and': [ { 'timestamp': { '$gte': " +
-                    "{'$date': '"+$scope.fromDate+"'}, '$lt': {'$date': '"+ $scope.toDate +"'} } }, { '$and': [ {'severity': {'$ne': null}}, {'severity': {'$exists': true, '$ne': ''}},{'envid':'"+$scope.env+"'} ] } ] } },{ '$group': { '_id' : { 'interface1': '$interface1', 'application': '$application' }, 'count': {'$sum': 1} } } , { '$group': { '_id' : { 'application': '$_id.application' }, 'data': { '$addToSet':{ 'name': '$_id.interface1', 'size': '$count' } } } } , { '$project': { '_id': 1, 'name': '$_id.application', 'children': '$data' } } ]";
+                    "{'$date': '"+$scope.fromDate+"'}, '$lt': {'$date': '"+ $scope.toDate +"'} } }, { '$and': [ {'severity': {'$ne': null}}, {'severity': {'$exists': true, '$ne': ''}},{'envid':'"+$scope.env.dbName+"'} ] } ] } },{ '$group': { '_id' : { 'interface1': '$interface1', 'application': '$application' }, 'count': {'$sum': 1} } } , { '$group': { '_id' : { 'application': '$_id.application' }, 'data': { '$addToSet':{ 'name': '$_id.interface1', 'size': '$count' } } } } , { '$project': { '_id': 1, 'name': '$_id.application', 'children': '$data' } } ]";
             
         $scope.treemapPromise = mongoAggregateService.callHttp(customDateQuery);
     }
@@ -66,13 +85,14 @@ treemapControllerModule.controller('treemapController', ['$scope', '$location', 
                 $("#calendarPage").modal();
             });
             return
-            
         }
-        var currentDateTime = new Date();
-        $scope.fromDate = new Date(currentDateTime - ($scope.timeSelected.time*60*60*1000)).toISOString();
-        $scope.toDate = new Date(currentDateTime).toISOString(); 
+        var timeCalulated = calculateTime(time.time)
+        $scope.fromDate = timeCalulated.fromDate;
+        $scope.toDate = timeCalulated.toDate;
+        timeService.setTime($scope.fromDate, $scope.toDate);
+        timeService.broadcast();
         var sliderDataQuery = "[ { '$match': { '$and': [ { 'timestamp': { '$gte': " +
-                    "{'$date': '"+$scope.fromDate+"'}, '$lt': {'$date': '"+ $scope.toDate +"'} } }, { '$and': [ {'severity': {'$ne': null}}, {'severity': {'$exists': true, '$ne': ''}},{'envid':'"+$scope.env+"'} ] } ] } },{ '$group': { '_id' : { 'interface1': '$interface1', 'application': '$application' }, 'count': {'$sum': 1} } } , { '$group': { '_id' : { 'application': '$_id.application' }, 'data': { '$addToSet':{ 'name': '$_id.interface1', 'size': '$count' } } } } , { '$project': { '_id': 1, 'name': '$_id.application', 'children': '$data' } } ]";
+                    "{'$date': '"+$scope.fromDate+"'}, '$lt': {'$date': '"+ $scope.toDate +"'} } }, { '$and': [ {'severity': {'$ne': null}}, {'severity': {'$exists': true, '$ne': ''}},{'envid':'"+$scope.env.dbName+"'} ] } ] } },{ '$group': { '_id' : { 'interface1': '$interface1', 'application': '$application' }, 'count': {'$sum': 1} } } , { '$group': { '_id' : { 'application': '$_id.application' }, 'data': { '$addToSet':{ 'name': '$_id.interface1', 'size': '$count' } } } } , { '$project': { '_id': 1, 'name': '$_id.application', 'children': '$data' } } ]";
             
         $scope.treemapPromise = mongoAggregateService.callHttp(sliderDataQuery);
         $scope.treemapSaver.dropdownVal = $scope.timeSelected.time;//Saves TimeSelected when drop down value changes

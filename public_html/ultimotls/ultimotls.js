@@ -4,8 +4,9 @@
  * and open the template in the editor.
  */
 //GLOBAL VARIABLES FOR INTITIAL SETUP
-var TLS_PROTOCOL = "http"
-var TLS_AUDIT_COLLECTION = "ErrorSpotActual"
+var TLS_PROTOCOL = "http";
+var TLS_AUDIT_COLLECTION = "ErrorSpotActual";
+var TLS_SETTING_COLLECTION = "ErrorSpotSetting";
 var TLS_PAYLOAD_COLLECTION = "payloadCollection";
 var TLS_SERVER = "172.16.120.157";
 var TLS_PORT = "8080";
@@ -14,10 +15,10 @@ var TLS_SERVER_TIMEOUT = 3000;
 var TLS_EXPIRATION_TIME =  15 //in minutes
    
 //(function(angular){
-var ultimotls = angular.module('ultimotls', ['auditControllerModule', 'sunburstDirectiveModule', 'auditDirectiveModule' , 'treemapDirectiveModule', 'base64', 'LocalStorageModule', 'settingModule', 'ui.router']);
- 
-ultimotls.controller('loginControllerModule', ['$scope', '$http', '$q', '$base64', '$location','localStorageService', 'treemapSaver','$timeout',
-    function ($scope, $http, $q, $base64, $location, localStorageService, treemapSaver, $timeout ){ //loging Controller
+var ultimotls = angular.module('ultimotls', ['auditControllerModule', 'sunburstDirectiveModule', 'auditDirectiveModule' , 'treemapDirectiveModule', 'base64', 
+                                             'LocalStorageModule', 'settingModule', 'ui.router', 'severityPieChartDirectiveModule', 'errorPieChartDirectiveModule']);
+ultimotls.controller('loginControllerModule', ['$scope', '$http', '$q', '$base64', '$location','localStorageService', 'treemapSaver','$timeout','queryEnv',
+    function ($scope, $http, $q, $base64, $location, localStorageService, treemapSaver, $timeout, queryEnv ){ //loging Controller
         $scope.cred;
         $scope.treemapSaver = treemapSaver;
         $scope.treemapSaver.showNav = false;
@@ -121,6 +122,25 @@ ultimotls.controller('loginControllerModule', ['$scope', '$http', '$q', '$base64
             
             
         };
+        
+        $scope.envOptions = [{name:"Prod", description: "Production", dbName:"PROD"}, 
+                         {name:"QA", description:"QA", dbName:"QA"}, 
+                         {name:"Dev", description: "Developement", dbName:"DEV"}];
+        $scope.envSelected = $scope.envOptions[0]; 
+        $scope.env = queryEnv.getEnv();
+        if(typeof $scope.treemapSaver.env !== 'undefined'){ //checks whether or not the env value holder in the service exists yet
+            for(var i =0; i< $scope.envOptions.length; i++){
+                if ($scope.treemapSaver.env.name === $scope.envOptions[i].name){
+                    $scope.envSelected = $scope.envOptions[i]; 
+                }
+            }  
+        };
+        $scope.setEnvironment = function(env){//Set the environment when changed
+            $scope.envSelected = env
+            $scope.treemapSaver.env = env
+            queryEnv.setEnv(env);
+            queryEnv.broadcast();
+        };
 }]);
 
 ultimotls.run(['$rootScope', '$location', 'treemapSaver', 'localStorageService', '$http', 
@@ -192,47 +212,35 @@ ultimotls.filter('unique', function () {
     };
 });
 
-ultimotls.controller('getTabs', ['$scope', '$location', 'queryEnv',
-    function($scope, $location, queryEnv){
+ultimotls.controller('getTabs', ['$scope', '$location', function($scope, $location){
     $scope.tabBuilder = function(){
-        
-        $scope.env = [{name:"Prod", description: "Production", dbName:"PROD"}, 
-                     {name:"QA", description:"QA", dbName:"QA"}, 
-                     {name:"Dev", description: "Developement", dbName:"DEV"}];
 //        };
-             $scope.tabs = [
-                { link : '#/treemap', label : 'Dashboard' },
-                { link : '#/audits', label : 'Audits' },
-                { link : '#/sunburst', label : 'Sunburst Dashboard' }
-              ]; 
-              
-            $scope.setEnvironment = function(tab, env){
-                $scope.rootTab = document.getElementById(tab);
-                $scope.rootTab.innerHTML = env.name+" "+tab;
-                queryEnv.setEnv(env.dbName);
-                queryEnv.broadcast();
-            };
-            $scope.setTab = null;
-            
-            $scope.currentPath = $location.path();
-            for(var tabCounter = 0; tabCounter < $scope.tabs.length; tabCounter++){
-                if($scope.currentPath === $scope.tabs[tabCounter].link.substring(1)){
-                    $scope.setTab = tabCounter;
-                }
+         $scope.tabs = [
+            { link : '#/treemap', label : ' Dashboard' },
+            { link : '#/audits', label : 'Audits' }
+            //{ link : '#/sunburst', env:env.name, label : ' Sunburst Dashboard' }
+          ]; 
+        $scope.setTab = null;
+
+        $scope.currentPath = $location.path();
+        for(var tabCounter = 0; tabCounter < $scope.tabs.length; tabCounter++){
+            if($scope.currentPath === $scope.tabs[tabCounter].link.substring(1)){
+                $scope.setTab = tabCounter;
             }
-            $scope.selectedTab = $scope.tabs[$scope.setTab];    
-            $scope.setSelectedTab = function(tab) {
-              $scope.selectedTab = tab;
-            };
-            $scope.tabClass = function(tab) {
-              if ($scope.selectedTab === tab) {
-                return "active";
-              } else {
-                return "";
-              } 
-              
-            };
         }
+        $scope.selectedTab = $scope.tabs[$scope.setTab];    
+        $scope.setSelectedTab = function(tab) {
+          $scope.selectedTab = tab;
+        };
+        $scope.tabClass = function(tab) {
+          if ($scope.selectedTab === tab) {
+            return "active";
+          } else {
+            return "";
+          } 
+
+        };
+    }
 }]);
 
 ultimotls.directive('tabsPanel', function () {
@@ -269,7 +277,7 @@ ultimotls.config(function ($stateProvider, $urlRouterProvider) {
                     var query = auditQuery.query();
 
                     if( query!= ''){
-                        var data = auditSearch.doSearch(query, rowNumber);
+                        var data = auditSearch.doSearch(query, rowNumber, "audit");
 
                        return data;
                     }
@@ -315,12 +323,14 @@ ultimotls.factory("mongoAggregateService", function ($http) {
 });
 
 ultimotls.service("queryEnv", function($rootScope){ //getter and setter for environment 
-    var envid = "PROD";
+    var envid = {}
+    envid.name = "Prod", envid.dbName = "PROD"
     var environment = {};
     
     environment.setEnv = function(env){
         if(env){
-            envid = env;
+            envid.name = env.name;
+            envid.dbName = env.dbName
         }
         return envid;
     };
@@ -332,33 +342,72 @@ ultimotls.service("queryEnv", function($rootScope){ //getter and setter for envi
     }
     return environment;
 });
+ultimotls.service("timeService", function($rootScope){ //getter and setter for drop down value 
+    var currentDateTime = new Date();
+    var timeSelected = {};
+    timeSelected.toDate = new Date(currentDateTime).toISOString(); 
+    timeSelected.fromDate = new Date(currentDateTime - (1*60*60*1000)).toISOString(); //default one hour if no setTime 
+    timeSelected.value = 1 //default 1 hour
+    var time = {};
+    
+    time.setTime = function(fromDate, toDate){
+        if(time){
+            timeSelected.toDate = toDate
+            timeSelected.fromDate = fromDate
+        }
+        return timeSelected;
+    };
+    time.getTime = function(){ //remove later
+        return timeSelected;
+    };
+    time.broadcast = function(){
+        $rootScope.$broadcast("timeChangeBroadcast")
+    }
+    return time;
+});
 
-ultimotls.service("auditSearch",['$http', function ($http) {
-    var postUrl =TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/"+TLS_DBNAME+"/"+TLS_AUDIT_COLLECTION+"?filter=";
+ultimotls.service("queryFilter", function($rootScope){
+    var filter = {};
+    var newFilter = ""
+    filter.appendQuery = function(name,value){
+        if(name && value){
+            newFilter = "\""+name+"\":\""+value+"\"";
+        }
+        return newFilter;
+    };
+    filter.broadcast = function(){
+        $rootScope.$broadcast("newFilterAppended")
+    };
+    return filter;
+});
+
+ultimotls.service("auditSearch",['$http','queryEnv', function ($http, queryEnv) {
+    var postUrl = TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/_logic/SearchService?filter=";
     var audits = {};
-    audits.doSearch = function (searchCriteria, rowNumber) {
-    //this.doSearch = function (searchCriteria, rowNumber) {
-        var textSearch = "{$text:{$search:'" + searchCriteria + "'}}&count&pagesize=" + rowNumber.rows;
-        var jsonSearch = searchCriteria + "&count&pagesize=" + rowNumber.rows;
+    var env = queryEnv.getEnv();
+    audits.doSearch = function (searchCriteria, rowNumber, dbType) {
+//    textSearch and jsonSearch WILL BE SWAPPED WITH THESE
+    var textSearch = "{\"$and\":[{\"envid\":\""+env.dbName+"\"},{$text:{$search:'" + searchCriteria + "'}}]}&searchtype=basic&searchdb="+dbType+"&count&pagesize=" + rowNumber.rows;
+    var jsonSearch = "{\"$and\":[{\"envid\":\""+env.dbName+"\"},"+searchCriteria + "]}&searchtype=basic&searchdb="+dbType+"&count&pagesize=" + rowNumber.rows;
+//        var textSearch = "{\"$and\":[{\"envid\":\""+env.dbName+"\"},{$text:{$search:'" + searchCriteria + "'}}]}&count&pagesize=" + rowNumber.rows;
+//        var jsonSearch = "{\"$and\":[{\"envid\":\""+env.dbName+"\"},"+searchCriteria + "]}&count&pagesize=" + rowNumber.rows;
         var searchPromise = {};
         if (/:/.test(searchCriteria)) {
-            if (/('|")[A-Za-z0-9]+('|"):('|")[A-Za-z0-9]+('|")/.test(searchCriteria)) {
-                var getUrl = postUrl + jsonSearch;
-                searchPromise = $http.get(getUrl, {timeout:TLS_SERVER_TIMEOUT}).success(function (response) {
+                var jsonUrl = postUrl + jsonSearch;
+                searchPromise = $http.get(jsonUrl, {timeout:TLS_SERVER_TIMEOUT}).success(function (response) {
 
                 }).error(function () {
                     console.log("error");
                 });
                 audits.inputError = "";
-            }
-            else {
-                audits.inputError = "Need to add quotes to value (ex. name:'value')";
-
-            }
         }
         else {
-            var url = postUrl + textSearch;
-            searchPromise = $http.get(url, {timeout:TLS_SERVER_TIMEOUT}).success;
+            var textUrl = postUrl + textSearch;
+            searchPromise = $http.get(textUrl, {timeout:TLS_SERVER_TIMEOUT}).success(function(response){
+                
+            }).error(function () {
+                console.log("error");
+            });
             audits.inputError = "";
         }
 
@@ -390,10 +439,14 @@ ultimotls.service("auditQuery", function () {
 });
 
 ultimotls.factory("treemapSaver", function() {
-    return {};
+    var treemapSaver = {};
+    treemapSaver.dropdownVal = 1;
+    return treemapSaver;
 });
 ultimotls.factory("sunburstSaver", function() {
-    return {};
+    var sunburstSaver = {};
+    sunburstSaver.dropdownVal = 1;
+    return sunburstSaver;
 });
 
 //})(window.angular);

@@ -8,8 +8,8 @@ var treemapDirectiveModule = angular.module('treemapDirectiveModule', ['treemapC
 
 treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location', function($http,$injector, $location){
         
-         var w = window.innerWidth*.9, w2=w*.8,
-                h = window.innerHeight*.7,
+         var w = window.innerWidth*.70, w2=w*.8,
+                h = window.innerHeight*.8,
                 x = d3.scale.linear().range([0, w]),
                 y = d3.scale.linear().range([0, h]),
                 x2 = d3.scale.linear().range([0, w]),
@@ -61,10 +61,9 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
         
         
     function updateSize(resizeTemp, element, scope){
-       
-            w=window.innerWidth*.9;
+            w=window.innerWidth*.70;
             w2 = w*.8;
-            h=window.innerHeight*.7;
+            h=window.innerHeight*.8;
             x = d3.scale.linear().range([0, w]);
             y = d3.scale.linear().range([0, h]);
             
@@ -786,21 +785,23 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
             function sendAudit(parent, name){       //sends audits directly instead of through controller function
                 //scope.getAuditsForInterface(auditParam);
                 scope.treemapSaver.data = d3.select("#treemapZoom").select("svg").selectAll("g")[0];
-                var interfaceQuery = '{"application":"'+name+'","interface1":"'+parent+'","envid":"'+scope.env+'","timestamp":{"$gte":{"$date":"'+scope.fromDate+'"},"$lt":{"$date":"'+scope.toDate+'"}},"$and":[{"severity":{"$ne":"null"}},{"severity":{"$exists":"true","$ne":""}}]}';
-                console.log(interfaceQuery);
+                var interfaceQuery = '{"application":"'+name+'","interface1":"'+parent+'","timestamp":{"$gte":{"$date":"'+scope.fromDate+'"},"$lt":{"$date":"'+scope.toDate+'"}},"$and":[{"severity":{"$ne":"null"}},{"severity":{"$exists":"true","$ne":""}}]}';
+                if(scope.newFilter){
+                    interfaceQuery = '{'+scope.newFilter+'"application":"'+name+'","interface1":"'+parent+'","timestamp":{"$gte":{"$date":"'+scope.fromDate+'"},"$lt":{"$date":"'+scope.toDate+'"}},"$and":[{"severity":{"$ne":"null"}},{"severity":{"$exists":"true","$ne":""}}]}';
+                }
                 scope.auditQuery.query(interfaceQuery, scope);
                 scope.$apply($location.path("/audits"));
                 return;
             
             }
         }
-        function mouseOverCell(d) {
-                d3.select(this).style("opacity", .8);
-            };
-        function mouseOutCell(){
+    function mouseOverCell(d) {
+            d3.select(this).style("opacity", .8);
+        };
+    function mouseOutCell(){
             d3.select(this).style("opacity", 1);
             };
-        function link(scope, element){
+    function link(scope, element){
             scope.$watch('treemapPromise', function(){
                 scope.treemapPromise.then(function(getCall){ //handles the promise
                 //console.log(getCall);
@@ -811,15 +812,14 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
 
                     createZoomTree(temp, element, "true", scope, true); //("selects id of the graph in html","takes new data", "appends to the element", "calls the graph rendering function"
             
-                    });
-            
-             });
+            });
                 $(window).resize(function(){
-                       updateSize(scope.treemapSaver.resizeTemp, element, scope);
-                       //createZoomTree(scope.treemapSaver.resizeTemp, element, "true", scope);
-                });
+               updateSize(scope.treemapSaver.resizeTemp, element, scope);
+               //createZoomTree(scope.treemapSaver.resizeTemp, element, "true", scope);
+        });
+            });
             }
-        return { 
+    return { 
             restrict: 'E',
             link: link,
             controller: 'treemapController'
