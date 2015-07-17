@@ -51,6 +51,9 @@ treemapControllerModule.controller('treemapController', ['$scope', '$location', 
         else if($scope.timeSelected.time === "Calender"){
             console.log("new event")
         }
+        else{
+            $scope.fromDate = new Date(currentDateTime - 3600000).toISOString(); //Current minus 2 hours           
+        }
         $scope.toDate = new Date(currentDateTime).toISOString();
         timeService.setTime($scope.fromDate, $scope.toDate);
         timeService.broadcast();
