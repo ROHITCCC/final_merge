@@ -28,16 +28,19 @@ and open the template in the editor.
         </div>
     </div>
     <div id="row2" class="row col-sm-12">
-        <div id="treemapDiv" class="col-sm-8">
+        <div id="treemapDiv" class="col-lg-9 col-md-12">
             <treemap-zoom id="treemapZoom"></treemap-zoom>
         </div>
-        <div class="columnDiv col-lg-4 col-md-12 sideBarChartContainer">
+        <div class="columnDiv col-lg-3 col-md-12 sideBarChartContainer">
             <div class="col-lg-12 col-md-4">
-                <severity-pie-chart></severity-pie-chart>
+                <severity-pie-chart id="severityPieChart"></severity-pie-chart>
             </div>
             <div class="col-lg-12 col-md-4">
                 <error-pie-chart></error-pie-chart>
-            </div>            
+            </div>
+            <div class="col-lg-12 col-md-4">
+                <transaction-type-bar-chart></transaction-type-bar-chart>
+            </div>
         </div>
     </div>  
 </div>
