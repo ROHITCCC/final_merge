@@ -1,16 +1,8 @@
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 var severityPieChartDirectiveModule = angular.module('severityPieChartDirectiveModule', ['severityPieChartControllerModule']);
 
 severityPieChartDirectiveModule.directive('severityPieChart',['queryFilter', function(queryFilter){
-    var width = (window.innerWidth*.75), height = (window.innerHeight*.28);
-    var svg = d3.select("#severityPieChart").append("svg").attr("width",width).attr("height",height);
-    
     function updateSize(data, element){
-        var width = (window.innerWidth*.75), height = (window.innerHeight*.28);
+        var width = (window.innerWidth*.30), height = (window.innerHeight*.28);
         if (data === 0){ //Will append a Message for no data and return out of the function
             d3.select("#severityPieChart").select("svg").remove();
             var svg = d3.select("#severityPieChart").append("svg")
@@ -21,9 +13,6 @@ severityPieChartDirectiveModule.directive('severityPieChart',['queryFilter', fun
             svg.append("text").text("No Data Available");
           return;
         }
-        
-//        svg.append("g").attr("id","severity");
-//        svg.append("text").attr("transform", "translate(0,15)").text("Severity Chart");
         pieChart(data,element,"update");
         return;
     }
@@ -31,11 +20,9 @@ severityPieChartDirectiveModule.directive('severityPieChart',['queryFilter', fun
         var Donut3D = {};
         var color = d3.scale.category20();
         function upDateTreemap(filterCriteria){
-            console.log(filterCriteria)
             queryFilter.appendQuery("severity",filterCriteria.data._id);
             queryFilter.broadcast();
-        }
-        //randomData();
+        };
         function pieTop(d, rx, ry, ir){
             if(d.endAngle - d.startAngle == 0 ) return "M 0 0";
             var sx = rx*Math.cos(d.startAngle),
@@ -47,7 +34,7 @@ severityPieChartDirectiveModule.directive('severityPieChart',['queryFilter', fun
             ret.push("M",sx,sy,"A",rx,ry,"0",(d.endAngle-d.startAngle > Math.PI? 1: 0),"1",ex,ey,"L",ir*ex,ir*ey);
             ret.push("A",ir*rx,ir*ry,"0",(d.endAngle-d.startAngle > Math.PI? 1: 0), "0",ir*sx,ir*sy,"z");
             return ret.join(" ");
-        }
+        };
         function pieOuter(d, rx, ry, h ){
             var startAngle = (d.startAngle > Math.PI ? Math.PI : d.startAngle);
             var endAngle = (d.endAngle > Math.PI ? Math.PI : d.endAngle);
@@ -60,7 +47,7 @@ severityPieChartDirectiveModule.directive('severityPieChart',['queryFilter', fun
             var ret =[];
             ret.push("M",sx,h+sy,"A",rx,ry,"0 0 1",ex,h+ey,"L",ex,ey,"A",rx,ry,"0 0 0",sx,sy,"z");
             return ret.join(" ");
-	}
+	};
         function pieInner(d, rx, ry, h, ir ){
             var startAngle = (d.startAngle < Math.PI ? Math.PI : d.startAngle);
             var endAngle = (d.endAngle < Math.PI ? Math.PI : d.endAngle);
@@ -73,7 +60,7 @@ severityPieChartDirectiveModule.directive('severityPieChart',['queryFilter', fun
             var ret =[];
             ret.push("M",sx, sy,"A",ir*rx,ir*ry,"0 0 1",ex,ey, "L",ex,h+ey,"A",ir*rx, ir*ry,"0 0 0",sx,h+sy,"z");
             return ret.join(" ");
-	}
+	};
         Donut3D.draw=function(id, data, x /*center x*/, y/*center y*/, 
 			rx/*radius x*/, ry/*radius y*/, h/*height*/, ir/*inner radius*/){
 	
@@ -106,10 +93,11 @@ severityPieChartDirectiveModule.directive('severityPieChart',['queryFilter', fun
 		slices.selectAll(".label").data(_data).enter().append("text").attr("class", "label")
 			.attr("x",function(d){ return .7*rx*Math.cos(0.5*(d.startAngle+d.endAngle));})
 			.attr("y",function(d){ return 0.6*ry*Math.sin(0.5*(d.startAngle+d.endAngle));})
+                        .on("click", function(d){upDateTreemap(d);})
                         .style("fill", "white")
                         .style("font-size", "12px")
 			.text(function(d){return d.data._id}).each(function(d){this._current=d;});				
-	}
+	};
         Donut3D.transition = function(id, data, rx, ry, h, ir){
             function arcTweenInner(a) {
                 var i = d3.interpolate(this._current, a);
@@ -148,17 +136,22 @@ severityPieChartDirectiveModule.directive('severityPieChart',['queryFilter', fun
             d3.select("#"+id).selectAll(".outerSlice").data(_data)
                     .transition().duration(750).attrTween("d", arcTweenOuter); 	
 
-//            d3.select("#"+id).selectAll(".percent").data(_data).transition().duration(750)
-//                    .attrTween("x",textTweenX).attrTween("y",textTweenY).text(getPercent); 	
+            d3.select("#"+id).selectAll(".label").data(_data).transition().duration(750)
+                    .attrTween("x",textTweenX).attrTween("y",textTweenY).text(getPercent); 	
 	};
+        this.Donut3D = Donut3D;
+        var width = (window.innerWidth*.30), height = (window.innerHeight*.28);
+        var centerX = width*.3, centerY = height*.5, radiusX = centerX*.8, radiusY = centerY*.66, pieHeight = centerY*.2, innerRadius = .4;
         if(status === "update"){
-            Donut3D.draw("severity",data,150,150,130,100,30,0.4)
+            d3.select("#severityPieChart").select("svg").remove();
+            var svg = d3.select("#severityPieChart").append("svg").attr("width",width).attr("height",height);
+            svg.append("g").attr("id","severity")
+               .append("text").attr("transform", "translate(0,15)").text("Severity Chart");
+            Donut3D.draw("severity",data,centerX,centerY,radiusX,radiusY,pieHeight,innerRadius);
             return;
-        }
+        };
         d3.select("#severityPieChart").select("svg").remove();
-        var width = (window.innerWidth*.75), height = (window.innerHeight*.28);
-        
-        
+        var width = (window.innerWidth*.30), height = (window.innerHeight*.28);
         var svg = d3.select("#severityPieChart").append("svg").attr("width",width).attr("height",height);
         svg.append("g").attr("id","severity");
         svg.append("text").attr("transform", "translate(0,15)").text("Severity Chart");
@@ -173,11 +166,7 @@ severityPieChartDirectiveModule.directive('severityPieChart',['queryFilter', fun
                 .text("No Data Available")
           return;
         }
-        
-        this.Donut3D = Donut3D;
-        Donut3D.draw("severity",data,150,150,130,100,30,0.4)
-        //if no data is available show a message
-        
+        Donut3D.draw("severity",data,centerX,centerY,radiusX,radiusY,pieHeight,innerRadius);
     };
     function link(scope, element){
         scope.$watch('severityPieChartPromise', function(){
@@ -202,4 +191,3 @@ severityPieChartDirectiveModule.directive('severityPieChart',['queryFilter', fun
         controller: 'severityPieChartController'
     };
 }]);
-
