@@ -47,7 +47,7 @@ ultimotls.controller('loginControllerModule', ['$scope', '$http', '$q', '$base64
             console.log('*** authorization header: ' + credentials);
 
             $http.defaults.headers.common["Authorization"] = 'Basic ' + credentials;
-
+            //addd env in the header
             //promise to return
             var deferred = $q.defer();
 
