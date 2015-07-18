@@ -43,7 +43,10 @@ transactionTypeBarChartDirectiveModule.directive('transactionTypeBarChart',['que
                 .attr("height", height + margin.top + margin.bottom)
                 .append("g")
                 .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-            x.domain(data.map(function(d) { return d._id; }));
+            x.domain(//sort by descending order
+                data.sort(function(a,b){return b.count - a.count})
+                    .map(function(d){return d._id;}))
+                    .copy();
             y.domain([0, d3.max(data, function(d) { return d.count; })]);
             
             svg.append("g")
@@ -59,7 +62,7 @@ transactionTypeBarChartDirectiveModule.directive('transactionTypeBarChart',['que
                 .attr("y", 6)
                 .attr("dy", ".71em")
                 .style("text-anchor", "end")
-                .text("Frequency");
+                .text("Count");
         
             svg.selectAll(".numLabel")
               .data(data)
