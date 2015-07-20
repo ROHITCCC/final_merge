@@ -15,20 +15,21 @@ settingModule.filter('pagination', function () {
         return input.slice(start);
     };
 });
-settingModule.directive('uppercased', function() {
+settingModule.directive('uppercased', function () {
     return {
-        require: 'ngModel',        
-        link: function(scope, element, attrs, modelCtrl) {
-            modelCtrl.$parsers.push(function(input) {
+        require: 'ngModel',
+        link: function (scope, element, attrs, modelCtrl) {
+            modelCtrl.$parsers.push(function (input) {
                 return input ? input.toUpperCase() : "";
             });
-            element.css("text-transform","uppercase");
+            element.css("text-transform", "uppercase");
         }
     };
 });
 
 settingModule.controller('SettingsController', function ($scope, $http) {
-    var settingURL = TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/_logic/"+TLS_DBNAME+"/"+TLS_SETTING_COLLECTION+"/SettingService";
+    var settingURL = TLS_PROTOCOL + "://" + TLS_SERVER + ":" + TLS_PORT + "/_logic/" + TLS_DBNAME + "/" + TLS_SETTING_COLLECTION + "/SettingService";
+    var schedulerURL = TLS_PROTOCOL + "://" + TLS_SERVER + ":" + TLS_PORT + "/_logic/SchedulerService";
     $scope.settings = {};
     $scope.reports = {};
     $scope.temprep = {};
@@ -41,28 +42,29 @@ settingModule.controller('SettingsController', function ($scope, $http) {
     $scope.selectedNumberAggri = $scope.numbers[4];
     $scope.curPageAggri = 0;
     $scope.pageSizeAggri = 4;
-    
+
 //////////////////////////////////////SETTINGS//////////////////////////////////////////
     $scope.settingPromise = function () {
-        var promise = $http.get(settingURL+"?object=setting").success(function (data, status) {
+        var promise = $http.get(settingURL + "?object=setting").success(function (data, status) {
         });
         return promise;
     };
     $scope.settingPromise().then(function (data) {
         $scope.settings = data.data._embedded['rh:doc'][0];
-        if ($scope.settings.setting.envsetup === undefined){
-            $scope.settings.setting.envsetup=[{name: '', description: '', label: ''}];
+        if ($scope.settings.setting.envsetup === undefined) {
+            $scope.settings.setting.envsetup = [{name: '', description: '', label: ''}];
             $scope.environments = $scope.settings.setting.envsetup;
-        }else{
-           $scope.environments = $scope.settings.setting.envsetup; 
-        };
-        if ($scope.settings.setting.notification === undefined){
-            $scope.settings.setting.notification={immidate: {frequency: {duration: '', unit: ''}, notification: [{severity: '', email: '', application: {name: '', interfaces: ['']}}]}};
-            $scope.notifications = $scope.settings.setting.notification;
-        }else{
-          $scope.notifications = $scope.settings.setting.notification;  
+        } else {
+            $scope.environments = $scope.settings.setting.envsetup;
         }
-        
+        ;
+        if ($scope.settings.setting.notification === undefined) {
+            $scope.settings.setting.notification = {immidate: {frequency: {duration: '', unit: ''}, notification: [{severity: '', email: '', application: {name: '', interfaces: ['']}}]}};
+            $scope.notifications = $scope.settings.setting.notification;
+        } else {
+            $scope.notifications = $scope.settings.setting.notification;
+        }
+
     });
     $scope.settingPromise().catch(function () {
         $scope.newsettingcreator = 1;
@@ -108,10 +110,10 @@ settingModule.controller('SettingsController', function ($scope, $http) {
         $scope.numberOfPagesEnv = function () {
             return Math.ceil($scope.environments.length / $scope.pageSize);
         };
-        $scope.savesetting = function (){
+        $scope.savesetting = function () {
             $scope.temp = $scope.settings;
             $scope.savedata($scope.temp);
-        }; 
+        };
         $scope.numberOfPagesImmi = function () {
             $scope.pageSizeImmi = $scope.selectedNumber;
             return Math.ceil($scope.notifications.immidate.notification.length / $scope.pageSizeImmi);
@@ -119,22 +121,22 @@ settingModule.controller('SettingsController', function ($scope, $http) {
         //Env dropdown
         $scope.envDropdown = angular.copy($scope.environments);
     });
-    
+
 //////////////////////////////////////REPORT////////////////////////////////////////////    
     $scope.reportPromise = function () {
-        var reportpromise = $http.get(settingURL+"?object=report").success(function (data, status) {
+        var reportpromise = $http.get(settingURL + "?object=report").success(function (data, status) {
         });
         return reportpromise;
     };
     $scope.reportPromise().then(function (data) {
         $scope.reports = data.data._embedded['rh:doc'];
     });
-    $scope.reportPromise().catch(function (){
+    $scope.reportPromise().catch(function () {
         $scope.newreport = 1;
-        $scope.reports=[{report :{envid:'',application:'',interface1:'',errorType:'',frequency:{starttime:'', duration:'',unit:''}, email:'', template:''}}];
+        $scope.reports = [{report: {envid: '', application: '', interface1: '', errorType: '', frequency: {starttime: '', duration: '', unit: ''}, email: '', template: ''}}];
     });
-    $scope.reportPromise().finally(function (){
-      $scope.addNewAggrigated = function () {
+    $scope.reportPromise().finally(function () {
+        $scope.addNewAggrigated = function () {
             newson = {report: {envid: null, application: null, email: null, interface1: null, errorType: null, frequency: {duration: null, starttime: null, unit: null}}};
             $scope.reports.push(newson);
         };
@@ -142,9 +144,9 @@ settingModule.controller('SettingsController', function ($scope, $http) {
             if ($scope.curPageAggri >= 1) {
                 temp = ($scope.curPageAggri * $scope.pageSizeAggri) + index;
                 $scope.delrowreport(temp);
-            }else{
-              $scope.delrowreport(index);
-            }     
+            } else {
+                $scope.delrowreport(index);
+            }
         };
         $scope.numberOfPagesAggri = function () {
             $scope.pageSizeAggri = $scope.selectedNumberAggri;
@@ -159,14 +161,14 @@ settingModule.controller('SettingsController', function ($scope, $http) {
                     object.email === undefined || object.email === '' ||
                     object.interface1 === undefined || object.interface1 === '' ||
                     object.errorType === undefined || object.errorType === '') {
-                    $('#validaterror').modal();
+                $('#validaterror').modal();
             } else {
-                if (object.frequency.starttime){
-                    object.frequency.starttime=object.frequency.starttime.replace(/ /g,"T");
+                if (object.frequency.starttime) {
+                    object.frequency.starttime = object.frequency.starttime.replace(/ /g, "T");
                 }
                 $scope.temprep.report = object;
-                if ($scope.reports[index]._id !== undefined){
-                     $scope.temprep._id = {$oid:$scope.reports[index]._id.$oid};
+                if ($scope.reports[index]._id !== undefined) {
+                    $scope.temprep._id = {$oid: $scope.reports[index]._id.$oid};
                 }
                 $scope.savedata($scope.temprep, index);
             }
@@ -179,42 +181,64 @@ settingModule.controller('SettingsController', function ($scope, $http) {
                 $scope.validatereport($scope.reports[index].report, index);
             }
         };
-        
-        $scope.delrowreport =function(index){     
-            if ($scope.reports[index]._id !== undefined){
-                     $scope.temprep._id = {$oid:$scope.reports[index]._id.$oid};
-                     $scope.temprep.report = $scope.reports[index].report;
-                     $scope.delinfo($scope.temprep, index);    
-            }else{
+
+        $scope.delrowreport = function (index) {
+            if ($scope.reports[index]._id !== undefined) {
+                $scope.temprep._id = {$oid: $scope.reports[index]._id.$oid};
+                $scope.temprep.report = $scope.reports[index].report;
+                $scope.delinfo($scope.temprep, index);
+            } else {
                 $scope.reports.splice(index, 1);
             }
         };
     });
-    
+
 //////////////////////////////////////GLOBAL////////////////////////////////////////////    
     $scope.savedata = function (insert, index) {
-            var conAjax = $http.post(settingURL, insert);
-            conAjax.success(function (response) {
-                $scope.envDropdown = angular.copy($scope.environments);
-                $('#savesuccess').modal();
-                if (typeof index !== "undefined"){
-                    $scope.reports[index]._id = {$oid:response};
-                }
-            });
-            conAjax.error(function (response) {
-                $scope.envDropdown = angular.copy($scope.environments);
-                $('#savefail').modal();
-            });
-    };  
+        var conAjax = $http.post(settingURL, insert);
+        conAjax.success(function (response) {
+            $scope.envDropdown = angular.copy($scope.environments);
+            $('#savesuccess').modal();
+            if (typeof index !== "undefined") {
+                $scope.reports[index]._id = {$oid: response};
+            }
+        });
+        conAjax.error(function (response) {
+            $scope.envDropdown = angular.copy($scope.environments);
+            $('#savefail').modal();
+        });
+    };
+
+    $scope.delinfo = function (insert, remove) {
+        var conAjax = $http.delete(settingURL, {data: insert});
+        ;
+        conAjax.success(function (response) {
+            $scope.reports.splice(remove, 1);
+            $('#deletesuccess').modal();
+        });
+        conAjax.error(function (response) {
+            $('#deletefail').modal();
+        });
+    };
+
+
+    $scope.startscheduler = function () {
+        var conAjax = $http.post(schedulerURL+"?server=start", {msg:'start'});
+        conAjax.success(function (response) {
+            
+        });
+        conAjax.error(function (response) {
+           
+        });
+    };
     
-    $scope.delinfo = function (insert, remove){
-            var conAjax = $http.delete(settingURL, {data:insert});;
-            conAjax.success(function (response) {
-                $scope.reports.splice(remove, 1);
-                $('#deletesuccess').modal();
-            });
-            conAjax.error(function (response) {
-                $('#deletefail').modal();
-            });
+    $scope.stopscheduler = function () {
+        var conAjax = $http.post(schedulerURL+"?server=stop", {msg:'stop'});
+        conAjax.success(function (response) {
+            
+        });
+        conAjax.error(function (response) {
+           
+        });
     };
 });
