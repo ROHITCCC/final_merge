@@ -1,7 +1,7 @@
 var errorPieChartDirectiveModule = angular.module('errorPieChartDirectiveModule', ['errorPieChartControllerModule']);
 
 errorPieChartDirectiveModule.directive('errorPieChart',['queryFilter', function(queryFilter){
-    function updateSize(data, element){
+    function updateSize(data){
         var width = (window.innerWidth*.30), height = (window.innerHeight*.28);
         if (data === 0){ //Will append a Message for no data and return out of the function
             d3.select("#errorTypePieChart").select("svg").remove();
@@ -13,10 +13,10 @@ errorPieChartDirectiveModule.directive('errorPieChart',['queryFilter', function(
             svg.append("text").text("No Data Available");
           return;
         }
-        pieChart(data,element,"update");
+        pieChart(data,"updateChart");
         return;
     }
-    function pieChart(data, element, status){
+    function pieChart(data, status){
         var Donut3D = {};
         var color = d3.scale.category20();
         function upDateTreemap(filterCriteria){
@@ -142,7 +142,7 @@ errorPieChartDirectiveModule.directive('errorPieChart',['queryFilter', function(
         this.Donut3D = Donut3D;
         var width = (window.innerWidth*.30), height = (window.innerHeight*.28);
         var centerX = width*.3, centerY = height*.5, radiusX = centerX*.8, radiusY = centerY*.66, pieHeight = centerY*.2, innerRadius = .4;
-        if(status === "update"){
+        if(status === "updateChart"){
             d3.select("#errorTypePieChart").select("svg").remove();
             var svg = d3.select("#errorTypePieChart").append("svg").attr("width",width).attr("height",height);
             svg.append("g").attr("id","error")
@@ -168,20 +168,20 @@ errorPieChartDirectiveModule.directive('errorPieChart',['queryFilter', function(
         }
         Donut3D.draw("error",data,centerX,centerY,radiusX,radiusY,pieHeight,innerRadius);
     };
-    function link(scope, element){
+    function link(scope){
         scope.$watch('errorPieChartPromise', function(){
             scope.errorPieChartPromise.then(function(getCall){ //handles the promise\
                 if(getCall.data._size === 0){
                     scope.errorTempData = 0;
-                    pieChart(0,element);
+                    pieChart(0,"no_data");
                     return;
                 }
                 var temp = getCall.data._embedded['rh:doc'];
                 scope.errorTempData = temp;
-                pieChart(temp, element);
+                pieChart(temp,"createChart");
             });
             $(window).resize(function(){
-               updateSize(scope.errorTempData, element);
+               updateSize(scope.errorTempData);
         });
         });
     };
