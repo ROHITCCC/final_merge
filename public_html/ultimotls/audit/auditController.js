@@ -249,7 +249,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
             var getURL = TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/_logic/SearchService";
             var urlParam = "&searchtype=advanced&count&pagesize="+$scope.rowNumber.rows+"&searchdb="+dbType;
             //INITIAL QUERIES
-            var dateQuery = "", query = "", customQuery = "", nameValueQuery="", envQuery = "\"envid\":\""+queryEnv.getEnv().dbName+"\",";
+            var dateQuery = "", query = "", customQuery = "", nameValueQuery="", envQuery = "\"envid\":\""+queryEnv.getEnv().name+"\",";
             var doAdvanceSearch = false;
             //INITIALIZE FLAGS
             var advanceSearchObjectflag = checkObj($scope.advanceSearch);

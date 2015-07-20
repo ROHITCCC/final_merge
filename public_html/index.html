@@ -48,10 +48,10 @@ and open the template in the editor.
                         <div class="col-xs-4 col-sm-6">
                             <div class="pull-right">
                                 <ul class="nav pull-right">
-                                    <li class="dropdown col-sm-6"><a class="dropdown-toggle" data-toggle="dropdown" style="min-width: 130px" ng-model="envSelected">{{envSelected.description}}<b class="caret"></b></a>
+                                    <li class="dropdown col-sm-6"><a class="dropdown-toggle" data-toggle="dropdown" style="min-width: 130px" ng-model="envSelected">{{envSelected.label}}<b class="caret"></b></a>
                                         <ul class="dropdown-menu" ng-model="envOptions">
                                             <li ng-repeat="env in envOptions">
-                                                <a ng-click="setEnvironment(env)"><p>{{env.description}}</p></a>
+                                                <a ng-click="setEnvironment(env)"><p>{{env.label}}</p></a>
                                             </li>
                                         </ul>
                                     </li>

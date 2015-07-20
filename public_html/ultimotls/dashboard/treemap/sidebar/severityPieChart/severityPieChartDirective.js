@@ -1,8 +1,8 @@
 var severityPieChartDirectiveModule = angular.module('severityPieChartDirectiveModule', ['severityPieChartControllerModule']);
 
 severityPieChartDirectiveModule.directive('severityPieChart',['queryFilter', function(queryFilter){
-    function updateSize(data, element){
-        var width = (window.innerWidth*.30), height = (window.innerHeight*.28);
+    function updateSize(data){
+        var width = (window.innerWidth*.30), height = (window.innerHeight*.26);
         if (data === 0){ //Will append a Message for no data and return out of the function
             d3.select("#severityPieChart").select("svg").remove();
             var svg = d3.select("#severityPieChart").append("svg")
@@ -13,12 +13,14 @@ severityPieChartDirectiveModule.directive('severityPieChart',['queryFilter', fun
             svg.append("text").text("No Data Available");
           return;
         }
-        pieChart(data,element,"update");
+        pieChart(data,"updateChart");
         return;
     }
-    function pieChart(data, element, status){
+    function pieChart(data,status){
         var Donut3D = {};
         var color = d3.scale.category20();
+        var width = (window.innerWidth*.30), height = (window.innerHeight*.26);
+        var centerX = width*.3, centerY = height*.5, radiusX = centerX*.8, radiusY = centerY*.66, pieHeight = centerY*.2, innerRadius = .4;
         function upDateTreemap(filterCriteria){
             queryFilter.appendQuery("severity",filterCriteria.data._id);
             queryFilter.broadcast();
@@ -140,9 +142,7 @@ severityPieChartDirectiveModule.directive('severityPieChart',['queryFilter', fun
                     .attrTween("x",textTweenX).attrTween("y",textTweenY).text(getPercent); 	
 	};
         this.Donut3D = Donut3D;
-        var width = (window.innerWidth*.30), height = (window.innerHeight*.28);
-        var centerX = width*.3, centerY = height*.5, radiusX = centerX*.8, radiusY = centerY*.66, pieHeight = centerY*.2, innerRadius = .4;
-        if(status === "update"){
+        if(status === "updateChart"){
             d3.select("#severityPieChart").select("svg").remove();
             var svg = d3.select("#severityPieChart").append("svg").attr("width",width).attr("height",height);
             svg.append("g").attr("id","severity")
@@ -150,12 +150,7 @@ severityPieChartDirectiveModule.directive('severityPieChart',['queryFilter', fun
             Donut3D.draw("severity",data,centerX,centerY,radiusX,radiusY,pieHeight,innerRadius);
             return;
         };
-        d3.select("#severityPieChart").select("svg").remove();
-        var width = (window.innerWidth*.30), height = (window.innerHeight*.28);
-        var svg = d3.select("#severityPieChart").append("svg").attr("width",width).attr("height",height);
-        svg.append("g").attr("id","severity");
-        svg.append("text").attr("transform", "translate(0,15)").text("Severity Chart");
-        if (data === 0){ //Will append a Message for no data and return out of the function
+        if (status === "no_data"){ //Will append a Message for no data and return out of the function
             d3.select("#severityPieChart").select("svg").remove();
             var svg = d3.select("#severityPieChart").append("svg")
                 .attr("width", width)
@@ -165,24 +160,31 @@ severityPieChartDirectiveModule.directive('severityPieChart',['queryFilter', fun
           svg.append("text")
                 .text("No Data Available")
           return;
-        }
-        Donut3D.draw("severity",data,centerX,centerY,radiusX,radiusY,pieHeight,innerRadius);
+        };
+        if (status === "createChart"){
+            d3.select("#severityPieChart").select("svg").remove();
+            var svg = d3.select("#severityPieChart").append("svg").attr("width",width).attr("height",height);
+            svg.append("g").attr("id","severity");
+            svg.append("text").attr("transform", "translate(0,15)").text("Severity Chart");
+            Donut3D.draw("severity",data,centerX,centerY,radiusX,radiusY,pieHeight,innerRadius);
+            return;
+        };
     };
-    function link(scope, element){
+    function link(scope){
         scope.$watch('severityPieChartPromise', function(){
             scope.severityPieChartPromise.then(function(getCall){ //handles the promise\
                 if(getCall.data._size === 0){
                     scope.severityTempData = 0;
-                    pieChart(0,element);
+                    pieChart(0,"no_data");
                     return;
                 }
                 var temp = getCall.data._embedded['rh:doc'];
                 scope.severityTempData = temp;
-                pieChart(temp, element);
+                pieChart(temp, "createChart");
             });
             $(window).resize(function(){
-               updateSize(scope.severityTempData, element);
-        });
+               updateSize(scope.severityTempData);
+            });
         });
     };
     return{

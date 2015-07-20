@@ -12,7 +12,7 @@ transactionTypeBarChartControllerModule.controller('transactionTypeBarChartContr
     $scope.treemapSaver = treemapSaver;
     var dataQuery = "[{\"$match\":{\"$and\":[{\"timestamp\":{\"$gte\":{\"$date\":\""+$scope.fromDate+"\"},\"$lt\":{\"$date\":\""+
             $scope.toDate+"\"}}},{\"$and\":[{\"transactionType\":{\"$ne\":null}}, {\"transactionType\":{\"$exists\":true,\"$ne\":\"\"}},{\"envid\":\""+
-            $scope.env.dbName+"\"}]}]}},{$group:{_id:\"$transactionType\", count:{$sum:1}}}]";  
+            $scope.env.name+"\"}]}]}},{$group:{_id:\"$transactionType\", count:{$sum:1}}}]";  
     $scope.transactionTypeBarChartPromise = mongoAggregateService.callHttp(dataQuery);
     //need a service to pass timeChange
     $scope.$on("timeChangeBroadcast", function(){//Listens for Time Change
@@ -30,7 +30,7 @@ transactionTypeBarChartControllerModule.controller('transactionTypeBarChartContr
     $scope.transactionTypeBarChartData = function(fromDate, toDate){
         var dataQuery = "[{\"$match\":{\"$and\":[{\"timestamp\":{\"$gte\":{\"$date\":\""+fromDate+"\"},\"$lt\":{\"$date\":\""+
             toDate+"\"}}},{\"$and\":[{\"transactionType\":{\"$ne\":null}}, {\"transactionType\":{\"$exists\":true,\"$ne\":\"\"}},{\"envid\":\""+
-            $scope.env.dbName+"\"}]}]}},{$group:{_id:\"$transactionType\", count:{$sum:1}}}]";  
+            $scope.env.name+"\"}]}]}},{$group:{_id:\"$transactionType\", count:{$sum:1}}}]";  
         $scope.transactionTypeBarChartPromise = mongoAggregateService.callHttp(dataQuery);
     };
 }]);

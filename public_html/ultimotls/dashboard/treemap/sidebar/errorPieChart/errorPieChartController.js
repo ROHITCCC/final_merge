@@ -12,7 +12,7 @@ errorPieChartControllerModule.controller('errorPieChartController', ['$scope', '
     $scope.treemapSaver = treemapSaver;
     var dataQuery = "[{\"$match\":{\"$and\":[{\"timestamp\":{\"$gte\":{\"$date\":\""+$scope.fromDate+"\"},\"$lt\":{\"$date\":\""+
             $scope.toDate+"\"}}},{\"$and\":[{\"errorType\":{\"$ne\":null}}, {\"errorType\":{\"$exists\":true,\"$ne\":\"\"}},{\"envid\":\""+
-            $scope.env.dbName+"\"}]}]}},{$group:{_id:\"$errorType\", count:{$sum:1}}}]";  
+            $scope.env.name+"\"}]}]}},{$group:{_id:\"$errorType\", count:{$sum:1}}}]";  
     $scope.errorPieChartPromise = mongoAggregateService.callHttp(dataQuery);
     //need a service to pass timeChange
     $scope.$on("timeChangeBroadcast", function(){//Listens for Time Change
@@ -30,7 +30,7 @@ errorPieChartControllerModule.controller('errorPieChartController', ['$scope', '
     $scope.errorPieChartData = function(fromDate, toDate){
         var dataQuery = "[{\"$match\":{\"$and\":[{\"timestamp\":{\"$gte\":{\"$date\":\""+fromDate+"\"},\"$lt\":{\"$date\":\""+
             toDate+"\"}}},{\"$and\":[{\"errorType\":{\"$ne\":null}}, {\"errorType\":{\"$exists\":true,\"$ne\":\"\"}},{\"envid\":\""+
-            $scope.env.dbName+"\"}]}]}},{$group:{_id:\"$errorType\", count:{$sum:1}}}]";  
+            $scope.env.name+"\"}]}]}},{$group:{_id:\"$errorType\", count:{$sum:1}}}]";  
         $scope.errorPieChartPromise = mongoAggregateService.callHttp(dataQuery);
     };
 }]);
