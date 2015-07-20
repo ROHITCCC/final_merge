@@ -90,8 +90,10 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
             if($scope.customFieldLength - 1 === 0){
                 return false;
             }
+            //var currentCustomIndex = index + ($scope.curCustomPage*2);  //for pagination
+            $scope.customField.splice(index,1);
             $scope.customFieldLength = $scope.customFieldLength - 1;
-            $scope.customField.pop();
+            
         };
         $scope.numberOfPagesCustom = function () {
             return Math.ceil($scope.customFieldLength / $scope.pageSize);
@@ -130,8 +132,9 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
             if($scope.nameValueFieldLength - 1 === 0){
                 return false;
             }
+            //var curNameValueIndex = index + ($scope.curNameValuePage*2)   //for pagination
+            $scope.nameValueField.splice(index,1);
             $scope.nameValueFieldLength = $scope.nameValueFieldLength - 1;
-            $scope.nameValueField.pop();
         };
         $scope.numberOfPagesNameValue = function () {
             return Math.ceil($scope.nameValueFieldLength / $scope.pageSize);
