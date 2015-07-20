@@ -160,7 +160,7 @@ severityPieChartDirectiveModule.directive('severityPieChart',['queryFilter', fun
           svg.append("text")
                 .text("No Data Available")
           return;
-        }
+        };
         if (status === "createChart"){
             d3.select("#severityPieChart").select("svg").remove();
             var svg = d3.select("#severityPieChart").append("svg").attr("width",width).attr("height",height);
@@ -168,8 +168,7 @@ severityPieChartDirectiveModule.directive('severityPieChart',['queryFilter', fun
             svg.append("text").attr("transform", "translate(0,15)").text("Severity Chart");
             Donut3D.draw("severity",data,centerX,centerY,radiusX,radiusY,pieHeight,innerRadius);
             return;
-        }
-        
+        };
     };
     function link(scope){
         scope.$watch('severityPieChartPromise', function(){
