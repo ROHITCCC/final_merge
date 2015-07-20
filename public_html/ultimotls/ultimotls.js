@@ -123,19 +123,25 @@ ultimotls.controller('loginControllerModule', ['$scope', '$http', '$q', '$base64
             
             
         };
-        
-        $scope.envOptions = [{name:"Prod", description: "Production", dbName:"PROD"}, 
-                         {name:"QA", description:"QA", dbName:"QA"}, 
-                         {name:"Dev", description: "Developement", dbName:"DEV"}];
-        $scope.envSelected = $scope.envOptions[0]; 
-        $scope.env = queryEnv.getEnv();
-        if(typeof $scope.treemapSaver.env !== 'undefined'){ //checks whether or not the env value holder in the service exists yet
-            for(var i =0; i< $scope.envOptions.length; i++){
-                if ($scope.treemapSaver.env.name === $scope.envOptions[i].name){
-                    $scope.envSelected = $scope.envOptions[i]; 
-                }
-            }  
-        };
+        $http.get(TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/_logic/"+TLS_DBNAME+"/"+TLS_SETTING_COLLECTION+"/SettingService?object=setting.envsetup",{timeout:TLS_SERVER_TIMEOUT})
+            .success(function(data){
+                var envOptionsData = data._embedded['rh:doc'][0].envsetup;
+                $scope.envOptions = envOptionsData;
+                $scope.envSelected = $scope.envOptions[0]; 
+                $scope.env = queryEnv.getEnv();
+                if(typeof $scope.treemapSaver.env !== 'undefined'){ //checks whether or not the env value holder in the service exists yet
+                    for(var i =0; i< $scope.envOptions.length; i++){
+                        if ($scope.treemapSaver.env.name === $scope.envOptions[i].label){
+                            $scope.envSelected = $scope.envOptions[i]; 
+                        }
+                    };  
+                };
+            });
+            
+            
+//        $scope.envOptions = [{name:"Prod", description: "Production", dbName:"PROD"}, 
+//                         {name:"QA", description:"QA", dbName:"QA"}, 
+//                         {name:"Dev", description: "Developement", dbName:"DEV"}];
         $scope.setEnvironment = function(env){//Set the environment when changed
             $scope.envSelected = env
             $scope.treemapSaver.env = env
@@ -325,13 +331,13 @@ ultimotls.factory("mongoAggregateService", function ($http) {
 
 ultimotls.service("queryEnv", function($rootScope){ //getter and setter for environment 
     var envid = {}
-    envid.name = "Prod", envid.dbName = "PROD"
+    envid.label = "Prod", envid.name = "PROD"
     var environment = {};
     
     environment.setEnv = function(env){
         if(env){
+            envid.label = env.label;
             envid.name = env.name;
-            envid.dbName = env.dbName
         }
         return envid;
     };
@@ -388,10 +394,8 @@ ultimotls.service("auditSearch",['$http','queryEnv', function ($http, queryEnv) 
     var env = queryEnv.getEnv();
     audits.doSearch = function (searchCriteria, rowNumber, dbType) {
 //    textSearch and jsonSearch WILL BE SWAPPED WITH THESE
-    var textSearch = "{\"$and\":[{\"envid\":\""+env.dbName+"\"},{$text:{$search:'" + searchCriteria + "'}}]}&searchtype=basic&searchdb="+dbType+"&count&pagesize=" + rowNumber.rows;
-    var jsonSearch = "{\"$and\":[{\"envid\":\""+env.dbName+"\"},"+searchCriteria + "]}&searchtype=basic&searchdb="+dbType+"&count&pagesize=" + rowNumber.rows;
-//        var textSearch = "{\"$and\":[{\"envid\":\""+env.dbName+"\"},{$text:{$search:'" + searchCriteria + "'}}]}&count&pagesize=" + rowNumber.rows;
-//        var jsonSearch = "{\"$and\":[{\"envid\":\""+env.dbName+"\"},"+searchCriteria + "]}&count&pagesize=" + rowNumber.rows;
+    var textSearch = "{\"$and\":[{\"envid\":\""+env.name+"\"},{$text:{$search:'" + searchCriteria + "'}}]}&searchtype=basic&searchdb="+dbType+"&count&pagesize=" + rowNumber.rows;
+    var jsonSearch = "{\"$and\":[{\"envid\":\""+env.name+"\"},"+searchCriteria + "]}&searchtype=basic&searchdb="+dbType+"&count&pagesize=" + rowNumber.rows;
         var searchPromise = {};
         if (/:/.test(searchCriteria)) {
                 var jsonUrl = postUrl + jsonSearch;

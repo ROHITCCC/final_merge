@@ -264,6 +264,9 @@ text{
 .columnDiv .row, .columnDiv svg{
     width: 100%;
 }
+#severityPieChart text, #errorTypePieChart text, .columnDiv svg path, .columnDiv rect{
+    cursor: pointer
+}
 path .slice{
     stroke-width: 2px;
 }
