@@ -1,32 +1,28 @@
 var errorPieChartDirectiveModule = angular.module('errorPieChartDirectiveModule', ['errorPieChartControllerModule']);
 
 errorPieChartDirectiveModule.directive('errorPieChart',['queryFilter', function(queryFilter){
-    function pieChart(data, element){
-        var ele = element[0];
-        var width = (window.innerWidth*.75), height = (window.innerHeight*.28);
-        var color = d3.scale.category20();
-        d3.select(ele).select("svg").remove();
-        var svg = d3.select(ele).append("svg").attr("width",width).attr("height",height);
-        svg.append("g").attr("id","errorType");
-        svg.append("text").attr("transform", "translate(0,15)").text("Error Type Chart");
+    function updateSize(data, element){
+        var width = (window.innerWidth*.30), height = (window.innerHeight*.28);
         if (data === 0){ //Will append a Message for no data and return out of the function
-            d3.select(ele).select("svg").remove();
-            var svg = d3.select(ele).append("svg")
+            d3.select("#errorTypePieChart").select("svg").remove();
+            var svg = d3.select("#errorTypePieChart").append("svg")
                 .attr("width", width)
                 .attr("height", height)
                 .append("g")
                 .attr("transform", "translate(" + width*.13 + "," + height*.5 + ")");
-            svg.append("text")
-                .text("No Data Available")
-            return;
+            svg.append("text").text("No Data Available");
+          return;
         }
-        
+        pieChart(data,element,"update");
+        return;
+    }
+    function pieChart(data, element, status){
         var Donut3D = {};
+        var color = d3.scale.category20();
         function upDateTreemap(filterCriteria){
             queryFilter.appendQuery("errorType",filterCriteria.data._id);
             queryFilter.broadcast();
-        }
-        //randomData();
+        };
         function pieTop(d, rx, ry, ir){
             if(d.endAngle - d.startAngle == 0 ) return "M 0 0";
             var sx = rx*Math.cos(d.startAngle),
@@ -38,7 +34,7 @@ errorPieChartDirectiveModule.directive('errorPieChart',['queryFilter', function(
             ret.push("M",sx,sy,"A",rx,ry,"0",(d.endAngle-d.startAngle > Math.PI? 1: 0),"1",ex,ey,"L",ir*ex,ir*ey);
             ret.push("A",ir*rx,ir*ry,"0",(d.endAngle-d.startAngle > Math.PI? 1: 0), "0",ir*sx,ir*sy,"z");
             return ret.join(" ");
-        }
+        };
         function pieOuter(d, rx, ry, h ){
             var startAngle = (d.startAngle > Math.PI ? Math.PI : d.startAngle);
             var endAngle = (d.endAngle > Math.PI ? Math.PI : d.endAngle);
@@ -51,7 +47,7 @@ errorPieChartDirectiveModule.directive('errorPieChart',['queryFilter', function(
             var ret =[];
             ret.push("M",sx,h+sy,"A",rx,ry,"0 0 1",ex,h+ey,"L",ex,ey,"A",rx,ry,"0 0 0",sx,sy,"z");
             return ret.join(" ");
-	}
+	};
         function pieInner(d, rx, ry, h, ir ){
             var startAngle = (d.startAngle < Math.PI ? Math.PI : d.startAngle);
             var endAngle = (d.endAngle < Math.PI ? Math.PI : d.endAngle);
@@ -64,7 +60,7 @@ errorPieChartDirectiveModule.directive('errorPieChart',['queryFilter', function(
             var ret =[];
             ret.push("M",sx, sy,"A",ir*rx,ir*ry,"0 0 1",ex,ey, "L",ex,h+ey,"A",ir*rx, ir*ry,"0 0 0",sx,h+sy,"z");
             return ret.join(" ");
-	}
+	};
         Donut3D.draw=function(id, data, x /*center x*/, y/*center y*/, 
 			rx/*radius x*/, ry/*radius y*/, h/*height*/, ir/*inner radius*/){
 	
@@ -95,12 +91,13 @@ errorPieChartDirectiveModule.directive('errorPieChart',['queryFilter', function(
                     .each(function(d){this._current=d;});
 
 		slices.selectAll(".label").data(_data).enter().append("text").attr("class", "label")
-                    .attr("x",function(d){ return .7*rx*Math.cos(0.5*(d.startAngle+d.endAngle));})
-                    .attr("y",function(d){ return 0.6*ry*Math.sin(0.5*(d.startAngle+d.endAngle));})
-                    .style("fill", "white")
-                    .style("font-size", "12px")
-                    .text(function(d){return d.data._id}).each(function(d){this._current=d;});			
-	}
+			.attr("x",function(d){ return .7*rx*Math.cos(0.5*(d.startAngle+d.endAngle));})
+			.attr("y",function(d){ return 0.6*ry*Math.sin(0.5*(d.startAngle+d.endAngle));})
+                        .on("click", function(d){upDateTreemap(d);})
+                        .style("fill", "white")
+                        .style("font-size", "12px")
+			.text(function(d){return d.data._id}).each(function(d){this._current=d;});				
+	};
         Donut3D.transition = function(id, data, rx, ry, h, ir){
             function arcTweenInner(a) {
                 var i = d3.interpolate(this._current, a);
@@ -139,36 +136,53 @@ errorPieChartDirectiveModule.directive('errorPieChart',['queryFilter', function(
             d3.select("#"+id).selectAll(".outerSlice").data(_data)
                     .transition().duration(750).attrTween("d", arcTweenOuter); 	
 
-//            d3.select(ele).selectAll(".percent").data(_data).transition().duration(750)
-//                    .attrTween("x",textTweenX).attrTween("y",textTweenY).text(getPercent); 	
+            d3.select("#"+id).selectAll(".label").data(_data).transition().duration(750)
+                    .attrTween("x",textTweenX).attrTween("y",textTweenY).text(getPercent); 	
 	};
         this.Donut3D = Donut3D;
-        Donut3D.draw("errorType",data,150,150,130,100,30,0.4)
-        //if no data is available show a message
-        if (data === 0){
-            console.log("no data")
-            d3.select(ele).select("svg").remove();
-            d3.select(ele).select("#tooltip").remove();
-          var svg = d3.select(ele).append("svg")
+        var width = (window.innerWidth*.30), height = (window.innerHeight*.28);
+        var centerX = width*.3, centerY = height*.5, radiusX = centerX*.8, radiusY = centerY*.66, pieHeight = centerY*.2, innerRadius = .4;
+        if(status === "update"){
+            d3.select("#errorTypePieChart").select("svg").remove();
+            var svg = d3.select("#errorTypePieChart").append("svg").attr("width",width).attr("height",height);
+            svg.append("g").attr("id","error")
+               .append("text").attr("transform", "translate(0,15)").text("Error Type Chart");
+            Donut3D.draw("error",data,centerX,centerY,radiusX,radiusY,pieHeight,innerRadius);
+            return;
+        };
+        d3.select("#errorTypePieChart").select("svg").remove();
+        var width = (window.innerWidth*.30), height = (window.innerHeight*.28);
+        var svg = d3.select("#errorTypePieChart").append("svg").attr("width",width).attr("height",height);
+        svg.append("g").attr("id","error");
+        svg.append("text").attr("transform", "translate(0,15)").text("Error Type Chart");
+        if (data === 0){ //Will append a Message for no data and return out of the function
+            d3.select("#errorTypePieChart").select("svg").remove();
+            var svg = d3.select("#errorTypePieChart").append("svg")
                 .attr("width", width)
                 .attr("height", height)
               .append("g")
-                .attr("transform", "translate(" + (width-60)/2 + "," + height/2 + ")");
+                .attr("transform", "translate(" + width*.13 + "," + height*.5 + ")");
           svg.append("text")
                 .text("No Data Available")
           return;
         }
+        Donut3D.draw("error",data,centerX,centerY,radiusX,radiusY,pieHeight,innerRadius);
     };
     function link(scope, element){
         scope.$watch('errorPieChartPromise', function(){
             scope.errorPieChartPromise.then(function(getCall){ //handles the promise\
                 if(getCall.data._size === 0){
+                    scope.errorTempData = 0;
                     pieChart(0,element);
                     return;
                 }
                 var temp = getCall.data._embedded['rh:doc'];
+                scope.errorTempData = temp;
                 pieChart(temp, element);
             });
+            $(window).resize(function(){
+               updateSize(scope.errorTempData, element);
+        });
         });
     };
     return{
