@@ -152,7 +152,7 @@ errorPieChartDirectiveModule.directive('errorPieChart',['queryFilter', function(
           svg.append("text")
                 .text("No Data Available")
           return;
-        }
+        };
         if(status === "updateChart"){
             d3.select("#errorTypePieChart").select("svg").remove();
             var svg = d3.select("#errorTypePieChart").append("svg").attr("width",width).attr("height",height);
@@ -168,8 +168,7 @@ errorPieChartDirectiveModule.directive('errorPieChart',['queryFilter', function(
             svg.append("text").attr("transform", "translate(0,15)").text("Error Type Chart");
             Donut3D.draw("error",data,centerX,centerY,radiusX,radiusY,pieHeight,innerRadius);
             return;
-        }
-        
+        };
     };
     function link(scope){
         scope.$watch('errorPieChartPromise', function(){
@@ -185,7 +184,7 @@ errorPieChartDirectiveModule.directive('errorPieChart',['queryFilter', function(
             });
             $(window).resize(function(){
                updateSize(scope.errorTempData);
-        });
+            });
         });
     };
     return{
