@@ -2,7 +2,7 @@ var errorPieChartDirectiveModule = angular.module('errorPieChartDirectiveModule'
 
 errorPieChartDirectiveModule.directive('errorPieChart',['queryFilter', function(queryFilter){
     function updateSize(data){
-        var width = (window.innerWidth*.30), height = (window.innerHeight*.28);
+        var width = (window.innerWidth*.30), height = (window.innerHeight*.26);
         if (data === 0){ //Will append a Message for no data and return out of the function
             d3.select("#errorTypePieChart").select("svg").remove();
             var svg = d3.select("#errorTypePieChart").append("svg")
@@ -140,22 +140,9 @@ errorPieChartDirectiveModule.directive('errorPieChart',['queryFilter', function(
                     .attrTween("x",textTweenX).attrTween("y",textTweenY).text(getPercent); 	
 	};
         this.Donut3D = Donut3D;
-        var width = (window.innerWidth*.30), height = (window.innerHeight*.28);
+        var width = (window.innerWidth*.30), height = (window.innerHeight*.26);
         var centerX = width*.3, centerY = height*.5, radiusX = centerX*.8, radiusY = centerY*.66, pieHeight = centerY*.2, innerRadius = .4;
-        if(status === "updateChart"){
-            d3.select("#errorTypePieChart").select("svg").remove();
-            var svg = d3.select("#errorTypePieChart").append("svg").attr("width",width).attr("height",height);
-            svg.append("g").attr("id","error")
-               .append("text").attr("transform", "translate(0,15)").text("Error Type Chart");
-            Donut3D.draw("error",data,centerX,centerY,radiusX,radiusY,pieHeight,innerRadius);
-            return;
-        };
-        d3.select("#errorTypePieChart").select("svg").remove();
-        var width = (window.innerWidth*.30), height = (window.innerHeight*.28);
-        var svg = d3.select("#errorTypePieChart").append("svg").attr("width",width).attr("height",height);
-        svg.append("g").attr("id","error");
-        svg.append("text").attr("transform", "translate(0,15)").text("Error Type Chart");
-        if (data === 0){ //Will append a Message for no data and return out of the function
+        if (status === "no_data"){ //Will append a Message for no data and return out of the function
             d3.select("#errorTypePieChart").select("svg").remove();
             var svg = d3.select("#errorTypePieChart").append("svg")
                 .attr("width", width)
@@ -166,7 +153,23 @@ errorPieChartDirectiveModule.directive('errorPieChart',['queryFilter', function(
                 .text("No Data Available")
           return;
         }
-        Donut3D.draw("error",data,centerX,centerY,radiusX,radiusY,pieHeight,innerRadius);
+        if(status === "updateChart"){
+            d3.select("#errorTypePieChart").select("svg").remove();
+            var svg = d3.select("#errorTypePieChart").append("svg").attr("width",width).attr("height",height);
+            svg.append("g").attr("id","error")
+               .append("text").attr("transform", "translate(0,15)").text("Error Type Chart");
+            Donut3D.draw("error",data,centerX,centerY,radiusX,radiusY,pieHeight,innerRadius);
+            return;
+        };
+        if(status === "createChart"){
+            d3.select("#errorTypePieChart").select("svg").remove();
+            var svg = d3.select("#errorTypePieChart").append("svg").attr("width",width).attr("height",height);
+            svg.append("g").attr("id","error");
+            svg.append("text").attr("transform", "translate(0,15)").text("Error Type Chart");
+            Donut3D.draw("error",data,centerX,centerY,radiusX,radiusY,pieHeight,innerRadius);
+            return;
+        }
+        
     };
     function link(scope){
         scope.$watch('errorPieChartPromise', function(){
