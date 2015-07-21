@@ -568,6 +568,8 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                         .selectAll("div").selectAll("#treemapSVG");
                 
                     scope.treemapSaver.zoomClicked = undefined;
+                    d3.selectAll(".brush").call(brushStorage[scope.treemapSaver.brushCounter].clear());
+                    d3.selectAll("g.brush").remove();
                     d3.selectAll("g.cell").select("text").remove();
                     d3.select("#zoomOut").transition().duration(750).style("opacity",0);
                     d3.select("#zoomIn").transition().duration(750).style("opacity",0);

@@ -17,8 +17,8 @@ auditControllerModule.filter('pagination', function () {
     };
 });
 
-auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'auditSearch', 'initPromise', 'queryEnv',
-    function ($scope, $log, $http, auditSearch, initPromise, queryEnv) {
+auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'auditSearch', 'initPromise', 'queryEnv', 'treemapSaver',
+    function ($scope, $log, $http, auditSearch, initPromise, queryEnv, treemapSaver) {
         //Initialize scope data 
         $scope.rowsOptions = [{rows: 5}, {rows: 10}, {rows: 25}, {rows: 50}, {rows: 100}];
         $scope.rowNumber = $scope.rowsOptions[2];
@@ -29,6 +29,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
         //For Custom Field
         $scope.curCustomPage = 0, $scope.curNameValuePage = 0;
         $scope.pageSize = 2;
+        $scope.treemapSaver = treemapSaver;
         //Toggle Feature to close Custom or Name Value fields
         $(document).ready(function(){
             $("#collapseCustom").click(function(){
@@ -72,6 +73,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
             $scope.inputError = "";
             searchPromise.then(function (response) {
                 $scope.data = response.data;
+                $scope.treemapSaver.auditData = $scope.data;
             });
 
         };
@@ -393,6 +395,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                     $scope.relatedTransactionData = response._embedded['rh:doc'];
                     if($scope.relatedTransactionData.length === 1){//need a service to check for duplicate values and single returns
                         console.log($scope.relatedTransactionData._id.$oid);
+                        
                     }
             })
         }
@@ -402,6 +405,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
         };
         $scope.callPayload = function(data){ //from Database Page datalocation makes a call
             var dataLocationId = data;
+            console.log(dataLocationId);
             var payloadUrl = TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/_logic/"+TLS_DBNAME+"/"+TLS_PAYLOAD_COLLECTION+"/PayloadService?id=";
             $http.get(payloadUrl+dataLocationId, {timeout:TLS_SERVER_TIMEOUT})
                 .success(function (response){ 
@@ -410,29 +414,130 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
         };
         $scope.restReplay = {};
         var replayPostUrl = TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/_logic/"+TLS_DBNAME+"/"+TLS_AUDIT_COLLECTION+"/replay";
+        var replayPostUrlBatch = TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/"+TLS_DBNAME+"/"+TLS_BATCH_REPLAY_COLLECTION;
         $scope.runRestService = function(){//only takes JSON files not 
-            var restPayload = "type=REST~, endpoint="+$scope.restReplay.endpointUrl+"~, method="+
+            var checkRest = $scope.checkChecked();
+            if(!checkRest){
+                var restPayload = "type=REST~, endpoint="+$scope.restReplay.endpointUrl+"~, method="+
                     $scope.restReplay.currentMethod.types+"~, content-type="+$scope.restReplay.contentType+"~, payload="+$scope.payloadPageData.payload+
                     "~, header=['type'='"+$scope.restReplay.header.type+"', 'value'='"+$scope.restReplay.header.value+"']";
             $http.post(replayPostUrl, restPayload, {timeout:TLS_SERVER_TIMEOUT})
-                    .success(function(d){console.log(d)});
+                    .success(function(d){console.log(d);});
+            }else{
+                var batchVals = $scope.batchValues();
+                var auditIDs = $scope.pullAuditIDs(batchVals[2]);
+                var restPayload = '"type": "REST", "endpoint": "'+$scope.restReplay.endpointUrl+'", '+
+                        '"method": "'+$scope.restReplay.currentMethod.types+'","contentType": "'+$scope.restReplay.contentType+'",'+
+                        '"headers":{ "'+$scope.restReplay.header.type+'":"'+$scope.restReplay.header.value+'"}';
+
+                var batchPayload = '{  "replaySavedTimestamp":"'+batchVals[0]+'",  "replayedBy":"'+batchVals[1]+'", '+
+                        '"batchProcessedTimestamp":"", "replayDestinationInfo": { '+restPayload+' },'+
+                                    '"auditID": ['+auditIDs+']}';
+                console.log(batchPayload);
+                $http.post(replayPostUrlBatch, batchPayload, {timeout:TLS_SERVER_TIMEOUT})
+                        .success(function(d){console.log(d);});
+            }
+            
         };
         $scope.fileReplay = {};
         $scope.runFileService = function(){ //how do i set a file location
-            var filePayload = "type=FILE~, file-location="+$scope.fileReplay.location+"~, payload="+$scope.payloadPageData.payload+"";
+            var checkRest = $scope.checkChecked();
+            if(!checkRest){
+                var filePayload = "type=FILE~, file-location="+$scope.fileReplay.location+"~, payload="+$scope.payloadPageData.payload+"";
+                $http.post(replayPostUrl, filePayload, {timeout:TLS_SERVER_TIMEOUT})
+                    .success(function(d){console.log(d);});
+            }else{
+                var batchVals = $scope.batchValues();
+                var auditIDs = $scope.pullAuditIDs(batchVals[2]);
+                var filePayloadBatch = "type=FILE~, file-location="+$scope.fileReplay.location+"~, payload="+$scope.payloadPageData.payload+"";
+                
+                var batchPayload = '{  "replaySavedTimestamp":"'+batchVals[0]+'",  "replayedBy":"'+batchVals[1]+'", '+
+                        '"batchProcessedTimestamp":"", "replayDestinationInfo": { '+filePayloadBatch+' },'+
+                                    '"auditID": ['+auditIDs+']}';
+                $http.post(replayPostUrlBatch, batchPayload, {timeout:TLS_SERVER_TIMEOUT})
+                        .success(function(d){console.log(d);});
+            }
+            
         };
         $scope.webServiceReplay = {};
         $scope.runWebService = function(){
-            var webServicePayload = "type=WS~, wsdl="+$scope.webServiceReplay.wsdl+"~, operation="+$scope.webServiceReplay.operation+
+            var checkRest = $scope.checkChecked();
+            if(!checkRest){
+                var webServicePayload = "type=WS~, wsdl="+$scope.webServiceReplay.wsdl+"~, operation="+$scope.webServiceReplay.operation+
                     "~,  soapaction="+$scope.webServiceReplay.soapAction+"~, binding="+$scope.webServiceReplay.binding+"~, payload="+
                     $scope.payloadPageData.payload;
-            $http.post(replayPostUrl, webServicePayload, {timeout:TLS_SERVER_TIMEOUT})
-                .success(function(d){console.log(d)});
+                $http.post(replayPostUrl, webServicePayload, {timeout:TLS_SERVER_TIMEOUT})
+                    .success(function(d){console.log(d);});
+            }else{
+                var batchVals = $scope.batchValues();
+                var auditIDs = $scope.pullAuditIDs(batchVals[2]);
+                var webServicePayloadBatch = "type=WS~, wsdl="+$scope.webServiceReplay.wsdl+"~, operation="+$scope.webServiceReplay.operation+
+                    "~,  soapaction="+$scope.webServiceReplay.soapAction+"~, binding="+$scope.webServiceReplay.binding+"~, payload="+
+                    $scope.payloadPageData.payload;
+                
+                var batchPayload = '{  "replaySavedTimestamp":"'+batchVals[0]+'",  "replayedBy":"'+batchVals[1]+'", '+
+                        '"batchProcessedTimestamp":"", "replayDestinationInfo": { '+webServicePayloadBatch+' },'+
+                                    '"auditID": ['+auditIDs+']}';
+                $http.post(replayPostUrlBatch, batchPayload, {timeout:TLS_SERVER_TIMEOUT})
+                        .success(function(d){console.log(d);});
+            }
+            
         };
         $scope.changeReplay = function(){
             $("#replayPage").css("top","15%").addClass("col-sm-offset-3").removeClass("col-sm-offset-6");
         };
+        $scope.checkChecked = function(){
+            var isChecked = false;
+            var checkboxes = document.getElementsByName('auditCheckbox');
+            var auditData = $scope.treemapSaver.auditData._embedded['rh:doc'];
+            for(var i=0, n=checkboxes.length;i<n;i++) {
+                if(checkboxes[i].checked){
+                    isChecked = true;
+                }
+            }
+            return isChecked;
+        };
+        $scope.batchValues = function(){
+            var timestamp = new Date();
+            var username = treemapSaver.nameSaver;
+            var checkboxes = document.getElementsByName('auditCheckbox');
+            var auditIDs = [];
+            var auditData = $scope.treemapSaver.auditData._embedded['rh:doc'];
+            
+            for(var i=0, n=checkboxes.length;i<n;i++) {
+                if(checkboxes[i].checked){
+                    console.log(auditData[i]._id.$oid);
+                    auditIDs.push(auditData[i]._id.$oid);
+                }
+            }
+            console.log(auditIDs);
+            var batchVals = [timestamp, username, auditIDs];
+            return batchVals;
+        };
+        $scope.pullAuditIDs = function(batchVals){
+            var auditIDs = null;
+            for(var z = 0; z < batchVals.length; z++){
+                if(z > 0){
+                    auditIDs += ',"'+batchVals[z]+'"';
+                }else{
+                    auditIDs = '"'+batchVals[z]+'"';
+                }
+            }
+            return auditIDs;
+        };
         $scope.changeReplayBack = function(){
             $("#replayPage").css("top","50%").addClass("col-sm-offset-6").removeClass("col-sm-offset-3");
+        };
+        $scope.checkAll = function(source){
+            var allbox = document.getElementById('replaySelectAll');
+            var checkboxes = document.getElementsByName('auditCheckbox');
+            for(var i=0, n=checkboxes.length;i<n;i++) {
+                if(allbox.checked){
+                    checkboxes[i].checked = true;
+                }else{
+                    checkboxes[i].checked = false;
+                }
+              
+            }
         };
     }]);
