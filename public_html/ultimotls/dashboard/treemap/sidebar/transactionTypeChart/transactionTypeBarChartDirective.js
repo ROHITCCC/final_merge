@@ -29,15 +29,21 @@ transactionTypeBarChartDirectiveModule.directive('transactionTypeBarChart',['que
         var color = d3.scale.category20();
         var barChart = {};
         function upDateTreemap(filterCriteria){
+            console.log(filterCriteria)
             queryFilter.appendQuery("transactionType",filterCriteria._id);
             queryFilter.broadcast();
         };
         barChart.createChart = function(data){
             var x = d3.scale.ordinal().rangeRoundBands([0, width*.95], .1);
-            var y = d3.scale.linear().range([height*.8, 0]);
+            var y = d3.scale.linear().range([height*.82,0]);
             var xAxis = d3.svg.axis()
                 .scale(x)
                 .orient("bottom");
+            x.domain(//sort by descending order
+                data.sort(function(a,b){return b.count - a.count})
+                    .map(function(d){return d._id;}))
+                    .copy();
+            y.domain([0,d3.max(data, function(d) { return d.count; })]);
             var yAxis = d3.svg.axis()
                 .scale(y)
                 .orient("left")
@@ -47,15 +53,11 @@ transactionTypeBarChartDirectiveModule.directive('transactionTypeBarChart',['que
                 .attr("height", height)
                 .append("g")
                 .attr("transform", "translate(" + width2*.1+ "," + height*.1 + ")");
-            x.domain(//sort by descending order
-                data.sort(function(a,b){return b.count - a.count})
-                    .map(function(d){return d._id;}))
-                    .copy();
-            y.domain([0, d3.max(data, function(d) { return d.count; })]);
+            
             
             svg.append("g")
                 .attr("class", "x axis")
-                .attr("transform", "translate(0," + height*.8 + ")")
+                .attr("transform", "translate(0," + height*.82 + ")")
                 .call(xAxis);
 //}); 
             svg.append("g")
@@ -78,8 +80,8 @@ transactionTypeBarChartDirectiveModule.directive('transactionTypeBarChart',['que
                 .attr("width", x.rangeBand())
                 .transition()
                 .delay(function(d,i){return i*100;})
-                .attr("y", function(d,i) { return y(d.count)*.8; })
-                .attr("height", function(d) { return (height - y(d.count))*.8; });
+                .attr("y", function(d,i) { return y(d.count); })
+                .attr("height", function(d) { return (height*.82 - y(d.count)); });
         };
         if(status === "updateChart"){
             d3.select("#transactionTypeBarChart").select("svg").remove();
