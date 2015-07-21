@@ -46,53 +46,88 @@ and open the template in the editor.
                                 <div class="form-group col-sm-12">
                                     <div class="col-sm-12 bordertab">  
                                         <div class="row">
-                                                <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 form-inline">
-                                                    <label class="control-label col-sm-6">Application</label>
-                                                    <input ng-model="advanceSearch.application" class="form-control input-sm col-sm-6" 
-                                                           type="text" placeholder="Application..."  />
+                                            <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 form-inline">
+                                                <label class="control-label col-sm-6">Application</label>
+                                                <input ng-model="advanceSearch.application" class="form-control input-sm col-sm-6" 
+                                                       type="text" placeholder="Application..."  />
+                                            </div>
+                                            <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 form-inline">
+                                                <label class="control-label col-sm-6">Interface</label>
+                                                <input ng-model="advanceSearch.interface" class="form-control input-sm col-sm-6" 
+                                                       type="text" placeholder="Interface...">
+                                            </div>
+                                            <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 form-inline">
+                                                <label class="control-label col-sm-6">Hostname</label>
+                                                <input ng-model="advanceSearch.hostname" class="form-control input-sm col-sm-6" 
+                                                       type="text" placeholder="Hostname...">
+                                            </div>
+                                            <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 form-inline">
+                                                <label class="control-label col-sm-6">Transaction_Domain</label>
+                                                <input ng-model="advanceSearch.txDomain" class="form-control input-sm col-sm-6" 
+                                                       type="text" placeholder="Transaction Domain...">
+                                            </div>
+                                            <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 form-inline">
+                                                <label class="control-label col-sm-6">Transaction_Type</label>
+                                                <input ng-model="advanceSearch.txType" class="form-control input-sm col-sm-6" 
+                                                       type="text" placeholder="Transaction Type...">
+                                            </div>
+                                            <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 form-inline">
+                                                <label class="control-label col-sm-6">Transaction_ID</label>
+                                                <input ng-model="advanceSearch.txID" class="form-control input-sm col-sm-6" 
+                                                       type="text" placeholder="Transaction ID...">
+                                            </div>
+                                            <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 form-inline">
+                                                <label class="control-label col-sm-6">Severity</label>
+                                                <input ng-model="advanceSearch.severity" class="form-control input-sm col-sm-6" 
+                                                       type="text" placeholder="Severity...">
+                                            </div>
+                                            <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 form-inline">
+                                                <label class="control-label col-sm-6">Error_Type</label>
+                                                <input ng-model="advanceSearch.errorType" class="form-control input-sm col-sm-6" 
+                                                       type="text" placeholder="Error Type...">
+                                            </div>
+                                            <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 form-inline">
+                                                <label class="control-label col-sm-6">Keyword</label>
+                                                <input ng-model="advanceSearch.keyword" class="form-control input-sm col-sm-6" 
+                                                       type="text" placeholder="Keyword...">
+                                            </div>
+                                            <div class="col-md-12 col-sm-12"></div>
+                                            <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 form-inline">
+                                                <label class="control-label col-sm-6">Custom Field</label>
+                                                <div class="customField col-sm-6" >
+                                                    <div class="container-fluid" data-ng-repeat="custom in customField"> 
+                                                        <div class="row">
+                                                            <input type="text" class="form-control input-sm col-sm-12" ng-model="custom.name" placeholder="Name...">
+                                                        </div>
+                                                        <div class="row">
+                                                            <input type="text" class="form-control input-sm col-sm-12" ng-model="custom.value" placeholder="Value...">
+                                                        </div>
+                                                        <div class="row">
+                                                            <button class="btn addfields pull-left" ng-click="addNewCustom()">+</button>
+                                                            <button class="btn btn-danger pull-left" ng-click="removeCustom($index)">-</button>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                                <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 form-inline">
-                                                    <label class="control-label col-sm-6">Interface</label>
-                                                    <input ng-model="advanceSearch.interface" class="form-control input-sm col-sm-6" 
-                                                           type="text" placeholder="Interface...">
+                                            </div>
+                                            <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 form-inline">
+                                                <label class="control-label col-sm-6">Name Value Field</label>
+                                                <div class="customField col-sm-6" >
+                                                    <div class="container-fluid" data-ng-repeat="nameValue in nameValueField"> 
+                                                        <div class="row">
+                                                            <input type="text" class="form-control input-sm col-sm-12" ng-model="nameValue.name" placeholder="Name...">
+                                                        </div>
+                                                        <div class="row">
+                                                            <input type="text" class="form-control input-sm col-sm-12" ng-model="nameValue.value" placeholder="Value...">
+                                                        </div>
+                                                        <div class="row">
+                                                            <button class="btn addfields pull-left" ng-click="addNewNameValue()">+</button>
+                                                            <button class="btn btn-danger pull-left" ng-click="removeNameValue($index)">-</button>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                                <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 form-inline">
-                                                    <label class="control-label col-sm-6">Hostname</label>
-                                                    <input ng-model="advanceSearch.hostname" class="form-control input-sm col-sm-6" 
-                                                           type="text" placeholder="Hostname...">
-                                                </div>
-                                                <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 form-inline">
-                                                    <label class="control-label col-sm-6">Transaction_Domain</label>
-                                                    <input ng-model="advanceSearch.txDomain" class="form-control input-sm col-sm-6" 
-                                                           type="text" placeholder="Transaction Domain...">
-                                                </div>
-                                                <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 form-inline">
-                                                    <label class="control-label col-sm-6">Transaction_Type</label>
-                                                    <input ng-model="advanceSearch.txType" class="form-control input-sm col-sm-6" 
-                                                           type="text" placeholder="Transaction Type...">
-                                                </div>
-                                                <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 form-inline">
-                                                    <label class="control-label col-sm-6">Transaction_ID</label>
-                                                    <input ng-model="advanceSearch.txID" class="form-control input-sm col-sm-6" 
-                                                           type="text" placeholder="Transaction ID...">
-                                                </div>
-                                                <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 form-inline">
-                                                    <label class="control-label col-sm-6">Severity</label>
-                                                    <input ng-model="advanceSearch.severity" class="form-control input-sm col-sm-6" 
-                                                           type="text" placeholder="Severity...">
-                                                </div>
-                                                <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 form-inline">
-                                                    <label class="control-label col-sm-6">Error_Type</label>
-                                                    <input ng-model="advanceSearch.errorType" class="form-control input-sm col-sm-6" 
-                                                           type="text" placeholder="Error Type...">
-                                                </div>
-                                                <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 form-inline">
-                                                    <label class="control-label col-sm-6">Keyword</label>
-                                                    <input ng-model="advanceSearch.keyword" class="form-control input-sm col-sm-6" 
-                                                           type="text" placeholder="Keyword...">
-                                                </div>
+                                            </div>
                                         </div>
-                                        <div class="panel panel-default col-lg-6 col-sm-12">
+<!--                                        <div class="panel panel-default col-lg-6 col-sm-12">
                                             <div class="panel-heading">
                                                 <h4 class="panel-title">
                                                     <button type="button" class="tabselector col-sm-12" data-toggle="collapse" data-target="#custom" aria-controls="custom"><a>Custom Field</a></button>
@@ -205,7 +240,7 @@ and open the template in the editor.
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </div>-->
                                         <div  class="row form-group col-sm-12"> 
                                             <label class="control-label col-sm-1 col-lg-1">
                                                 From
