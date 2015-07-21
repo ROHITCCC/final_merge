@@ -6,6 +6,7 @@ transactionTypeBarChartDirectiveModule.directive('transactionTypeBarChart',['que
         if (data === 0){
             d3.select("#transactionTypeBarChart").select("svg").remove();
             var svg = d3.select("#transactionTypeBarChart").append("svg")
+                .attr("id", "transactionTypeDiv")
                 .attr("width", width)
                 .attr("height", height)
                 .append("g")
@@ -75,7 +76,7 @@ transactionTypeBarChartDirectiveModule.directive('transactionTypeBarChart',['que
         };
         if(status === "updateChart"){
             d3.select("#transactionTypeBarChart").select("svg").remove();
-            var svg = d3.select("#transactionTypeBarChart").append("svg").attr("width",width).attr("height",height);
+            var svg = d3.select("#transactionTypeBarChart").append("svg").attr("width",width).attr("height",height).attr("id", "transactionTypeDiv");
             svg.append("g").attr("id","transactionType")
                 .append("text").attr("transform", "translate(0,15)").text("Transaction Type Chart");
             barChart.createChart(data);
@@ -83,14 +84,14 @@ transactionTypeBarChartDirectiveModule.directive('transactionTypeBarChart',['que
         };
         if(status === "no_data"){ //Will append a Message for no data and return out of the function
             d3.select("#transactionTypeBarChart").select("svg").remove();
-            var svg = d3.select("#transactionTypeBarChart").append("svg").attr("width", width).attr("height", height);
+            var svg = d3.select("#transactionTypeBarChart").append("svg").attr("width", width).attr("height", height).attr("id", "transactionTypeDiv");
             svg.append("g").attr("transform", "translate(" + width*.065 + "," + height*.5 + ")")
                 .append("text").text("No Data Available");
             return;
         };
         if(status === "createChart"){
             d3.select("#transactionTypeBarChart").select("svg").remove();
-            var svg = d3.select("#transactionTypeBarChart").append("svg").attr("width",width).attr("height",height);
+            var svg = d3.select("#transactionTypeBarChart").append("svg").attr("width",width).attr("height",height).attr("id", "transactionTypeDiv");
             svg.append("g").attr("id","transactionType");
             svg.append("text").attr("transform", "translate(0,15)").text("Transaction Type Chart");
             barChart.createChart(data);

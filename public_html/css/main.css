@@ -345,7 +345,11 @@ html {
     padding-right: 15px;
     padding-left: 15px;
 }
-
+.dropdown-toggle .dropdown-text{
+    float: left;
+    padding-right: 5px;
+    padding-top: 5px;
+}
 #currentTimeSelect{
     /* border: ridge; */
     padding: 5px;
