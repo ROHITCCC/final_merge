@@ -270,8 +270,9 @@ text{
 }
 .columnDiv .scrollableBarChart{
     width:300px;
-    overflow-x:scroll;
+    overflow-x: auto;
     overflow-y:hidden;
+    /* margin-left: 20px; */
 }
 path .slice{
     stroke-width: 2px;
