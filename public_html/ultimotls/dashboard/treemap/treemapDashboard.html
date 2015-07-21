@@ -15,7 +15,7 @@ and open the template in the editor.
                             <span class="dropdown-text" onclick='data-toogle'><b>Last </b></span>
                             <a id="currentTimeSelect">{{timeSelected.description}}</a><span class="caret" style="margin-left: -15px;"></span>
                         </div>
-                        <ul  id="timedropdown" class="dropdown-menu" ng-model="timeOptions" style="min-width: 100px; left: 42px;">
+                        <ul  id="timedropdown" class="dropdown-menu" ng-model="timeOptions" style="min-width: 100px; left: 30px;">
                             <li ng-repeat="time in timeOptions">
                                 <a ng-click="fromDateChange(time)"><p>{{time.description}}</p></a>
                             </li>
