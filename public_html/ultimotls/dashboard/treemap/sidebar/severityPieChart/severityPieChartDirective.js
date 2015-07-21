@@ -2,7 +2,7 @@ var severityPieChartDirectiveModule = angular.module('severityPieChartDirectiveM
 
 severityPieChartDirectiveModule.directive('severityPieChart',['queryFilter', function(queryFilter){
     function updateSize(data){
-        var width = (window.innerWidth*.30), height = (window.innerHeight*.26);
+        var width = document.getElementById('severityPieChartDiv').offsetWidth, height = (window.innerHeight*.26);
         if (data === 0){ //Will append a Message for no data and return out of the function
             d3.select("#severityPieChart").select("svg").remove();
             var svg = d3.select("#severityPieChart").append("svg")
@@ -19,8 +19,8 @@ severityPieChartDirectiveModule.directive('severityPieChart',['queryFilter', fun
     function pieChart(data,status){
         var Donut3D = {};
         var color = d3.scale.category20();
-        var width = (window.innerWidth*.30), height = (window.innerHeight*.26);
-        var centerX = width*.3, centerY = height*.5, radiusX = centerX*.8, radiusY = centerY*.66, pieHeight = centerY*.2, innerRadius = .4;
+        var width = document.getElementById('severityPieChartDiv').offsetWidth, height = (window.innerHeight*.26);
+        var centerX = width*.5, centerY = height*.5, radiusX = centerX*.7, radiusY = centerY*.66, pieHeight = centerY*.3, innerRadius = .3;
         function upDateTreemap(filterCriteria){
             queryFilter.appendQuery("severity",filterCriteria.data._id);
             queryFilter.broadcast();

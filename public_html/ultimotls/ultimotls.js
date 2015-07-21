@@ -47,6 +47,7 @@ ultimotls.controller('loginControllerModule', ['$scope', '$http', '$q', '$base64
             console.log('*** authorization header: ' + credentials);
 
             $http.defaults.headers.common["Authorization"] = 'Basic ' + credentials;
+            $http.defaults.paramSerializer = {"envid":"PROD"};
             //$http.defaults.headers.common["EnvId"] = queryEnv.getEnv().name;
             //addd env in the header
             //promise to return

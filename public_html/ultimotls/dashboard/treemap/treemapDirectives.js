@@ -7,9 +7,8 @@
 var treemapDirectiveModule = angular.module('treemapDirectiveModule', ['treemapControllerModule']);
 
 treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location', function($http,$injector, $location){
-        
-         var w = window.innerWidth*.70, w2=w*.8,
-                h = window.innerHeight*.8,
+         var w = document.getElementById('treemapDiv').offsetWidth, w2=w*.8,
+                h = window.innerHeight*.83,
                 x = d3.scale.linear().range([0, w]),
                 y = d3.scale.linear().range([0, h]),
                 x2 = d3.scale.linear().range([0, w]),
@@ -40,7 +39,7 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                 .style("height", h + "px")
                 //.style("margin-top", 15 + "px")
                 //.style("margin-bottom", 20 + "px")
-                .style("margin-left", 40 + "px")
+                .style("right", 7 + "px")
               .append("svg")
                 .attr("width", w)
                 .attr("height", h)
@@ -61,6 +60,7 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
         
         
     function updateSize(resizeTemp, element, scope){
+        
 //        if(resizeTemp === 0){
 //            d3.select("#treemapChart").select("svg").remove();
 //            var svg = d3.select("#treemapChart").append("svg")
@@ -71,9 +71,9 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
 //                .append("text").text("No Data Available");
 //            return;
 //        }
-            w=window.innerWidth*.70;
+            w= document.getElementById('treemapDiv').offsetWidth;
             w2 = w*.8;
-            h=window.innerHeight*.8;
+            h=window.innerHeight*.83;
             x = d3.scale.linear().range([0, w]);
             y = d3.scale.linear().range([0, h]);
             
@@ -112,6 +112,7 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
 //                    .append("text").text("No Data Available");
 //                return;
 //            }
+            
             if(scope.treemapSaver.zoomClicked !== undefined){
                 d3.select("#zoomOut").transition().duration(750).style("opacity",0);
                 d3.select("#zoomIn").transition().duration(750).style("opacity",0);
@@ -160,8 +161,8 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                 .attr("id", "treemapChart")
                 .style("width", w + "px")
                 .style("height", h + "px")
-                .style("margin-bottom", 200 + "px")
-                .style("margin-left", 40 + "px")
+                //.style("margin-bottom", 200 + "px")
+                .style("right", 7 + "px")
               .append("svg")
                 .attr("width", w)
                 .attr("height", h)

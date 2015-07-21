@@ -216,14 +216,15 @@ status-pie-chart{
     width: 100%;
     height: 100%;
 }
-#severityPieChartDiv {
-    height: 350px;
-}
 #appBarChartDiv {
     height: 350px
 }
 #treemapChartDiv{
     height: 350px;
+}
+#treemapDiv{
+    right: 7px;
+    padding-left: 8px;
 }
 #stackBarChartContainer{
     overflow: scroll;
@@ -308,7 +309,8 @@ path {
     cursor: pointer;
 }
 #row2{
-    /* min-height: 100% */}
+    margin-left: 0;
+}
 
 circle {
     fill: none;
