@@ -12,6 +12,7 @@ var TLS_SERVER = "172.16.120.157";
 var TLS_PORT = "8080";
 var TLS_DBNAME = "ES";
 var TLS_SERVER_TIMEOUT = 3000;
+var TLS_BATCH_REPLAY_COLLECTION = "ErrorSpotBatchReplay";
 var TLS_EXPIRATION_TIME =  15 //in minutes
    
 //(function(angular){

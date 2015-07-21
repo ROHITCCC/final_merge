@@ -26,7 +26,7 @@ and open the template in the editor.
                         </div>
                         <div class="col-sm-2 col-lg-2 control-label" style="text-align: center;">
                             <a id="advanceSearch" ng-click="toggle = !toggle;
-                                        searchOn(false)">Advance Search</a>
+                                        searchOn(false)">Advanced Search</a>
                         </div>
                         <div class="col-sm-offset-2 col-sm-8">
                             <p ng-model="inputError">{{inputError}}</p>
@@ -39,7 +39,7 @@ and open the template in the editor.
                 <div class="[ col-xs-12 col-sm-offset-1 col-sm-10 ]"> <!-- both div container -->
                     <div class="[ panel panel-default ] panel-google-plus"> <!-- Panel todo -->
                         <div class="panel-heading">
-                            <h4>Advance Search</h4>
+                            <h4>Advanced Search</h4>
                         </div>
                         <div class="panel-body">
                             <form class="form-horizontal" role="form">
@@ -268,7 +268,7 @@ and open the template in the editor.
                                         <div class="col-sm-12" id="optionField">
                                             <br>
                                             <button class="btn addfields" ng-click="toggle = !toggle;
-                                                        searchOn(true)">Close Advance Search
+                                                        searchOn(true)">Close Advanced Search
                                             </button>
                                         </div>
                                     </div>
@@ -288,6 +288,7 @@ and open the template in the editor.
     </div>
     <div id="pagination" class="container-fluid">
         <div id="paginationNav" class="col-sm-10">
+            <label style="float: left; padding-right: 20px"><input id="replaySelectAll" ng-click="checkAll(this)" type="checkbox">Select All</label>
             <button id="replayButton" ng-click="changeReplay()" style="float: left" data-toggle="modal" data-target="#replayPage">Replay</button>
             <span ng-if="data['_size'] !== undefined" style="font-size:10px; position: absolute;right: 0px;
                   padding-right: 225px; padding-top: 8px;">Total audits: {{data['_size']}}</span>
@@ -337,8 +338,8 @@ and open the template in the editor.
                     <th>
 <!--                        <a href="" ng-click="reverse = !reverse; predicate='timestamp.$date'">-->
                             <span></span> Replay
-<!--                            <input id="replaySelectAll" type="checkbox">Select All</button>-->
-                        </a>
+                            
+<!--                        </a>-->
                     </th> 
                     <th>
                         <a href="" ng-click="reverse = !reverse; predicate='timestamp.$date'">
@@ -385,7 +386,7 @@ and open the template in the editor.
             </thead>
             <tbody>
                 <tr ng-repeat="d in data._embedded['rh:doc']| orderBy:predicate:reverse" ng-click="rowClick(d)" data-toggle="modal" data-target="#dataBasePage">
-                    <td ng-click="$event.stopPropagation()"><input type="checkbox" class="checkbox1"></td>
+                    <td ng-click="$event.stopPropagation()"><input type="checkbox" name="auditCheckbox" class="checkbox1" ></td>
                     <td>{{d.timestamp.$date| date:'EEE MMM dd, yyyy hh:mm:ss'}}</td>
                     <td>{{d.transactionDomain}}</td>
                     <td>{{d.transactionType}}</td>
