@@ -267,6 +267,11 @@ text{
 #severityPieChart text, #errorTypePieChart text, .columnDiv svg path, .columnDiv rect{
     cursor: pointer
 }
+.columnDiv .scrollableBarChart{
+    width:300px;
+    overflow-x:scroll;
+    overflow-y:hidden;
+}
 path .slice{
     stroke-width: 2px;
 }

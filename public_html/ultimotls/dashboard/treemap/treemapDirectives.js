@@ -9,7 +9,7 @@ var treemapDirectiveModule = angular.module('treemapDirectiveModule', ['treemapC
 treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location', function($http,$injector, $location){
         
          var w = window.innerWidth*.70, w2=w*.8,
-                h = window.innerHeight*.7,
+                h = window.innerHeight*.8,
                 x = d3.scale.linear().range([0, w]),
                 y = d3.scale.linear().range([0, h]),
                 x2 = d3.scale.linear().range([0, w]),
@@ -61,9 +61,19 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
         
         
     function updateSize(resizeTemp, element, scope){
+//        if(resizeTemp === 0){
+//            d3.select("#treemapChart").select("svg").remove();
+//            var svg = d3.select("#treemapChart").append("svg")
+//                .attr("width", w)
+//                .attr("height", h)
+//                .append("g")
+//                .attr("transform", "translate(" + w*.065 + "," + h*.5 + ")")
+//                .append("text").text("No Data Available");
+//            return;
+//        }
             w=window.innerWidth*.70;
             w2 = w*.8;
-            h=window.innerHeight*.7;
+            h=window.innerHeight*.8;
             x = d3.scale.linear().range([0, w]);
             y = d3.scale.linear().range([0, h]);
             
@@ -92,6 +102,16 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
     }    
         
     function createZoomTree(treeDataset, element, flag, scope, resizedWin){
+//            if(treeDataset === 0){
+//                d3.select("#treemapChart").select("svg").remove();
+//                var svg = d3.select("#treemapChart").append("svg")
+//                    .attr("width", w)
+//                    .attr("height", h)
+//                    .append("g")
+//                    .attr("transform", "translate(" + w*.065 + "," + h*.5 + ")")
+//                    .append("text").text("No Data Available");
+//                return;
+//            }
             if(scope.treemapSaver.zoomClicked !== undefined){
                 d3.select("#zoomOut").transition().duration(750).style("opacity",0);
                 d3.select("#zoomIn").transition().duration(750).style("opacity",0);
@@ -794,20 +814,24 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
         });
       };
     function link(scope, element){
-            scope.$watch('treemapPromise', function(){
-                scope.treemapPromise.then(function(getCall){ //handles the promise
-                //console.log(getCall);
-                var temp = getCall.data._embedded['rh:doc'];
-                scope.treemapSaver.resizeTemp = temp;
-                //handles the data format
-                //temp._embedded['rh:doc'].children = data.data._embedded['rh:doc']; //adds data to the new object structure 
+        scope.$watch('treemapPromise', function(){
+            scope.treemapPromise.then(function(getCall){ //handles the promise
+            if(getCall.data._size === 0){
+                scope.treemapSaver.resizeTemp = 0;
+                createZoomTree(0, element, "true", scope, true);
+                return;
+            }
+            var temp = getCall.data._embedded['rh:doc'];
+            scope.treemapSaver.resizeTemp = temp;
+            //handles the data format
+            //temp._embedded['rh:doc'].children = data.data._embedded['rh:doc']; //adds data to the new object structure 
 
-                    createZoomTree(temp, element, "true", scope, true); //("selects id of the graph in html","takes new data", "appends to the element", "calls the graph rendering function"
-            
-            });
-                $(window).resize(function(){
-               updateSize(scope.treemapSaver.resizeTemp, element, scope);
-               //createZoomTree(scope.treemapSaver.resizeTemp, element, "true", scope);
+            createZoomTree(temp, element, "true", scope, true); //("selects id of the graph in html","takes new data", "appends to the element", "calls the graph rendering function"
+
+        });
+            $(window).resize(function(){
+           updateSize(scope.treemapSaver.resizeTemp, element, scope);
+           //createZoomTree(scope.treemapSaver.resizeTemp, element, "true", scope);
         });
             });
             }

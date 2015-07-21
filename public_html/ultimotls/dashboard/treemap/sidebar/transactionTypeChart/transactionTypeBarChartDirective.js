@@ -2,22 +2,22 @@ var transactionTypeBarChartDirectiveModule = angular.module('transactionTypeBarC
 
 transactionTypeBarChartDirectiveModule.directive('transactionTypeBarChart',['queryFilter', function(queryFilter){
     function updateSize(data){
-        var width =(window.innerWidth * .3), height = (window.innerHeight*.28);
+        var width =(window.innerWidth * .6), height = (window.innerHeight*.28);
         if (data === 0){
             d3.select("#transactionTypeBarChart").select("svg").remove();
             var svg = d3.select("#transactionTypeBarChart").append("svg")
                 .attr("width", width)
                 .attr("height", height)
                 .append("g")
-                .attr("transform", "translate(" + width*.13 + "," + height*.5 + ")");
-            svg.append("text").text("No Data Available");
+                .attr("transform", "translate(" + width*.065 + "," + height*.5 + ")")
+                .append("text").text("No Data Available");
             return;
         }
         barChart(data, "updateChart");
         return;
     }
     function barChart(data, status){
-        var width = (window.innerWidth*.30), height = (window.innerHeight*.28);
+        var width = (window.innerWidth*.6), height = (window.innerHeight*.28);
         var color = d3.scale.category20();
         var barChart = {};
         function upDateTreemap(filterCriteria){
@@ -38,7 +38,7 @@ transactionTypeBarChartDirectiveModule.directive('transactionTypeBarChart',['que
                 .attr("width", width)
                 .attr("height", height)
                 .append("g")
-                .attr("transform", "translate(" + width*.1 + "," + height*.1 + ")");
+                .attr("transform", "translate(" + width*.03 + "," + height*.1 + ")");
             x.domain(//sort by descending order
                 data.sort(function(a,b){return b.count - a.count})
                     .map(function(d){return d._id;}))
@@ -74,7 +74,6 @@ transactionTypeBarChartDirectiveModule.directive('transactionTypeBarChart',['que
                 .attr("height", function(d) { return (height - y(d.count))*.8; });
         };
         if(status === "updateChart"){
-            console.log("In update")
             d3.select("#transactionTypeBarChart").select("svg").remove();
             var svg = d3.select("#transactionTypeBarChart").append("svg").attr("width",width).attr("height",height);
             svg.append("g").attr("id","transactionType")
@@ -85,8 +84,8 @@ transactionTypeBarChartDirectiveModule.directive('transactionTypeBarChart',['que
         if(status === "no_data"){ //Will append a Message for no data and return out of the function
             d3.select("#transactionTypeBarChart").select("svg").remove();
             var svg = d3.select("#transactionTypeBarChart").append("svg").attr("width", width).attr("height", height);
-            svg.append("g").attr("transform", "translate(" + width*.13 + "," + height*.5 + ")");
-            svg.append("text").text("No Data Available")
+            svg.append("g").attr("transform", "translate(" + width*.065 + "," + height*.5 + ")")
+                .append("text").text("No Data Available");
             return;
         };
         if(status === "createChart"){
@@ -99,7 +98,7 @@ transactionTypeBarChartDirectiveModule.directive('transactionTypeBarChart',['que
     };
     function link(scope){
         scope.$watch('transactionTypeBarChartPromise', function(){
-            scope.transactionTypeBarChartPromise.then(function(getCall){ //handles the promise\
+            scope.transactionTypeBarChartPromise.then(function(getCall){ //handles the promise
                 if(getCall.data._size === 0){
                     scope.transactionTypeTempData = 0;
                     barChart(0, "no_data");
