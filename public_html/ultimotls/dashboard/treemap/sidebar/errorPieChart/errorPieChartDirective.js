@@ -2,7 +2,7 @@ var errorPieChartDirectiveModule = angular.module('errorPieChartDirectiveModule'
 
 errorPieChartDirectiveModule.directive('errorPieChart',['queryFilter', function(queryFilter){
     function updateSize(data){
-        var width = (window.innerWidth*.30), height = (window.innerHeight*.26);
+        var width = document.getElementById('errorTypePieChartDiv').offsetWidth, height = (window.innerHeight*.26);
         if (data === 0){ //Will append a Message for no data and return out of the function
             d3.select("#errorTypePieChart").select("svg").remove();
             var svg = d3.select("#errorTypePieChart").append("svg")
@@ -19,6 +19,8 @@ errorPieChartDirectiveModule.directive('errorPieChart',['queryFilter', function(
     function pieChart(data, status){
         var Donut3D = {};
         var color = d3.scale.category20();
+        var width = document.getElementById('errorTypePieChartDiv').offsetWidth, height = (window.innerHeight*.26);
+        var centerX = width*.5, centerY = height*.5, radiusX = centerX*.7, radiusY = centerY*.66, pieHeight = centerY*.3, innerRadius = .3;
         function upDateTreemap(filterCriteria){
             queryFilter.appendQuery("errorType",filterCriteria.data._id);
             queryFilter.broadcast();
@@ -140,8 +142,6 @@ errorPieChartDirectiveModule.directive('errorPieChart',['queryFilter', function(
                     .attrTween("x",textTweenX).attrTween("y",textTweenY).text(getPercent); 	
 	};
         this.Donut3D = Donut3D;
-        var width = (window.innerWidth*.30), height = (window.innerHeight*.26);
-        var centerX = width*.3, centerY = height*.5, radiusX = centerX*.8, radiusY = centerY*.66, pieHeight = centerY*.2, innerRadius = .4;
         if (status === "no_data"){ //Will append a Message for no data and return out of the function
             d3.select("#errorTypePieChart").select("svg").remove();
             var svg = d3.select("#errorTypePieChart").append("svg")

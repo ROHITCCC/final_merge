@@ -48,11 +48,13 @@ ultimotls.controller('loginControllerModule', ['$scope', '$http', '$q', '$base64
             console.log('*** authorization header: ' + credentials);
 
             $http.defaults.headers.common["Authorization"] = 'Basic ' + credentials;
+            //$http.defaults.paramSerializer = {"envid":"PROD"};
+            //$http.defaults.headers.common["Env-ID"] = queryEnv.getEnv().name;
             //addd env in the header
             //promise to return
             var deferred = $q.defer();
 
-            var request = $http.get(TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/_logic/roles/"+$scope.cred.username, {});
+            var request = $http.get(TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/_logic/LoginService/"+$scope.cred.username, {});
             request.success(function (data, status, header, config) {
                 var auth_token = header()['auth-token'] //pulling our auth-token
                 //creating credentials based off of username and auth-token
