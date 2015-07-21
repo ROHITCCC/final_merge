@@ -253,6 +253,7 @@ and open the template in the editor.
     </div>
     <div id="pagination" class="container-fluid">
         <div id="paginationNav" class="col-sm-10">
+            <button id="replayButton" ng-click="changeReplay()" style="float: left" data-toggle="modal" data-target="#replayPage">Replay</button>
             <span ng-if="data['_size'] !== undefined" style="font-size:10px; position: absolute;right: 0px;
                   padding-right: 225px; padding-top: 8px;">Total audits: {{data['_size']}}</span>
             <ul class="pagination">
@@ -299,6 +300,12 @@ and open the template in the editor.
             <thead id="tableHeader">
                 <tr> 
                     <th>
+<!--                        <a href="" ng-click="reverse = !reverse; predicate='timestamp.$date'">-->
+                            <span></span> Replay
+<!--                            <input id="replaySelectAll" type="checkbox">Select All</button>-->
+                        </a>
+                    </th> 
+                    <th>
                         <a href="" ng-click="reverse = !reverse; predicate='timestamp.$date'">
                             <span class="caret"></span> Timestamp
                         </a>
@@ -343,7 +350,7 @@ and open the template in the editor.
             </thead>
             <tbody>
                 <tr ng-repeat="d in data._embedded['rh:doc']| orderBy:predicate:reverse" ng-click="rowClick(d)" data-toggle="modal" data-target="#dataBasePage">
-
+                    <td ng-click="$event.stopPropagation()"><input type="checkbox" class="checkbox1"></td>
                     <td>{{d.timestamp.$date| date:'EEE MMM dd, yyyy hh:mm:ss'}}</td>
                     <td>{{d.transactionDomain}}</td>
                     <td>{{d.transactionType}}</td>
@@ -729,7 +736,7 @@ and open the template in the editor.
                         </label>
                     </div>
                     <div class="container-fluid col-sm-offset-4 col-sm-2">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <button type="button" class="close" ng-click="changeReplayBack()" data-dismiss="modal">&times;</button>
                     </div>
                 </div> 
             </div>
@@ -841,7 +848,7 @@ and open the template in the editor.
                 </div>
             </div> 
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-default" ng-click="changeReplayBack()" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>

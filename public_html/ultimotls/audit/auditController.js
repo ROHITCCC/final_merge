@@ -426,4 +426,10 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
             $http.post(replayPostUrl, webServicePayload, {timeout:TLS_SERVER_TIMEOUT})
                 .success(function(d){console.log(d)});
         };
+        $scope.changeReplay = function(){
+            $("#replayPage").css("top","15%").addClass("col-sm-offset-3").removeClass("col-sm-offset-6");
+        };
+        $scope.changeReplayBack = function(){
+            $("#replayPage").css("top","50%").addClass("col-sm-offset-6").removeClass("col-sm-offset-3");
+        };
     }]);
