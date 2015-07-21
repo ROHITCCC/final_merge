@@ -297,7 +297,7 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                     .style("fill", function(d) { return color(d.parent.name); });
             
               
-                cell.select("text").transition().duration(500)
+                cell.select("text")
                     .attr("x", function(d) { return d.dx / 2; })
                     .attr("y", function(d) { return d.dy / 2; })
                     .attr("dy", ".35em")
@@ -384,7 +384,7 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
           
                 var z = 0;
 
-                newCell.select("tspan").transition().duration(500)         
+                newCell.select("tspan")         
                     .text(function (d) {            //text truncation again
                         var nameholder = null;
                         var getWidth =  scope.treemapSaver.wordLength[z];
@@ -500,38 +500,36 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
             
             function zoomInTreemap(d, name, parent, kx){
                 scope.treemapSaver.currentZoomName = name;
-                d3.selectAll("g.cell").select("text").remove();
+                //d3.selectAll("g.cell").select("text").remove();
                     d3.select("#zoomOut").transition().duration(750).style("opacity",1);
                     d3.select("#zoomIn").transition().duration(750).style("opacity",1);
                     var zx = 0;
-                    d3.selectAll("g.cell").append("text").attr("x", function(d) { return d.dx / 2; })  //return text to original
-                        .attr("y", function(d) { return d.dy / 2; })
-                        .attr("dy", ".35em")
-                        .attr("text-anchor", "middle")
-                        .attr("width", function(d) { return d.dx - 1; })
-                        .each(function (d) {
-                            var nameholder = null;
-                            var getWidth = kx * d.dx - 1;
-                            if (d.name.length > (getWidth)*.1) {
-                                //nameholder = d.name.substring(0,(getWidth*.1)) + "... " + d.size;
-                                if((getWidth)*.1 > 5)nameholder = d.name.substring(0,(getWidth*.1)) + "... " + d.size;
-                                else nameholder = " ";
-                            }
-                            else nameholder = d.name + " " + d.size;
-                            var arr = nameholder.split(" ");
-                            if (arr !== undefined) {
-                                for (i = 0; i < arr.length; i++) {
-                                    d3.select(this).append("tspan")
-                                        .text(arr[i])
-                                        .attr("dy", i ? "1.2em" : 0)
-                                        .attr("y", function(d) { return d.dy / 2; })
-                                        .attr("x", function(d) { return d.dx / 2; })
-                                        .attr("text-anchor", "middle")
-                                        .attr("id","new")
-                                        .attr("class", "tspan" + i);
-                                }
-                            }
-                        });
+                    d3.selectAll("g.cell").select("tspan")
+                    .text(function(d) {         //text truncation check
+                        var nameholder = null;
+                        var getWidth = kx * d.dx - 1;
+                        scope.treemapSaver.wordLength[zx] = (getWidth);
+                        zx++;
+                        if (d.name.length > (getWidth)*.1) {
+                            //nameholder = d.name.substring(0,(getWidth*.1)) + "... ";
+                            if((getWidth)*.1 > 5)nameholder = d.name.substring(0,(getWidth*.1)) + "... ";
+                            else nameholder = " ";
+                        }
+                        else nameholder = d.name;
+                    return nameholder;});
+                    d3.selectAll("g.cell").select("text").select("tspan:nth-child(2)")
+                    .text(function(d) {         //text truncation check
+                        var nameholder = null;
+                        var getWidth = kx * d.dx - 1;
+                        scope.treemapSaver.wordLength[zx] = (getWidth);
+                        zx++;
+                        if (d.name.length > (getWidth)*.1) {
+                            //nameholder = d.name.substring(0,(getWidth*.1)) + "... ";
+                            if((getWidth)*.1 > 5)nameholder = d.size;
+                            else nameholder = " ";
+                        }
+                        else nameholder = d.size;
+                    return nameholder;});
                             
                     d3.selectAll("g.cell")          //replaces click event to zoom in on individual cells once within a parent node
                     .on("click", function(d) { return zoom((node === d.parent ? root : d.parent),(d3.select(this).attr("id")),(d3.select(this).attr("parent"))); });
