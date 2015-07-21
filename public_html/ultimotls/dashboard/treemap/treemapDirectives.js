@@ -226,7 +226,7 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
         if(treeDataset.constructor === Array){
             
             d3.select("#legendDropDown").select("ul").remove();
-            var legendDDL = d3.select("#legendDropDown").style("text-align","center").append("ul").append("select")
+            var legendDDL = d3.select("#legendDropDown").append("ul").append("select")
                 .attr("id","legendSelect")
                 .attr("class", "legendDDL");
             
@@ -258,7 +258,7 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
 //            
 //            parCellSpacer=0;
 //            parCellCounter=1;
-//            
+//           
 //            parCell.enter().append("g").attr("class", "cellParent")     //creates header titles
 //                    .attr("id", function(d){svgDivider++;return d.name;})
 //                    .attr("transform", function(d) {parCellSpacer = w2*(parCellCounter/svgDivider)*.8;

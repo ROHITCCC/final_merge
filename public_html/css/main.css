@@ -269,8 +269,6 @@ text{
     cursor: pointer
 }
 .columnDiv .scrollableBarChart{
-    width:300px;
-    overflow-x: auto;
     overflow-y:hidden;
     /* margin-left: 20px; */
 }
@@ -591,14 +589,23 @@ button[disabled] {
     background-color: #E2E2E2;
 }
 
-button#zoomOut {
-    /* padding-top: 10px; */
+button#zoomOut, button#zoomIn {
+    padding: 6px 1px 6px 1px;
+    width: 90px;
 }
 div#legend {
     margin-bottom: 15px;
     /* height: 0px; */
 }
-
+#dropdownTimeSelection{
+    width: 150px;
+}
+#legendDropDown{
+    width: 110px;
+}
+.treemapTools{
+    margin-right: 3px;
+}
 #landingPageHeader .dropdown-menu {
     min-width: 20px;
 }

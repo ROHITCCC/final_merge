@@ -2,7 +2,8 @@ var transactionTypeBarChartDirectiveModule = angular.module('transactionTypeBarC
 
 transactionTypeBarChartDirectiveModule.directive('transactionTypeBarChart',['queryFilter', function(queryFilter){
     function updateSize(data){
-        var width =(window.innerWidth * .6), height = (window.innerHeight*.28);
+        
+        var width = document.getElementById('transactionTypeBarChartDiv').offsetWidth*.9, height = (window.innerHeight*.28);
         if (data === 0){
             d3.select("#transactionTypeBarChart").select("svg").remove();
             var svg = d3.select("#transactionTypeBarChart").append("svg")
@@ -18,7 +19,13 @@ transactionTypeBarChartDirectiveModule.directive('transactionTypeBarChart',['que
         return;
     }
     function barChart(data, status){
-        var width = (window.innerWidth*.6), height = (window.innerHeight*.28);
+        if(data.length){
+            var dynamicSize = data.length/5;
+            var adjustedWidth = dynamicSize *.5 + 1;
+            console.log(adjustedWidth);
+        }
+        var width = document.getElementById('transactionTypeBarChartDiv').offsetWidth*adjustedWidth, height = (window.innerHeight*.28);
+        var width2 = document.getElementById('transactionTypeBarChartDiv').offsetWidth;
         var color = d3.scale.category20();
         var barChart = {};
         function upDateTreemap(filterCriteria){
@@ -26,7 +33,7 @@ transactionTypeBarChartDirectiveModule.directive('transactionTypeBarChart',['que
             queryFilter.broadcast();
         };
         barChart.createChart = function(data){
-            var x = d3.scale.ordinal().rangeRoundBands([0, width*.5], .1);
+            var x = d3.scale.ordinal().rangeRoundBands([0, width*.95], .1);
             var y = d3.scale.linear().range([height*.8, 0]);
             var xAxis = d3.svg.axis()
                 .scale(x)
@@ -39,7 +46,7 @@ transactionTypeBarChartDirectiveModule.directive('transactionTypeBarChart',['que
                 .attr("width", width)
                 .attr("height", height)
                 .append("g")
-                .attr("transform", "translate(" + width*.03 + "," + height*.1 + ")");
+                .attr("transform", "translate(" + width2*.1+ "," + height*.1 + ")");
             x.domain(//sort by descending order
                 data.sort(function(a,b){return b.count - a.count})
                     .map(function(d){return d._id;}))
