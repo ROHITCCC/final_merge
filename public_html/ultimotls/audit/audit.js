@@ -101,4 +101,17 @@ $('.datetimepicker').waitUntilExists(function () {
     $(this).datetimepicker({step: 10, inline: false});
 });
 
+$('#transactionTypeDiv').waitUntilExists(function () {
+    $.fn.resizepiechart = function(){
+        this.each(function(){
+            var temporalsize = $(this).attr('width');
+            $(this).css('width',temporalsize);
+        });
+    };
+    $('#transactionTypeDiv').resizepiechart();
+    $( window ).resize(function() {
+        $('#transactionTypeDiv').resizepiechart();
+    });
+    
+});
 
