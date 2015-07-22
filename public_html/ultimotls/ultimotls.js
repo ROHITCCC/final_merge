@@ -318,7 +318,7 @@ ultimotls.config(function ($stateProvider, $urlRouterProvider) {
 });
 
 ultimotls.factory("mongoAggregateService", function ($http) {
-    var postUrl = TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/_logic/"+TLS_DBNAME+"/"+TLS_AUDIT_COLLECTION+"/aggregate";
+    var postUrl = TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/_logic/AggregateService";
     var callAggregate = {};
     callAggregate.httpResponse = {};
     callAggregate.prepForBroadcast = function () {
