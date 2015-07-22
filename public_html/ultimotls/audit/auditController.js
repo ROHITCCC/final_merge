@@ -484,8 +484,28 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
             
         };
         $scope.changeReplay = function(){
-            $("#replayPage").css("top","15%").addClass("col-sm-offset-3").removeClass("col-sm-offset-6");
+            if($scope.treemapSaver.checkboxChecked !== undefined){
+                $("#replayPage").css("top","15%").addClass("col-sm-offset-3").removeClass("col-sm-offset-6");
+            }
+            
         };
+        $scope.replayButtonChecker = function(){
+            var checkboxes = document.getElementsByName('auditCheckbox');
+            $scope.treemapSaver.checkboxChecked = undefined;
+            for(var i=0, n=checkboxes.length;i<n;i++) {
+                if(checkboxes[i].checked){
+                    $scope.treemapSaver.checkboxChecked = true;
+                    document.getElementById("replayButton").style.opacity = 1;
+                    document.getElementById("replayButton").disabled = false;
+                    break;
+                }
+                else{
+                    $scope.treemapSaver.checkboxChecked = undefined;
+                    document.getElementById("replayButton").style.opacity = .5;
+                    document.getElementById("replayButton").disabled = true;
+                }
+            }
+        }
         $scope.checkChecked = function(){
             var isChecked = false;
             var checkboxes = document.getElementsByName('auditCheckbox');

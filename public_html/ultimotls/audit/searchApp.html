@@ -289,7 +289,7 @@ and open the template in the editor.
     <div id="pagination" class="container-fluid">
         <div id="paginationNav" class="col-sm-10">
             <label style="float: left; padding-right: 20px"><input id="replaySelectAll" ng-click="checkAll(this)" type="checkbox">Select All</label>
-            <button id="replayButton" ng-click="changeReplay()" style="float: left" data-toggle="modal" data-target="#replayPage">Replay</button>
+            <button id="replayButton" ng-click="changeReplay()" style="float: left; opacity: .5" data-toggle="modal" data-target="#replayPage" disabled>Replay</button>
             <span ng-if="data['_size'] !== undefined" style="font-size:10px; position: absolute;right: 0px;
                   padding-right: 225px; padding-top: 8px;">Total audits: {{data['_size']}}</span>
             <ul class="pagination">
@@ -386,7 +386,7 @@ and open the template in the editor.
             </thead>
             <tbody>
                 <tr ng-repeat="d in data._embedded['rh:doc']| orderBy:predicate:reverse" ng-click="rowClick(d)" data-toggle="modal" data-target="#dataBasePage">
-                    <td ng-click="$event.stopPropagation()"><input type="checkbox" name="auditCheckbox" class="checkbox1" ></td>
+                    <td ng-click="$event.stopPropagation()"><input type="checkbox" ng-checked="replayButtonChecker()" name="auditCheckbox" class="checkbox1" ></td>
                     <td>{{d.timestamp.$date| date:'EEE MMM dd, yyyy hh:mm:ss'}}</td>
                     <td>{{d.transactionDomain}}</td>
                     <td>{{d.transactionType}}</td>
