@@ -449,7 +449,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
             }else{
                 var batchVals = $scope.batchValues();
                 var auditIDs = $scope.pullAuditIDs(batchVals[2]);
-                var filePayloadBatch = "type=FILE~, file-location="+$scope.fileReplay.location+"~, payload="+$scope.payloadPageData.payload+"";
+                var filePayloadBatch = '"type":"FILE", "file-location":"'+$scope.fileReplay.location+'"';
                 
                 var batchPayload = '{  "replaySavedTimestamp":"'+batchVals[0]+'",  "replayedBy":"'+batchVals[1]+'", '+
                         '"batchProcessedTimestamp":"", "replayDestinationInfo": { '+filePayloadBatch+' },'+
@@ -471,9 +471,8 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
             }else{
                 var batchVals = $scope.batchValues();
                 var auditIDs = $scope.pullAuditIDs(batchVals[2]);
-                var webServicePayloadBatch = "type=WS~, wsdl="+$scope.webServiceReplay.wsdl+"~, operation="+$scope.webServiceReplay.operation+
-                    "~,  soapaction="+$scope.webServiceReplay.soapAction+"~, binding="+$scope.webServiceReplay.binding+"~, payload="+
-                    $scope.payloadPageData.payload;
+                var webServicePayloadBatch = '"type":"WS", "wsdl":"'+$scope.webServiceReplay.wsdl+'", "operation":"'+$scope.webServiceReplay.operation+'",'
+                    '"soapaction":"'+$scope.webServiceReplay.soapAction+'", "binding":"'+$scope.webServiceReplay.binding+'"'
                 
                 var batchPayload = '{  "replaySavedTimestamp":"'+batchVals[0]+'",  "replayedBy":"'+batchVals[1]+'", '+
                         '"batchProcessedTimestamp":"", "replayDestinationInfo": { '+webServicePayloadBatch+' },'+
