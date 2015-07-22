@@ -328,7 +328,7 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                         var nameholder = null;
                         var getWidth = d.dx;
                         if (d.name.length > (getWidth)*.1) {
-                            nameholder = d.name.substring(0,(getWidth*.1)) + "... " + d.size;
+                            //nameholder = d.name.substring(0,(getWidth*.1)) + "... " + d.size;
                             if((getWidth)*.1 > 5)nameholder = d.name.substring(0,(getWidth*.1)) + "... " + d.size;
                             else nameholder = " ";
                         }
@@ -532,25 +532,25 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                         scope.treemapSaver.wordLength[zx] = (getWidth);
                         zx++;
                         if (d.name.length > (getWidth)*.1) {
-                            //nameholder = d.name.substring(0,(getWidth*.1)) + "... ";
-                            if((getWidth)*.1 > 5)nameholder = d.name.substring(0,(getWidth*.1)) + "... ";
-                            else nameholder = " ";
+                            nameholder = d.name.substring(0,(getWidth*.1)) + "... ";
+//                            if((getWidth)*.1 > 5)nameholder = d.name.substring(0,(getWidth*.1)) + "... ";
+//                            else nameholder = " ";
                         }
                         else nameholder = d.name;
                     return nameholder;});
                     d3.selectAll("g.cell").select("text").select("tspan:nth-child(2)")
-                    .text(function(d) {         //text truncation check
-                        var nameholder = null;
-                        var getWidth = kx * d.dx - 1;
-                        scope.treemapSaver.wordLength[zx] = (getWidth);
-                        zx++;
-                        if (d.name.length > (getWidth)*.1) {
-                            //nameholder = d.name.substring(0,(getWidth*.1)) + "... ";
-                            if((getWidth)*.1 > 5)nameholder = d.size;
-                            else nameholder = " ";
-                        }
-                        else nameholder = d.size;
-                    return nameholder;});
+                    .text(function(d) {
+                        return d.size;});
+                    
+                    d3.selectAll("g.cell").select("text")
+                            .style("opacity", function(d){
+                                var getWidth = kx * d.dx - 1;
+                                if (5 > (getWidth)*.1) {
+                                    return 0;
+                                }else{
+                                    return 1;
+                                }
+                            })
                             
                     d3.selectAll("g.cell")          //replaces click event to zoom in on individual cells once within a parent node
                     .on("click", function(d) { return zoom((node === d.parent ? root : d.parent),(d3.select(this).attr("id")),(d3.select(this).attr("parent"))); });
