@@ -60,17 +60,15 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
         
         
     function updateSize(resizeTemp, element, scope){
-        
-//        if(resizeTemp === 0){
-//            d3.select("#treemapChart").select("svg").remove();
-//            var svg = d3.select("#treemapChart").append("svg")
-//                .attr("width", w)
-//                .attr("height", h)
-//                .append("g")
-//                .attr("transform", "translate(" + w*.065 + "," + h*.5 + ")")
-//                .append("text").text("No Data Available");
-//            return;
-//        }
+        if(resizeTemp === 0){
+            svg.selectAll("rect").remove();
+            svg.selectAll("text").remove();
+            svg.append("text")
+                .attr("x", w/3)
+                .attr("y", h/3)
+                .text("No Data Available");
+            return;
+        }
             w= document.getElementById('treemapDiv').offsetWidth;
             w2 = w*.8;
             h=window.innerHeight*.83;
@@ -102,16 +100,15 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
     }    
         
     function createZoomTree(treeDataset, element, flag, scope, resizedWin){
-//            if(treeDataset === 0){
-//                d3.select("#treemapChart").select("svg").remove();
-//                var svg = d3.select("#treemapChart").append("svg")
-//                    .attr("width", w)
-//                    .attr("height", h)
-//                    .append("g")
-//                    .attr("transform", "translate(" + w*.065 + "," + h*.5 + ")")
-//                    .append("text").text("No Data Available");
-//                return;
-//            }
+        if(treeDataset === 0){
+            svg.selectAll("rect").remove();
+            svg.selectAll("text").remove();
+            svg.append("text")
+                .attr("x", w/3)
+                .attr("y", h/3)
+                .text("No Data Available");
+            return;
+        }
             
             if(scope.treemapSaver.zoomClicked !== undefined){
                 d3.select("#zoomOut").transition().duration(750).style("opacity",0);
