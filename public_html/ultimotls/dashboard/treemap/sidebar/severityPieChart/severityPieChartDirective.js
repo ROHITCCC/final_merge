@@ -2,7 +2,7 @@ var severityPieChartDirectiveModule = angular.module('severityPieChartDirectiveM
 
 severityPieChartDirectiveModule.directive('severityPieChart',['queryFilter', function(queryFilter){
     function updateSize(data){
-        var width = document.getElementById('severityPieChartDiv').offsetWidth, height = (window.innerHeight*.26);
+        var width = document.getElementById('severityPieChartDiv').offsetWidth, height = (window.innerHeight*.28);
         if (data === 0){ //Will append a Message for no data and return out of the function
             d3.select("#severityPieChart").select("svg").remove();
             var svg = d3.select("#severityPieChart").append("svg")
@@ -16,11 +16,26 @@ severityPieChartDirectiveModule.directive('severityPieChart',['queryFilter', fun
         pieChart(data,"updateChart");
         return;
     }
+    function onSelection(d,i){
+        d3.select("#severity").selectAll("path").style("opacity", 1)
+        d3.select("#error").selectAll("path").style("opacity", 1)
+        d3.select("#transactionType").selectAll("rect").style("opacity",1)
+        
+        d3.select("#severity").selectAll("path").style("opacity", 0.3)
+        d3.select("#error").selectAll("path").style("opacity", 0.3)
+        d3.select("#transactionType").selectAll("rect").style("opacity", 0.3)
+        
+        d3.select("#severityInnerSlice"+i).style("opacity",1)
+        d3.select("#severityTopSlice"+i).style("opacity",1)
+        d3.select("#severityOuterSlice"+i).style("opacity",1)
+        console.log(d);
+        console.log(i)
+    }
     function pieChart(data,status){
         var Donut3D = {};
-        var color = d3.scale.category20();
-        var width = document.getElementById('severityPieChartDiv').offsetWidth, height = (window.innerHeight*.26);
-        var centerX = width*.5, centerY = height*.5, radiusX = centerX*.7, radiusY = centerY*.66, pieHeight = centerY*.3, innerRadius = .3;
+        var color = d3.scale.category10();
+        var width = document.getElementById('severityPieChartDiv').offsetWidth, height = (window.innerHeight*.28);
+        var centerX = width*.5, centerY = height*.45, radiusX = centerX*.7, radiusY = centerY*.66, pieHeight = centerY*.2, innerRadius = .3;
         function upDateTreemap(filterCriteria){
             queryFilter.appendQuery("severity",filterCriteria.data._id);
             queryFilter.broadcast();
@@ -71,31 +86,34 @@ severityPieChartDirectiveModule.directive('severityPieChart',['queryFilter', fun
 		var slices = d3.select("#"+id).append("g").attr("transform", "translate(" + x + "," + y + ")")
                     .attr("class", "slices");
 			
-		slices.selectAll(".innerSlice").data(_data).enter().append("path").attr("class", "innerSlice")
+		slices.selectAll(".innerSlice").data(_data).enter().append("path").attr("class","innerSlice")
+                    .attr("id", function(d,i){return "severityInnerSlice"+i})
                     .style("fill", function(d,i){return color(i);})
                     .style("stroke", "rgb(0,0,0)")
                     .attr("d",function(d){ return pieInner(d, rx+0.5,ry+0.5, h, ir);})
-                    .on("click", function(d){upDateTreemap(d);})
+                    .on("click", function(d,i){upDateTreemap(d);onSelection(d,i);})
                     .each(function(d){this._current=d;});
 		
 		slices.selectAll(".topSlice").data(_data).enter().append("path").attr("class", "topSlice")
+                    .attr("id", function(d,i){return "severityTopSlice"+i})
                     .style("fill", function(d,i){return color(i);})
                     .style("stroke", "rgb(0,0,0)")
                     .attr("d",function(d){ return pieTop(d, rx, ry, ir);})
-                    .on("click", function(d){upDateTreemap(d);})
+                    .on("click", function(d,i){upDateTreemap(d);onSelection(d,i);})
                     .each(function(d){this._current=d;});
 		
 		slices.selectAll(".outerSlice").data(_data).enter().append("path").attr("class", "outerSlice")
+                    .attr("id", function(d,i){return "severityOuterSlice"+i})
                     .style("fill", function(d,i){return color(i);})
                     .style("stroke", "rgb(0,0,0)")
                     .attr("d",function(d){ return pieOuter(d, rx-.5,ry-.5, h);})
-                    .on("click", function(d){upDateTreemap(d);})
+                    .on("click", function(d,i){upDateTreemap(d);onSelection(d,i);})
                     .each(function(d){this._current=d;});
 
 		slices.selectAll(".label").data(_data).enter().append("text").attr("class", "label")
 			.attr("x",function(d){ return .7*rx*Math.cos(0.5*(d.startAngle+d.endAngle));})
 			.attr("y",function(d){ return 0.6*ry*Math.sin(0.5*(d.startAngle+d.endAngle));})
-                        .on("click", function(d){upDateTreemap(d);})
+                        .on("click", function(d,i){upDateTreemap(d);onSelection(d,i);})
                         .style("fill", "white")
                         .style("font-size", "12px")
 			.text(function(d){return d.data._id}).each(function(d){this._current=d;});				
