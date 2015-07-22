@@ -449,7 +449,7 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                 if(auditParam === "0.0")headerFlag = true;
                
                 if((name !== "flag" && parent !== "flag")){     //checks if zoomout was not clicked
-                    zoomInTreemap(d,name,parent, kx);
+                    zoomInTreemap(d,name,parent, kx, ky);
                 }
                 else{           //zoom out button clicked
                     zoomOutTreemap(d,name,parent, kx);
@@ -516,7 +516,7 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                 
             }
             
-            function zoomInTreemap(d, name, parent, kx){
+            function zoomInTreemap(d, name, parent, kx, ky){
                 scope.treemapSaver.currentZoomName = name;
                 //d3.selectAll("g.cell").select("text").remove();
                     d3.select("#zoomOut").transition().duration(750).style("opacity",1);
@@ -542,7 +542,8 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                     d3.selectAll("g.cell").select("text")
                             .style("opacity", function(d){
                                 var getWidth = kx * d.dx - 1;
-                                if (5 > (getWidth)*.1) {
+                                var getHeight = ky * d.dy - 1;
+                                if (5 > (getWidth)*.1 || 4 > (getHeight)*.1) {
                                     return 0;
                                 }else{
                                     return 1;
@@ -554,7 +555,7 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
 
                      //console.log(d3.select("#treemapZoom").select("svg").selectAll("g")[0])
                      scope.treemapSaver.envSave = scope.env;
-                    //remakeFlag = false;
+                    remakeFlag = false;
                     //if(zoomFlag)zoomFlag2=true;
                     zoomFlag = true; 
                     tempName = name;
