@@ -275,10 +275,10 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                     to = new Date(toDate).toISOString(); //figure out how to add one day
                     dateQuery = "'timestamp':{'$gte':{'$date':'"+from+"'},'$lt':{'$date':'"+to+"'}},";
                     doAdvanceSearch = true;
-                    return;
                 }
-                $scope.errorWarning = "A valid date must be entered for BOTH fields";
-                return;
+                else{
+                    $scope.errorWarning = "A valid date must be entered for BOTH fields";
+                }
             }
             if (dbType === "payload" && !advanceSearchObjectflag){
                 $scope.errorWarning = "Keyword must be entered for Payload Search";
@@ -388,9 +388,10 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
         };
         //makes a http call for related transactionId
         $scope.relatedTransaction = function(transactionID){
-            var getData = "{\"transactionId\":\""+transactionID+"\"}&count&pagesize=25";
-            var getURL = TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/"+TLS_DBNAME+"/"+TLS_AUDIT_COLLECTION+"?filter=";
-            $http.get(getURL+getData,{timeout:TLS_SERVER_TIMEOUT})
+            var urlParam = "&searchtype=advanced&count&pagesize="+$scope.rowNumber.rows+"&searchdb=audit";
+            var getData = "{\"transactionId\":\""+transactionID+"\"}"; //needs end URL Parameters
+            var getURL = TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/_logic/SearchService?filter=";
+            $http.get(getURL+getData+urlParam,{timeout:TLS_SERVER_TIMEOUT})
                 .success(function(response){
                     $scope.relatedTransactionData = response._embedded['rh:doc'];
                     if($scope.relatedTransactionData.length === 1){//need a service to check for duplicate values and single returns
@@ -406,14 +407,14 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
         $scope.callPayload = function(data){ //from Database Page datalocation makes a call
             var dataLocationId = data;
             console.log(dataLocationId);
-            var payloadUrl = TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/_logic/"+TLS_DBNAME+"/"+TLS_PAYLOAD_COLLECTION+"/PayloadService?id=";
+            var payloadUrl = TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/_logic/PayloadService?id=";
             $http.get(payloadUrl+dataLocationId, {timeout:TLS_SERVER_TIMEOUT})
                 .success(function (response){ 
                     $scope.payloadPageData = response;
             });
         };
         $scope.restReplay = {};
-        var replayPostUrl = TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/_logic/"+TLS_DBNAME+"/"+TLS_AUDIT_COLLECTION+"/replay";
+        var replayPostUrl = TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/_logic/ReplayService";
         var replayPostUrlBatch = TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/"+TLS_DBNAME+"/"+TLS_BATCH_REPLAY_COLLECTION;
         $scope.runRestService = function(){//only takes JSON files not 
             var checkRest = $scope.checkChecked();

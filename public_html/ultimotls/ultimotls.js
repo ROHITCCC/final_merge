@@ -129,7 +129,7 @@ ultimotls.controller('loginControllerModule', ['$scope', '$http', '$q', '$base64
             
             
         };
-        $http.get(TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/_logic/"+TLS_DBNAME+"/"+TLS_SETTING_COLLECTION+"/SettingService?object=setting.envsetup",{timeout:TLS_SERVER_TIMEOUT})
+        $http.get(TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/_logic/SettingService?object=setting.envsetup",{timeout:TLS_SERVER_TIMEOUT})
             .success(function(data){
                 var envOptionsData = data._embedded['rh:doc'][0].envsetup;
                 $scope.envOptions = envOptionsData;
@@ -318,7 +318,7 @@ ultimotls.config(function ($stateProvider, $urlRouterProvider) {
 });
 
 ultimotls.factory("mongoAggregateService", function ($http) {
-    var postUrl = TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/_logic/"+TLS_DBNAME+"/"+TLS_AUDIT_COLLECTION+"/aggregate";
+    var postUrl = TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/_logic/AggregateService";
     var callAggregate = {};
     callAggregate.httpResponse = {};
     callAggregate.prepForBroadcast = function () {
