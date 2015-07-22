@@ -785,7 +785,7 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                 
             }
             function mouseOverBrushButton(){
-               d3.select("#zoomIn").style("cursor","crosshair");
+               //d3.select("#zoomIn").style("cursor","crosshair");
             }
             
             
