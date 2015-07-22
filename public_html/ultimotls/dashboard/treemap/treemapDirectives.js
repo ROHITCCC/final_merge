@@ -28,7 +28,8 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                 parCellSpacer=0,
                 parCellCounter=1,
                 brushStorage = [],
-                headerFlag = false;
+                headerFlag = false,
+                cursorFlag = false;
                 x2.domain([0, w]);
                 y2.domain([0, h]);
                 
@@ -433,7 +434,8 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
         }
             
             d3.select("#zoomOut").on("click", function() { zoom(root, "flag", "flag"); });
-            d3.select("#zoomIn").on("click", customZoomBtn);
+            d3.select("#zoomIn").on("click", customZoomBtn)
+                    .on("mouseover", mouseOverBrushButton());
 
 
 
@@ -757,12 +759,13 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                     d3.selectAll("g.brush").remove();
 
                     scope.treemapSaver.zoomClicked = undefined;
+                    cursorFlag = false;
                 }
                 else{
                     
                     d3.selectAll(".brush").call(brushStorage[scope.treemapSaver.brushCounter].clear());
                     d3.selectAll("g.brush").remove();
-                    
+                    cursorFlag = true;
                     if(scope.treemapSaver.customZoomed === undefined){
                         svg.append("g")
                             .attr("id","brush")
@@ -780,6 +783,9 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                     scope.treemapSaver.zoomClicked = true;
                 }
                 
+            }
+            function mouseOverBrushButton(){
+               d3.select("#zoomIn").style("cursor","crosshair");
             }
             
             
