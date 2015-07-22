@@ -13,7 +13,7 @@ and open the template in the editor.
 <!--                    <div class="row">-->
                         <div class="dropdown-toggle" data-toggle="dropdown" ng-model="timeSelected">
                             <span class="dropdown-text" onclick='data-toogle'><b>Last </b></span>
-                            <a id="currentTimeSelect">{{timeSelected.description}}</a><span class="caret" style="margin-left: -15px;"></span>
+                            <a id="currentTimeSelect">{{timeSelected.description}}</a><span class="caret" style="margin-left: -15px; vertical-align: bottom;"></span>
                         </div>
                         <ul  id="timedropdown" class="dropdown-menu" ng-model="timeOptions" style="min-width: 100px; left: 30px;">
                             <li ng-repeat="time in timeOptions">
