@@ -433,9 +433,8 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                 .text("No Data Available");
         }
             
-            d3.select("#zoomOut").on("click", function() { zoom(root, "flag", "flag"); });
-            d3.select("#zoomIn").on("click", customZoomBtn)
-                    .on("mouseover", mouseOverBrushButton());
+            d3.select("#zoomOut").on("click", function() { zoom(root, "flag", "flag"); }).style("cursor","auto");
+            d3.select("#zoomIn").on("click", customZoomBtn).style("cursor","auto");
 
 
 
@@ -523,6 +522,10 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                 //d3.selectAll("g.cell").select("text").remove();
                     d3.select("#zoomOut").transition().duration(750).style("opacity",1);
                     d3.select("#zoomIn").transition().duration(750).style("opacity",1);
+                    d3.select("#zoomOut").on("click", function() { zoom(root, "flag", "flag"); }).style("cursor","pointer");
+                    d3.select("#zoomIn").on("click", customZoomBtn).style("cursor","pointer");
+                    d3.select("#zoomOut").style("cursor","pointer");
+                    d3.select("#zoomIn").style("cursor","pointer");
                     var zx = 0;
                     d3.selectAll("g.cell").select("tspan")
                     .text(function(d) {         //text truncation check
@@ -573,7 +576,8 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                     d3.selectAll("g.cell").select("text").remove();
                     d3.select("#zoomOut").transition().duration(750).style("opacity",0);
                     d3.select("#zoomIn").transition().duration(750).style("opacity",0);
-                    
+                    d3.select("#zoomOut").on("click", "").style("cursor","auto");
+                    d3.select("#zoomIn").on("click", "").style("cursor","auto");
                     //if(scope.treemapSaver.customZoomed !== undefined) $("#"+scope.treemapSaver.currentZoomName).d3Click();
                     
                     scope.treemapSaver.customZoomed = undefined;
@@ -633,7 +637,7 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                 d3.selectAll("svg.newSVG").remove();
                 $("#zoomOut").d3Click();
                 $("#"+scope.treemapSaver.currentZoomName).d3Click();
-                
+                d3.select("#zoomIn").style("cursor","pointer")
                 d3.selectAll("#treemapSVG").transition().duration(750).style("display","inline").style("opacity","1");
                 d3.select("#zoomOut").on("click", function() { zoom(root, "flag", "flag"); });
                
@@ -747,7 +751,7 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                 createZoomTree(treeData, element, "true", scope, true);
                 console.log(nodes)
                 d3.select("#zoomOut").on("click", function() { zoomOutBrushed(); });
-                    
+                d3.select("#zoomIn").style("cursor","pointer")
                     
             }
             
@@ -759,13 +763,14 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                     d3.selectAll("g.brush").remove();
 
                     scope.treemapSaver.zoomClicked = undefined;
-                    cursorFlag = false;
+                    d3.select("#zoomIn").style("cursor","pointer")
                 }
                 else{
                     
                     d3.selectAll(".brush").call(brushStorage[scope.treemapSaver.brushCounter].clear());
                     d3.selectAll("g.brush").remove();
-                    cursorFlag = true;
+                    
+                    d3.select("#zoomIn").style("cursor","crosshair")
                     if(scope.treemapSaver.customZoomed === undefined){
                         svg.append("g")
                             .attr("id","brush")
@@ -783,9 +788,6 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                     scope.treemapSaver.zoomClicked = true;
                 }
                 
-            }
-            function mouseOverBrushButton(){
-               //d3.select("#zoomIn").style("cursor","crosshair");
             }
             
             
