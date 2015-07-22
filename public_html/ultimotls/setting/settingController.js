@@ -44,7 +44,7 @@ settingModule.directive('confirmationNeeded', function(){
 });
 
 settingModule.controller('SettingsController', function ($scope, $http) {
-    var settingURL = TLS_PROTOCOL + "://" + TLS_SERVER + ":" + TLS_PORT + "/_logic/" + TLS_DBNAME + "/" + TLS_SETTING_COLLECTION + "/SettingService";
+    var settingURL = TLS_PROTOCOL + "://" + TLS_SERVER + ":" + TLS_PORT + "/_logic/SettingService";
     var schedulerURL = TLS_PROTOCOL + "://" + TLS_SERVER + ":" + TLS_PORT + "/_logic/SchedulerService";
     $scope.settings = {};
     $scope.reports = {};
