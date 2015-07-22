@@ -610,8 +610,8 @@ div#legend {
     min-width: 20px;
 }
 #timedropdown{
-    margin: 0px;
-    padding-top: 0px;
+    margin-top: 9px;
+    margin-left: 3px;
 }
 
 span.error{
