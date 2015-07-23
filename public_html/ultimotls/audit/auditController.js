@@ -79,7 +79,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                 $scope.data = response.data;
                 $scope.treemapSaver.auditData = $scope.data;
             });
-
+            document.getElementById("replaySelectAll").checked = false;
         };
         //Function for Custom Field
         $scope.addNewCustom = function () {
@@ -254,6 +254,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
             //Setters
             $scope.dbTypeSetter = dbType;
             $scope.searchOn(false);
+            document.getElementById("replaySelectAll").checked = false;
             //URL PARAMETERS
             var getURL = TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/_logic/SearchService";
             var urlParam = "&searchtype=advanced&count&pagesize="+$scope.rowNumber.rows+"&searchdb="+dbType;
