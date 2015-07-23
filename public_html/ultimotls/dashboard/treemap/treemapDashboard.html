@@ -7,8 +7,8 @@ and open the template in the editor.
 
 <div class="container-fluid">
     <div id="row1" class="row">
-        <div class="container-fluid col-lg-12 col-md-12">
-            <div  class="col-lg-3 col-md-4 col-sm-4" style="margin-left:55px">
+        <div class="container-fluid col-lg-9 col-md-12">
+            <div  class="col-lg-5 col-md-5 col-sm-12">
                 <div id="dropdownTimeSelection" class="dropdown">
 <!--                    <div class="row">-->
                         <div class="dropdown-toggle" data-toggle="dropdown" ng-model="timeSelected">
@@ -23,11 +23,18 @@ and open the template in the editor.
                     <!--</div>-->
                 </div>
             </div>
-            <div  class="row col-lg-5 col-md-6 col-sm-7 treemapTools">
-                <div id="legendDropDown" class="col-lg-3 col-md-3 col-sm-2"></div> 
-                <button type="button" id="zoomIn" class="btn btn-default pull-right col-lg-4 col-md-4 col-sm-5" style=" opacity: 0"><span class="glyphicon glyphicon-zoom-in"></span>Zoom In</button>            
-                <button type="button" id="zoomOut" class="btn btn-default pull-right col-lg-4 col-md-4 col-sm-5" style=" opacity: 0"><span class="glyphicon glyphicon-zoom-out"></span>Zoom Out</button>            
+            <div  class="col-lg-3 col-md-4 col-sm-12 treemapTools">
+                <span><b>Application</b></span>
+                <div id="legendDropDown"></div> 
             </div>
+            
+            <div  class="row col-lg-4 col-md-3 col-sm-12">
+                <button type="button" id="zoomIn" class="btn btn-default pull-right col-lg-4 col-md-4 col-sm-5 zoombtn"><span class="glyphicon glyphicon-zoom-in"></span>Zoom In</button>            
+                <button type="button" id="zoomOut" class="btn btn-default pull-right col-lg-4 col-md-4 col-sm-5 zoombtn"><span class="glyphicon glyphicon-zoom-out"></span>Zoom Out</button>            
+            </div>
+        
+        
+        </div>
         </div>
     </div>
     <div id="row2" class="row col-sm-12">

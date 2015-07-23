@@ -114,4 +114,3 @@ $('#transactionTypeDiv').waitUntilExists(function () {
     });
     
 });
-
