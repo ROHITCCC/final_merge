@@ -27,20 +27,20 @@ settingModule.directive('uppercased', function () {
     };
 });
 
-settingModule.directive('confirmationNeeded', function(){
-   return {
-       priority: 1,
-       terminal: true,
-       link: function(scope, element, attr){
-           var msg = attr.confirmationNeeded || "Are you sure?";
-           var clickAction = attr.ngClick;
-           element.bind ('click', function(){
-               if (window.confirm(msg)){
-                   scope.$eval(clickAction);
-               }
-           });
-       }
-   } 
+settingModule.directive('confirmationNeeded', function () {
+    return {
+        priority: 1,
+        terminal: true,
+        link: function (scope, element, attr) {
+            var msg = attr.confirmationNeeded || "Are you sure?";
+            var clickAction = attr.ngClick;
+            element.bind('click', function () {
+                if (window.confirm(msg)) {
+                    scope.$eval(clickAction);
+                }
+            });
+        }
+    }
 });
 
 settingModule.controller('SettingsController', function ($scope, $http) {
@@ -209,7 +209,10 @@ settingModule.controller('SettingsController', function ($scope, $http) {
         };
     });
 
-//////////////////////////////////////GLOBAL////////////////////////////////////////////    
+//////////////////////////////////////GLOBAL//////////////////////////////////////////// 
+
+    $scope.batch = {requestType:'', jobName: "BatchReplayJob", jobClass: "BatchReplayJob", frequency: {starttime:'', duration: '', unit: ''}};
+    $scope.schedulerObj ={requestType:'', propertiesFile:''};
     $scope.savedata = function (insert, index) {
         var conAjax = $http.post(settingURL, insert);
         conAjax.success(function (response) {
@@ -237,24 +240,40 @@ settingModule.controller('SettingsController', function ($scope, $http) {
         });
     };
 
+    $scope.batchstart = function () {
+        $scope.batch.requestType= "startJob";
+        if ($scope.batch.frequency.starttime) {
+                    $scope.batch.frequency.starttime = $scope.batch.frequency.starttime.replace(/ /g, "T");
+        }
+        console.log($scope.batch);
+        $scope.scheduler($scope.batch);
+    };
 
-    $scope.startscheduler = function () {
-        var conAjax = $http.post(schedulerURL+"?server=start", {msg:'start'});
+    $scope.batchstop = function () {
+        $scope.batch.requestType= "stopJob";
+        delete $scope.batch.frequency;
+        $scope.scheduler($scope.batch);
+    };
+
+
+    $scope.scheduler = function (object) {
+        console.log('here');
+        var conAjax = $http.post(schedulerURL, object);
         conAjax.success(function (response) {
-            
         });
         conAjax.error(function (response) {
-           
+
         });
     };
     
+    $scope.startscheduler = function () {
+        $scope.schedulerObj.requestType="startScheduler";
+        console.log($scope.schedulerObj);
+    };
+    
     $scope.stopscheduler = function () {
-        var conAjax = $http.post(schedulerURL+"?server=stop", {msg:'stop'});
-        conAjax.success(function (response) {
-            
-        });
-        conAjax.error(function (response) {
-           
-        });
+        $scope.schedulerObj.requestType="stopScheduler";
+        delete $scope.schedulerObj.propertiesFile;
+        console.log($scope.schedulerObj);   
     };
 });
