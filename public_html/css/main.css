@@ -268,6 +268,9 @@ text{
 #severity text, #error text, #reset, .columnDiv svg path, .columnDiv rect{
     cursor: pointer
 }
+#reset{
+    fill: red;
+}
 .columnDiv .scrollableBarChart{
     overflow-y:hidden;
     /* margin-left: 20px; */
