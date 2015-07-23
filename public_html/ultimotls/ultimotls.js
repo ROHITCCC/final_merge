@@ -453,7 +453,7 @@ ultimotls.service("auditQuery", function () {
     }
     
 });
-ultimotls.service("resetTimerService",['localStorageService','$timeout', '$scope',function(localStorageService,$timeout, $scope){
+ultimotls.service("resetTimerService",['localStorageService','$timeout',function(localStorageService,$timeout){
     var resetTimer = {};
     resetTimer.set = function(newTime){
         //var auth_token_valid_until = header()['auth-token-valid-until']
@@ -466,10 +466,10 @@ ultimotls.service("resetTimerService",['localStorageService','$timeout', '$scope
         localStorageService.cookie.add('creds', userCred, newExpiration);
         localStorageService.cookie.add('name', username, newExpiration);
         localStorageService.cookie.add('showNav', showNav, newExpiration);
-        $timeout.cancel($scope.timer);
-        $scope.timer = $timeout(function() {
+        $timeout.cancel(timer);
+        var timer = $timeout(function() {
             delete $http.defaults.headers.common["Authorization"];
-            console.log('Authorization Expired');
+            console.log('Authorization Expired')
         }, newExpiration);
     };
     return resetTimer;
