@@ -4,7 +4,7 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h4 class="panel-title">
-                        <button type="button" class="tabselector col-sm-12" data-toggle="collapse" data-target="#api" data-parent="#accordion" aria-controls="immidate">REST API Setup</button>
+                        <button type="button" class="tabselector col-sm-12 text-left collapsed" data-toggle="collapse" data-target="#api" data-parent="#accordion" aria-controls="immidate"><span class="caret"></span> REST API Setup</button>
                     </h4>
                 </div>
                 <div id="api" class="panel-collapse collapse">
@@ -65,7 +65,7 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h4 class="panel-title">
-                        <button type="button" class="tabselector col-sm-12" data-toggle="collapse" data-target="#env" data-parent="#accordion" aria-controls="immidate">Environment Setup</button>
+                        <button type="button" class="tabselector col-sm-12 text-left collapsed" data-toggle="collapse" data-target="#env" data-parent="#accordion" aria-controls="immidate"><span class="caret"></span>  Environment Setup</button>
                     </h4>
                 </div>
                 <div id="env" class="panel-collapse collapse">
@@ -132,7 +132,7 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h4 class="panel-title">
-                        <button type="button" class="tabselector col-sm-12" data-toggle="collapse" data-target="#immidate"  data-parent="#accordion" aria-controls="immidate">Immidate Notification</button>
+                        <button type="button" class="tabselector col-sm-12 text-left collapsed" data-toggle="collapse" data-target="#immidate"  data-parent="#accordion" aria-controls="immidate"><span class="caret"></span>  Immidate Notification</button>
                     </h4>
                 </div>
                 <div id="immidate" class="panel-collapse collapse">
@@ -237,7 +237,7 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h4 class="panel-title">
-                        <button type="button" class="tabselector col-sm-12" data-toggle="collapse" data-target="#reports" data-parent="#accordion" aria-controls="immidate">Reports</button>
+                        <button type="button" class="tabselector col-sm-12 text-left collapsed" data-toggle="collapse" data-target="#reports" data-parent="#accordion" aria-controls="immidate"><span class="caret"></span>  Reports</button>
                     </h4>
                 </div>
                 <div id="reports" class="panel-collapse collapse">
@@ -340,21 +340,62 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h4 class="panel-title">
-                        <button type="button" class="tabselector col-sm-12" data-toggle="collapse" data-target="#scheduler" data-parent="#accordion" aria-controls="immidate">Scheduler</button>
+                        <button type="button" class="tabselector col-sm-12 text-left collapsed" data-toggle="collapse" data-target="#scheduler" data-parent="#accordion" aria-controls="immidate"><span class="caret"></span>  Scheduler</button>
                     </h4>
                 </div>
                 <div id="scheduler" class="panel-collapse collapse">
                     <div class="panel-body" >
                         <div class="col-sm-12">
                             <div class="row">
-                                <form class="form-inline">
-                                    <div class="form-group bordertab col-sm-12">                                       
-                                        <div class="col-sm-12 text-center">
-                                            <button type="button" class="btn btn-primary" ng-click="startscheduler()">Start</button>
-                                            <button type="button" class="btn btn-primary" ng-click="stopscheduler()">Stop</button>
+                                <form name="batchScheduler" class="form-inline" >
+                                    <div class="form-group bordertab col-sm-8">
+                                        <h4>Batch replay job start/stop</h4>
+                                        <div class="col-sm-1">
+                                            <label class="control-label">Start time:</label>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <input type="text" class="form-control datetimepicker" name="batchStartime" value="{{batch.frequency.starttime}}" style="width: 100%;" ng-model="batch.frequency.starttime" placeholder="Start Time">
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <label class="control-label">Frequency:</label>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <input type="text" class="form-control" name="batchFrequency" value="{{batch.frequency.duration}}" style="width: 100%;" ng-model="batch.frequency.duration" placeholder="Frequency" required>
+                                        </div>
+                                        <div class="col-sm-1">
+                                            <label class="control-label">Unit:</label>
+                                        </div>
+                                        <div class="col-sm-1">
+                                            <select class="form-control"  name="batchUnit" ng-options='unit for unit in units' ng-model="batch.frequency.unit" required>
+                                                <option value="" disabled selected style='display:none;'>{{batch.frequency.unit}}</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="col-sm-2 pull-right">
+                                            <button type="button" class="btn btn-primary" ng-click="batchstart()" ng-disabled="batchScheduler.$invalid">Start</button>
+                                            <button type="button" class="btn btn-primary" ng-click="batchstop()">Stop</button>
+                                        </div>
+                                        <div class="col-sm-12" ng-show="batchScheduler.batchUnit.$invalid && batchScheduler.batchUnit.$touched || batchScheduler.batchFrequency.$invalid && batchScheduler.batchFrequency.$touched">
+                                            <span class="error">Frequency and Unit is required in order to start the batch scheduler</span>
                                         </div>
                                     </div>
                                 </form>
+                                <div class="form-group bordertab col-sm-4">
+                                    <form name="Scheduler" class="form-inline">
+                                        <h4>Scheduler service</h4>
+
+                                        <div class="col-sm-3">
+                                            <label class="control-label">Properties File:</label>
+                                        </div>
+                                        <div class="col-sm-2 text-left">
+                                            <input type="text" class="form-control" name="sched_prop" value="" ng-model="schedulerObj.propertiesFile" placeholder="Properties file" required>
+                                        </div>
+                                        <div class="col-sm-4 pull-right">
+                                            <button type="button" class="btn btn-primary" ng-click="startscheduler()">Start</button>
+                                            <button type="button" class="btn btn-primary" ng-click="stopscheduler()">Stop</button>
+                                        </div>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>

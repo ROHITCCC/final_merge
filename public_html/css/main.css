@@ -265,11 +265,8 @@ text{
 .columnDiv .row, .columnDiv svg{
     width: 100%;
 }
-#severity text, #error text, #reset, .columnDiv svg path, .columnDiv rect{
+#severityPieChart text, #errorTypePieChart text, .columnDiv svg path, .columnDiv rect{
     cursor: pointer
-}
-#reset{
-    fill: red;
 }
 .columnDiv .scrollableBarChart{
     overflow-y:hidden;
@@ -353,6 +350,7 @@ html {
     float: left;
     padding-right: 5px;
     padding-top: 5px;
+    height: 31px;
 }
 #currentTimeSelect{
     border: ridge;
@@ -604,6 +602,7 @@ div#legend {
 }
 #dropdownTimeSelection{
     width: 150px;
+    height: 31px;
 }
 #legendDropDown{
     width: 110px;
@@ -628,6 +627,7 @@ select#legendSelect {
 
 .treemapTools{
     margin-right: 3px;
+    height: 31px;
 }
 #landingPageHeader .dropdown-menu {
     min-width: 20px;
@@ -642,7 +642,7 @@ span.error{
     color: red;
 }
 .zoombtn{
-    opacity: 0;
+    display: none;
 }
 .collapse-custom .navbar-tool {
     display: none;
@@ -1339,6 +1339,16 @@ select.inputable{
     .navbar .nav > li > a {
         padding: 10px 15px;
     }
+    
+    ul.nav.navbar-nav {
+        display: inline-block;
+    }
+    
+    ul.nav.navbar-nav section{
+        display: block;
+    }
+    
+    
 }
 
 .inlineflex{
@@ -1361,4 +1371,22 @@ select.inputable{
     -webkit-box-shadow: inset 0 3px 8px rgba(0, 0, 0, 0.125);
     -moz-box-shadow: inset 0 3px 8px rgba(0, 0, 0, 0.125);
     box-shadow: inset 0 3px 8px rgba(0, 0, 0, 0.125);
+}
+
+.margintop {
+    margin-top: 10px;
+}
+
+.marginbottom{
+    margin-bottom: 10px;
+}
+
+button.collapsed .caret {
+    -ms-transform: rotate(-95deg);
+    -webkit-transform: rotate(-95deg);
+    transform: rotate(-95deg);
+}
+
+div#landingPageHeader {
+  min-width: 320px;
 }
