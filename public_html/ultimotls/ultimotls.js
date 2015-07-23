@@ -56,7 +56,11 @@ ultimotls.controller('loginControllerModule', ['$scope', '$http', '$q', '$base64
 
             var request = $http.get(TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/_logic/LoginService/"+$scope.cred.username, {});
             request.success(function (data, status, header, config) {
-                var auth_token = header()['auth-token'] //pulling our auth-token
+                var auth_token = header()['auth-token']; //pulling our auth-token
+//                var auth_token_valid_until = header()['auth-token-valid-until']
+//                var date = new Date();
+//                var date1 = new Date(auth_token_valid_until);
+//                var calculateDate = (date1.getTime() - date.getTime())/60000;
                 //creating credentials based off of username and auth-token
                 credentials = $base64.encode($scope.cred.username + ":" + auth_token);
                 localStorageService.cookie.add('name', $scope.cred.username, TLS_EXPIRATION_TIME/(24*60));
@@ -69,6 +73,7 @@ ultimotls.controller('loginControllerModule', ['$scope', '$http', '$q', '$base64
                     localStorageService.cookie.add('showNav', $scope.treemapSaver.showNav, TLS_EXPIRATION_TIME/(24*60));
                     $http.defaults.headers.common["Authorization"] = 'Basic ' + credentials;
                     localStorageService.cookie.add('creds', credentials, TLS_EXPIRATION_TIME/(24*60));
+                    console.log(localStorageService.cookie.get('creds'));
                     $timeout(function() {
                         delete $http.defaults.headers.common["Authorization"];
                         console.log('Authorization Expired')
@@ -116,6 +121,7 @@ ultimotls.controller('loginControllerModule', ['$scope', '$http', '$q', '$base64
             $scope.auth = false;
             localStorageService.cookie.remove('creds');
             localStorageService.cookie.remove('showNav');
+            localStorageService.cookie.remove('name');
             delete $http.defaults.headers.common["Authorization"];
             
             //UNTESTED DELETE FUNCTION
@@ -448,7 +454,23 @@ ultimotls.service("auditQuery", function () {
     }
     
 });
-
+ultimotls.service("resetTimerService",['localStorageService',function(localStorageService){
+    var resetTimer = {};
+    resetTimer.set = function(newTime){
+        //var auth_token_valid_until = header()['auth-token-valid-until']
+        var currentDate = new Date();
+        var newDate = new Date(newTime);
+        var newExpiration = ((newDate.getTime() - currentDate.getTime())/60000)*24*60;
+        console.log(newExpiration)        
+        var userCred = localStorageService.cookie.get('creds'),
+            username = localStorageService.cookie.get('name'),
+            showNav = localStorageService.cookie.get('showNav');
+        localStorageService.cookie.add('creds', userCred, newExpiration/(24*60));
+        localStorageService.cookie.add('name', username, newExpiration/(24*60));
+        localStorageService.cookie.add('showNav', showNav, newExpiration/(24*60));
+    };
+    return resetTimer;
+}]);
 ultimotls.factory("treemapSaver", function() {
     var treemapSaver = {};
     treemapSaver.dropdownVal = 1;

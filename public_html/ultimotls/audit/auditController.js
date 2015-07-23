@@ -307,7 +307,9 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                 $scope.errorWarning = "";
                 var advanceSearchUrl = getURL+finalAdvanceSearchQuery+urlParam;
                 $http.get(advanceSearchUrl, {timeout:TLS_SERVER_TIMEOUT})
-                    .success(function (response){
+                    .success(function (response,status, header, config){
+                        var auth_token = header()['auth-token']
+                console.log(auth_token)
                         $scope.data = response;
                         $scope.errorWarning = "";
                     }).error(function(d){
@@ -420,7 +422,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
         };
         $scope.restReplay = {};
         var replayPostUrl = TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/_logic/ReplayService";
-        var replayPostUrlBatch = TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/"+TLS_DBNAME+"/"+TLS_BATCH_REPLAY_COLLECTION;
+        var replayPostUrlBatch = TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/_logic/ReplayService?batch=true";
         $scope.runRestService = function(){//only takes JSON files not 
             var checkRest = $scope.checkChecked();
             if(!checkRest){
@@ -548,7 +550,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
             return isChecked;
         };
         $scope.batchValues = function(){
-            var timestamp = new Date();
+            var timestamp = new Date().toISOString();
             var username = treemapSaver.nameSaver;
             var checkboxes = document.getElementsByName('auditCheckbox');
             var auditIDs = [];
