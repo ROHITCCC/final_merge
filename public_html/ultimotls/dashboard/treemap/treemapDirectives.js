@@ -325,9 +325,11 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                     .each(function (d) {            //truncates text with ... if rects are too small for the whole text
                         var nameholder = null;
                         var getWidth = d.dx;
-                        if (d.name.length > (getWidth)*.1) {
+                        var getHeight = d.dy;
+                        console.log(getHeight*.1)
+                        if (d.name.length > (getWidth)*.1 ) {
                             //nameholder = d.name.substring(0,(getWidth*.1)) + "... " + d.size;
-                            if((getWidth)*.1 > 5)nameholder = d.name.substring(0,(getWidth*.1)) + "... " + d.size;
+                            if((getWidth)*.1 > 5 && 4 < (getHeight)*.1)nameholder = d.name.substring(0,(getWidth*.1)) + "... " + d.size;
                             else nameholder = " ";
                         }
                         else nameholder = d.name + " " + d.size;
@@ -589,9 +591,10 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                         .each(function (d) {
                             var nameholder = null;
                             var getWidth = d.dx;
+                            var getHeight = d.dy;
                             if (d.name.length > (getWidth)*.1) {
                                 //nameholder = d.name.substring(0,(getWidth*.1)) + "... " + d.size;
-                                if((getWidth)*.1 > 5)nameholder = d.name.substring(0,(getWidth*.1)) + "... " + d.size;
+                                if((getWidth)*.1 > 5 && 4 < (getHeight)*.1)nameholder = d.name.substring(0,(getWidth*.1)) + "... " + d.size;
                                 else nameholder = " ";
                             }
                             else nameholder = d.name + " " + d.size;
