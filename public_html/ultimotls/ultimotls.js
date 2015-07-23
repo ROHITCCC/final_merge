@@ -16,8 +16,8 @@ var TLS_EXPIRATION_TIME =  15 //in minutes
 var ultimotls = angular.module('ultimotls', ['auditControllerModule', 'sunburstDirectiveModule', 'auditDirectiveModule' , 'treemapDirectiveModule', 'base64', 
                                              'LocalStorageModule', 'settingModule', 'ui.router', 'severityPieChartDirectiveModule', 'errorPieChartDirectiveModule',
                                              'transactionTypeBarChartDirectiveModule']);
-ultimotls.controller('loginControllerModule', ['$scope', '$http', '$q', '$base64', '$location','localStorageService', 'treemapSaver','$timeout','queryEnv','resetTimerService',
-    function ($scope, $http, $q, $base64, $location, localStorageService, treemapSaver, $timeout, queryEnv,resetTimerService ){ //loging Controller
+ultimotls.controller('loginControllerModule', ['$scope', '$http', '$q', '$base64', '$location','localStorageService', 'treemapSaver','queryEnv','resetTimerService',
+    function ($scope, $http, $q, $base64, $location, localStorageService, treemapSaver, queryEnv,resetTimerService ){ //loging Controller
         $scope.cred;
         $scope.treemapSaver = treemapSaver;
         $scope.treemapSaver.showNav = false;
@@ -74,13 +74,8 @@ ultimotls.controller('loginControllerModule', ['$scope', '$http', '$q', '$base64
                     $http.defaults.headers.common["Authorization"] = 'Basic ' + credentials;
                     localStorageService.cookie.add('creds', credentials);
                     resetTimerService.set(auth_token_valid_until);
-                    $timeout(function() {
-                        delete $http.defaults.headers.common["Authorization"];
-                        console.log('Authorization Expired')
-                    }, TLS_EXPIRATION_TIME*60*1000);
                     $scope.$apply($location.path("/treemap"));
                     
-                    console.log(localStorageService.cookie.get('creds'));
                     deferred.resolve();
                 }
                 else {
@@ -317,7 +312,7 @@ ultimotls.config(function ($stateProvider, $urlRouterProvider) {
 
 });
 
-ultimotls.factory("mongoAggregateService", function ($http) {
+ultimotls.factory("mongoAggregateService", ['$http','resetTimerService',function ($http,resetTimerService) {
     var postUrl = TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/_logic/AggregateService";
     var callAggregate = {};
     callAggregate.httpResponse = {};
@@ -325,7 +320,10 @@ ultimotls.factory("mongoAggregateService", function ($http) {
         this.httpResponse = this.callHttp();
     };
     callAggregate.callHttp = function (payload) {
-        var promise = $http.post(postUrl, payload, {timeout:TLS_SERVER_TIMEOUT}).success(function (result) {
+        var promise = $http.post(postUrl, payload, {timeout:TLS_SERVER_TIMEOUT})
+            .success(function (result, status, header, config) {
+                var auth_token_valid_until = header()['auth-token-valid-until'];
+                resetTimerService.set(auth_token_valid_until);
             //console.log(result);
         }).error(function () { //need to pass error message through the service???
             console.log("error");
@@ -333,7 +331,7 @@ ultimotls.factory("mongoAggregateService", function ($http) {
         return promise;
     };
     return callAggregate;
-});
+}]);
 
 ultimotls.service("queryEnv", function($rootScope){ //getter and setter for environment 
     var envid = {}
@@ -397,7 +395,7 @@ ultimotls.service("queryFilter", function($rootScope){
     return filter;
 });
 
-ultimotls.service("auditSearch",['$http','queryEnv', function ($http, queryEnv) {
+ultimotls.service("auditSearch",['$http','queryEnv', 'resetTimerService',function ($http, queryEnv,resetTimerService) {
     var postUrl = TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/_logic/SearchService?filter=";
     var audits = {};
     var env = queryEnv.getEnv();
@@ -408,8 +406,10 @@ ultimotls.service("auditSearch",['$http','queryEnv', function ($http, queryEnv) 
         var searchPromise = {};
         if (/:/.test(searchCriteria)) {
                 var jsonUrl = postUrl + jsonSearch;
-                searchPromise = $http.get(jsonUrl, {timeout:TLS_SERVER_TIMEOUT}).success(function (response) {
-
+                searchPromise = $http.get(jsonUrl, {timeout:TLS_SERVER_TIMEOUT})
+                    .success(function (response, status, header, config) {
+                        var auth_token_valid_until = header()['auth-token-valid-until'];
+                        resetTimerService.set(auth_token_valid_until);
                 }).error(function () {
                     console.log("error");
                 });
@@ -417,8 +417,10 @@ ultimotls.service("auditSearch",['$http','queryEnv', function ($http, queryEnv) 
         }
         else {
             var textUrl = postUrl + textSearch;
-            searchPromise = $http.get(textUrl, {timeout:TLS_SERVER_TIMEOUT}).success(function(response){
-                
+            searchPromise = $http.get(textUrl, {timeout:TLS_SERVER_TIMEOUT})
+                .success(function(response, status, header, config){
+                    var auth_token_valid_until = header()['auth-token-valid-until'];
+                    resetTimerService.set(auth_token_valid_until);
             }).error(function () {
                 console.log("error");
             });
@@ -451,7 +453,7 @@ ultimotls.service("auditQuery", function () {
     }
     
 });
-ultimotls.service("resetTimerService",['localStorageService',function(localStorageService){
+ultimotls.service("resetTimerService",['localStorageService','$timeout', '$scope',function(localStorageService,$timeout, $scope){
     var resetTimer = {};
     resetTimer.set = function(newTime){
         //var auth_token_valid_until = header()['auth-token-valid-until']
@@ -464,6 +466,11 @@ ultimotls.service("resetTimerService",['localStorageService',function(localStora
         localStorageService.cookie.add('creds', userCred, newExpiration);
         localStorageService.cookie.add('name', username, newExpiration);
         localStorageService.cookie.add('showNav', showNav, newExpiration);
+        $timeout.cancel($scope.timer);
+        $scope.timer = $timeout(function() {
+            delete $http.defaults.headers.common["Authorization"];
+            console.log('Authorization Expired');
+        }, newExpiration);
     };
     return resetTimer;
 }]);
