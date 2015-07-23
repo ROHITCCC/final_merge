@@ -17,16 +17,34 @@ transactionTypeBarChartDirectiveModule.directive('transactionTypeBarChart',['que
         barChart(data, "updateChart");
         return;
     };
-    function onSelection(d,i){
-        d3.select("#error").selectAll("path").style("opacity", 1)
-        d3.select("#severity").selectAll("path").style("opacity", 1)
-        d3.select("#transactionType").selectAll("rect").style("opacity", 1)
+    function cleanUp(){
+        d3.select("#errorTypePieChartDiv").select("#reset").remove();
+        d3.select("#severityPieChartDiv").select("#reset").remove();
+        d3.select("#transactionTypeBarChartDiv").select("#reset").remove();
+    }
+    function onReset(){
+        cleanUp();
+        d3.select("#severity").selectAll("path").style("opacity", 1);
+        d3.select("#error").selectAll("path").style("opacity", 1);
+        d3.select("#transactionType").selectAll("rect").style("opacity",1);
         
+        queryFilter.appendQuery("","");
+        queryFilter.broadcast();
+    }
+    function onSelection(d,i){
+        var width = document.getElementById('transactionTypeBarChartDiv').offsetWidth;
+        cleanUp();
         d3.select("#error").selectAll("path").style("opacity", 0.3)
         d3.select("#severity").selectAll("path").style("opacity", 0.3)
         d3.select("#transactionType").selectAll("rect").style("opacity", 0.3)
         
         d3.select("#transactionTypeBar"+i).style("opacity",1)
+        
+        var svg = d3.select("#transactionTypeBarChart").select("svg").append("g")
+                .attr("transform", "translate("+width*.7+",15)")
+                .attr("id","reset")
+                .on("click", function(d){onReset();});
+            svg.append("text").text("Reset");
     }
     function barChart(data, status){
         if(data.length){

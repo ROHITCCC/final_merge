@@ -6,8 +6,7 @@ severityPieChartDirectiveModule.directive('severityPieChart',['queryFilter', fun
         if (data === 0){ //Will append a Message for no data and return out of the function
             d3.select("#severityPieChart").select("svg").remove();
             var svg = d3.select("#severityPieChart").append("svg")
-                .attr("width", width)
-                .attr("height", height)
+                .attr("width", width).attr("height", height)
                 .append("g")
                 .attr("transform", "translate(" + width*.13 + "," + height*.5 + ")");
             svg.append("text").text("No Data Available");
@@ -16,20 +15,36 @@ severityPieChartDirectiveModule.directive('severityPieChart',['queryFilter', fun
         pieChart(data,"updateChart");
         return;
     }
+    function cleanUp(){
+        d3.select("#errorTypePieChartDiv").select("#reset").remove();
+        d3.select("#severityPieChartDiv").select("#reset").remove();
+        d3.select("#transactionTypeBarChartDiv").select("#reset").remove();
+    }
+    function onReset(){
+        cleanUp();
+        d3.select("#severity").selectAll("path").style("opacity", 1);
+        d3.select("#error").selectAll("path").style("opacity", 1);
+        d3.select("#transactionType").selectAll("rect").style("opacity",1);;
+        queryFilter.appendQuery("","");
+        queryFilter.broadcast();
+    }
     function onSelection(d,i){
-        d3.select("#severity").selectAll("path").style("opacity", 1)
-        d3.select("#error").selectAll("path").style("opacity", 1)
-        d3.select("#transactionType").selectAll("rect").style("opacity",1)
+        var width = document.getElementById('severityPieChartDiv').offsetWidth;
+        cleanUp();
+        d3.select("#severity").selectAll("path").style("opacity", 0.3);
+        d3.select("#error").selectAll("path").style("opacity", 0.3);
+        d3.select("#transactionType").selectAll("rect").style("opacity", 0.3);
         
-        d3.select("#severity").selectAll("path").style("opacity", 0.3)
-        d3.select("#error").selectAll("path").style("opacity", 0.3)
-        d3.select("#transactionType").selectAll("rect").style("opacity", 0.3)
+        d3.select("#severityInnerSlice"+i).style("opacity",1);
+        d3.select("#severityTopSlice"+i).style("opacity",1);
+        d3.select("#severityOuterSlice"+i).style("opacity",1);
         
-        d3.select("#severityInnerSlice"+i).style("opacity",1)
-        d3.select("#severityTopSlice"+i).style("opacity",1)
-        d3.select("#severityOuterSlice"+i).style("opacity",1)
-        console.log(d);
-        console.log(i)
+        var svg = d3.select("#severityPieChart").select("svg")
+                .append("g")
+                .attr("transform", "translate("+width*.7+",15)")
+                .attr("id","reset")
+                .on("click", function(d){onReset();});
+            svg.append("text").text("Reset");
     }
     function pieChart(data,status){
         var Donut3D = {};

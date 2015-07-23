@@ -5,9 +5,6 @@
  */
 //GLOBAL VARIABLES FOR INTITIAL SETUP
 var TLS_PROTOCOL = "http";
-var TLS_AUDIT_COLLECTION = "ErrorSpotActual";
-var TLS_SETTING_COLLECTION = "ErrorSpotSetting";
-var TLS_PAYLOAD_COLLECTION = "payloadCollection";
 var TLS_SERVER = "172.16.120.157";
 var TLS_PORT = "8080";
 var TLS_DBNAME = "ES";
@@ -385,6 +382,9 @@ ultimotls.service("queryFilter", function($rootScope){
     filter.appendQuery = function(name,value){
         if(name && value){
             newFilter = "\""+name+"\":\""+value+"\",";
+        }
+        if(name === "" && value === ""){
+            newFilter = "";
         }
         return newFilter;
     };
