@@ -23,8 +23,9 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
         $scope.rowsOptions = [{rows: 5}, {rows: 10}, {rows: 25}, {rows: 50}, {rows: 100}];
         $scope.rowNumber = $scope.rowsOptions[2];
         $scope.predicate = 'timestamp.$date';
+        $scope.replayQueryHolder = "";
         //Replay Page Options
-        $scope.replayOptions = [{type: "REST"}, {type: "FILE"}, {type: "WS"}];
+        $scope.replayOptions = [{type: "REST"}, {type: "FILE"}, {type: "WS"}, {type: "FTP"}];
         $scope.replayType = $scope.replayOptions[0];
         //For Custom Field
         $scope.curCustomPage = 0, $scope.curNameValuePage = 0;
@@ -72,6 +73,9 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
             var searchPromise = auditSearch.doSearch(query, $scope.rowNumber, dbType);
             $scope.inputError = "";
             searchPromise.then(function (response) {
+                var extractedURL = response.config.url, pos1=extractedURL.indexOf("="), pos2=extractedURL.indexOf("&");
+                var extractedQuery = extractedURL.slice(pos1+1,pos2);
+                $scope.replayQueryHolder = extractedQuery;//Used for replay services
                 $scope.data = response.data;
                 $scope.treemapSaver.auditData = $scope.data;
             });
@@ -212,7 +216,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
         function appendFields(advanceSearch){
             var string = "";
             if (advanceSearch.application) {
-                var appendApp = "\"application\":\""+advanceSearch.application+"\",";
+                var appendApp = "\"application\":\""+advanceSearch.application.toLowerCase()+"\",";
                 string = appendApp;
             }
             if(advanceSearch.interface) {
@@ -224,11 +228,11 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                 string = string+appendHostname;
             }
             if(advanceSearch.txDomain) {
-                var appendTxDomain = "\"transactionDomain\":\""+advanceSearch.txDomain+"\",";
+                var appendTxDomain = "\"transactionDomain\":\""+advanceSearch.txDomain.toLowerCase()+"\",";
                 string = string+appendTxDomain;
             }
             if(advanceSearch.txType) {
-                var appendTxType = "\"transactionType\":\""+advanceSearch.txType+"\",";
+                var appendTxType = "\"transactionType\":\""+advanceSearch.txType.toLowerCase()+"\",";
                 string = string+appendTxType;
             }
             if(advanceSearch.txID) {
@@ -236,11 +240,11 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                 string = string+appendTxID;
             }
             if(advanceSearch.severity) {
-                var appendSeverity = "\"severity\":\""+advanceSearch.severity+"\",";
+                var appendSeverity = "\"severity\":\""+advanceSearch.severity.toLowerCase()+"\",";
                 string = string+appendSeverity;
             }
             if(advanceSearch.errorType) {
-                var appendErrorType = "\"errorType\":\""+advanceSearch.errorType+"\",";
+                var appendErrorType = "\"errorType\":\""+advanceSearch.errorType.toLowerCase()+"\",";
                 string = string+appendErrorType;
             }
             return string;
@@ -296,11 +300,12 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                 };
             };
             //GENERATE FINAL QUERY
-            var finalAdvanceSearchQuery = (envQuery+query+customQuery+nameValueQuery+dateQuery).slice(0,-1);
+            var finalAdvanceSearchQuery = "?filter={\"$and\":[{"+(envQuery+query+customQuery+nameValueQuery+dateQuery).slice(0,-1)+"}]}";
+            $scope.replayQueryHolder = finalAdvanceSearchQuery // for replay services
             //PERFORM GET CALL
             if(doAdvanceSearch){
                 $scope.errorWarning = "";
-                var advanceSearchUrl = getURL+"?filter={\"$and\":[{"+finalAdvanceSearchQuery+"}]}"+urlParam;
+                var advanceSearchUrl = getURL+finalAdvanceSearchQuery+urlParam;
                 $http.get(advanceSearchUrl, {timeout:TLS_SERVER_TIMEOUT})
                     .success(function (response){
                         $scope.data = response;
@@ -483,6 +488,31 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
             }
             
         };
+        $scope.ftpServiceReplay = {};
+        $scope.runFTPService = function(){
+            var checkRest = $scope.checkChecked();
+            if(!checkRest){
+                var ftpPayload = "type=FTP~, host="+$scope.ftpServiceReplay.host+"~, username="+$scope.ftpServiceReplay.username+"~, password="+
+                    $scope.ftpServiceReplay.password+"~, location="+$scope.ftpServiceReplay.location+"~, fileType="+$scope.ftpServiceReplay.fileType+
+                    "~, payload="+$scope.replayQueryHolder+"~, header=[\"type\"=\""+$scope.ftpServiceReplay.headerType+"\",\"value\"=\""+
+                    $scope.ftpServiceReplay.headerValue+"\"]";
+                $http.post(replayPostUrl, ftpPayload, {timeout:TLS_SERVER_TIMEOUT})
+                    .success(function(d){console.log(d);});
+            }
+            else{
+                var batchVals = $scope.batchValues();
+                var auditIDs = $scope.pullAuditIDs(batchVals[2]);
+                var ftpPayloadBatch = "type=FTP~, host="+$scope.ftpServiceReplay.host+"~, username="+$scope.ftpServiceReplay.username+"~, password="+
+                    $scope.ftpServiceReplay.password+"~, location="+$scope.ftpServiceReplay.location+"~, fileType="+$scope.ftpServiceReplay.fileType+
+                    "~, header=[\"type\"=\""+$scope.ftpServiceReplay.headerType+"\",\"value\"=\""+
+                    $scope.ftpServiceReplay.headerValue+"\"]";
+                var batchPayload = '{  "replaySavedTimestamp":"'+batchVals[0]+'",  "replayedBy":"'+batchVals[1]+'", '+
+                        '"batchProcessedTimestamp":"", "replayDestinationInfo": { '+ftpPayloadBatch+' },'+
+                                    '"auditID": ['+auditIDs+']}';
+                $http.post(replayPostUrlBatch, batchPayload, {timeout:TLS_SERVER_TIMEOUT})
+                        .success(function(d){console.log(d);});
+            }
+        }
         $scope.changeReplay = function(){
             if($scope.treemapSaver.checkboxChecked !== undefined){
                 $("#replayPage").css("top","15%").addClass("col-sm-offset-3").removeClass("col-sm-offset-6");
