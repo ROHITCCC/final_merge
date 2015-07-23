@@ -1,11 +1,7 @@
 <section>
     <ul class="nav navbar-nav" >
-        <li ng-class="tabClass(tab)" class="titlemenu" ng-repeat="tab in tabs" tab="tab" style="margin-right: 25px; padding: 5px;">
-            <div class="dropdown menuselector">
-                <div class="dropdown-toggle" data-toggle="dropdown">
+        <li ng-class="tabClass(tab)" class="titlemenu" ng-repeat="tab in tabs" tab="tab">
                     <a href="{{tab.link}}" ng-click="setSelectedTab(tab)"><h4 id="{{tab.label}}" class="menutitle">{{tab.label}}</h4></a>
-                </div>
-            </div>
         </li>
     </ul>
     <!-- For Dashboard Panel-->

@@ -31,6 +31,7 @@ treemapControllerModule.controller('treemapController', ['$scope', '$location', 
                             $scope.env.name+"\"}]}]}},{\"$group\":{\"_id\":{\"interface1\":\"$interface1\",\"application\":\"$application\"},"+
                             "\"count\":{\"$sum\":1}}},{\"$group\":{\"_id\":{\"application\":\"$_id.application\"},\"data\":{\"$addToSet\":{\"name\":\"$_id.interface1\""+
                             ",\"size\":\"$count\"}}}},{\"$project\":{\"_id\":1,\"name\":\"$_id.application\",\"children\":\"$data\"}}]";
+                    console.log(newDataQuery)
         $scope.treemapPromise = mongoAggregateService.callHttp(newDataQuery);
     })
     calculateTime = function(timeSelected){
