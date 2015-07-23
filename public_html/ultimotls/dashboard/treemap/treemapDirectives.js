@@ -281,10 +281,10 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
             
         if(jsonRaw !== undefined)
         {
-            if(remakeFlag === true ){                //checks if the scope is preserve
+            if(scope.treemapSaver.data === undefined){                //checks if the scope is preserve
                 
             svg.selectAll("text").remove();
-            
+            scope.treemapSaver.data = undefined;
                 cell.enter().append("g").attr("class", "cell")      //modifies all basic g elements
                     .attr("transform", function(d) {return "translate(" + d.x + "," + d.y + ")"; })
                     .on("mouseover", mouseOverCell)
@@ -380,7 +380,7 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
             else{       //if the scope was preserved
                 //if(resizedCheck)resized = true;
                 
-                remakeFlag = true;
+                remakeFlag = false;
                 zoomFlag=false;
                 zoomFlag2=false;
                 var newSvg = document.getElementById("treemapSVG");
@@ -388,7 +388,7 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                 for(var i = 0; i < scope.treemapSaver.data.length; i++){        //appends old DOM elements into new DOM
                     newSvg.appendChild(scope.treemapSaver.data[i]);
                 }
-            
+            scope.treemapSaver.data = undefined;
                 var newCell = d3.selectAll("g.cell");        //add lost functionality
                   newCell.on("mouseover", mouseOverCell)
                       .on("mouseout", mouseOutCell)
@@ -555,7 +555,7 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
 
                      //console.log(d3.select("#treemapZoom").select("svg").selectAll("g")[0])
                      scope.treemapSaver.envSave = scope.env;
-                    //remakeFlag = true;
+                    //remakeFlag = false;
                     //if(zoomFlag)zoomFlag2=true;
                     zoomFlag = true; 
                     tempName = name;
@@ -611,7 +611,7 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                         .on("click", function(d) { return zoom((node === d.parent ? root : d.parent),(d3.select(this).attr("id")),(d3.select(this).attr("parent"))); });
 
                        //.style("opacity", function(d) { d.w = this.getComputedTextLength(); return d.dx > d.w ? 1 : 0; });
-                        //remakeFlag = false;
+                        remakeFlag = true;
                         
                         if(headerFlag){
                             $("#"+tempName).d3Click();
@@ -737,7 +737,7 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                     .style("display","none");
                 
                 
-                //remakeFlag = true;
+                remakeFlag = true;
                 
                 scope.treemapSaver.customZoomed = true;
                 scope.treemapSaver.brushCounter++;
