@@ -642,7 +642,7 @@ span.error{
     color: red;
 }
 .zoombtn{
-    display: none;
+    opacity: 0;
 }
 .collapse-custom .navbar-tool {
     display: none;

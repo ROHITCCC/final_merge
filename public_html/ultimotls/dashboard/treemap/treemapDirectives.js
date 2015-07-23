@@ -111,12 +111,6 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
             return;
         }
             
-            if(scope.treemapSaver.zoomClicked !== undefined){
-                d3.select("#zoomOut").style("display","none");
-                d3.select("#zoomIn").style("display","none");
-            }
-            
-
 //            if(svg.selectAll("g.cell")[0].length > 0) 
             if(scope.treemapSaver.brushCounter === undefined)scope.treemapSaver.brushCounter = 2;
             if(scope.treemapSaver.brushCounterZoomed === undefined)scope.treemapSaver.brushCounterZoomed = 0;
@@ -287,17 +281,16 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
             
         if(jsonRaw !== undefined)
         {
-            if(remakeFlag === true){                //checks if the scope is preserve
+            if(remakeFlag === true ){                //checks if the scope is preserve
                 
             svg.selectAll("text").remove();
             
-                
-                    cell.enter().append("g").attr("class", "cell")      //modifies all basic g elements
-                     .attr("transform", function(d) {return "translate(" + d.x + "," + d.y + ")"; })
-                     .on("mouseover", mouseOverCell)
-                     .on("mouseout", mouseOutCell)
-                     .on("click", function(d) {return zoom((node === d.parent ? root : d.parent),(d3.select(this).attr("id")),(d3.select(this).attr("parent"))); })
-                     .on("dblclick", function(d){remakeFlag = false;return sendAudit((d3.select(this).attr("id")),(d3.select(this).attr("parent")));});
+                cell.enter().append("g").attr("class", "cell")      //modifies all basic g elements
+                    .attr("transform", function(d) {return "translate(" + d.x + "," + d.y + ")"; })
+                    .on("mouseover", mouseOverCell)
+                    .on("mouseout", mouseOutCell)
+                    .on("click", function(d) {return zoom((node === d.parent ? root : d.parent),(d3.select(this).attr("id")),(d3.select(this).attr("parent"))); })
+                    .on("dblclick", function(d){remakeFlag = false;return sendAudit((d3.select(this).attr("id")),(d3.select(this).attr("parent")));});
                 
              
                 cell.attr("class", "cell").transition().duration(500)
@@ -326,7 +319,6 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                         var nameholder = null;
                         var getWidth = d.dx;
                         var getHeight = d.dy;
-                        console.log(getHeight*.1)
                         if (d.name.length > (getWidth)*.1 ) {
                             //nameholder = d.name.substring(0,(getWidth*.1)) + "... " + d.size;
                             if((getWidth)*.1 > 5 && 4 < (getHeight)*.1)nameholder = d.name.substring(0,(getWidth*.1)) + "... " + d.size;
@@ -521,9 +513,10 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
             
             function zoomInTreemap(d, name, parent, kx, ky){
                 scope.treemapSaver.currentZoomName = name;
+                scope.treemapSaver.firstZoom = true;
                 //d3.selectAll("g.cell").select("text").remove();
-                    d3.select("#zoomOut").style("display","block");
-                d3.select("#zoomIn").style("display","block");
+                    d3.select("#zoomOut").transition().duration(750).style("opacity","1");
+                d3.select("#zoomIn").transition().duration(750).style("opacity","1");
                     d3.select("#zoomOut").on("click", function() { zoom(root, "flag", "flag"); }).style("cursor","pointer");
                     d3.select("#zoomIn").on("click", customZoomBtn).style("cursor","pointer");
                     d3.select("#zoomOut").style("cursor","pointer");
@@ -562,7 +555,7 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
 
                      //console.log(d3.select("#treemapZoom").select("svg").selectAll("g")[0])
                      scope.treemapSaver.envSave = scope.env;
-                    remakeFlag = false;
+                    //remakeFlag = true;
                     //if(zoomFlag)zoomFlag2=true;
                     zoomFlag = true; 
                     tempName = name;
@@ -573,11 +566,12 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                         .selectAll("div").selectAll("#treemapSVG");
                 
                     scope.treemapSaver.zoomClicked = undefined;
+                    scope.treemapSaver.firstZoom = undefined;
                     d3.selectAll(".brush").call(brushStorage[scope.treemapSaver.brushCounter].clear());
                     d3.selectAll("g.brush").remove();
                     d3.selectAll("g.cell").select("text").remove();
-                    d3.select("#zoomOut").transition().duration(750).style("display","none");
-                    d3.select("#zoomIn").transition().duration(750).style("display","none");
+                    d3.select("#zoomOut").transition().transition().duration(750).style("opacity","0");
+                    d3.select("#zoomIn").transition().transition().duration(750).style("opacity","0");
                     d3.select("#zoomOut").on("click", "").style("cursor","auto");
                     d3.select("#zoomIn").on("click", "").style("cursor","auto");
                     //if(scope.treemapSaver.customZoomed !== undefined) $("#"+scope.treemapSaver.currentZoomName).d3Click();
@@ -617,7 +611,7 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                         .on("click", function(d) { return zoom((node === d.parent ? root : d.parent),(d3.select(this).attr("id")),(d3.select(this).attr("parent"))); });
 
                        //.style("opacity", function(d) { d.w = this.getComputedTextLength(); return d.dx > d.w ? 1 : 0; });
-                        remakeFlag = true;
+                        //remakeFlag = false;
                         
                         if(headerFlag){
                             $("#"+tempName).d3Click();
@@ -641,7 +635,7 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                 $("#zoomOut").d3Click();
                 $("#"+scope.treemapSaver.currentZoomName).d3Click();
                 d3.select("#zoomIn").style("cursor","pointer")
-                d3.selectAll("#treemapSVG").transition().duration(750).style("display","inline").style("opacity","1");
+                d3.selectAll("#treemapSVG").transition().duration(750).style("opacity","1");
                 d3.select("#zoomOut").on("click", function() { zoom(root, "flag", "flag"); });
                
             }
@@ -743,7 +737,7 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                     .style("display","none");
                 
                 
-                remakeFlag = true;
+                //remakeFlag = true;
                 
                 scope.treemapSaver.customZoomed = true;
                 scope.treemapSaver.brushCounter++;
@@ -778,13 +772,13 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                         svg.append("g")
                             .attr("id","brush")
                             .attr("class", "brush")
-                            .style("display","block")
+                            .style("opacity",".4")
                             .call(brushStorage[scope.treemapSaver.brushCounter]);
                     }else{
                         svg.append("g")
                             .attr("id","brush")
                             .attr("class", "brush")
-                            .style("display","block")
+                            .style("opacity",".4")
                             .call(brush1);
                     }
 
