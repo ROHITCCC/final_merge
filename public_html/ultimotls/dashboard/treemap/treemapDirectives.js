@@ -564,7 +564,7 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
             function zoomOutTreemap(d, name, parent, kx){
                 svg = d3.selectAll("#treemapZoom")
                         .selectAll("div").selectAll("#treemapSVG");
-                
+                document.getElementById("legendSelect").selectedIndex = 0;
                     scope.treemapSaver.zoomClicked = undefined;
                     scope.treemapSaver.firstZoom = undefined;
                     d3.selectAll(".brush").call(brushStorage[scope.treemapSaver.brushCounter].clear());
