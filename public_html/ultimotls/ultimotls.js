@@ -16,8 +16,8 @@ var TLS_EXPIRATION_TIME =  15 //in minutes
 var ultimotls = angular.module('ultimotls', ['auditControllerModule', 'sunburstDirectiveModule', 'auditDirectiveModule' , 'treemapDirectiveModule', 'base64', 
                                              'LocalStorageModule', 'settingModule', 'ui.router', 'severityPieChartDirectiveModule', 'errorPieChartDirectiveModule',
                                              'transactionTypeBarChartDirectiveModule']);
-ultimotls.controller('loginControllerModule', ['$scope', '$http', '$q', '$base64', '$location','localStorageService', 'treemapSaver','$timeout','queryEnv',
-    function ($scope, $http, $q, $base64, $location, localStorageService, treemapSaver, $timeout, queryEnv ){ //loging Controller
+ultimotls.controller('loginControllerModule', ['$scope', '$http', '$q', '$base64', '$location','localStorageService', 'treemapSaver','$timeout','queryEnv','resetTimerService',
+    function ($scope, $http, $q, $base64, $location, localStorageService, treemapSaver, $timeout, queryEnv,resetTimerService ){ //loging Controller
         $scope.cred;
         $scope.treemapSaver = treemapSaver;
         $scope.treemapSaver.showNav = false;
@@ -57,7 +57,8 @@ ultimotls.controller('loginControllerModule', ['$scope', '$http', '$q', '$base64
             var request = $http.get(TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/_logic/LoginService/"+$scope.cred.username, {});
             request.success(function (data, status, header, config) {
                 var auth_token = header()['auth-token']; //pulling our auth-token
-//                var auth_token_valid_until = header()['auth-token-valid-until']
+                var auth_token_valid_until = header()['auth-token-valid-until'];
+                resetTimerService.s
 //                var date = new Date();
 //                var date1 = new Date(auth_token_valid_until);
 //                var calculateDate = (date1.getTime() - date.getTime())/60000;
