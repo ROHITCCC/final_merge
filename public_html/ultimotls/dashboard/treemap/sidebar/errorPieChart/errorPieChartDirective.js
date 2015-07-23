@@ -106,7 +106,7 @@ errorPieChartDirectiveModule.directive('errorPieChart',['queryFilter', function(
 		slices.selectAll(".innerSlice").data(_data).enter().append("path").attr("class","innerSlice")
                     .attr("id", function(d,i){return "errorInnerSlice"+i})
                     .style("fill", function(d,i){return color(i);})
-                    .style("stroke", "rgb(0,0,0)")
+                    .style("stroke", "rgb(87, 87, 87)")
                     .attr("d",function(d){ return pieInner(d, rx+0.5,ry+0.5, h, ir);})
                     .on("click", function(d,i){upDateTreemap(d);onSelection(d,i);})
                     .each(function(d){this._current=d;});
@@ -114,7 +114,7 @@ errorPieChartDirectiveModule.directive('errorPieChart',['queryFilter', function(
 		slices.selectAll(".topSlice").data(_data).enter().append("path").attr("class", "topSlice")
                     .attr("id", function(d,i){return "errorTopSlice"+i})
                     .style("fill", function(d,i){return color(i);})
-                    .style("stroke", "rgb(0,0,0)")
+                    .style("stroke", "rgb(87, 87, 87)")
                     .attr("d",function(d){ return pieTop(d, rx, ry, ir);})
                     .on("click", function(d,i){upDateTreemap(d);onSelection(d,i);})
                     .each(function(d){this._current=d;});
@@ -122,7 +122,7 @@ errorPieChartDirectiveModule.directive('errorPieChart',['queryFilter', function(
 		slices.selectAll(".outerSlice").data(_data).enter().append("path").attr("class", "outerSlice")
                     .attr("id", function(d,i){return "errorOuterSlice"+i})
                     .style("fill", function(d,i){return color(i);})
-                    .style("stroke", "rgb(0,0,0)")
+                    .style("stroke", "rgb(87, 87, 87)")
                     .attr("d",function(d){ return pieOuter(d, rx-.5,ry-.5, h);})
                     .on("click", function(d,i){upDateTreemap(d);onSelection(d,i);})
                     .each(function(d){this._current=d;});
@@ -131,7 +131,7 @@ errorPieChartDirectiveModule.directive('errorPieChart',['queryFilter', function(
 			.attr("x",function(d){ return .7*rx*Math.cos(0.5*(d.startAngle+d.endAngle));})
 			.attr("y",function(d){ return 0.6*ry*Math.sin(0.5*(d.startAngle+d.endAngle));})
                         .on("click", function(d,i){upDateTreemap(d);onSelection(d,i);})
-                        .style("fill", "white")
+                        .style("fill", "black")
                         .style("font-size", "12px")
 			.text(function(d){return d.data._id}).each(function(d){this._current=d;});				
 	};
