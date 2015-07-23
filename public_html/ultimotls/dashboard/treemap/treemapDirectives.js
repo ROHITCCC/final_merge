@@ -341,10 +341,12 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
 
                 cell.exit().remove();
                 if(zoomFlag){
-                    d3.select("#zoomOut").transition().duration(750).style("opacity","0");
-                    d3.select("#zoomIn").transition().duration(750).style("opacity","0");
-                    d3.select("#zoomOut").on("click", "").style("cursor","auto");
-                    d3.select("#zoomIn").on("click", "").style("cursor","auto");
+                    if(scope.treemapSaver.customZoomed === undefined){
+                        d3.select("#zoomOut").transition().duration(750).style("opacity","0");
+                        d3.select("#zoomIn").transition().duration(750).style("opacity","0");
+                        d3.select("#zoomOut").on("click", "").style("cursor","auto");
+                        d3.select("#zoomIn").on("click", "").style("cursor","auto");
+                    }
                 }
             /*
                 parCell.enter().append("g").attr("class", "cellParent")     //creates header titles
