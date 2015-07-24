@@ -453,7 +453,7 @@ ultimotls.service("auditQuery", function () {
     }
     
 });
-ultimotls.service("resetTimerService",['localStorageService','$timeout','$http', function(localStorageService,$timeout, $http){
+ultimotls.service("resetTimerService",['localStorageService', function(localStorageService){
     var resetTimer = {};
     resetTimer.set = function(newTime){
         //var auth_token_valid_until = header()['auth-token-valid-until']
@@ -466,11 +466,6 @@ ultimotls.service("resetTimerService",['localStorageService','$timeout','$http',
         localStorageService.cookie.add('creds', userCred, newExpiration);
         localStorageService.cookie.add('name', username, newExpiration);
         localStorageService.cookie.add('showNav', showNav, newExpiration);
-//        $timeout.cancel(timer);
-//        var timer = $timeout(function() {
-//            delete $http.defaults.headers.common["Authorization"];
-//            console.log('Authorization Expired')
-//        }, newExpiration);
     };
     return resetTimer;
 }]);
