@@ -274,6 +274,7 @@ text{
 .columnDiv .scrollableBarChart{
     overflow-y:hidden;
     /* margin-left: 20px; */
+    /* width: 95%; */
 }
 path .slice{
     stroke-width: 2px;
@@ -646,7 +647,6 @@ select#legendSelect {
     min-width: 20px;
 }
 #timedropdown{
-    margin-top: 9px;
     margin-left: 3px;
 }
 
@@ -806,6 +806,7 @@ select.inputable{
 
 .xdsoft_datetimepicker .xdsoft_datepicker.active, .xdsoft_datetimepicker .xdsoft_timepicker.active {
     display: block;
+    z-index: 1040;
 }
 
 .xdsoft_datetimepicker .xdsoft_datepicker {
@@ -999,6 +1000,7 @@ select.inputable{
 
 .xdsoft_datetimepicker .xdsoft_calendar {
     clear: both;
+    z-index: 9999;
 }
 
 .xdsoft_datetimepicker .xdsoft_year{
@@ -1290,6 +1292,8 @@ select.inputable{
 
 .xdsoft_datetimepicker {
     background-color: white;
+    z-index: 1050;
+    border: 1px solid #CAC6C6;
 }
 //ADVANCE SEARCH CUSTOM AND NAME VALUE FIELD
 
@@ -1404,4 +1408,16 @@ button.collapsed .caret {
 
 div#landingPageHeader {
   min-width: 320px;
+}
+
+#customDateTimes{
+    display: none;
+    background-color: yellow;
+    border-radius: 5px;
+    position: absolute;
+    left: 10px;
+    z-index: 3;
+}
+#schedulermodal .help-block {
+    padding: 10px;
 }
