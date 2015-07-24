@@ -47,7 +47,9 @@ settingModule.controller('SettingsController', function ($scope, $http) {
     var settingURL = TLS_PROTOCOL + "://" + TLS_SERVER + ":" + TLS_PORT + "/_logic/SettingService";
     var schedulerURL = TLS_PROTOCOL + "://" + TLS_SERVER + ":" + TLS_PORT + "/_logic/SchedulerService";
     $scope.settings = {};
+    $scope.schedulerstatus = 0;
     $scope.reports = {};
+    $scope.errormsg = 0;
     $scope.temprep = {};
     $scope.curPage = 0;
     $scope.pageSize = 50;
@@ -244,36 +246,50 @@ settingModule.controller('SettingsController', function ($scope, $http) {
         $scope.batch.requestType= "startJob";
         if ($scope.batch.frequency.starttime) {
                     $scope.batch.frequency.starttime = $scope.batch.frequency.starttime.replace(/ /g, "T");
+        }else{
+          $scope.batch.frequency.starttime="";  
         }
         console.log($scope.batch);
-        $scope.scheduler($scope.batch);
+        $scope.scheduler($scope.batch, 1);
     };
 
     $scope.batchstop = function () {
         $scope.batch.requestType= "stopJob";
         delete $scope.batch.frequency;
-        $scope.scheduler($scope.batch);
+        $scope.scheduler($scope.batch, 2);
     };
 
 
-    $scope.scheduler = function (object) {
+    $scope.scheduler = function (object, opt) {
         console.log('here');
         var conAjax = $http.post(schedulerURL, object);
-        conAjax.success(function (response) {
+        conAjax.success(function (response, status) {
+            $scope.schedulerstatus = opt;
+            $('#schedulermodal').modal();
+            if (opt === '2'){
+                $scope.batchScheduler.$dirty = false;
+                $scope.batchScheduler.$pristine = true;
+                $scope.batchScheduler.$submitted = false;
+            }
         });
-        conAjax.error(function (response) {
-
+        conAjax.error(function (response, data) {
+            $scope.schedulerstatus = 0;
+            $scope.errormsg = data;            
+            $('#schedulermodal').modal();
         });
     };
     
     $scope.startscheduler = function () {
         $scope.schedulerObj.requestType="startScheduler";
         console.log($scope.schedulerObj);
+        $scope.scheduler($scope.schedulerObj, 3);
+        
     };
     
     $scope.stopscheduler = function () {
         $scope.schedulerObj.requestType="stopScheduler";
         delete $scope.schedulerObj.propertiesFile;
-        console.log($scope.schedulerObj);   
+        console.log($scope.schedulerObj);
+        $scope.scheduler($scope.schedulerObj, 4);
     };
 });
