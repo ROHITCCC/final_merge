@@ -272,9 +272,9 @@ settingModule.controller('SettingsController', function ($scope, $http) {
                 $scope.batchScheduler.$submitted = false;
             }
         });
-        conAjax.error(function (response, data) {
+        conAjax.error(function (response) {
             $scope.schedulerstatus = 0;
-            $scope.errormsg = data;            
+            $scope.errormsg = response.message;            
             $('#schedulermodal').modal();
         });
     };
