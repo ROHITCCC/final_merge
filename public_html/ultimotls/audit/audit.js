@@ -123,5 +123,17 @@ $('#transactionTypeDiv').waitUntilExists(function () {
     $( window ).resize(function() {
         $('#transactionTypeDiv').resizepiechart();
     });
-    
+});
+
+$('#customDateTimes').waitUntilExists(function () {
+        if ($('#customDateTimes').text() === ""){
+                $('#currentTimeSelect').hover(
+                    function () {
+                        $('#customDateTimes').css('display','block');
+                    },
+                    function () {
+                        $('#customDateTimes').css('display','none');
+                    }
+                );  
+        };
 });
