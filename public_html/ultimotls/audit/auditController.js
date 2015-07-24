@@ -32,6 +32,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
         $scope.pageSize = 2;
         $scope.batchChecker = false;
         $scope.treemapSaver = treemapSaver;
+        $scope.headerCounter = 0;
         //Toggle Feature to close Custom or Name Value fields
         $(document).ready(function(){
             $("#collapseCustom").click(function(){
@@ -272,7 +273,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                 doAdvanceSearch = true;
             }
             if(advanceNameValueFieldObjectFlag){
-                nameValueQuery = appendNameValueField()
+                nameValueQuery = appendNameValueField();
                 doAdvanceSearch = true;
             }
             if(toDate || fromDate){
@@ -343,7 +344,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                     console.log(err);
                 }
             }
-        }
+        };
         $scope.goToPrevious = function () {
             var previousLink = $scope.data._links.previous.href;
             if (previousLink === undefined || previousLink === null) {
@@ -358,7 +359,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                             $scope.data = response;
                         });
             }
-        }
+        };
         $scope.goToNext = function () {
             var nextLink = $scope.data._links.next.href;
             if (nextLink === undefined || nextLink === null) {
@@ -373,7 +374,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                             $scope.data = response;
                         });
             }
-        }
+        };
         $scope.goToLast = function () {
             var lastLink = $scope.data._links.last.href;
             var lastUrl = TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+lastLink;
@@ -383,7 +384,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                         resetTimerService.set(auth_token_valid_until);
                         $scope.data = response;
                     });
-        }
+        };
         
         $scope.rowSelected = function(toDate, fromDate){//toggle between Search and AdvanceSearch
             if($scope.dbTypeSetter){ //if the row number is selected and a dbType is set run the search function
@@ -422,8 +423,8 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                         console.log($scope.relatedTransactionData._id.$oid);
                         
                     }
-            })
-        }
+            });
+        };
         //From relatedTransaction a click function will open a new Modal page and populated new data
         $scope.relatedSearch = function(rowData){
             $scope.relatedSearchData = rowData;
@@ -448,21 +449,35 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                 var headerVal = null;
                 var methodVal = document.getElementById("replayDropDownMethod").value;
                 var contentVal = document.getElementById("replayDropDownApplication").value;
+                var headerHolder = null;
                 
                 if(methodVal === "other")methodVal = document.getElementById("methodValue").value;
                 if(contentVal === "other")contentVal = document.getElementById("contentType").value;
                 
-                if($scope.restReplay.header === undefined){
+                if($scope.restReplay.header === undefined || $scope.restReplay.header === null){
                     headerType = "Authorization";
                     headerVal = "";
                 }else{
                     headerType = $scope.restReplay.header.type;
                     headerVal = $scope.restReplay.header.value;
                 }
-                console.log(headerType)
+                
+                headerHolder = '"type"="'+headerType+'", "value"="'+headerVal+'"';
+                if($scope.headerCounter > 0){
+                    for(var z = 0; z < $scope.headerCounter; z++){
+                        var tempType = document.getElementById("headerType" + (z)).value;
+                        var tempVal = document.getElementById("headerValue" + (z)).value;
+                        console.log(tempType, tempVal);
+                        if(tempType === "")tempType = "Authorization";
+                        headerHolder += ', "type"="'+tempType+'", "value"="'+headerVal+'"';
+                        console.log(tempType);
+                    }
+                }
+                
+                console.log(headerType);
                 var restPayload = 'type=REST~, endpoint='+$scope.restReplay.endpointUrl+'~, method='+
                     methodVal+'~, content-type='+contentVal+'~, payload='+$scope.payloadPageData+
-                    '~, header=["type"="'+headerType+'", "value"="'+headerVal+'"]';
+                    '~, header=['+headerHolder+']';
             $http.post(replayPostUrl, restPayload, {timeout:TLS_SERVER_TIMEOUT})
                     .success(function(d,status, header, config){
                         var auth_token_valid_until = header()['auth-token-valid-until'];
@@ -578,8 +593,8 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
             }else{
                 var batchVals = $scope.batchValues();
                 var auditIDs = $scope.pullAuditIDs(batchVals[2]);
-                var webServicePayloadBatch = '"type":"WS", "wsdl":"'+$scope.webServiceReplay.wsdl+'", "operation":"'+$scope.webServiceReplay.operation+'",'
-                    '"soapaction":"'+$scope.webServiceReplay.soapAction+'", "binding":"'+$scope.webServiceReplay.binding+'"'
+                var webServicePayloadBatch = '"type":"WS", "wsdl":"'+$scope.webServiceReplay.wsdl+'", "operation":"'+$scope.webServiceReplay.operation+'",' + 
+                    '"soapaction":"'+$scope.webServiceReplay.soapAction+'", "binding":"'+$scope.webServiceReplay.binding+'"';
                 
                 var batchPayload = '{  "replaySavedTimestamp":"'+batchVals[0]+'",  "replayedBy":"'+batchVals[1]+'", '+
                         '"batchProcessedTimestamp":"", "replayDestinationInfo": { '+webServicePayloadBatch+' },'+
@@ -623,7 +638,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                 var batchVals = $scope.batchValues();
                 var auditIDs = $scope.pullAuditIDs(batchVals[2]);
                 var ftpPayloadBatch = '"type":"FTP", "host":"'+$scope.ftpServiceReplay.host+'", "username":"'+$scope.ftpServiceReplay.username+'",'+
-                    '"password":"'+$scope.ftpServiceReplay.password+'", "location":"'+$scope.ftpServiceReplay.location+'", "fileType":"'+$scope.ftpServiceReplay.fileType+'",'
+                    '"password":"'+$scope.ftpServiceReplay.password+'", "location":"'+$scope.ftpServiceReplay.location+'", "fileType":"'+$scope.ftpServiceReplay.fileType+'",' + 
                     '"payload":"'+$scope.replayQueryHolder+'", "header":"["type":\"'+$scope.ftpServiceReplay.headerType+'","value":"'+$scope.ftpServiceReplay.headerValue+'"]"';
                 var batchPayload = '{  "replaySavedTimestamp":"'+batchVals[0]+'",  "replayedBy":"'+batchVals[1]+'", '+
                         '"batchProcessedTimestamp":"", "replayDestinationInfo": { '+ftpPayloadBatch+' },'+
@@ -641,7 +656,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                         console.log(d);
                     });
             }
-        }
+        };
         $scope.changeReplay = function(){
             console.log($scope.batchChecker);
             $scope.batchChecker = true;
@@ -670,7 +685,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                     document.getElementById("replayButton").disabled = true;
                 }
             }
-        }
+        };
         $scope.checkChecked = function(){
             var isChecked = false;
             var checkboxes = document.getElementsByName('auditCheckbox');
@@ -682,6 +697,21 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
             }
             return isChecked;
         };
+        $scope.addHeaders = function(){
+            $("#headerType").clone(false).prop("id","headerType" + $scope.headerCounter).css("left", "16.5%").appendTo("#restHeaderDiv");
+            $("#headerValue").clone(false).prop("id","headerValue" + $scope.headerCounter).css("left", "16.5%").appendTo("#restHeaderDiv");
+            $("#deleteHeader").clone(false).prop("id","deleteHeader" + $scope.headerCounter).css("display","inline").appendTo("#restHeaderDiv");
+            
+            $scope.headerCounter++;
+        };
+//        $scope.deleteHeaders = function(){
+//            $scope.headerCounter--;
+//            console.log("here");
+//            $("#headerType" + $scope.headerCounter).remove();
+//            $("#headerValue" + $scope.headerCounter).remove();
+//            $("#deleteHeader" + $scope.headerCounter).remove();
+//            
+//        };
         $scope.checkSelected = function(){
             var methodVal = document.getElementById("replayDropDownMethod");
             var contentVal = document.getElementById("replayDropDownApplication");
