@@ -385,16 +385,22 @@ and open the template in the editor.
                                 <b>{{key}}:</b> {{value}}
                             </li>
                         </ul>
+                        <button style="float: left" ng-click="callPayload(sliderWindowData.dataLocation)" 
+                                data-toggle="modal" data-target="#payloadPage">
+                            Payload
+                        </button>
+                        <button type="button" style="float: right" class="btn btn-default" data-dismiss="modal">Close</button>
                     </div>
                 </div>
+                
             </div>
-            <div class="modal-footer">
+<!--            <div class="modal-footer">
                 <button style="float: left" ng-click="callPayload(sliderWindowData.dataLocation)" 
                         data-toggle="modal" data-target="#payloadPage">
                     Payload
                 </button>
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            </div>
+            </div>-->
         </div>
     </div>    
 </div>
@@ -599,16 +605,21 @@ and open the template in the editor.
                                 <b>{{key}}:</b> {{value}}
                             </li>
                         </ul>
+                        <button style="float: left" ng-click="callPayload(relatedSearchData.dataLocation)" 
+                        data-toggle="modal" data-target="#payloadPage">
+                    Payload
+                </button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                     </div>
                 </div>
             </div>
-            <div class="modal-footer">
+<!--            <div class="modal-footer">
                 <button style="float: left" ng-click="callPayload(relatedSearchData.dataLocation)" 
                         data-toggle="modal" data-target="#payloadPage">
                     Payload
                 </button>
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            </div>
+            </div>-->
         </div>
     </div>    
 </div>
@@ -634,12 +645,13 @@ and open the template in the editor.
                                 <pre>{{payloadPageData}}</pre>
                             </li>
                         </ul>
+                        <button type="button" style="float: right" class="btn btn-default" data-dismiss="modal">Close</button>
                     </div>
                 </div>
             </div>
-            <div class="modal-footer">
+<!--            <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            </div>
+            </div>-->
         </div>
     </div>
 </div>
