@@ -136,6 +136,7 @@ ultimotls.controller("indexControllerModule", ['$scope','$http','$location','loc
             if(!env){
                 return;
             };
+            localStorageService.cookie.add('envid', env);
             $scope.envSelected = env;
             $scope.treemapSaver.env = env;
             queryEnv.setEnv(env);
