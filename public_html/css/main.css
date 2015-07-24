@@ -814,7 +814,9 @@ select.inputable{
     text-align: center;
     margin-left: 8px;
     margin-top: 0;
+    display: none;
 }
+
 
 .xdsoft_datetimepicker .xdsoft_datepicker.active+.xdsoft_timepicker {
     margin-top: 8px;

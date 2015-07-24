@@ -93,12 +93,19 @@ $('tr.immidateinfo').waitUntilExists(function () {
 });
 
 $('.datetimepicker').waitUntilExists(function () {
-    $('#datetimepicker').datetimepicker({
+    $('.datetimepicker').datetimepicker({
         dayOfWeekStart: 1,
         lang: 'en',
         startDate: '2015/01/05'
     });
     $(this).datetimepicker({step: 10, inline: false});
+});
+
+$('.datetimepicker2').waitUntilExists(function () {
+    $(this).datetimepicker({
+        timepicker:false,
+        format:'m/d/Y'
+    });
 });
 
 $('#transactionTypeDiv').waitUntilExists(function () {
