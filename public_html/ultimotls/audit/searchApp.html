@@ -823,7 +823,8 @@ and open the template in the editor.
                                                                                                 </label>-->
                                                 <!--                                                perform Rest service, come up with a better name-->
                                                 <button ng-click="runRestService()" class="btn btn-default">Submit</button>
-                                            </div>
+                                                
+                                            </div><span id="replayResponseRest"></span>
                                         </div>
                                     </form>
                                 </div>
@@ -837,7 +838,7 @@ and open the template in the editor.
                                                 <input ng-model="fileReplay.location" type="text" class="form-control" 
                                                        id="fileLocation" placeholder="file-location" style="width: 75%">
                                                 <button ng-click="runFileService()" class="btn btn-default">Submit</button>
-                                            </div>
+                                            </div><span id="replayResponseFile"></span>
                                         </div>
                                     </form>
                                 </div>
@@ -875,7 +876,7 @@ and open the template in the editor.
                                         </div>
                                         <div class="form-group"> 
                                             <button ng-click="runWebService()" class="btn btn-default">Submit</button>
-                                        </div>
+                                        </div><span id="replayResponseWs"></span>
                                     </form>
                                 </div>
                             </li>

@@ -30,6 +30,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
         //For Custom Field
         $scope.curCustomPage = 0, $scope.curNameValuePage = 0;
         $scope.pageSize = 2;
+        $scope.batchChecker = false;
         $scope.treemapSaver = treemapSaver;
         //Toggle Feature to close Custom or Name Value fields
         $(document).ready(function(){
@@ -393,6 +394,10 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
         //Click event on Rows from Audit Data to be passed to the Slider Window
         $scope.rowClick = function(rowData){
             $scope.sliderWindowData = rowData;
+            $scope.batchChecker = false;
+            document.getElementById("replayResponseRest").innerHTML = " ";
+            document.getElementById("replayResponseFile").innerHTML = " ";
+            document.getElementById("replayResponseWs").innerHTML = " ";
         };
         //makes a http call for related transactionId
         $scope.relatedTransaction = function(transactionID){
@@ -425,13 +430,16 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
         var replayPostUrl = TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/_logic/ReplayService";
         var replayPostUrlBatch = TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/_logic/ReplayService?batch=true";
         $scope.runRestService = function(){//only takes JSON files not 
-            var checkRest = $scope.checkChecked();
-            if(!checkRest){
+            console.log($scope.batchChecker);
+            if($scope.batchChecker === false){
                 var restPayload = "type=REST~, endpoint="+$scope.restReplay.endpointUrl+"~, method="+
-                    $scope.restReplay.currentMethod.types+"~, content-type="+$scope.restReplay.contentType+"~, payload="+$scope.payloadPageData.payload+
+                    $scope.restReplay.currentMethod.types+"~, content-type="+$scope.restReplay.contentType+"~, payload="+$scope.payloadPageData+
                     "~, header=['type'='"+$scope.restReplay.header.type+"', 'value'='"+$scope.restReplay.header.value+"']";
-            $http.post(replayPostUrl, restPayload, {timeout:TLS_SERVER_TIMEOUT})
-                    .success(function(d){console.log(d);});
+                console.log($scope.payloadPageData);
+                $http.post(replayPostUrl, restPayload, {timeout:TLS_SERVER_TIMEOUT})
+                    .success(function(d){
+                        document.getElementById("replayResponseRest").innerHTML = "Rest Replay Success";
+                        console.log(d);}).error(document.getElementById("replayResponseRest").innerHTML = "Error");
             }else{
                 var batchVals = $scope.batchValues();
                 var auditIDs = $scope.pullAuditIDs(batchVals[2]);
@@ -444,14 +452,16 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                                     '"auditID": ['+auditIDs+']}';
                 console.log(batchPayload);
                 $http.post(replayPostUrlBatch, batchPayload, {timeout:TLS_SERVER_TIMEOUT})
-                        .success(function(d){console.log(d);});
+                        .success(function(d){
+                            document.getElementById("replayResponseRest").innerHTML = "Success: " + d;
+                            console.log(d);});
             }
             
         };
         $scope.fileReplay = {};
         $scope.runFileService = function(){ //how do i set a file location
-            var checkRest = $scope.checkChecked();
-            if(!checkRest){
+            
+            if($scope.batchChecker === false){
                 var filePayload = "type=FILE~, file-location="+$scope.fileReplay.location+"~, payload="+$scope.payloadPageData.payload+"";
                 $http.post(replayPostUrl, filePayload, {timeout:TLS_SERVER_TIMEOUT})
                     .success(function(d){console.log(d);});
@@ -464,14 +474,16 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                         '"batchProcessedTimestamp":"", "replayDestinationInfo": { '+filePayloadBatch+' },'+
                                     '"auditID": ['+auditIDs+']}';
                 $http.post(replayPostUrlBatch, batchPayload, {timeout:TLS_SERVER_TIMEOUT})
-                        .success(function(d){console.log(d);});
+                        .success(function(d){
+                            document.getElementById("replayResponseFile").innerHTML = "Success: " + d;
+                            console.log(d);});
             }
             
         };
         $scope.webServiceReplay = {};
         $scope.runWebService = function(){
-            var checkRest = $scope.checkChecked();
-            if(!checkRest){
+            
+            if($scope.batchChecker === false){
                 var webServicePayload = "type=WS~, wsdl="+$scope.webServiceReplay.wsdl+"~, operation="+$scope.webServiceReplay.operation+
                     "~,  soapaction="+$scope.webServiceReplay.soapAction+"~, binding="+$scope.webServiceReplay.binding+"~, payload="+
                     $scope.payloadPageData.payload;
@@ -487,17 +499,19 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                         '"batchProcessedTimestamp":"", "replayDestinationInfo": { '+webServicePayloadBatch+' },'+
                                     '"auditID": ['+auditIDs+']}';
                 $http.post(replayPostUrlBatch, batchPayload, {timeout:TLS_SERVER_TIMEOUT})
-                        .success(function(d){console.log(d);});
+                        .success(function(d){
+                            document.getElementById("replayResponseWs").innerHTML = "Success: " + d;
+                            console.log(d);});
             }
             
         };
         $scope.ftpServiceReplay = {};
         $scope.runFTPService = function(){
             var checkRest = $scope.checkChecked();
-            if(!checkRest){
+            if($scope.batchChecker === false){
                 var ftpPayload = "type=FTP~, host="+$scope.ftpServiceReplay.host+"~, username="+$scope.ftpServiceReplay.username+"~, password="+
                     $scope.ftpServiceReplay.password+"~, location="+$scope.ftpServiceReplay.location+"~, fileType="+$scope.ftpServiceReplay.fileType+
-                    "~, payload="+$scope.replayQueryHolder+"~, header=[\"type\"=\""+$scope.ftpServiceReplay.headerType+"\",\"value\"=\""+
+                    "~, header=[\"type\"=\""+$scope.ftpServiceReplay.headerType+"\",\"value\"=\""+
                     $scope.ftpServiceReplay.headerValue+"\"]";
                 $http.post(replayPostUrl, ftpPayload, {timeout:TLS_SERVER_TIMEOUT})
                     .success(function(d){console.log(d);});
@@ -505,10 +519,9 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
             else{
                 var batchVals = $scope.batchValues();
                 var auditIDs = $scope.pullAuditIDs(batchVals[2]);
-                var ftpPayloadBatch = "type=FTP~, host="+$scope.ftpServiceReplay.host+"~, username="+$scope.ftpServiceReplay.username+"~, password="+
-                    $scope.ftpServiceReplay.password+"~, location="+$scope.ftpServiceReplay.location+"~, fileType="+$scope.ftpServiceReplay.fileType+
-                    "~, header=[\"type\"=\""+$scope.ftpServiceReplay.headerType+"\",\"value\"=\""+
-                    $scope.ftpServiceReplay.headerValue+"\"]";
+                var ftpPayloadBatch = '"type":"FTP", "host":"'+$scope.ftpServiceReplay.host+'", "username":"'+$scope.ftpServiceReplay.username+'",'+
+                    '"password":"'+$scope.ftpServiceReplay.password+'", "location":"'+$scope.ftpServiceReplay.location+'", "fileType":"'+$scope.ftpServiceReplay.fileType+'",'
+                    '"payload":"'+$scope.replayQueryHolder+'", "header":"["type":\"'+$scope.ftpServiceReplay.headerType+'","value":"'+$scope.ftpServiceReplay.headerValue+'"]"';
                 var batchPayload = '{  "replaySavedTimestamp":"'+batchVals[0]+'",  "replayedBy":"'+batchVals[1]+'", '+
                         '"batchProcessedTimestamp":"", "replayDestinationInfo": { '+ftpPayloadBatch+' },'+
                                     '"auditID": ['+auditIDs+']}';
@@ -517,10 +530,15 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
             }
         }
         $scope.changeReplay = function(){
+            console.log($scope.batchChecker);
+            $scope.batchChecker = true;
+            console.log($scope.batchChecker);
             if($scope.treemapSaver.checkboxChecked !== undefined){
                 $("#replayPage").css("top","15%").addClass("col-sm-offset-3").removeClass("col-sm-offset-6");
+                document.getElementById("replayResponseRest").innerHTML = " ";
+                document.getElementById("replayResponseFile").innerHTML = " ";
+                document.getElementById("replayResponseWs").innerHTML = " ";
             }
-            
         };
         $scope.replayButtonChecker = function(){
             var checkboxes = document.getElementsByName('auditCheckbox');
@@ -580,6 +598,10 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
         };
         $scope.changeReplayBack = function(){
             $("#replayPage").css("top","50%").addClass("col-sm-offset-6").removeClass("col-sm-offset-3");
+            document.getElementById("replayResponseRest").innerHTML = " ";
+            document.getElementById("replayResponseFile").innerHTML = " ";
+            document.getElementById("replayResponseWs").innerHTML = " ";
+            $scope.batchChecker = false;
         };
         $scope.checkAll = function(source){
             var allbox = document.getElementById('replaySelectAll');
