@@ -443,16 +443,20 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
         var replayPostUrl = TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/_logic/ReplayService";
         var replayPostUrlBatch = TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/_logic/ReplayService?batch=true";
         $scope.runRestService = function(){//only takes JSON files not 
-            console.log($scope.batchChecker);
             if($scope.batchChecker === false){
-                var restPayload = "type=REST~, endpoint="+$scope.restReplay.endpointUrl+"~, method="+
-                    $scope.restReplay.currentMethod.types+"~, content-type="+$scope.restReplay.contentType+"~, payload="+$scope.payloadPageData+
-                    "~, header=['type'='"+$scope.restReplay.header.type+"', 'value'='"+$scope.restReplay.header.value+"']";
+                var restPayload = 'type=REST~, endpoint='+$scope.restReplay.endpointUrl+'~, method='+
+                    $scope.restReplay.currentMethod.types+'~, content-type='+$scope.restReplay.contentType+'~, payload='+$scope.payloadPageData+
+                    '~, header=["type"="'+$scope.restReplay.header.type+'", "value"="'+$scope.restReplay.header.value+'"]';
             $http.post(replayPostUrl, restPayload, {timeout:TLS_SERVER_TIMEOUT})
                     .success(function(d,status, header, config){
                         var auth_token_valid_until = header()['auth-token-valid-until'];
                         resetTimerService.set(auth_token_valid_until);
                         document.getElementById("replayResponseRest").innerHTML = "Rest Replay Success";
+                        console.log(d);
+                    }).error(function(d,status, header, config){
+                        var auth_token_valid_until = header()['auth-token-valid-until'];
+                        resetTimerService.set(auth_token_valid_until);
+                        document.getElementById("replayResponseRest").innerHTML = "Error: " + d["http status code"] + ": " + d["message"];
                         console.log(d);
                     });
             }else{
@@ -472,6 +476,11 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                         resetTimerService.set(auth_token_valid_until);
                         document.getElementById("replayResponseRest").innerHTML = "Success: " + d;
                         console.log(d);
+                    }).error(function(d,status, header, config){
+                        var auth_token_valid_until = header()['auth-token-valid-until'];
+                        resetTimerService.set(auth_token_valid_until);
+                        document.getElementById("replayResponseRest").innerHTML = "Error: " + d["http status code"] + ": " + d["message"];
+                        console.log(d);
                     });
             }
             
@@ -485,6 +494,11 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                     .success(function(d,status, header, config){
                         var auth_token_valid_until = header()['auth-token-valid-until'];
                         resetTimerService.set(auth_token_valid_until);
+                        console.log(d);
+                    }).error(function(d,status, header, config){
+                        var auth_token_valid_until = header()['auth-token-valid-until'];
+                        resetTimerService.set(auth_token_valid_until);
+                        document.getElementById("replayResponseFile").innerHTML = "Error: " + d["http status code"] + ": " + d["message"];
                         console.log(d);
                     });
             }else{
@@ -500,6 +514,11 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                         var auth_token_valid_until = header()['auth-token-valid-until'];
                         resetTimerService.set(auth_token_valid_until);
                         document.getElementById("replayResponseFile").innerHTML = "Success: " + d;
+                        console.log(d);
+                    }).error(function(d,status, header, config){
+                        var auth_token_valid_until = header()['auth-token-valid-until'];
+                        resetTimerService.set(auth_token_valid_until);
+                        document.getElementById("replayResponseFile").innerHTML = "Error: " + d["http status code"] + ": " + d["message"];
                         console.log(d);
                     });
             }
@@ -517,6 +536,11 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                         var auth_token_valid_until = header()['auth-token-valid-until'];
                         resetTimerService.set(auth_token_valid_until);
                         console.log(d);
+                    }).error(function(d,status, header, config){
+                        var auth_token_valid_until = header()['auth-token-valid-until'];
+                        resetTimerService.set(auth_token_valid_until);
+                        document.getElementById("replayResponseWs").innerHTML = "Error: " + d["http status code"] + ": " + d["message"];
+                        console.log(d);
                     });
             }else{
                 var batchVals = $scope.batchValues();
@@ -532,6 +556,11 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                         var auth_token_valid_until = header()['auth-token-valid-until'];
                         resetTimerService.set(auth_token_valid_until);
                         document.getElementById("replayResponseWs").innerHTML = "Success: " + d;
+                        console.log(d);
+                    }).error(function(d,status, header, config){
+                        var auth_token_valid_until = header()['auth-token-valid-until'];
+                        resetTimerService.set(auth_token_valid_until);
+                        document.getElementById("replayResponseWs").innerHTML = "Error: " + d["http status code"] + ": " + d["message"];
                         console.log(d);
                     });
             }
@@ -550,6 +579,11 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                         var auth_token_valid_until = header()['auth-token-valid-until'];
                         resetTimerService.set(auth_token_valid_until);
                         console.log(d);
+                    }).error(function(d,status, header, config){
+                        var auth_token_valid_until = header()['auth-token-valid-until'];
+                        resetTimerService.set(auth_token_valid_until);
+                        document.getElementById("replayResponseFTP").innerHTML = "Error: " + d["http status code"] + ": " + d["message"];
+                        console.log(d);
                     });
             }
             else{
@@ -565,6 +599,12 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                         .success(function(d,status, header, config){
                         var auth_token_valid_until = header()['auth-token-valid-until'];
                         resetTimerService.set(auth_token_valid_until);
+                        document.getElementById("replayResponseFTP").innerHTML = "Success: " + d;
+                        console.log(d);
+                    }).error(function(d,status, header, config){
+                        var auth_token_valid_until = header()['auth-token-valid-until'];
+                        resetTimerService.set(auth_token_valid_until);
+                        document.getElementById("replayResponseFTP").innerHTML = "Error: " + d["http status code"] + ": " + d["message"];
                         console.log(d);
                     });
             }
