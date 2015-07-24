@@ -99,13 +99,17 @@ $('.datetimepicker').waitUntilExists(function () {
         startDate: '2015/01/05'
     });
     $(this).datetimepicker({step: 10, inline: false});
+    $(this).datetimepicker('show');
+    $(this).datetimepicker('hide');
 });
 
 $('.datetimepicker2').waitUntilExists(function () {
-    $(this).datetimepicker({
+    $('.datetimepicker2').datetimepicker({
         timepicker:false,
         format:'m/d/Y'
     });
+    $(this).datetimepicker('show');
+     $(this).datetimepicker('hide');
 });
 
 $('#transactionTypeDiv').waitUntilExists(function () {
