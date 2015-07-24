@@ -17,29 +17,25 @@ var ultimotls = angular.module('ultimotls', ['auditControllerModule', 'sunburstD
                                              'LocalStorageModule', 'settingModule', 'ui.router', 'severityPieChartDirectiveModule', 'errorPieChartDirectiveModule',
                                              'transactionTypeBarChartDirectiveModule']);
 ultimotls.controller('loginControllerModule', ['$scope', '$http', '$q', '$base64', '$location','localStorageService', 'treemapSaver','queryEnv','resetTimerService',
-    function ($scope, $http, $q, $base64, $location, localStorageService, treemapSaver, queryEnv,resetTimerService ){ //loging Controller
+    function ($scope, $http, $q, $base64, $location, localStorageService, treemapSaver, queryEnv, resetTimerService ){ //loging Controller
         $scope.cred;
         $scope.treemapSaver = treemapSaver;
-        $scope.treemapSaver.showNav = false;
         console.log('*************** LoginCtrl');
-        $scope.treemapSaver.nameSaver=localStorageService.cookie.get('name')
+        $scope.treemapSaver.nameSaver=localStorageService.cookie.get('name');
         $scope.isLoggedin = function () {
             var _credentials = localStorageService.cookie.get('creds');
-            
             if (angular.isUndefined(_credentials) || _credentials === null) {
                 return false;
-                
             }
             else {
                 return true;
-                
             }
         }
         $scope.login = function () {
             $scope.cred.screen = false;
             $scope.authError = false;
             $scope.authWrongCredentials = false;
-            
+            $scope.treemapSaver.credEnvId = $scope.cred.envid;
             var credentials = $base64.encode($scope.cred.username + ":" + $scope.cred.password);
             $scope.treemapSaver.nameSaver = $scope.cred.username;
             console.log('*** authorization header: ' + credentials);
@@ -58,28 +54,27 @@ ultimotls.controller('loginControllerModule', ['$scope', '$http', '$q', '$base64
             request.success(function (data, status, header, config) {
                 var auth_token = header()['auth-token']; //pulling our auth-token
                 var auth_token_valid_until = header()['auth-token-valid-until'];
-//                var date = new Date();
-//                var date1 = new Date(auth_token_valid_until);
-//                var calculateDate = (date1.getTime() - date.getTime())/60000;
-                //creating credentials based off of username and auth-token
                 credentials = $base64.encode($scope.cred.username + ":" + auth_token);
                 localStorageService.cookie.add('name', $scope.cred.username);
                 if (!angular.isUndefined(data) && data !== null && !angular.isUndefined(data.authenticated) && data.authenticated) {
-                    $scope.loginError = ""
+                    $scope.loginError = "";
                     console.log('*** authenticated.');
                     console.log('*** user roles: ' + data.roles);
                     console.log(credentials);
-                    $scope.treemapSaver.showNav = true;
-                    localStorageService.cookie.add('showNav', $scope.treemapSaver.showNav);
+                    treemapSaver.showNav = true;
+                    localStorageService.cookie.add('showNav', treemapSaver.showNav);
                     $http.defaults.headers.common["Authorization"] = 'Basic ' + credentials;
                     localStorageService.cookie.add('creds', credentials);
                     resetTimerService.set(auth_token_valid_until);
+                    treemapSaver.envid = $scope.cred.envid;
+                    queryEnv.broadcastLogin();
                     $scope.$apply($location.path("/treemap"));
+                    
                     
                     deferred.resolve();
                 }
                 else {
-                    $scope.loginError = "Username and/or password is incorrect"
+                    $scope.loginError = "Username and/or password is incorrect";
                     console.log('*** authentication failed. wrong credentials.');
                     localStorageService.cookie.remove('creds');
                     delete $http.defaults.headers.common["Authorization"];
@@ -91,14 +86,12 @@ ultimotls.controller('loginControllerModule', ['$scope', '$http', '$q', '$base64
             });
 //
             request.error(function (data, status, header, config) {
-                $scope.loginError = "Username and/or password is incorrect"
-                console.log('authentication error');
-                console.log(status);
-                console.log(data);
-                console.log(header);
-                console.log(config);
-
-                localStorageService.remove('creds');
+                $scope.loginError = "Username and/or password is incorrect";
+                localStorageService.cookie.remove('creds');
+                localStorageService.cookie.remove('showNav');
+                localStorageService.cookie.remove('name');
+                localStorageService.cookie.remove('envOptions');
+                localStorageService.cookie.remove('envid');
                 delete $http.defaults.headers.common["Authorization"];
                 $scope.authError = true;
 
@@ -106,51 +99,52 @@ ultimotls.controller('loginControllerModule', ['$scope', '$http', '$q', '$base64
                 deferred.reject('authentication failed..');
             });
         };
-
+}]);
+ultimotls.controller("indexControllerModule", ['$scope','$http','$location','localStorageService','treemapSaver','queryEnv',
+        function($scope,$http,$location,localStorageService,treemapSaver,queryEnv){
+        $scope.treemapSaver = treemapSaver;
+        $scope.treemapSaver.showNav = localStorageService.cookie.get('showNav');
+        $scope.$on("performedLogin", function(){
+            $scope.treemapSaver.showNav = true;
+            queryEnv.getEnvOptions().then(function(response){
+                $scope.envOptions = response.data._embedded['rh:doc'][0].envsetup;
+                for(var i =0; i< $scope.envOptions.length; i++){
+                    if (treemapSaver.envid === $scope.envOptions[i].name){
+                        $scope.envSelected = $scope.envOptions[i]; 
+                        $scope.setEnvironment($scope.envSelected);
+                    }
+                };
+                localStorageService.cookie.add('envOptions',$scope.envOptions);
+                localStorageService.cookie.add('envid', $scope.envSelected);
+            });
+        });
+        
+        
         $scope.logout = function () {
             $scope.$apply($location.path("/login"));
-            console.log($http.defaults.headers.common["Authorization"])
             $scope.auth = false;
             localStorageService.cookie.remove('creds');
             localStorageService.cookie.remove('showNav');
             localStorageService.cookie.remove('name');
+            localStorageService.cookie.remove('envOptions');
+            localStorageService.cookie.remove('envid');
             delete $http.defaults.headers.common["Authorization"];
-            
-            //UNTESTED DELETE FUNCTION
-//            $http({method: 'DELETE',headers: {'Authorization': $http.defaults.headers.common["Authorization"]},
-//                url: TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/_authtokens/" +$scope.treemapSaver.nameSaver                
-//            })
-            //UNTESTED DELETE FUNCTION
-            
-            
+            $scope.treemapSaver.showNav = false;
         };
-        $http.get(TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/_logic/SettingService?object=setting.envsetup",{timeout:TLS_SERVER_TIMEOUT})
-            .success(function(data){
-                var envOptionsData = data._embedded['rh:doc'][0].envsetup;
-                $scope.envOptions = envOptionsData;
-                $scope.envSelected = $scope.envOptions[0]; 
-                $scope.env = queryEnv.getEnv();
-                if(typeof $scope.treemapSaver.env !== 'undefined'){ //checks whether or not the env value holder in the service exists yet
-                    for(var i =0; i< $scope.envOptions.length; i++){
-                        if ($scope.treemapSaver.env.name === $scope.envOptions[i].label){
-                            $scope.envSelected = $scope.envOptions[i]; 
-                        }
-                    };  
-                };
-            });
-            
-            
-//        $scope.envOptions = [{name:"Prod", description: "Production", dbName:"PROD"}, 
-//                         {name:"QA", description:"QA", dbName:"QA"}, 
-//                         {name:"Dev", description: "Developement", dbName:"DEV"}];
+        
         $scope.setEnvironment = function(env){//Set the environment when changed
-            $scope.envSelected = env
-            $scope.treemapSaver.env = env
+            if(!env){
+                return;
+            };
+            $scope.envSelected = env;
+            $scope.treemapSaver.env = env;
             queryEnv.setEnv(env);
             queryEnv.broadcast();
         };
+        $scope.envSelected = localStorageService.cookie.get('envid');
+        $scope.setEnvironment($scope.envSelected);
+        $scope.envOptions = localStorageService.cookie.get('envOptions');
 }]);
-
 ultimotls.run(['$rootScope', '$location', 'treemapSaver', 'localStorageService', '$http', 
     function ($rootScope, $location, treemapSaver, localStorageService, $http) {
         
@@ -163,7 +157,6 @@ ultimotls.run(['$rootScope', '$location', 'treemapSaver', 'localStorageService',
                 delete $http.defaults.headers.common["Authorization"];
                 $location.path('/login');
                 return false;
-                
             }
             else {
                 if (!treemapSaver.showNav) {
@@ -271,6 +264,11 @@ ultimotls.config(function ($stateProvider, $urlRouterProvider) {
     $urlRouterProvider.otherwise("/login");
     
     $stateProvider
+        .state('login', {
+            url:"/login",
+            templateUrl: 'ultimotls/login.html',
+            controller: 'loginControllerModule'
+        })
         .state('sunburst',{
             url: "/sunburst",
             templateUrl: 'ultimotls/dashboard/sunburst/sunburstDashboard.html'
@@ -302,11 +300,7 @@ ultimotls.config(function ($stateProvider, $urlRouterProvider) {
             url: "/setting",
             templateUrl: 'ultimotls/setting/settings.html'
         })
-        .state('login', {
-            url:"/login",
-            templateUrl: 'ultimotls/login.html',
-            controller: 'loginControllerModule'
-        })
+        
     // this trick must be done so that we don't receive
     // `Uncaught Error: [$injector:cdep] Circular dependency found`
 
@@ -332,8 +326,7 @@ ultimotls.factory("mongoAggregateService", ['$http','resetTimerService',function
     };
     return callAggregate;
 }]);
-
-ultimotls.service("queryEnv", function($rootScope){ //getter and setter for environment 
+ultimotls.service("queryEnv",['$http', '$rootScope',function($http,$rootScope){ //getter and setter for environment 
     var envid = {}
     envid.label = "Prod", envid.name = "PROD"
     var environment = {};
@@ -348,11 +341,23 @@ ultimotls.service("queryEnv", function($rootScope){ //getter and setter for envi
     environment.getEnv = function(){ //remove later
         return envid;
     };
+    environment.getEnvOptions = function(){
+        var promise = $http.get(TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/_logic/SettingService?object=setting.envsetup",{timeout:TLS_SERVER_TIMEOUT})
+            .success(function(data){
+            })
+            .error(function(d){
+                return null;
+            });
+        return promise;
+    };
     environment.broadcast = function(){
-        $rootScope.$broadcast("envChangeBroadcast")
+        $rootScope.$broadcast("envChangeBroadcast");
+    }
+    environment.broadcastLogin = function(){
+        $rootScope.$broadcast("performedLogin");
     }
     return environment;
-});
+}]);
 ultimotls.service("timeService", function($rootScope){ //getter and setter for drop down value 
     var currentDateTime = new Date();
     var timeSelected = {};
