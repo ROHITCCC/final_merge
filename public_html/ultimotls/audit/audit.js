@@ -62,7 +62,7 @@ $('body').on('click', '.mainmodal .close', function () {
             window.clearInterval(window.waitUntilExists_Intervals[this.selector]);
         }
         return $this;
-    }
+    };
 }(jQuery));
 
 $(".nav li.titlemenu").waitUntilExists(function () {

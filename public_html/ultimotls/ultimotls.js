@@ -30,7 +30,7 @@ ultimotls.controller('loginControllerModule', ['$scope', '$http', '$q', '$base64
             else {
                 return true;
             }
-        }
+        };
         $scope.login = function () {
             $scope.cred.screen = false;
             $scope.authError = false;
@@ -242,7 +242,7 @@ ultimotls.controller('getTabs', ['$scope', '$location', function($scope, $locati
           } 
 
         };
-    }
+    };
 }]);
 
 ultimotls.directive('tabsPanel', function () {
@@ -283,7 +283,7 @@ ultimotls.config(function ($stateProvider, $urlRouterProvider) {
                     var rowNumber = {'rows': 25};
                     var query = auditQuery.query();
 
-                    if( query!= ''){
+                    if( query!== ''){
                         var data = auditSearch.doSearch(query, rowNumber, "audit");
 
                        return data;
@@ -369,8 +369,8 @@ ultimotls.service("timeService", function($rootScope){ //getter and setter for d
     
     time.setTime = function(fromDate, toDate){
         if(time){
-            timeSelected.toDate = toDate
-            timeSelected.fromDate = fromDate
+            timeSelected.toDate = toDate;
+            timeSelected.fromDate = fromDate;
         }
         return timeSelected;
     };
@@ -378,14 +378,14 @@ ultimotls.service("timeService", function($rootScope){ //getter and setter for d
         return timeSelected;
     };
     time.broadcast = function(){
-        $rootScope.$broadcast("timeChangeBroadcast")
-    }
+        $rootScope.$broadcast("timeChangeBroadcast");
+    };
     return time;
 });
 
 ultimotls.service("queryFilter", function($rootScope){
     var filter = {};
-    var newFilter = ""
+    var newFilter = "";
     filter.appendQuery = function(name,value){
         if(name && value){
             newFilter = "\""+name+"\":\""+value+"\",";
@@ -396,7 +396,7 @@ ultimotls.service("queryFilter", function($rootScope){
         return newFilter;
     };
     filter.broadcast = function(){
-        $rootScope.$broadcast("newFilterAppended")
+        $rootScope.$broadcast("newFilterAppended");
     };
     return filter;
 });
@@ -456,7 +456,7 @@ ultimotls.service("auditQuery", function () {
         
             return queryParam;
         }
-    }
+    };
     
 });
 ultimotls.service("resetTimerService",['localStorageService', function(localStorageService){
