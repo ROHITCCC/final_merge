@@ -265,8 +265,11 @@ text{
 .columnDiv .row, .columnDiv svg{
     width: 100%;
 }
-#severityPieChart text, #errorTypePieChart text, .columnDiv svg path, .columnDiv rect{
-    cursor: pointer
+#severity text, #error text, #reset, .columnDiv svg path, .columnDiv rect{
+    cursor: pointer;
+}
+#reset{
+    fill: red;
 }
 .columnDiv .scrollableBarChart{
     overflow-y:hidden;

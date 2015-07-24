@@ -798,6 +798,7 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                 //scope.getAuditsForInterface(auditParam);
                 scope.treemapSaver.data = d3.select("#treemapZoom").select("svg").selectAll("g")[0];
                 var interfaceQuery = '{"application":"'+name+'","interface1":"'+parent+'","timestamp":{"$gte":{"$date":"'+scope.fromDate+'"},"$lt":{"$date":"'+scope.toDate+'"}},"$and":[{"severity":{"$ne":"null"}},{"severity":{"$exists":"true","$ne":""}}]}';
+                console.log(scope.fromDate)
                 if(scope.newFilter){
                     interfaceQuery = '{'+scope.newFilter+'"application":"'+name+'","interface1":"'+parent+'","timestamp":{"$gte":{"$date":"'+scope.fromDate+'"},"$lt":{"$date":"'+scope.toDate+'"}},"$and":[{"severity":{"$ne":"null"}},{"severity":{"$exists":"true","$ne":""}}]}';
                 }

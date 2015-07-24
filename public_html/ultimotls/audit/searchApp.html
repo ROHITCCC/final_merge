@@ -801,9 +801,9 @@ and open the template in the editor.
                                             <div class="form-inline">
                                                 <label for="header" class="control-label col-sm-2"><b>Header: </b></label>
                                                 <input ng-model="restReplay.header.type" type="text" class="form-control col-sm-6" 
-                                                       id="headerType" placeholder="type" style="width: 35%">
+                                                       id="headerType" placeholder="Header Type" style="width: 35%">
                                                 <input ng-model="restReplay.header.value" type="text" class="form-control col-sm-offset-1 col-sm-5" 
-                                                       id="headerValue" placeholder="value" style="width: 35%">
+                                                       id="headerValue" placeholder="Header Value" style="width: 35%">
                                             </div>
                                         </div>
                                         <div class="form-group">
@@ -814,7 +814,6 @@ and open the template in the editor.
                                             </div>
                                         </div>
                                         <div class="form-group">        
-                                            <div class="col-sm-offset-2 col-sm-10">
                                                 <!--                                                <label class="control-label">
                                                                                                     <select ng-model="methodTypes" id="methodOptions"
                                                                                                         data-ng-options="p as p.types for p in methodOptions"
@@ -822,9 +821,8 @@ and open the template in the editor.
                                                                                                     </select>
                                                                                                 </label>-->
                                                 <!--                                                perform Rest service, come up with a better name-->
-                                                <button ng-click="runRestService()" class="btn btn-default">Submit</button>
-                                                
-                                            </div><span id="replayResponseRest"></span>
+                                            <button ng-click="runRestService()" class="btn btn-default pull-right">Submit</button>
+                                            <button type="button" class="btn btn-default pull-right" ng-click="changeReplayBack()" data-dismiss="modal">Close</button>
                                         </div>
                                     </form>
                                 </div>
@@ -836,9 +834,13 @@ and open the template in the editor.
                                             <div class="form-inline">
                                                 <label for="fileLocation" class="control-label"><b>File Location: </b></label>
                                                 <input ng-model="fileReplay.location" type="text" class="form-control" 
-                                                       id="fileLocation" placeholder="file-location" style="width: 75%">
-                                                <button ng-click="runFileService()" class="btn btn-default">Submit</button>
-                                            </div><span id="replayResponseFile"></span>
+                                                       id="fileLocation" placeholder="File Location" style="width: 75%">
+                                                
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <button ng-click="runFileService()" class="btn btn-default pull-right">Submit</button>
+                                            <button type="button" class="btn btn-default pull-right" ng-click="changeReplayBack()" data-dismiss="modal">Close</button>
                                         </div>
                                     </form>
                                 </div>
@@ -864,19 +866,74 @@ and open the template in the editor.
                                             <div class="form-inline">
                                                 <label for="soapAction" class="control-label col-sm-2"><b>SoapAction: </b></label>
                                                 <input ng-model="webServiceReplay.soapAction" type="text" class="form-control col-sm-10" 
-                                                       id="soapAction" placeholder="soapaction" style="width: 80%">
+                                                       id="soapAction" placeholder="Soapaction" style="width: 80%">
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <div class="form-inline">
                                                 <label for="binding" class="control-label col-sm-2"><b>Binding: </b></label>
                                                 <input ng-model="webServiceReplay.binding" type="text" class="form-control col-sm-10" 
-                                                       id="binding" placeholder="binding" style="width: 80%">
+                                                       id="binding" placeholder="Binding" style="width: 80%">
                                             </div>
                                         </div>
                                         <div class="form-group"> 
-                                            <button ng-click="runWebService()" class="btn btn-default">Submit</button>
-                                        </div><span id="replayResponseWs"></span>
+                                            <button ng-click="runWebService()" class="btn btn-default pull-right">Submit</button>
+                                            <button type="button" class="btn btn-default pull-right" ng-click="changeReplayBack()" data-dismiss="modal">Close</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </li>
+                            <li class="list-group-item" ng-if="replayType.type == 'FTP'">
+                                <div class="container-fluid">
+                                    <form class="form-horizontal" role="form">
+                                        <div class="form-group">
+                                            <div class="form-inline">
+                                                <label for="host" class="control-label col-sm-2"><b>Host: </b></label>
+                                                <input ng-model="ftpServiceReplay.host" type="text" class="form-control col-sm-10" 
+                                                       id="wsdl" placeholder="Host" style="width: 80%">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="form-inline">
+                                                <label for="username" class="control-label col-sm-2"><b>Username: </b></label>
+                                                <input ng-model="ftpServiceReplay.username" type="text" class="form-control col-sm-10" 
+                                                       id="operation" placeholder="Username" style="width: 80%">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="form-inline">
+                                                <label for="password" class="control-label col-sm-2"><b>Password: </b></label>
+                                                <input ng-model="ftpServiceReplay.password" type="password" class="form-control col-sm-10" 
+                                                       id="soapAction" placeholder="Password" style="width: 80%">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="form-inline">
+                                                <label for="location" class="control-label col-sm-2"><b>Location: </b></label>
+                                                <input ng-model="ftpServiceReplay.location" type="text" class="form-control col-sm-10" 
+                                                       id="binding" placeholder="Location" style="width: 80%">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="form-inline">
+                                                <label for="fileType" class="control-label col-sm-2"><b>File Type: </b></label>
+                                                <input ng-model="ftpServiceReplay.fileType" type="text" class="form-control col-sm-10" 
+                                                       id="binding" placeholder="File Type" style="width: 80%">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="form-inline">
+                                                <label for="header" class="control-label col-sm-2"><b>Header: </b></label>
+                                                <input ng-model="ftpServiceReplay.headerType" type="text" class="form-control col-sm-6" 
+                                                       id="headerType" placeholder="Header Type" style="width: 35%">
+                                                <input ng-model="ftpServiceReplay.headerValue" type="text" class="form-control col-sm-offset-1 col-sm-5" 
+                                                       id="headerValue" placeholder="Header Value" style="width: 35%">
+                                            </div>
+                                        </div>
+                                        <div class="form-group"> 
+                                            <button ng-click="runFTPService()" class="btn btn-default pull-right">Submit</button>
+                                            <button type="button" class="btn btn-default pull-right" ng-click="changeReplayBack()" data-dismiss="modal">Close</button>
+                                        </div>
                                     </form>
                                 </div>
                             </li>
@@ -884,9 +941,6 @@ and open the template in the editor.
                     </div>
                 </div>
             </div> 
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" ng-click="changeReplayBack()" data-dismiss="modal">Close</button>
-            </div>
         </div>
     </div>
 </div>

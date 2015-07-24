@@ -17,8 +17,8 @@ auditControllerModule.filter('pagination', function () {
     };
 });
 
-auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'auditSearch', 'initPromise', 'queryEnv', 'treemapSaver',
-    function ($scope, $log, $http, auditSearch, initPromise, queryEnv, treemapSaver) {
+auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'auditSearch', 'initPromise', 'queryEnv', 'treemapSaver','resetTimerService',
+    function ($scope, $log, $http, auditSearch, initPromise, queryEnv, treemapSaver,resetTimerService) {
         //Initialize scope data 
         $scope.rowsOptions = [{rows: 5}, {rows: 10}, {rows: 25}, {rows: 50}, {rows: 100}];
         $scope.rowNumber = $scope.rowsOptions[2];
@@ -310,8 +310,8 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                 var advanceSearchUrl = getURL+finalAdvanceSearchQuery+urlParam;
                 $http.get(advanceSearchUrl, {timeout:TLS_SERVER_TIMEOUT})
                     .success(function (response,status, header, config){
-                        var auth_token = header()['auth-token']
-                console.log(auth_token)
+                        var auth_token_valid_until = header()['auth-token-valid-until'];
+                        resetTimerService.set(auth_token_valid_until);
                         $scope.data = response;
                         $scope.errorWarning = "";
                     }).error(function(d){
@@ -333,8 +333,10 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                 var firstUrl = TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+firstLink;
                 try{
                     $http.get(firstUrl, {timeout:TLS_SERVER_TIMEOUT})
-                        .success(function (response) {
-                            $scope.data = response;
+                        .success(function (response,status, header, config) {
+                        var auth_token_valid_until = header()['auth-token-valid-until'];
+                        resetTimerService.set(auth_token_valid_until);
+                        $scope.data = response;
                         });
                 }
                 catch(err){
@@ -350,7 +352,9 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
             else {
                 var previousUrl = TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+previousLink;
                 $http.get(previousUrl, {timeout:TLS_SERVER_TIMEOUT})
-                        .success(function (response) {
+                        .success(function (response,status, header, config) {
+                            var auth_token_valid_until = header()['auth-token-valid-until'];
+                            resetTimerService.set(auth_token_valid_until);    
                             $scope.data = response;
                         });
             }
@@ -363,7 +367,9 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
             else {
                 var nextUrl = TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+nextLink;
                 $http.get(nextUrl, {timeout:TLS_SERVER_TIMEOUT})
-                        .success(function (response) {
+                        .success(function (response,status, header, config) {
+                            var auth_token_valid_until = header()['auth-token-valid-until'];
+                            resetTimerService.set(auth_token_valid_until);
                             $scope.data = response;
                         });
             }
@@ -372,7 +378,9 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
             var lastLink = $scope.data._links.last.href;
             var lastUrl = TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+lastLink;
             $http.get(lastUrl, {timeout:TLS_SERVER_TIMEOUT})
-                    .success(function (response) {
+                    .success(function (response,status, header, config) {
+                        var auth_token_valid_until = header()['auth-token-valid-until'];
+                        resetTimerService.set(auth_token_valid_until);
                         $scope.data = response;
                     });
         }
@@ -405,7 +413,9 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
             var getData = "{\"transactionId\":\""+transactionID+"\"}"; //needs end URL Parameters
             var getURL = TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/_logic/SearchService?filter=";
             $http.get(getURL+getData+urlParam,{timeout:TLS_SERVER_TIMEOUT})
-                .success(function(response){
+                .success(function(response,status, header, config){
+                    var auth_token_valid_until = header()['auth-token-valid-until'];
+                    resetTimerService.set(auth_token_valid_until);
                     $scope.relatedTransactionData = response._embedded['rh:doc'];
                     if($scope.relatedTransactionData.length === 1){//need a service to check for duplicate values and single returns
                         console.log($scope.relatedTransactionData._id.$oid);
@@ -422,7 +432,9 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
             console.log(dataLocationId);
             var payloadUrl = TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/_logic/PayloadService?id=";
             $http.get(payloadUrl+dataLocationId, {timeout:TLS_SERVER_TIMEOUT})
-                .success(function (response){ 
+                .success(function (response,status, header, config){ 
+                    var auth_token_valid_until = header()['auth-token-valid-until'];
+                    resetTimerService.set(auth_token_valid_until);
                     $scope.payloadPageData = response;
             });
         };
@@ -435,11 +447,12 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                 var restPayload = "type=REST~, endpoint="+$scope.restReplay.endpointUrl+"~, method="+
                     $scope.restReplay.currentMethod.types+"~, content-type="+$scope.restReplay.contentType+"~, payload="+$scope.payloadPageData+
                     "~, header=['type'='"+$scope.restReplay.header.type+"', 'value'='"+$scope.restReplay.header.value+"']";
-                console.log($scope.payloadPageData);
-                $http.post(replayPostUrl, restPayload, {timeout:TLS_SERVER_TIMEOUT})
-                    .success(function(d){
-                        document.getElementById("replayResponseRest").innerHTML = "Rest Replay Success";
-                        console.log(d);}).error(document.getElementById("replayResponseRest").innerHTML = "Error");
+            $http.post(replayPostUrl, restPayload, {timeout:TLS_SERVER_TIMEOUT})
+                    .success(function(d,status, header, config){
+                        var auth_token_valid_until = header()['auth-token-valid-until'];
+                        resetTimerService.set(auth_token_valid_until);
+                        console.log(d);
+                    });
             }else{
                 var batchVals = $scope.batchValues();
                 var auditIDs = $scope.pullAuditIDs(batchVals[2]);
@@ -452,9 +465,11 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                                     '"auditID": ['+auditIDs+']}';
                 console.log(batchPayload);
                 $http.post(replayPostUrlBatch, batchPayload, {timeout:TLS_SERVER_TIMEOUT})
-                        .success(function(d){
-                            document.getElementById("replayResponseRest").innerHTML = "Success: " + d;
-                            console.log(d);});
+                        .success(function(d,status, header, config){
+                        var auth_token_valid_until = header()['auth-token-valid-until'];
+                        resetTimerService.set(auth_token_valid_until);
+                        console.log(d);
+                    });
             }
             
         };
@@ -464,7 +479,11 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
             if($scope.batchChecker === false){
                 var filePayload = "type=FILE~, file-location="+$scope.fileReplay.location+"~, payload="+$scope.payloadPageData.payload+"";
                 $http.post(replayPostUrl, filePayload, {timeout:TLS_SERVER_TIMEOUT})
-                    .success(function(d){console.log(d);});
+                    .success(function(d,status, header, config){
+                        var auth_token_valid_until = header()['auth-token-valid-until'];
+                        resetTimerService.set(auth_token_valid_until);
+                        console.log(d);
+                    });
             }else{
                 var batchVals = $scope.batchValues();
                 var auditIDs = $scope.pullAuditIDs(batchVals[2]);
@@ -474,9 +493,11 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                         '"batchProcessedTimestamp":"", "replayDestinationInfo": { '+filePayloadBatch+' },'+
                                     '"auditID": ['+auditIDs+']}';
                 $http.post(replayPostUrlBatch, batchPayload, {timeout:TLS_SERVER_TIMEOUT})
-                        .success(function(d){
-                            document.getElementById("replayResponseFile").innerHTML = "Success: " + d;
-                            console.log(d);});
+                        .success(function(d,status, header, config){
+                        var auth_token_valid_until = header()['auth-token-valid-until'];
+                        resetTimerService.set(auth_token_valid_until);
+                        console.log(d);
+                    });
             }
             
         };
@@ -488,7 +509,11 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                     "~,  soapaction="+$scope.webServiceReplay.soapAction+"~, binding="+$scope.webServiceReplay.binding+"~, payload="+
                     $scope.payloadPageData.payload;
                 $http.post(replayPostUrl, webServicePayload, {timeout:TLS_SERVER_TIMEOUT})
-                    .success(function(d){console.log(d);});
+                    .success(function(d,status, header, config){
+                        var auth_token_valid_until = header()['auth-token-valid-until'];
+                        resetTimerService.set(auth_token_valid_until);
+                        console.log(d);
+                    });
             }else{
                 var batchVals = $scope.batchValues();
                 var auditIDs = $scope.pullAuditIDs(batchVals[2]);
@@ -499,9 +524,11 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                         '"batchProcessedTimestamp":"", "replayDestinationInfo": { '+webServicePayloadBatch+' },'+
                                     '"auditID": ['+auditIDs+']}';
                 $http.post(replayPostUrlBatch, batchPayload, {timeout:TLS_SERVER_TIMEOUT})
-                        .success(function(d){
-                            document.getElementById("replayResponseWs").innerHTML = "Success: " + d;
-                            console.log(d);});
+                        .success(function(d,status, header, config){
+                        var auth_token_valid_until = header()['auth-token-valid-until'];
+                        resetTimerService.set(auth_token_valid_until);
+                        console.log(d);
+                    });
             }
             
         };
@@ -514,7 +541,11 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                     "~, header=[\"type\"=\""+$scope.ftpServiceReplay.headerType+"\",\"value\"=\""+
                     $scope.ftpServiceReplay.headerValue+"\"]";
                 $http.post(replayPostUrl, ftpPayload, {timeout:TLS_SERVER_TIMEOUT})
-                    .success(function(d){console.log(d);});
+                    .success(function(d,status, header, config){
+                        var auth_token_valid_until = header()['auth-token-valid-until'];
+                        resetTimerService.set(auth_token_valid_until);
+                        console.log(d);
+                    });
             }
             else{
                 var batchVals = $scope.batchValues();
@@ -526,7 +557,11 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                         '"batchProcessedTimestamp":"", "replayDestinationInfo": { '+ftpPayloadBatch+' },'+
                                     '"auditID": ['+auditIDs+']}';
                 $http.post(replayPostUrlBatch, batchPayload, {timeout:TLS_SERVER_TIMEOUT})
-                        .success(function(d){console.log(d);});
+                        .success(function(d,status, header, config){
+                        var auth_token_valid_until = header()['auth-token-valid-until'];
+                        resetTimerService.set(auth_token_valid_until);
+                        console.log(d);
+                    });
             }
         }
         $scope.changeReplay = function(){
