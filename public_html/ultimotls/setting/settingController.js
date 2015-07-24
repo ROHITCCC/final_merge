@@ -266,10 +266,12 @@ settingModule.controller('SettingsController', function ($scope, $http) {
         conAjax.success(function (response, status) {
             $scope.schedulerstatus = opt;
             $('#schedulermodal').modal();
-            if (opt === '2'){
-                $scope.batchScheduler.$dirty = false;
-                $scope.batchScheduler.$pristine = true;
-                $scope.batchScheduler.$submitted = false;
+            if (opt == "2"){
+                $scope.batchScheduler.batchFrequency.$touched = false;
+                $scope.batchScheduler.batchFrequency.$invalid = false;
+                $scope.batchScheduler.batchUnit.$touched = false;
+                $scope.batchScheduler.batchUnit.$invalid = false;
+                
             }
         });
         conAjax.error(function (response) {
@@ -288,7 +290,6 @@ settingModule.controller('SettingsController', function ($scope, $http) {
     
     $scope.stopscheduler = function () {
         $scope.schedulerObj.requestType="stopScheduler";
-        delete $scope.schedulerObj.propertiesFile;
         console.log($scope.schedulerObj);
         $scope.scheduler($scope.schedulerObj, 4);
     };
