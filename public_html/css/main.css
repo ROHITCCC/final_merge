@@ -627,6 +627,16 @@ select#legendSelect {
     color: #23527c;
     -moz-transition: 0.1s;    -webkit-transition: 0.1s;    transition: 0.1s;    box-shadow: 0 2px 3px #ccc;
 }
+.replayDropDown{
+    padding: 5px;
+    background-color: white;
+    border-radius: 4px;
+    text-decoration: none;
+    text-align: center;
+    display: inline-block;
+    border: 1px solid #e3e3e3;
+    -moz-transition: 0.1s;    -webkit-transition: 0.1s;    transition: 0.1s;    box-shadow: 0 2px 3px #ccc;
+}
 
 .treemapTools{
     margin-right: 3px;

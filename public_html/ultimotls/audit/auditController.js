@@ -444,9 +444,25 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
         var replayPostUrlBatch = TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/_logic/ReplayService?batch=true";
         $scope.runRestService = function(){//only takes JSON files not 
             if($scope.batchChecker === false){
+                var headerType = null;
+                var headerVal = null;
+                var methodVal = document.getElementById("replayDropDownMethod").value;
+                var contentVal = document.getElementById("replayDropDownApplication").value;
+                
+                if(methodVal === "other")methodVal = document.getElementById("methodValue").value;
+                if(contentVal === "other")contentVal = document.getElementById("contentType").value;
+                
+                if($scope.restReplay.header === undefined){
+                    headerType = "Authorization";
+                    headerVal = "";
+                }else{
+                    headerType = $scope.restReplay.header.type;
+                    headerVal = $scope.restReplay.header.value;
+                }
+                console.log(headerType)
                 var restPayload = 'type=REST~, endpoint='+$scope.restReplay.endpointUrl+'~, method='+
-                    $scope.restReplay.currentMethod.types+'~, content-type='+$scope.restReplay.contentType+'~, payload='+$scope.payloadPageData+
-                    '~, header=["type"="'+$scope.restReplay.header.type+'", "value"="'+$scope.restReplay.header.value+'"]';
+                    methodVal+'~, content-type='+contentVal+'~, payload='+$scope.payloadPageData+
+                    '~, header=["type"="'+headerType+'", "value"="'+headerVal+'"]';
             $http.post(replayPostUrl, restPayload, {timeout:TLS_SERVER_TIMEOUT})
                     .success(function(d,status, header, config){
                         var auth_token_valid_until = header()['auth-token-valid-until'];
@@ -462,9 +478,26 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
             }else{
                 var batchVals = $scope.batchValues();
                 var auditIDs = $scope.pullAuditIDs(batchVals[2]);
+                
+                var headerType = null;
+                var headerVal = null;
+                var methodVal = document.getElementById("replayDropDownMethod").value;
+                var contentVal = document.getElementById("replayDropDownApplication").value;
+                
+                if(methodVal === "other")methodVal = document.getElementById("methodValue").value;
+                if(contentVal === "other")contentVal = document.getElementById("contentType").value;
+                
+                if($scope.restReplay.header === undefined){
+                    headerType = "Authorization";
+                    headerVal = "";
+                }else{
+                    headerType = $scope.restReplay.header.type;
+                    headerVal = $scope.restReplay.header.value;
+                }
+                
                 var restPayload = '"type": "REST", "endpoint": "'+$scope.restReplay.endpointUrl+'", '+
-                        '"method": "'+$scope.restReplay.currentMethod.types+'","contentType": "'+$scope.restReplay.contentType+'",'+
-                        '"headers":{ "'+$scope.restReplay.header.type+'":"'+$scope.restReplay.header.value+'"}';
+                        '"method": "'+methodVal+'","contentType": "'+contentVal+'",'+
+                        '"headers":{ "'+headerType+'":"'+headerVal+'"}';
 
                 var batchPayload = '{  "replaySavedTimestamp":"'+batchVals[0]+'",  "replayedBy":"'+batchVals[1]+'", '+
                         '"batchProcessedTimestamp":"", "replayDestinationInfo": { '+restPayload+' },'+
@@ -648,6 +681,24 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                 }
             }
             return isChecked;
+        };
+        $scope.checkSelected = function(){
+            var methodVal = document.getElementById("replayDropDownMethod");
+            var contentVal = document.getElementById("replayDropDownApplication");
+            var contentValText = document.getElementById("contentType");
+            var methodValText = document.getElementById("methodValue");
+            
+            if(methodVal.value === "other"){
+                methodValText.style.display = "inline";
+            }else{
+                methodValText.style.display = "none";
+            }
+            if(contentVal.value === "other"){
+                contentValText.style.display = "inline";
+            }else{
+                contentValText.style.display = "none";
+            }
+            
         };
         $scope.batchValues = function(){
             var timestamp = new Date().toISOString();

@@ -607,9 +607,9 @@ and open the template in the editor.
                         </ul>
                         <button style="float: left" ng-click="callPayload(relatedSearchData.dataLocation)" 
                         data-toggle="modal" data-target="#payloadPage">
-                    Payload
-                </button>
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            Payload
+                        </button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                     </div>
                 </div>
             </div>
@@ -691,8 +691,17 @@ and open the template in the editor.
                                         <div class="form-group">
                                             <div class="form-inline">
                                                 <label for="contentType" class="control-label col-sm-2"><b>Content-Type: </b></label>
-                                                <input ng-model="restReplay.contentType" type="text" class="form-control col-sm-10" 
-                                                       id="contentType" placeholder="application/json" style="width: 80%">
+                                                <select class="replayDropDown" ng-click="checkSelected()" id="replayDropDownApplication" style="width: 135px;">
+                                                    <option value="select" style="display: none">Select...</option>
+                                                    <option value="application/json">application/json</option>
+                                                    <option value="application/xml">application/xml</option>
+                                                    <option value="text/html">text/html</option>
+                                                    <option value="text/plain">text/plain</option>
+                                                    <option value="other">other</option>
+                                                </select><input ng-model="restReplay.contentType" type="text" class="form-control" 
+                                                       id="contentType" placeholder="application/json" style="width: 30%;float: none; display:none">
+                                                
+                                                
                                             </div>
                                         </div>
                                         <div class="form-group">
@@ -707,8 +716,19 @@ and open the template in the editor.
                                         <div class="form-group">
                                             <div class="form-inline">
                                                 <label for="header" class="control-label col-sm-2"><b>Method: </b></label>
-                                                <input ng-model="restReplay.currentMethod.types" type="text" class="form-control col-sm-10" 
-                                                       id="headerValue" placeholder="Method" style="width: 80%">
+                                                <select class="replayDropDown" ng-click="checkSelected()" id="replayDropDownMethod" style="width: 135px">
+                                                    <option value="select" style="display: none">Select...</option>
+                                                    <option value="GET">GET</option>
+                                                    <option value="POST">POST</option>
+                                                    <option value="PUT">PUT</option>
+                                                    <option value="DELETE">DELETE</option>
+                                                    <option value="HEAD">HEAD</option>
+                                                    <option value="OPTIONS">OPTIONS</option>
+                                                    <option value="other">other</option>
+                                                </select>
+                                                <!--get multiple headers going-->
+                                                <input ng-model="restReplay.currentMethod.types" type="text" class="form-control " 
+                                                       id="methodValue" placeholder="Method" style="width: 30%; float:none; display:none">
                                             </div>
                                         </div>
                                         <div class="form-group">        
