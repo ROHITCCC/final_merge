@@ -406,6 +406,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
             document.getElementById("replayResponseRest").innerHTML = " ";
             document.getElementById("replayResponseFile").innerHTML = " ";
             document.getElementById("replayResponseWs").innerHTML = " ";
+            document.getElementById("replayResponseFTP").innerHTML = " ";
         };
         //makes a http call for related transactionId
         $scope.relatedTransaction = function(transactionID){
@@ -451,6 +452,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                     .success(function(d,status, header, config){
                         var auth_token_valid_until = header()['auth-token-valid-until'];
                         resetTimerService.set(auth_token_valid_until);
+                        document.getElementById("replayResponseRest").innerHTML = "Rest Replay Success";
                         console.log(d);
                     });
             }else{
@@ -468,6 +470,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                         .success(function(d,status, header, config){
                         var auth_token_valid_until = header()['auth-token-valid-until'];
                         resetTimerService.set(auth_token_valid_until);
+                        document.getElementById("replayResponseRest").innerHTML = "Success: " + d;
                         console.log(d);
                     });
             }
@@ -496,6 +499,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                         .success(function(d,status, header, config){
                         var auth_token_valid_until = header()['auth-token-valid-until'];
                         resetTimerService.set(auth_token_valid_until);
+                        document.getElementById("replayResponseFile").innerHTML = "Success: " + d;
                         console.log(d);
                     });
             }
@@ -527,6 +531,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                         .success(function(d,status, header, config){
                         var auth_token_valid_until = header()['auth-token-valid-until'];
                         resetTimerService.set(auth_token_valid_until);
+                        document.getElementById("replayResponseWs").innerHTML = "Success: " + d;
                         console.log(d);
                     });
             }
@@ -573,6 +578,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                 document.getElementById("replayResponseRest").innerHTML = " ";
                 document.getElementById("replayResponseFile").innerHTML = " ";
                 document.getElementById("replayResponseWs").innerHTML = " ";
+                document.getElementById("replayResponseFTP").innerHTML = " ";
             }
         };
         $scope.replayButtonChecker = function(){
@@ -636,6 +642,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
             document.getElementById("replayResponseRest").innerHTML = " ";
             document.getElementById("replayResponseFile").innerHTML = " ";
             document.getElementById("replayResponseWs").innerHTML = " ";
+            document.getElementById("replayResponseFTP").innerHTML = " ";
             $scope.batchChecker = false;
         };
         $scope.checkAll = function(source){
