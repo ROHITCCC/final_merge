@@ -22,7 +22,7 @@ ultimotls.controller('loginControllerModule', ['$scope', '$http', '$q', '$base64
         $scope.treemapSaver = treemapSaver;
         $scope.treemapSaver.showNav = false;
         console.log('*************** LoginCtrl');
-        $scope.treemapSaver.nameSaver=localStorageService.cookie.get('name')
+        $scope.treemapSaver.nameSaver=localStorageService.cookie.get('name');
         $scope.isLoggedin = function () {
             var _credentials = localStorageService.cookie.get('creds');
             
@@ -34,7 +34,7 @@ ultimotls.controller('loginControllerModule', ['$scope', '$http', '$q', '$base64
                 return true;
                 
             }
-        }
+        };
         $scope.login = function () {
             $scope.cred.screen = false;
             $scope.authError = false;
@@ -65,7 +65,7 @@ ultimotls.controller('loginControllerModule', ['$scope', '$http', '$q', '$base64
                 credentials = $base64.encode($scope.cred.username + ":" + auth_token);
                 localStorageService.cookie.add('name', $scope.cred.username);
                 if (!angular.isUndefined(data) && data !== null && !angular.isUndefined(data.authenticated) && data.authenticated) {
-                    $scope.loginError = ""
+                    $scope.loginError = "";
                     console.log('*** authenticated.');
                     console.log('*** user roles: ' + data.roles);
                     console.log(credentials);
@@ -79,7 +79,7 @@ ultimotls.controller('loginControllerModule', ['$scope', '$http', '$q', '$base64
                     deferred.resolve();
                 }
                 else {
-                    $scope.loginError = "Username and/or password is incorrect"
+                    $scope.loginError = "Username and/or password is incorrect";
                     console.log('*** authentication failed. wrong credentials.');
                     localStorageService.cookie.remove('creds');
                     delete $http.defaults.headers.common["Authorization"];
@@ -91,7 +91,7 @@ ultimotls.controller('loginControllerModule', ['$scope', '$http', '$q', '$base64
             });
 //
             request.error(function (data, status, header, config) {
-                $scope.loginError = "Username and/or password is incorrect"
+                $scope.loginError = "Username and/or password is incorrect";
                 console.log('authentication error');
                 console.log(status);
                 console.log(data);
@@ -109,7 +109,7 @@ ultimotls.controller('loginControllerModule', ['$scope', '$http', '$q', '$base64
 
         $scope.logout = function () {
             $scope.$apply($location.path("/login"));
-            console.log($http.defaults.headers.common["Authorization"])
+            console.log($http.defaults.headers.common["Authorization"]);
             $scope.auth = false;
             localStorageService.cookie.remove('creds');
             localStorageService.cookie.remove('showNav');
@@ -144,8 +144,8 @@ ultimotls.controller('loginControllerModule', ['$scope', '$http', '$q', '$base64
 //                         {name:"QA", description:"QA", dbName:"QA"}, 
 //                         {name:"Dev", description: "Developement", dbName:"DEV"}];
         $scope.setEnvironment = function(env){//Set the environment when changed
-            $scope.envSelected = env
-            $scope.treemapSaver.env = env
+            $scope.envSelected = env;
+            $scope.treemapSaver.env = env;
             queryEnv.setEnv(env);
             queryEnv.broadcast();
         };
@@ -248,7 +248,7 @@ ultimotls.controller('getTabs', ['$scope', '$location', function($scope, $locati
           } 
 
         };
-    }
+    };
 }]);
 
 ultimotls.directive('tabsPanel', function () {
@@ -284,7 +284,7 @@ ultimotls.config(function ($stateProvider, $urlRouterProvider) {
                     var rowNumber = {'rows': 25};
                     var query = auditQuery.query();
 
-                    if( query!= ''){
+                    if( query!== ''){
                         var data = auditSearch.doSearch(query, rowNumber, "audit");
 
                        return data;
@@ -306,7 +306,7 @@ ultimotls.config(function ($stateProvider, $urlRouterProvider) {
             url:"/login",
             templateUrl: 'ultimotls/login.html',
             controller: 'loginControllerModule'
-        })
+        });
     // this trick must be done so that we don't receive
     // `Uncaught Error: [$injector:cdep] Circular dependency found`
 
@@ -334,8 +334,8 @@ ultimotls.factory("mongoAggregateService", ['$http','resetTimerService',function
 }]);
 
 ultimotls.service("queryEnv", function($rootScope){ //getter and setter for environment 
-    var envid = {}
-    envid.label = "Prod", envid.name = "PROD"
+    var envid = {};
+    envid.label = "Prod", envid.name = "PROD";
     var environment = {};
     
     environment.setEnv = function(env){
@@ -349,8 +349,8 @@ ultimotls.service("queryEnv", function($rootScope){ //getter and setter for envi
         return envid;
     };
     environment.broadcast = function(){
-        $rootScope.$broadcast("envChangeBroadcast")
-    }
+        $rootScope.$broadcast("envChangeBroadcast");
+    };
     return environment;
 });
 ultimotls.service("timeService", function($rootScope){ //getter and setter for drop down value 
@@ -363,8 +363,8 @@ ultimotls.service("timeService", function($rootScope){ //getter and setter for d
     
     time.setTime = function(fromDate, toDate){
         if(time){
-            timeSelected.toDate = toDate
-            timeSelected.fromDate = fromDate
+            timeSelected.toDate = toDate;
+            timeSelected.fromDate = fromDate;
         }
         return timeSelected;
     };
@@ -372,14 +372,14 @@ ultimotls.service("timeService", function($rootScope){ //getter and setter for d
         return timeSelected;
     };
     time.broadcast = function(){
-        $rootScope.$broadcast("timeChangeBroadcast")
-    }
+        $rootScope.$broadcast("timeChangeBroadcast");
+    };
     return time;
 });
 
 ultimotls.service("queryFilter", function($rootScope){
     var filter = {};
-    var newFilter = ""
+    var newFilter = "";
     filter.appendQuery = function(name,value){
         if(name && value){
             newFilter = "\""+name+"\":\""+value+"\",";
@@ -390,7 +390,7 @@ ultimotls.service("queryFilter", function($rootScope){
         return newFilter;
     };
     filter.broadcast = function(){
-        $rootScope.$broadcast("newFilterAppended")
+        $rootScope.$broadcast("newFilterAppended");
     };
     return filter;
 });
@@ -450,7 +450,7 @@ ultimotls.service("auditQuery", function () {
         
             return queryParam;
         }
-    }
+    };
     
 });
 ultimotls.service("resetTimerService",['localStorageService', function(localStorageService){

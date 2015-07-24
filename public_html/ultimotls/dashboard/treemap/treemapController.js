@@ -22,7 +22,7 @@ treemapControllerModule.controller('treemapController', ['$scope', '$location', 
     $scope.$on("envChangeBroadcast", function(){//Listens for Environment Change
         $scope.env = queryEnv.getEnv();
         $scope.fromDateChange($scope.timeSelected);
-    })
+    });
     $scope.$on("newFilterAppended", function(){
         $scope.env = queryEnv.getEnv();
         $scope.newFilter = queryFilter.appendQuery();
@@ -31,17 +31,17 @@ treemapControllerModule.controller('treemapController', ['$scope', '$location', 
                             $scope.env.name+"\"}]}]}},{\"$group\":{\"_id\":{\"interface1\":\"$interface1\",\"application\":\"$application\"},"+
                             "\"count\":{\"$sum\":1}}},{\"$group\":{\"_id\":{\"application\":\"$_id.application\"},\"data\":{\"$addToSet\":{\"name\":\"$_id.interface1\""+
                             ",\"size\":\"$count\"}}}},{\"$project\":{\"_id\":1,\"name\":\"$_id.application\",\"children\":\"$data\"}}]";
-                    console.log(newDataQuery)
+                    console.log(newDataQuery);
         $scope.treemapPromise = mongoAggregateService.callHttp(newDataQuery);
-    })
+    });
     calculateTime = function(timeSelected){
         timeObj = {};
         var currentDateTime = new Date();
         timeObj.fromDate = new Date(currentDateTime - (timeSelected*60*60*1000)).toISOString();
         timeObj.toDate = new Date(currentDateTime).toISOString();
         return timeObj;
-    }
-    if($scope.treemapSaver.wordLength === undefined)$scope.treemapSaver.wordLength = []
+    };
+    if($scope.treemapSaver.wordLength === undefined)$scope.treemapSaver.wordLength = [];
     if(!$scope.toDate){
         var currentDateTime = new Date();
         if(typeof $scope.treemapSaver.dropdownVal !== 'undefined'){ //checks whether or not the slider value holder in the service exists yet
@@ -53,7 +53,7 @@ treemapControllerModule.controller('treemapController', ['$scope', '$location', 
             $scope.fromDate = new Date(currentDateTime - ($scope.treemapSaver.dropdownVal*60*60*1000)).toISOString();  //changes the time accordingly
         }
         else if($scope.timeSelected.time === "Calender"){
-            console.log("new event")
+            console.log("new event");
         }
         else{
             $scope.fromDate = new Date(currentDateTime - 3600000).toISOString(); //Current minus 2 hours           
@@ -70,7 +70,7 @@ treemapControllerModule.controller('treemapController', ['$scope', '$location', 
     $scope.customDate = function(fromDate, toDate){
         if(!fromDate || !toDate){ //Error handling - A valid date must be entered
             alert("A valid date must be entered for both fields");
-            return
+            return;
         }
         console.log(fromDate, toDate);
         $scope.fromDate = new Date(fromDate).toISOString();
@@ -84,16 +84,16 @@ treemapControllerModule.controller('treemapController', ['$scope', '$location', 
         var displayFromDate = new Date(fromDate).toDateString().substr(4);
         var displayToDate = new Date(toDate).toDateString().substr(4);
         document.getElementById("customDateTimes").innerHTML = displayFromDate + " - " + displayToDate;
-    }
+    };
     $scope.fromDateChange = function(time){
         $scope.timeSelected = time;
         if($scope.timeSelected.time === "Calender"){
             $(document).ready(function(){
                 $("#calendarPage").modal();
             });
-            return
+            return;
         }
-        var timeCalulated = calculateTime(time.time)
+        var timeCalulated = calculateTime(time.time);
         $scope.fromDate = timeCalulated.fromDate;
         $scope.toDate = timeCalulated.toDate;
         timeService.setTime($scope.fromDate, $scope.toDate);
@@ -103,6 +103,6 @@ treemapControllerModule.controller('treemapController', ['$scope', '$location', 
             
         $scope.treemapPromise = mongoAggregateService.callHttp(sliderDataQuery);
         $scope.treemapSaver.dropdownVal = $scope.timeSelected.time;//Saves TimeSelected when drop down value changes
-        document.getElementById("customDateTimes").innerHTML = ""
+        document.getElementById("customDateTimes").innerHTML = "";
     };
     }]);

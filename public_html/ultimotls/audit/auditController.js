@@ -46,9 +46,9 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
         var searchFlag = true;
         $scope.searchOn = function(bool){
             searchFlag = bool;
-        }
+        };
         //Flag and variable for keyword used in Advance Search
-        var keywordFlag = false
+        var keywordFlag = false;
         //check if initPromise from resolve has data.
         if (initPromise && initPromise.data) {
             var queryFromResolve = initPromise.config.url;
@@ -57,7 +57,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
         }
         clearError = function(){ //onKeyPress error message will clear
             $scope.inputError = "";
-        }
+        };
         $scope.customField = [{}], $scope.nameValueField = [{}];
         $scope.customFieldLength = 1, $scope.nameValueFieldLength = 1;
         $scope.basicSearchButton = function (query,dbType) {
@@ -115,7 +115,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                 checkCustomFieldFlag = true;
                 return checkCustomFieldFlag;
             }
-            $scope.errorWarning = "Both name and value must be enter before search can be performed"
+            $scope.errorWarning = "Both name and value must be enter before search can be performed";
             return checkCustomFieldFlag;
         }
         function appendCustomField(){
@@ -156,7 +156,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                 checkNameValueField = true;
                 return checkNameValueField;
             }
-            $scope.errorWarning = "Both name and value must be enter before search can be performed"
+            $scope.errorWarning = "Both name and value must be enter before search can be performed";
             return checkNameValueField;
         }
         function appendNameValueField(){
@@ -327,7 +327,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
         //First, Previous, Next, Last are button function for Pagination to render new view
         $scope.goToFirst = function(){
             var firstLink = $scope.data._links.first.href;
-            if (firstLink == null || firstLink == undefined) {
+            if (firstLink === null || firstLink === undefined) {
                 alert("Row(s) has not been queried");
             }
             else {

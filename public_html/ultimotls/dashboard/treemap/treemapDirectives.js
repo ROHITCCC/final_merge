@@ -236,7 +236,7 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
             parDropDown.enter().append("option")
                     .attr("id",function(d){return d.name;})
                     .text(function(d){return d.name;})
-                    .style("background", function(d) { return color(d.name); })
+                    .style("background", function(d) { return color(d.name); });
             
                 var ddlSelect = document.getElementById("legendSelect");
                 var option = document.createElement("option");
@@ -554,7 +554,7 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                                 }else{
                                     return 1;
                                 }
-                            })
+                            });
                             
                     d3.selectAll("g.cell")          //replaces click event to zoom in on individual cells once within a parent node
                     .on("click", function(d) { return zoom((node === d.parent ? root : d.parent),(d3.select(this).attr("id")),(d3.select(this).attr("parent"))); });
@@ -640,7 +640,7 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                 d3.selectAll("svg.newSVG").remove();
                 $("#zoomOut").d3Click();
                 $("#"+scope.treemapSaver.currentZoomName).d3Click();
-                d3.select("#zoomIn").style("cursor","pointer")
+                d3.select("#zoomIn").style("cursor","pointer");
                 d3.selectAll("#treemapSVG").transition().duration(750).style("opacity","1").style("display","inline");
                 d3.select("#zoomOut").on("click", function() { zoom(root, "flag", "flag"); });
                
@@ -752,9 +752,9 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                         .selectAll("div").select("#treemapSVG");
                 scope.treemapSaver.zoomClicked = undefined;
                 createZoomTree(treeData, element, "true", scope, true);
-                console.log(nodes)
+                console.log(nodes);
                 d3.select("#zoomOut").on("click", function() { zoomOutBrushed(); });
-                d3.select("#zoomIn").style("cursor","pointer")
+                d3.select("#zoomIn").style("cursor","pointer");
                     
             }
             
@@ -766,14 +766,14 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                     d3.selectAll("g.brush").remove();
 
                     scope.treemapSaver.zoomClicked = undefined;
-                    d3.select("#zoomIn").style("cursor","pointer")
+                    d3.select("#zoomIn").style("cursor","pointer");
                 }
                 else{
                     
                     d3.selectAll(".brush").call(brushStorage[scope.treemapSaver.brushCounter].clear());
                     d3.selectAll("g.brush").remove();
                     
-                    d3.select("#zoomIn").style("cursor","crosshair")
+                    d3.select("#zoomIn").style("cursor","crosshair");
                     if(scope.treemapSaver.customZoomed === undefined){
                         svg.append("g")
                             .attr("id","brush")
@@ -798,7 +798,7 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                 //scope.getAuditsForInterface(auditParam);
                 scope.treemapSaver.data = d3.select("#treemapZoom").select("svg").selectAll("g")[0];
                 var interfaceQuery = '{"application":"'+name+'","interface1":"'+parent+'","timestamp":{"$gte":{"$date":"'+scope.fromDate+'"},"$lt":{"$date":"'+scope.toDate+'"}},"$and":[{"severity":{"$ne":"null"}},{"severity":{"$exists":"true","$ne":""}}]}';
-                console.log(scope.fromDate)
+                console.log(scope.fromDate);
                 if(scope.newFilter){
                     interfaceQuery = '{'+scope.newFilter+'"application":"'+name+'","interface1":"'+parent+'","timestamp":{"$gte":{"$date":"'+scope.fromDate+'"},"$lt":{"$date":"'+scope.toDate+'"}},"$and":[{"severity":{"$ne":"null"}},{"severity":{"$exists":"true","$ne":""}}]}';
                 }
