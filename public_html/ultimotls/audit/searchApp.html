@@ -174,8 +174,8 @@ and open the template in the editor.
     </div>
     <div id="pagination" class="container-fluid">
         <div id="paginationNav" class="col-sm-10">
-            <label style="float: left; padding-right: 20px"><input id="replaySelectAll" ng-click="checkAll(this)" type="checkbox"> Select All</label>
-            <button id="replayButton" ng-click="changeReplay()" style="float: left; opacity: .5" data-toggle="modal" data-target="#replayPage" disabled>Replay</button>
+            <label style="float: left; padding-right: 20px; margin-top: 6px;"><input id="replaySelectAll" ng-click="checkAll(this)" type="checkbox"> Select All</label>
+            <button id="replayButton" class="btn btn-default" ng-click="changeReplay()" style="float: left; opacity: .5" data-toggle="modal" data-target="#replayPage" disabled>Replay</button>
             <span ng-if="data['_size'] !== undefined" style="font-size:10px; position: absolute;right: 0px;
                   padding-right: 225px; padding-top: 8px;">Total audits: {{data['_size']}}</span>
             <ul class="pagination">
@@ -210,10 +210,11 @@ and open the template in the editor.
             </div>
             <div id="paginationDropDown" class="col-sm-1 form-horizontal" style="float: left">
                 <label class="control-label" style="padding-top: 0px">
-                    <select ng-model="rowNumber" id="rowsOptions" class="form-control input-sm"
+                    <select class="replayDropDown" ng-model="rowNumber" id="rowsOptions" class="form-control input-sm"
                             data-ng-options="p as p.rows for p in rowsOptions"
                             ng-change="rowSelected(calender.to, calender.from)">
                     </select>
+                    <span class="caret" style="margin-left: -18px;"></span>
                 </label>
             </div>
         </div>
@@ -303,7 +304,7 @@ and open the template in the editor.
                  overflow-y: auto;
                  height: 100%;">
                 <div id="sliderWindow">
-                    <div class="list-group container-fluid">
+                    <div class="list-group container-fluid" style="margin: 10px;">
                         <ul class="list-group">
                             <li class="list-group-item" ng-if="sliderWindowData.envid">
                                 <b>Environment ID:</b> {{sliderWindowData.envid}}
@@ -325,7 +326,7 @@ and open the template in the editor.
                             </li>
                             <li class="list-group-item" ng-if="sliderWindowData.transactionId">
                                 <b>Transaction ID</b> {{sliderWindowData.transactionId}}
-                                <button style="float: right" ng-click="relatedTransaction(sliderWindowData.transactionId)" 
+                                <button class="btn btn-default" style="float: right; padding: 2px" ng-click="relatedTransaction(sliderWindowData.transactionId)" 
                                         data-toggle="modal" data-target="#transactionPage">
                                     Related Search
                                 </button>
@@ -385,11 +386,11 @@ and open the template in the editor.
                                 <b>{{key}}:</b> {{value}}
                             </li>
                         </ul>
-                        <button style="float: left" ng-click="callPayload(sliderWindowData.dataLocation)" 
+                        <button  class="btn btn-default" style="float: left" ng-click="callPayload(sliderWindowData.dataLocation)" 
                                 data-toggle="modal" data-target="#payloadPage">
                             Payload
                         </button>
-                        <button type="button" style="float: right" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="button" style="float: right" class="btn btn-default closemainmodal" data-dismiss="modal">Close</button>
                     </div>
                 </div>
                 
@@ -405,7 +406,7 @@ and open the template in the editor.
     </div>    
 </div>
 <div id="transactionPage" class="modal fade col-sm-offset-6 col-sm-6" role="dialog" 
-     style="height: 100%;">
+     style="height: 100%; z-index: 1999;">
     <div class="modal-dialog col-sm-offset-6 col-sm-6" style="width: 100%">
         <!-- Modal content-->
         <div class="modal-content" ng-model="relatedTransactionData">
@@ -624,21 +625,21 @@ and open the template in the editor.
     </div>    
 </div>
 <div id="payloadPage" class="modal fade col-sm-offset-6 col-sm-6" role="dialog" 
-     style="height: 50%;">
-    <div class="modal-dialog col-sm-offset-6 col-sm-6" style="width: 100%">
+     style="height: 49%;">
+    <div class="modal-dialog col-sm-offset-6 col-sm-6" style="width: 100%; margin-bottom: 0px;">
         <!-- Modal content-->
         <div class="modal-content" >
             <div class="modal-header">
                 <div class="container-fluid">
                     <h4 class="modal-title col-sm-6">Payload</h4>
                     <div class="col-sm-6">
-                        <button style="float: right" data-toggle="modal" data-target="#replayPage">Replay</button>
+                        <button class="btn btn-default" style="float: right" data-toggle="modal" data-target="#replayPage">Replay</button>
                     </div>
                 </div>
             </div>
             <div class="modal-body" ng-model="payloadPageData">
                 <div id="sliderWindow">
-                    <div class="list-group container-fluid">
+                    <div class="list-group container-fluid" style="margin: 10px;">
                         <ul class="list-group">
                             <li class="list-group-item">
                                 <b>Payload:</b> 
@@ -656,7 +657,7 @@ and open the template in the editor.
     </div>
 </div>
 <div id="replayPage" class="modal fade col-sm-offset-6 col-sm-6" role="dialog" style="top: 50%">
-    <div class="modal-dialog col-sm-offset-6 col-sm-6" style="width: 100%">
+    <div class="modal-dialog col-sm-offset-6 col-sm-6" style="width: 100%; margin-top: 0px; margin-bottom: 0px">
         <!-- Modal content-->
         <div class="modal-content">
             <div class="modal-header">
@@ -664,10 +665,11 @@ and open the template in the editor.
                     <div class="container-fluid col-sm-6">
                         <h4 class="modal-title">Replay</h4>
                         <label class="control-label">
-                            <select ng-model="replayType" id="replayOptions"
+                            <select class="replayDropDown" ng-model="replayType" id="replayOptions"
                                     data-ng-options="p as p.type for p in replayOptions">
                             </select>
                         </label>
+                        <span class="caret" style="margin-left: -23px;"></span>
                     </div>
                     <div class="container-fluid col-sm-offset-4 col-sm-2">
                         <button type="button" class="close" ng-click="changeReplayBack()" data-dismiss="modal">&times;</button>
@@ -676,7 +678,7 @@ and open the template in the editor.
             </div>
             <div class="modal-body">
                 <div id="replayBodyPage">
-                    <div class="list-group container-fluid">
+                    <div class="list-group container-fluid" style="margin: 10px;">
                         <ul class="list-group">
                             <li class="list-group-item" ng-if="replayType.type == 'REST'">
                                 <div class="container-fluid">
@@ -710,11 +712,11 @@ and open the template in the editor.
                                             <div id="restHeaderDiv" class="form-inline">
                                                 
                                                 <input ng-model="restReplay.header.type" type="text" class="form-control col-sm-6" 
-                                                       id="headerType" placeholder="Header Type" style="width: 35%; ">
+                                                       id="headerType" placeholder="Header Type" style="width: 30%; ">
                                                 <input ng-model="restReplay.header.value" type="text" class="form-control col-sm-offset-1 col-sm-5" 
-                                                       id="headerValue" placeholder="Header Value" style="width: 35%">
+                                                       id="headerValue" placeholder="Header Value" style="width: 30%">
                                             </div>
-                                            <button ng-click="addHeaders()">+</button>
+                                            <button class="btn addfields" ng-click="addHeaders()">+</button>
                                             <!--<button id="deleteHeader" style="display:none" ng-click="deleteHeaders()">-</button>-->
                                             
                                         </div>

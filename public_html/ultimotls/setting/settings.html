@@ -144,6 +144,7 @@
                                         <div class="col-sm-12">
                                             <label class="control-label">Items per page :</label>
                                             <select class="form-control" ng-model='selectedNumber'  ng-options='number for number in numbers'></select>
+                                            <span class="caret" style="margin-left: -18px;margin-top: 3px;"></span>
                                         </div>
                                     </div>
                                     <div class="form-group bordertab col-sm-8">                                       
@@ -156,10 +157,11 @@
                                         <div class="col-sm-1">
                                             <label class="control-label">Unit:</label>
                                         </div>
-                                        <div class="col-sm-1">
+                                        <div class="col-sm-2">
                                             <select class="form-control"  name="immUnit" ng-options='unit for unit in units' ng-model="notifications.immidate.frequency.unit" required>
                                                 <option value="" disabled selected style='display:none;'>{{notifications.immidate.frequency.unit}}</option>
                                             </select>
+                                            <span class="caret" style="margin-left: -18px;margin-top: 3px;"></span>
                                         </div>
                                     </div>
                                 </form>
@@ -185,6 +187,7 @@
                                                         <select class="form-control inputable"   name="envid" ng-options='name.name as name.name for name in envDropdown' ng-model="notification.envid" required>
                                                             <option value="" selected style='display:none;'>{{notification.envid}}</option>
                                                         </select>
+                                                        <span class="caret" style="margin-left: -18px;margin-top: 3px; display: none;"></span>
                                                     </td>    
                                                     <td col-sm-1>
                                                         <input type="text" class="form-control inputable" id="immi_severity"  name="severity" ng-model="notification.severity" value="{{notification.severity}}" placeholder="Severity" required>
@@ -192,7 +195,7 @@
                                                     <td>
                                                         <input type="text" class="form-control inputable" id="immi_application" name="name" ng-model="notification.application.name" value="{{notification.application.name}}" placeholder="Application" required>
                                                     </td>
-                                                    <td style="white-space: nowrap; overflow:hidden;" id="interfaceimmi" class="hideinterfacebtn">
+                                                    <td style="white-space: nowrap; overflow:hidden;" class="hideinterfacebtn interfaceimmi">
                                                         <div class="entry input-group" data-ng-repeat="interface in notification.application.interfaces track by $index">
                                                             <input type="text" class="form-control inputable"  name="interface" ng-model="notification.application.interfaces[$index]" value="{{interface}}" placeholder="Interfaces" required>
                                                             <span class="input-group-btn"><button class="btn btn-remove btn-danger" ng-click="removeImmidateInterface($parent.$index, $index)">-</button></span>
@@ -249,6 +252,7 @@
                                         <div class="col-sm-12">
                                             <label class="control-label">Items per page :</label>
                                             <select class="form-control" ng-model='selectedNumberAggri'  ng-options='number for number in numbers'></select>
+                                            <span class="caret" style="margin-left: -18px;margin-top: 3px;"></span>
                                         </div>
                                     </div>
                                     <div class="form-group  col-sm-8">
@@ -277,9 +281,10 @@
                                         </thead>
                                         <tr data-toggle="collapse" id="{{$index}}" class="immidateinfo" data-ng-repeat="report in reports| pagination: curPageAggri * pageSizeAggri | limitTo: pageSizeAggri">                               
                                             <td class="col-md-1">
-                                                <select class="form-control inputable"   name="envid" ng-options='name.name as name.name for name in envDropdown' ng-model="report.report.envid" >
+                                                <select class="form-control inputable"   name="envid" ng-options='name.name as name.name for name in envDropdown' ng-model="report.report.envid" style="display: inline-block; width: 76%;">
                                                     <option value="" selected style='display:none;'>{{report.report.envid}}</option>
                                                 </select>
+                                                <span class="caret" style="margin-left: -18px;margin-top: 3px; display: none;"></span>
                                                 <!--<input type="text" class="form-control inputable" ng-model="report.report.environment" value="{{report.report.environment}}" placeholder="Environment" required>-->
                                             </td>
                                             <td class="col-md-1">
@@ -298,9 +303,10 @@
                                                 <input type="text" class="form-control inputable" value="{{report.report.frequency.duration}}" ng-model="report.report.frequency.duration" placeholder="Duration" required>
                                             </td>
                                             <td class="col-md-1">
-                                                <select class="form-control inputable"   ng-options='unit for unit in units' ng-model="report.report.frequency.unit" required>
+                                                <select class="form-control inputable"   ng-options='unit for unit in units' ng-model="report.report.frequency.unit" required style="display: inline-block; width: 76%;">
                                                     <option value="" disabled selected style='display:none;'>{{report.report.frequency.unit}}</option>
                                                 </select>
+                                                <span class="caret" style="margin-left: -18px;margin-top: 3px; display: none;"></span>
                                             </td>
                                             <td class="col-md-2">
                                                 <input type="text" class="form-control inputable" value="{{report.report.email}}" ng-model="report.report.email" placeholder="Email" required>
@@ -378,13 +384,14 @@
                                         <div class="col-sm-2">
                                             <input type="text" class="form-control" name="batchFrequency" value="{{batch.frequency.duration}}" style="width: 100%;" ng-model="batch.frequency.duration" placeholder="Frequency" required>
                                         </div>
-                                        <div class="col-sm-1">
+                                        <div class="col-sm-2">
                                             <label class="control-label">Unit:</label>
                                         </div>
                                         <div class="col-sm-1">
                                             <select class="form-control"  name="batchUnit" ng-options='unit for unit in units' ng-model="batch.frequency.unit" required>
                                                 <option value="" disabled selected style='display:none;'>{{batch.frequency.unit}}</option>
                                             </select>
+                                            <span class="caret" style="margin-left: -18px;margin-top: 3px;"></span>
                                         </div>
 
                                         <div class="col-sm-2 pull-right">
