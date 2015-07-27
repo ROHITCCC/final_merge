@@ -679,16 +679,16 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                 if(d3.selectAll("#newSvg")[0].length === 0){
                  selected = d3.select("#treemapSVG").selectAll("g").data(scope.treemapSaver.nodeSaver)
                     .select(function(d){
-                        return (((((d.x+d.dx/1.75) > extent[0][0] && d.x  < extent[1][0]))) && 
-                        ((d.y+d.dy/1.75) > extent[0][1] && d.y  < extent[1][1]))? this : null;
+                        return (((((d.x+d.dx) > extent[0][0] && d.x  < extent[1][0]))) && 
+                        ((d.y+d.dy) > extent[0][1] && d.y  < extent[1][1]))? this : null;
                     });
                     //console.log(selected);
                 }
                 else{
                     selected = d3.select("svg.newSVG").selectAll("g.cell").data(nodes)
                     .select(function(d){
-                        return (((((d.x+d.dx/1.75) > extent[0][0] && d.x  < extent[1][0]))) && 
-                        ((d.y+d.dy/1.75) > extent[0][1] && d.y  < extent[1][1]))? this : null;
+                        return (((((d.x+d.dx) > extent[0][0] && d.x  < extent[1][0]))) && 
+                        ((d.y+d.dy) > extent[0][1] && d.y  < extent[1][1]))? this : null;
                     });
 //                    console.log(selected)
 
@@ -721,45 +721,45 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                         .attr("class","newSVG")
                         .attr("id","newSvg")
                         .attr("width",w).attr("height",h);
-                        
-                        
-                    for(var i = 0; i < selected[0].length; i++){        //appends old DOM elements into new DOM
-                        newerSVG.append(function(){return selected[0][i];});
-                    }
-                 //console.log(d3.selectAll("#newSvg")[0].length);   
-                    
-                //console.log(selected[0].__data__.parent.name);
+                
+                            
+                for(var i = 0; i < selected[0].length; i++){        //appends old DOM elements into new DOM
+                    newerSVG.append(function(){return selected[0][i];});
+                }
+                //console.log(d3.selectAll("#newSvg")[0].length);   
+
+               //console.log(selected[0].__data__.parent.name);
                 var childTextGet = null;
                 if(!newSVGFlag) childTextGet = selected[0].children.length-1;
-                
+
                 treeData = {name:"tree", children:[{}]};
-                
-                
+
+
                 for(var b = 0; b < selected.length; b++){
                     childTextGet = selected[b].children.length-1;
                     treeChildren[b] = ({size:selected[b].children[childTextGet].children[1].innerHTML, name:selected[b].id });
                 }
                 treeData.children[0] = ({children:treeChildren, name:selected[0].__data__.parent.name});
-                
+
                 //console.log(treeData);    
-                    
+
                 treeChildren = [{}];
-                    
+
                 d3.selectAll(".brush").call(brushStorage[scope.treemapSaver.brushCounter].clear());
                 d3.selectAll("g.brush").remove();
-                
+
                 d3.selectAll("#treemapZoom")
                     .selectAll("div")
                     .select("#treemapSVG")
                     .style("opacity","0")
                     .style("display","none");
-                
-                
+
+
                 remakeFlag = true;
-                
+
                 scope.treemapSaver.customZoomed = true;
                 scope.treemapSaver.brushCounter++;
-                
+
                 svg = d3.selectAll("#treemapZoom")
                         .selectAll("div").select("#treemapSVG");
                 scope.treemapSaver.zoomClicked = undefined;
@@ -767,6 +767,7 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                 //console.log(nodes);
                 d3.select("#zoomOut").on("click", function() { zoomOutBrushed(); });
                 d3.select("#zoomIn").style("cursor","pointer");
+                
                     
             }
             
