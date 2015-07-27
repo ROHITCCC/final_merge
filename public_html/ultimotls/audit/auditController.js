@@ -450,6 +450,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
         var replayPostUrl = TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/_logic/ReplayService";
         var replayPostUrlBatch = TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/_logic/ReplayService?batch=true";
         $scope.runRestService = function(){//only takes JSON files not 
+            document.getElementById("replayResponseRest").innerHTML = " ";
             if($scope.batchChecker === false){
                 var headerType = null;
                 var headerVal = null;
@@ -543,7 +544,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
         };
         $scope.fileReplay = {};
         $scope.runFileService = function(){ //how do i set a file location
-            
+            document.getElementById("replayResponseRest").innerHTML = " ";
             if($scope.batchChecker === false){
                 var filePayload = "type=FILE~, file-location="+$scope.fileReplay.location+"~, payload="+$scope.payloadPageData.payload+"";
                 $http.post(replayPostUrl, filePayload, {timeout:TLS_SERVER_TIMEOUT})
@@ -585,7 +586,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
         };
         $scope.webServiceReplay = {};
         $scope.runWebService = function(){
-            
+            document.getElementById("replayResponseRest").innerHTML = " ";
             if($scope.batchChecker === false){
                 var webServicePayload = "type=WS~, wsdl="+$scope.webServiceReplay.wsdl+"~, operation="+$scope.webServiceReplay.operation+
                     "~,  soapaction="+$scope.webServiceReplay.soapAction+"~, binding="+$scope.webServiceReplay.binding+"~, payload="+
@@ -631,6 +632,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
         $scope.ftpServiceReplay = {};
         $scope.runFTPService = function(){
             var checkRest = $scope.checkChecked();
+            document.getElementById("replayResponseRest").innerHTML = " ";
             if($scope.batchChecker === false){
                 var ftpPayload = "type=FTP~, host="+$scope.ftpServiceReplay.host+"~, username="+$scope.ftpServiceReplay.username+"~, password="+
                     $scope.ftpServiceReplay.password+"~, location="+$scope.ftpServiceReplay.location+"~, fileType="+$scope.ftpServiceReplay.fileType+
