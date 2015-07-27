@@ -22,6 +22,42 @@ ultimotls.controller('loginControllerModule', ['$scope', '$http', '$q', '$base64
         $scope.treemapSaver = treemapSaver;
         console.log('*************** LoginCtrl');
         $scope.treemapSaver.nameSaver=localStorageService.cookie.get('name');
+        if(localStorageService.cookie.get('showNav')){
+            var username = localStorageService.cookie.get('name');
+            var cred = localStorageService.cookie.get('creds'); 
+            var envID =  localStorageService.cookie.get('envid');
+            
+            $http.defaults.headers.common["Authorization"] = 'Basic ' + cred;
+            $http.defaults.headers.common["No-Auth-Challenge"];
+            $http.defaults.headers.common["Env-ID"] = envID;
+            
+            var deferred = $q.defer();
+            
+            var loggedInRequest = $http.get(TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/_logic/LoginService/"+username, {});
+            loggedInRequest.success(function (data, status, header, config) {
+                var auth_token_valid_until = header()['auth-token-valid-until'];
+                treemapSaver.username = username;
+                if (!angular.isUndefined(data) && data !== null && !angular.isUndefined(data.authenticated) && data.authenticated) {
+                    $scope.loginError = "";
+                    resetTimerService.set(auth_token_valid_until);
+                    treemapSaver.envid = envID
+                    queryEnv.broadcastLogin();
+                    $scope.$apply($location.path("/treemap"));
+                    
+                    deferred.resolve();
+                }
+                else {
+                    $scope.loginError = "Username and/or password is incorrect";
+                    localStorageService.cookie.remove('creds');
+                    delete $http.defaults.headers.common["Authorization"];
+                    $scope.authWrongCredentials = true;
+
+                    //reject promise
+                    deferred.reject('authentication failed..');
+                }
+            });
+        };
+        
         $scope.isLoggedin = function () {
             var _credentials = localStorageService.cookie.get('creds');
             if (angular.isUndefined(_credentials) || _credentials === null) {
@@ -103,6 +139,7 @@ ultimotls.controller('loginControllerModule', ['$scope', '$http', '$q', '$base64
 }]);
 ultimotls.controller("indexControllerModule", ['$scope','$http','$location','localStorageService','treemapSaver','queryEnv',
         function($scope,$http,$location,localStorageService,treemapSaver,queryEnv){
+            console.log(document.cookie)
         $scope.treemapSaver = treemapSaver;
         $scope.treemapSaver.showNav = localStorageService.cookie.get('showNav');
         $scope.treemapSaver.nameSaver = localStorageService.cookie.get('name');
@@ -468,13 +505,18 @@ ultimotls.service("resetTimerService",['localStorageService', function(localStor
         //var auth_token_valid_until = header()['auth-token-valid-until']
         var currentDate = new Date();
         var newDate = new Date(newTime);
-        var newExpiration = ((newDate.getTime() - currentDate.getTime())/60000)*24*60;     
+        var newExpiration = ((newDate.getTime() - currentDate.getTime())/60000)/(24*60);
+        console.log(newExpiration)
         var userCred = localStorageService.cookie.get('creds'),
             username = localStorageService.cookie.get('name'),
-            showNav = localStorageService.cookie.get('showNav');
+            showNav = localStorageService.cookie.get('showNav'),
+            envOptions = localStorageService.cookie.get('envOptions'),
+            envID = localStorageService.cookie.get('envid');
         localStorageService.cookie.add('creds', userCred, newExpiration);
         localStorageService.cookie.add('name', username, newExpiration);
         localStorageService.cookie.add('showNav', showNav, newExpiration);
+        localStorageService.cookie.add('envOptions',envOptions, newExpiration);
+        localStorageService.cookie.add('envid',envID,newExpiration);
     };
     return resetTimer;
 }]);
