@@ -54,6 +54,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
             var queryFromResolve = initPromise.config.url;
             $scope.searchCriteria = queryFromResolve.substring(queryFromResolve.indexOf(',')+1, queryFromResolve.lastIndexOf('}') - 1);
             $scope.data = initPromise.data;
+            $scope.treemapSaver.auditData = $scope.data;
         }
         clearError = function(){ //onKeyPress error message will clear
             $scope.inputError = "";
@@ -314,6 +315,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                         var auth_token_valid_until = header()['auth-token-valid-until'];
                         resetTimerService.set(auth_token_valid_until);
                         $scope.data = response;
+                        $scope.treemapSaver.auditData = $scope.data;
                         $scope.errorWarning = "";
                     }).error(function(d){
                         $scope.errorWarning = "Call Timed Out";
@@ -338,6 +340,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                         var auth_token_valid_until = header()['auth-token-valid-until'];
                         resetTimerService.set(auth_token_valid_until);
                         $scope.data = response;
+                        $scope.treemapSaver.auditData = $scope.data;
                         });
                 }
                 catch(err){
@@ -357,6 +360,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                             var auth_token_valid_until = header()['auth-token-valid-until'];
                             resetTimerService.set(auth_token_valid_until);    
                             $scope.data = response;
+                            $scope.treemapSaver.auditData = $scope.data;
                         });
             }
         };
@@ -372,6 +376,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                             var auth_token_valid_until = header()['auth-token-valid-until'];
                             resetTimerService.set(auth_token_valid_until);
                             $scope.data = response;
+                            $scope.treemapSaver.auditData = $scope.data;
                         });
             }
         };
@@ -383,6 +388,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                         var auth_token_valid_until = header()['auth-token-valid-until'];
                         resetTimerService.set(auth_token_valid_until);
                         $scope.data = response;
+                        $scope.treemapSaver.auditData = $scope.data;
                     });
         };
         
@@ -487,6 +493,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                     }).error(function(d,status, header, config){
                         var auth_token_valid_until = header()['auth-token-valid-until'];
                         resetTimerService.set(auth_token_valid_until);
+                        document.getElementById("replayResponseRest").innerHTML = "Error: Could Not Connect";
                         document.getElementById("replayResponseRest").innerHTML = "Error: " + d["http status code"] + ": " + d["message"];
                         console.log(d);
                     });
@@ -527,6 +534,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                     }).error(function(d,status, header, config){
                         var auth_token_valid_until = header()['auth-token-valid-until'];
                         resetTimerService.set(auth_token_valid_until);
+                        document.getElementById("replayResponseRest").innerHTML = "Error: Could Not Connect";
                         document.getElementById("replayResponseRest").innerHTML = "Error: " + d["http status code"] + ": " + d["message"];
                         console.log(d);
                     });
@@ -542,10 +550,12 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                     .success(function(d,status, header, config){
                         var auth_token_valid_until = header()['auth-token-valid-until'];
                         resetTimerService.set(auth_token_valid_until);
+                        document.getElementById("replayResponseFile").innerHTML = "File Replay Success";
                         console.log(d);
                     }).error(function(d,status, header, config){
                         var auth_token_valid_until = header()['auth-token-valid-until'];
                         resetTimerService.set(auth_token_valid_until);
+                        document.getElementById("replayResponseFile").innerHTML = "Error: Could Not Connect";
                         document.getElementById("replayResponseFile").innerHTML = "Error: " + d["http status code"] + ": " + d["message"];
                         console.log(d);
                     });
@@ -566,6 +576,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                     }).error(function(d,status, header, config){
                         var auth_token_valid_until = header()['auth-token-valid-until'];
                         resetTimerService.set(auth_token_valid_until);
+                        document.getElementById("replayResponseFile").innerHTML = "Error: Could Not Connect";
                         document.getElementById("replayResponseFile").innerHTML = "Error: " + d["http status code"] + ": " + d["message"];
                         console.log(d);
                     });
@@ -583,10 +594,12 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                     .success(function(d,status, header, config){
                         var auth_token_valid_until = header()['auth-token-valid-until'];
                         resetTimerService.set(auth_token_valid_until);
+                        document.getElementById("replayResponseWs").innerHTML = "Web Service Replay Success";
                         console.log(d);
                     }).error(function(d,status, header, config){
                         var auth_token_valid_until = header()['auth-token-valid-until'];
                         resetTimerService.set(auth_token_valid_until);
+                        document.getElementById("replayResponseWs").innerHTML = "Error: Could Not Connect";
                         document.getElementById("replayResponseWs").innerHTML = "Error: " + d["http status code"] + ": " + d["message"];
                         console.log(d);
                     });
@@ -608,6 +621,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                     }).error(function(d,status, header, config){
                         var auth_token_valid_until = header()['auth-token-valid-until'];
                         resetTimerService.set(auth_token_valid_until);
+                        document.getElementById("replayResponseWs").innerHTML = "Error: Could Not Connect";
                         document.getElementById("replayResponseWs").innerHTML = "Error: " + d["http status code"] + ": " + d["message"];
                         console.log(d);
                     });
@@ -626,10 +640,12 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                     .success(function(d,status, header, config){
                         var auth_token_valid_until = header()['auth-token-valid-until'];
                         resetTimerService.set(auth_token_valid_until);
+                        document.getElementById("replayResponseFTP").innerHTML = "FTP Replay Success";
                         console.log(d);
                     }).error(function(d,status, header, config){
                         var auth_token_valid_until = header()['auth-token-valid-until'];
                         resetTimerService.set(auth_token_valid_until);
+                        document.getElementById("replayResponseFTP").innerHTML = "Error: Could Not Connect";
                         document.getElementById("replayResponseFTP").innerHTML = "Error: " + d["http status code"] + ": " + d["message"];
                         console.log(d);
                     });
@@ -652,6 +668,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                     }).error(function(d,status, header, config){
                         var auth_token_valid_until = header()['auth-token-valid-until'];
                         resetTimerService.set(auth_token_valid_until);
+                        document.getElementById("replayResponseFTP").innerHTML = "Error: Could Not Connect";
                         document.getElementById("replayResponseFTP").innerHTML = "Error: " + d["http status code"] + ": " + d["message"];
                         console.log(d);
                     });
