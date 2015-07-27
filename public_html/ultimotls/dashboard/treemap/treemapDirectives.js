@@ -110,6 +110,7 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                 .text("No Data Available");
             return;
         }
+        
             
 //            if(svg.selectAll("g.cell")[0].length > 0) 
             if(scope.treemapSaver.brushCounter === undefined)scope.treemapSaver.brushCounter = 2;
@@ -194,6 +195,15 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                 .sort(function(a,b) {
                     return a.value - b.value;
                 });
+            if(scope.treemapSaver.dropdownClicked === true){
+                d3.selectAll(".brush").call(brushStorage[scope.treemapSaver.brushCounter].clear());
+                d3.selectAll("g.brush").remove();
+                d3.selectAll("svg.newSVG").remove();
+                d3.select("#zoomIn").style("cursor","pointer");
+                d3.selectAll("#treemapSVG").transition().duration(750).style("opacity","1").style("display","inline");
+                d3.select("#zoomOut").on("click", function() { zoom(root, "flag", "flag"); });
+                scope.treemapSaver.customZoomed = undefined;
+            }
                 
             node = root = treeData;
             svgDivider = 0 ;
@@ -282,6 +292,8 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
         if(jsonRaw !== undefined)
         {
             if(scope.treemapSaver.data === undefined){                //checks if the scope is preserve
+            
+            
             
             svg.selectAll("text").remove();
             scope.treemapSaver.data = undefined;
@@ -652,7 +664,7 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                 //y.domain( y2.domain() ); //reset Y scale
                 
                 var extent = null;
-                
+                scope.treemapSaver.dropdownClicked = false;
                 if(d3.selectAll("#newSvg")[0].length === 0){
                    extent = brushStorage[scope.treemapSaver.brushCounter].extent();
                 }else{
