@@ -1453,3 +1453,7 @@ select {
 select::-ms-expand {
     display: none;
 }
+
+select#replayOptions {
+    width: 78px;
+}
