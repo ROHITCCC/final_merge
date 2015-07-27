@@ -382,6 +382,7 @@ ultimotls.service("queryEnv",['$http', '$rootScope',function($http,$rootScope){ 
         return envid;
     };
     environment.getEnvOptions = function(){
+        console.log("getEnvOptions")
         var promise = $http.get(TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/_logic/SettingService?object=setting.envsetup",{timeout:TLS_SERVER_TIMEOUT})
             .success(function(data){
             })

@@ -43,7 +43,7 @@ settingModule.directive('confirmationNeeded', function () {
     };
 });
 
-settingModule.controller('SettingsController', function ($scope, $http) {
+settingModule.controller('SettingsController',['$scope','$http','localStorageService', 'resetTimerService', function ($scope, $http, localStorageService, resetTimerService) {
     var settingURL = TLS_PROTOCOL + "://" + TLS_SERVER + ":" + TLS_PORT + "/_logic/SettingService";
     var schedulerURL = TLS_PROTOCOL + "://" + TLS_SERVER + ":" + TLS_PORT + "/_logic/SchedulerService";
     $scope.settings = {};
@@ -63,7 +63,9 @@ settingModule.controller('SettingsController', function ($scope, $http) {
 
 //////////////////////////////////////SETTINGS//////////////////////////////////////////
     $scope.settingPromise = function () {
-        var promise = $http.get(settingURL + "?object=setting").success(function (data, status) {
+        var promise = $http.get(settingURL + "?object=setting").success(function (data, status, header, config) {
+            var auth_token_valid_until = header()['auth-token-valid-until'];
+            resetTimerService.set(auth_token_valid_until);
         });
         return promise;
     };
@@ -128,9 +130,10 @@ settingModule.controller('SettingsController', function ($scope, $http) {
         $scope.numberOfPagesEnv = function () {
             return Math.ceil($scope.environments.length / $scope.pageSize);
         };
-        $scope.savesetting = function () {
+        $scope.savesetting = function (reloadFlag) {
             $scope.temp = $scope.settings;
             $scope.savedata($scope.temp);
+            $scope.reloadPage = reloadFlag
         };
         $scope.numberOfPagesImmi = function () {
             $scope.pageSizeImmi = $scope.selectedNumber;
@@ -138,11 +141,20 @@ settingModule.controller('SettingsController', function ($scope, $http) {
         };
         //Env dropdown
         $scope.envDropdown = angular.copy($scope.environments);
+        $scope.$watch('envDropdown', function(){
+            console.log("inside the function");
+            localStorageService.cookie.add('envOptions',$scope.envDropdown);
+        })
+        $scope.reload = function(){
+            location.reload();
+        }
     });
 
 //////////////////////////////////////REPORT////////////////////////////////////////////    
     $scope.reportPromise = function () {
-        var reportpromise = $http.get(settingURL + "?object=report").success(function (data, status) {
+        var reportpromise = $http.get(settingURL + "?object=report").success(function (data, status, header, config) {
+            var auth_token_valid_until = header()['auth-token-valid-until'];
+            resetTimerService.set(auth_token_valid_until);
         });
         return reportpromise;
     };
@@ -217,7 +229,9 @@ settingModule.controller('SettingsController', function ($scope, $http) {
     $scope.schedulerObj ={requestType:'', propertiesFile:''};
     $scope.savedata = function (insert, index) {
         var conAjax = $http.post(settingURL, insert);
-        conAjax.success(function (response) {
+        conAjax.success(function (response, status, header, config) {
+            var auth_token_valid_until = header()['auth-token-valid-until'];
+            resetTimerService.set(auth_token_valid_until);
             $scope.envDropdown = angular.copy($scope.environments);
             $('#savesuccess').modal();
             if (typeof index !== "undefined") {
@@ -293,4 +307,4 @@ settingModule.controller('SettingsController', function ($scope, $http) {
         console.log($scope.schedulerObj);
         $scope.scheduler($scope.schedulerObj, 4);
     };
-});
+}]);

@@ -102,7 +102,7 @@
                             </div>
                             <div class="col-sm-12">
                                 <button class="btn addfields" ng-click="addNewEnv()">New Environment</button>
-                                <button class="btn btn-success" ng-click="savesetting()" ng-disabled="EnvForm.name.$error.required || EnvForm.description.$error.required || EnvForm.label.$error.required">Save Environments</button>
+                                <button class="btn btn-success" ng-click="savesetting('reload')" ng-disabled="EnvForm.name.$error.required || EnvForm.description.$error.required || EnvForm.label.$error.required">Save Environments</button>
 
                                 <span style="color: red;" ng-show="EnvForm.name.$error.required || EnvForm.description.$error.required || EnvForm.label.$error.required"> Values for </span>
 
@@ -462,7 +462,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="" data-dismiss="modal"  role="button">Close</button>
+                    <button ng-if="reloadPage" ng-click="reload()" type="button" class="" data-dismiss="modal"  role="button">Close</button>
+                    <button ng-if="!reloadPage" type="button" class="" data-dismiss="modal"  role="button">Close</button>
                 </div>
             </div>
         </div>
