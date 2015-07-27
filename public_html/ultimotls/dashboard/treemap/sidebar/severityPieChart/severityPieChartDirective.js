@@ -162,7 +162,6 @@ severityPieChartDirectiveModule.directive('severityPieChart',['queryFilter', fun
                         .style("font-size", "12px")
 			.text(function(d){return d.data._id})
                         .each(function(d){this._current=d;});
-//                .attr("x", function(d) { return computeTextRotation(d)<90?radius / 3 * d.depth:radius/3*d.depth*-1; })
 
 	};
         Donut3D.transition = function(id, data, rx, ry, h, ir){

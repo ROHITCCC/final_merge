@@ -8,7 +8,7 @@ var TLS_PROTOCOL = "http";
 var TLS_SERVER = "172.16.120.157";
 var TLS_PORT = "8080";
 var TLS_DBNAME = "ES";
-var TLS_SERVER_TIMEOUT = 3000;
+var TLS_SERVER_TIMEOUT = 6000;
 var TLS_BATCH_REPLAY_COLLECTION = "ErrorSpotBatchReplay";
 var TLS_EXPIRATION_TIME =  15 //in minutes
    
@@ -340,7 +340,7 @@ ultimotls.config(function ($stateProvider, $urlRouterProvider) {
         .state('setting', {
             url: "/setting",
             templateUrl: 'ultimotls/setting/settings.html'
-        })
+        });
         
     // this trick must be done so that we don't receive
     // `Uncaught Error: [$injector:cdep] Circular dependency found`
@@ -368,8 +368,8 @@ ultimotls.factory("mongoAggregateService", ['$http','resetTimerService',function
     return callAggregate;
 }]);
 ultimotls.service("queryEnv",['$http', '$rootScope',function($http,$rootScope){ //getter and setter for environment 
-    var envid = {}
-    envid.label = "Prod", envid.name = "PROD"
+    var envid = {};
+    envid.label = "Prod", envid.name = "PROD";
     var environment = {};
     
     environment.setEnv = function(env){
@@ -393,10 +393,10 @@ ultimotls.service("queryEnv",['$http', '$rootScope',function($http,$rootScope){ 
     };
     environment.broadcast = function(){
         $rootScope.$broadcast("envChangeBroadcast");
-    }
+    };
     environment.broadcastLogin = function(){
         $rootScope.$broadcast("performedLogin");
-    }
+    };
     return environment;
 }]);
 ultimotls.service("timeService", function($rootScope){ //getter and setter for drop down value 

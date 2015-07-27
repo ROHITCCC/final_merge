@@ -287,7 +287,8 @@ text{
   -moz-transition: opacity 0.5s;
   -ms-transition: opacity 0.5s;
   -o-transition: opacity 0.5s;
-  transition: opacity 0.5s;
+  
+    transition: opacity 0.5s;
 }
 path .slice{
     stroke-width: 2px;
@@ -338,6 +339,7 @@ circle {
     padding: 3px 5px;
     border: 1px solid blue;
     text-align: center;
+    top: 0;
 }
 html {
     font-family: sans-serif;
@@ -624,6 +626,7 @@ div#legend {
 #legendDropDown{
     width: 110px;
     display: inline-block;
+    margin-top: 3px;
 }
 #legendDropDown ul {
     padding: 0px;
@@ -640,6 +643,8 @@ select#legendSelect {
     border: 1px solid #e3e3e3;
     color: #23527c;
     -moz-transition: 0.1s;    -webkit-transition: 0.1s;    transition: 0.1s;    box-shadow: 0 2px 3px #ccc;
+    height: 31px;
+    width: 108px;
 }
 .replayDropDown{
     padding: 5px;
@@ -650,11 +655,13 @@ select#legendSelect {
     display: inline-block;
     border: 1px solid #e3e3e3;
     -moz-transition: 0.1s;    -webkit-transition: 0.1s;    transition: 0.1s;    box-shadow: 0 2px 3px #ccc;
+    width: 50px;
 }
 
 .treemapTools{
     margin-right: 3px;
     height: 31px;
+    margin-top: -4px;
 }
 #landingPageHeader .dropdown-menu {
     min-width: 20px;
@@ -1433,4 +1440,16 @@ div#landingPageHeader {
 }
 #schedulermodal .help-block {
     padding: 10px;
+}
+
+select {
+   width: 100px;
+   border:none;
+  -moz-appearance: none;
+   -webkit-appearance: none;
+   appearance: none;
+}
+
+select::-ms-expand {
+    display: none;
 }
