@@ -139,7 +139,6 @@ ultimotls.controller('loginControllerModule', ['$scope', '$http', '$q', '$base64
 }]);
 ultimotls.controller("indexControllerModule", ['$scope','$http','$location','localStorageService','treemapSaver','queryEnv',
         function($scope,$http,$location,localStorageService,treemapSaver,queryEnv){
-            console.log(document.cookie)
         $scope.treemapSaver = treemapSaver;
         $scope.treemapSaver.showNav = localStorageService.cookie.get('showNav');
         $scope.treemapSaver.nameSaver = localStorageService.cookie.get('name');
