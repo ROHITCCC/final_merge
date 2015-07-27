@@ -40,7 +40,7 @@ settingModule.directive('confirmationNeeded', function () {
                 }
             });
         }
-    }
+    };
 });
 
 settingModule.controller('SettingsController', function ($scope, $http) {

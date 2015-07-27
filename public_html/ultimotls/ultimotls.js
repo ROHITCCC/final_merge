@@ -8,7 +8,7 @@ var TLS_PROTOCOL = "http";
 var TLS_SERVER = "172.16.120.157";
 var TLS_PORT = "8080";
 var TLS_DBNAME = "ES";
-var TLS_SERVER_TIMEOUT = 3000;
+var TLS_SERVER_TIMEOUT = 6000;
 var TLS_BATCH_REPLAY_COLLECTION = "ErrorSpotBatchReplay";
 var TLS_EXPIRATION_TIME =  15 //in minutes
    
@@ -55,6 +55,7 @@ ultimotls.controller('loginControllerModule', ['$scope', '$http', '$q', '$base64
                 var auth_token = header()['auth-token']; //pulling our auth-token
                 var auth_token_valid_until = header()['auth-token-valid-until'];
                 credentials = $base64.encode($scope.cred.username + ":" + auth_token);
+                treemapSaver.username = $scope.cred.username;
                 localStorageService.cookie.add('name', $scope.cred.username);
                 if (!angular.isUndefined(data) && data !== null && !angular.isUndefined(data.authenticated) && data.authenticated) {
                     $scope.loginError = "";
@@ -104,6 +105,7 @@ ultimotls.controller("indexControllerModule", ['$scope','$http','$location','loc
         function($scope,$http,$location,localStorageService,treemapSaver,queryEnv){
         $scope.treemapSaver = treemapSaver;
         $scope.treemapSaver.showNav = localStorageService.cookie.get('showNav');
+        $scope.treemapSaver.nameSaver = localStorageService.cookie.get('name');
         $scope.$on("performedLogin", function(){
             $scope.treemapSaver.showNav = true;
             queryEnv.getEnvOptions().then(function(response){
@@ -116,6 +118,7 @@ ultimotls.controller("indexControllerModule", ['$scope','$http','$location','loc
                 };
                 localStorageService.cookie.add('envOptions',$scope.envOptions);
                 localStorageService.cookie.add('envid', $scope.envSelected);
+                localStorageService.cookie.add('name', treemapSaver.username);
             });
         });
         
@@ -300,7 +303,7 @@ ultimotls.config(function ($stateProvider, $urlRouterProvider) {
         .state('setting', {
             url: "/setting",
             templateUrl: 'ultimotls/setting/settings.html'
-        })
+        });
         
     // this trick must be done so that we don't receive
     // `Uncaught Error: [$injector:cdep] Circular dependency found`
@@ -328,8 +331,8 @@ ultimotls.factory("mongoAggregateService", ['$http','resetTimerService',function
     return callAggregate;
 }]);
 ultimotls.service("queryEnv",['$http', '$rootScope',function($http,$rootScope){ //getter and setter for environment 
-    var envid = {}
-    envid.label = "Prod", envid.name = "PROD"
+    var envid = {};
+    envid.label = "Prod", envid.name = "PROD";
     var environment = {};
     
     environment.setEnv = function(env){
@@ -353,10 +356,10 @@ ultimotls.service("queryEnv",['$http', '$rootScope',function($http,$rootScope){ 
     };
     environment.broadcast = function(){
         $rootScope.$broadcast("envChangeBroadcast");
-    }
+    };
     environment.broadcastLogin = function(){
         $rootScope.$broadcast("performedLogin");
-    }
+    };
     return environment;
 }]);
 ultimotls.service("timeService", function($rootScope){ //getter and setter for drop down value 

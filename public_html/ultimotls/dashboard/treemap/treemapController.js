@@ -18,6 +18,7 @@ treemapControllerModule.controller('treemapController', ['$scope', '$location', 
         $scope.env = queryEnv.getEnv();
     }
     $scope.treemapSaver = treemapSaver;
+    $scope.treemapSaver.dropdownClicked = true;
     $scope.auditQuery = auditQuery;
     $scope.$on("envChangeBroadcast", function(){//Listens for Environment Change
         $scope.env = queryEnv.getEnv();
@@ -80,6 +81,7 @@ treemapControllerModule.controller('treemapController', ['$scope', '$location', 
         var customDateQuery = "[ { '$match': { '$and': [ { 'timestamp': { '$gte': " +
                     "{'$date': '"+$scope.fromDate+"'}, '$lt': {'$date': '"+ $scope.toDate +"'} } }, { '$and': [ {'severity': {'$ne': null}}, {'severity': {'$exists': true, '$ne': ''}},{'envid':'"+$scope.env.name+"'} ] } ] } },{ '$group': { '_id' : { 'interface1': '$interface1', 'application': '$application' }, 'count': {'$sum': 1} } } , { '$group': { '_id' : { 'application': '$_id.application' }, 'data': { '$addToSet':{ 'name': '$_id.interface1', 'size': '$count' } } } } , { '$project': { '_id': 1, 'name': '$_id.application', 'children': '$data' } } ]";
             
+        $scope.treemapSaver.dropdownClicked = true;
         $scope.treemapPromise = mongoAggregateService.callHttp(customDateQuery);
         var displayFromDate = new Date(fromDate).toDateString().substr(4);
         var displayToDate = new Date(toDate).toDateString().substr(4);
@@ -100,7 +102,7 @@ treemapControllerModule.controller('treemapController', ['$scope', '$location', 
         timeService.broadcast();
         var sliderDataQuery = "[ { '$match': { '$and': [ { 'timestamp': { '$gte': " +
                     "{'$date': '"+$scope.fromDate+"'}, '$lt': {'$date': '"+ $scope.toDate +"'} } }, { '$and': [ {'severity': {'$ne': null}}, {'severity': {'$exists': true, '$ne': ''}},{'envid':'"+$scope.env.name+"'} ] } ] } },{ '$group': { '_id' : { 'interface1': '$interface1', 'application': '$application' }, 'count': {'$sum': 1} } } , { '$group': { '_id' : { 'application': '$_id.application' }, 'data': { '$addToSet':{ 'name': '$_id.interface1', 'size': '$count' } } } } , { '$project': { '_id': 1, 'name': '$_id.application', 'children': '$data' } } ]";
-            
+        $scope.treemapSaver.dropdownClicked = true;
         $scope.treemapPromise = mongoAggregateService.callHttp(sliderDataQuery);
         $scope.treemapSaver.dropdownVal = $scope.timeSelected.time;//Saves TimeSelected when drop down value changes
         document.getElementById("customDateTimes").innerHTML = "";
