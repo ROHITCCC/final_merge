@@ -230,7 +230,7 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
             d3.select("#legendDropDown").select("ul").remove();
             var legendDDL = d3.select("#legendDropDown").append("ul").append("select")
                 .attr("id","legendSelect")
-                .attr("class", "legendDDL");
+                .attr("class", "legendDDL replayDropDown");
             
             var parDropDown = legendDDL.selectAll("#legendSelect").data(parNodes);
             
