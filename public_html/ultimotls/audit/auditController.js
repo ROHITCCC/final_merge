@@ -533,7 +533,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
         };
         $scope.fileReplay = {};
         $scope.runFileService = function(){ //how do i set a file location
-            document.getElementById("replayResponseRest").innerHTML = " ";
+            document.getElementById("replayResponseFile").innerHTML = " ";
             if($scope.batchChecker === false){
                 var filePayload = "type=FILE~, file-location="+$scope.fileReplay.location+"~, payload="+$scope.payloadPageData.payload+"";
                 $http.post(replayPostUrl, filePayload, {timeout:TLS_SERVER_TIMEOUT})
@@ -571,7 +571,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
         };
         $scope.webServiceReplay = {};
         $scope.runWebService = function(){
-            document.getElementById("replayResponseRest").innerHTML = " ";
+            document.getElementById("replayResponseWs").innerHTML = " ";
             if($scope.batchChecker === false){
                 var webServicePayload = "type=WS~, wsdl="+$scope.webServiceReplay.wsdl+"~, operation="+$scope.webServiceReplay.operation+
                     "~,  soapaction="+$scope.webServiceReplay.soapAction+"~, binding="+$scope.webServiceReplay.binding+"~, payload="+
@@ -611,7 +611,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
         };
         $scope.ftpServiceReplay = {};
         $scope.runFTPService = function(){
-            document.getElementById("replayResponseRest").innerHTML = " ";
+            document.getElementById("replayResponseFTP").innerHTML = " ";
             if($scope.batchChecker === false){
                 var ftpPayload = "type=FTP~, host="+$scope.ftpServiceReplay.host+"~, username="+$scope.ftpServiceReplay.username+"~, password="+
                     $scope.ftpServiceReplay.password+"~, location="+$scope.ftpServiceReplay.location+"~, fileType="+$scope.ftpServiceReplay.fileType+
