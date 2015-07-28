@@ -96,16 +96,36 @@ errorPieChartDirectiveModule.directive('errorPieChart',['queryFilter', function(
 	};
         Donut3D.draw=function(id, data, x /*center x*/, y/*center y*/, 
 			rx/*radius x*/, ry/*radius y*/, h/*height*/, ir/*inner radius*/){
-		var _data = d3.layout.pie().sort(null).value(function(d) {return d.count;})(data);
+		 function mouseOverSlice(d) {
+                    d3.select(this).attr("stroke","black")
+                    tooltip.html(d.data._id);
+                    return tooltip.transition()
+                    .duration(50).style("opacity", 0.9);
+                 };
+                 function mouseOutSlice(){
+                    d3.select(this).attr("stroke","")
+                    return tooltip.style("opacity", 0);
+                 };
+                 function mouseMoveSlice () {
+                    return tooltip
+                    .style("top", (d3.event.pageY - 15)+"px")
+                    .style("left", (d3.event.pageX + 15)+"px");
+                 };
+                
+                var _data = d3.layout.pie().sort(null).value(function(d) {return d.count;})(data);
 		
 		var slices = d3.select("#"+id).append("g").attr("transform", "translate(" + x + "," + y + ")")
                     .attr("class", "slices");
-			
+		var tooltip = d3.select("#errorTypePieChart").append("div").attr("id", "tooltip")
+                    .style("position", "fixed").style("opacity", 0);	
 		slices.selectAll(".innerSlice").data(_data).enter().append("path").attr("class","innerSlice")
                     .attr("id", function(d,i){return "errorInnerSlice"+i})
                     .style("fill", function(d,i){return color(i);})
                     .style("stroke", "rgb(87, 87, 87)")
                     .attr("d",function(d){ return pieInner(d, rx+0.5,ry+0.5, h, ir);})
+                    .on("mouseover", mouseOverSlice)
+                    .on("mousemove", mouseMoveSlice)
+                    .on("mouseout", mouseOutSlice)
                     .on("click", function(d,i){upDateTreemap(d);onSelection(d,i);})
                     .each(function(d){this._current=d;});
 		
@@ -114,6 +134,9 @@ errorPieChartDirectiveModule.directive('errorPieChart',['queryFilter', function(
                     .style("fill", function(d,i){return color(i);})
                     .style("stroke", "rgb(87, 87, 87)")
                     .attr("d",function(d){ return pieTop(d, rx, ry, ir);})
+                    .on("mouseover", mouseOverSlice)
+                    .on("mousemove", mouseMoveSlice)
+                    .on("mouseout", mouseOutSlice)
                     .on("click", function(d,i){upDateTreemap(d);onSelection(d,i);})
                     .each(function(d){this._current=d;});
 		
@@ -122,16 +145,22 @@ errorPieChartDirectiveModule.directive('errorPieChart',['queryFilter', function(
                     .style("fill", function(d,i){return color(i);})
                     .style("stroke", "rgb(87, 87, 87)")
                     .attr("d",function(d){ return pieOuter(d, rx-.5,ry-.5, h);})
+                    .on("mouseover", mouseOverSlice)
+                    .on("mousemove", mouseMoveSlice)
+                    .on("mouseout", mouseOutSlice)
                     .on("click", function(d,i){upDateTreemap(d);onSelection(d,i);})
                     .each(function(d){this._current=d;});
 
 		slices.selectAll(".label").data(_data).enter().append("text").attr("class", "label")
-			.attr("x",function(d){ return .7*rx*Math.cos(0.5*(d.startAngle+d.endAngle));})
-			.attr("y",function(d){ return 0.6*ry*Math.sin(0.5*(d.startAngle+d.endAngle));})
-                        .on("click", function(d,i){upDateTreemap(d);onSelection(d,i);})
-                        .style("fill", "black")
-                        .style("font-size", "12px")
-			.text(function(d){return d.data._id}).each(function(d){this._current=d;});				
+                    .attr("x",function(d){ return .7*rx*Math.cos(0.5*(d.startAngle+d.endAngle));})
+                    .attr("y",function(d){ return 0.6*ry*Math.sin(0.5*(d.startAngle+d.endAngle));})
+                    .on("mouseover", mouseOverSlice)
+                    .on("mousemove", mouseMoveSlice)
+                    .on("mouseout", mouseOutSlice)
+                    .on("click", function(d,i){upDateTreemap(d);onSelection(d,i);})
+                    .style("fill", "black")
+                    .style("font-size", "12px")
+                    .text(function(d){return d.data._id}).each(function(d){this._current=d;});				
 	};
         Donut3D.transition = function(id, data, rx, ry, h, ir){
             function arcTweenInner(a) {
@@ -177,6 +206,7 @@ errorPieChartDirectiveModule.directive('errorPieChart',['queryFilter', function(
         this.Donut3D = Donut3D;
         if (status === "no_data"){ //Will append a Message for no data and return out of the function
             d3.select("#errorTypePieChart").select("svg").remove();
+            d3.select("#errorTypePieChart").select("div").remove();
             var svg = d3.select("#errorTypePieChart").append("svg")
                 .attr("width", width).attr("height", height).append("g")
                 .attr("transform", "translate(" + width*.13 + "," + height*.5 + ")");
@@ -185,6 +215,7 @@ errorPieChartDirectiveModule.directive('errorPieChart',['queryFilter', function(
         };
         if(status === "updateChart"){
             d3.select("#errorTypePieChart").select("svg").remove();
+            d3.select("#errorTypePieChart").select("div").remove();
             var svg = d3.select("#errorTypePieChart").append("svg").attr("width",width).attr("height",height);
             svg.append("g").attr("id","error").append("text").attr("transform", "translate(0,15)").text("Error Type Chart");
             Donut3D.draw("error",data,centerX,centerY,radiusX,radiusY,pieHeight,innerRadius);
@@ -192,6 +223,7 @@ errorPieChartDirectiveModule.directive('errorPieChart',['queryFilter', function(
         };
         if(status === "createChart"){
             d3.select("#errorTypePieChart").select("svg").remove();
+            d3.select("#errorTypePieChart").select("div").remove();
             var svg = d3.select("#errorTypePieChart").append("svg").attr("width",width).attr("height",height);
             svg.append("g").attr("id","error");
             svg.append("text").attr("transform", "translate(0,15)").text("Error Type Chart");
