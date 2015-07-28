@@ -133,7 +133,7 @@ settingModule.controller('SettingsController',['$scope','$http','localStorageSer
         $scope.savesetting = function (reloadFlag) {
             $scope.temp = $scope.settings;
             $scope.savedata($scope.temp);
-            $scope.reloadPage = reloadFlag
+            $scope.reloadPage = reloadFlag;
         };
         $scope.numberOfPagesImmi = function () {
             $scope.pageSizeImmi = $scope.selectedNumber;
@@ -274,7 +274,9 @@ settingModule.controller('SettingsController',['$scope','$http','localStorageSer
 
     $scope.scheduler = function (object, opt) {
         var conAjax = $http.post(schedulerURL, object);
-        conAjax.success(function (response, status) {
+        conAjax.success(function (response, status, header, config) {
+            var auth_token_valid_until = header()['auth-token-valid-until'];
+            resetTimerService.set(auth_token_valid_until);
             $scope.schedulerstatus = opt;
             $('#schedulermodal').modal();
             if (opt == "2"){
