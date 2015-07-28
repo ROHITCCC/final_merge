@@ -23,6 +23,7 @@ body {
     position: relative;
     overflow-y: auto;
     height: auto;
+    -ms-overflow-style: scrollbar;
 }
 a:hover{
     cursor: pointer;
@@ -275,8 +276,6 @@ text{
 }
 .columnDiv .scrollableBarChart{
     overflow-y:hidden;
-    /* margin-left: 20px; */
-    /* width: 95%; */
 }
 #tooltip{
     top:-10px;

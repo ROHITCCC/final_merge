@@ -634,7 +634,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                 var auditIDs = $scope.pullAuditIDs(batchVals[2]);
                 var ftpPayloadBatch = '"type":"FTP", "host":"'+$scope.ftpServiceReplay.host+'", "username":"'+$scope.ftpServiceReplay.username+'",'+
                     '"password":"'+$scope.ftpServiceReplay.password+'", "location":"'+$scope.ftpServiceReplay.location+'", "fileType":"'+$scope.ftpServiceReplay.fileType+'",' + 
-                    '"payload":"'+$scope.replayQueryHolder+'", "header":"["type":\"'+$scope.ftpServiceReplay.headerType+'","value":"'+$scope.ftpServiceReplay.headerValue+'"]"';
+                    '"payload":"'+$scope.replayQueryHolder+'", "header":[{"type":\"'+$scope.ftpServiceReplay.headerType+'","value":"'+$scope.ftpServiceReplay.headerValue+'"}]';
                 var batchPayload = '{  "replaySavedTimestamp":"'+batchVals[0]+'",  "replayedBy":"'+batchVals[1]+'", '+
                         '"batchProcessedTimestamp":"", "replayDestinationInfo": { '+ftpPayloadBatch+' },'+
                         '"auditID": ['+auditIDs+']}';
