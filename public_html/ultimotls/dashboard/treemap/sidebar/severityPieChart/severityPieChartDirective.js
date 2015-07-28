@@ -91,13 +91,16 @@ severityPieChartDirectiveModule.directive('severityPieChart',['queryFilter', fun
             ret.push("M",sx, sy,"A",ir*rx,ir*ry,"0 0 1",ex,ey, "L",ex,h+ey,"A",ir*rx, ir*ry,"0 0 0",sx,h+sy,"z");
             return ret.join(" ");
 	};
+        function fittedText(d){
+            var angle = Math.abs(d.endAngle - d.startAngle);
+            return angle;
+        }
         Donut3D.draw=function(id, data, x /*center x*/, y/*center y*/, 
 			rx/*radius x*/, ry/*radius y*/, h/*height*/, ir/*inner radius*/){
                  function mouseOverSlice(d) {
                     d3.select(this).attr("stroke","black")
                     tooltip.html(d.data._id);
-                    return tooltip.transition()
-                    .duration(50).style("opacity", 0.9);
+                    return tooltip.transition().duration(50).style("opacity", 0.9);
                  };
                  function mouseOutSlice(){
                     d3.select(this).attr("stroke","")
@@ -150,13 +153,14 @@ severityPieChartDirectiveModule.directive('severityPieChart',['queryFilter', fun
 		slices.selectAll(".label").data(_data).enter().append("text").attr("class", "label")
                     .attr("x",function(d){ return .7*rx*Math.cos(0.5*(d.startAngle+d.endAngle));})
                     .attr("y",function(d){ return 0.6*ry*Math.sin(0.5*(d.startAngle+d.endAngle));})
+                    .attr("dx",-12)
                     .on("click", function(d,i){upDateTreemap(d);onSelection(d,i);})
                     .on("mouseover", mouseOverSlice)
                     .on("mousemove", mouseMoveSlice)
                     .on("mouseout", mouseOutSlice)
                     .style("fill", "black")
-                    .style("font-size", "12px")
-                    .text(function(d){return d.data._id})
+                    .style("font-size", "11px")
+                    .text(function(d){return fittedText(d)<.4?"":d.data._id})
                     .each(function(d){this._current=d;});
 
 	};
