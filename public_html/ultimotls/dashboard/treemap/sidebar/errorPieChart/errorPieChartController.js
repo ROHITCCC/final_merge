@@ -20,12 +20,12 @@ errorPieChartControllerModule.controller('errorPieChartController', ['$scope', '
         $scope.toDate = timeTemp.toDate;
         $scope.fromDate = timeTemp.fromDate;
         $scope.errorPieChartData($scope.fromDate, $scope.toDate);
-    })
+    });
     //Listening to the environment change broadcast
     $scope.$on("envChangeBroadcast", function(){//Listens for Environment Change
         $scope.env = queryEnv.getEnv();
         $scope.errorPieChartData($scope.fromDate, $scope.toDate);
-    })
+    });
     //Function that will send our promise to the value that our directive is listening for
     $scope.errorPieChartData = function(fromDate, toDate){
         var dataQuery = "[{\"$match\":{\"$and\":[{\"timestamp\":{\"$gte\":{\"$date\":\""+fromDate+"\"},\"$lt\":{\"$date\":\""+

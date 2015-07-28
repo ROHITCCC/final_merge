@@ -146,7 +146,6 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                     remakeFlag = true;
                 }
             }
-            //console.log(treeData)
             
       
             if(document.getElementById("treemapChart") === null){   //checks for treemap on recreation
@@ -156,7 +155,6 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                 .attr("id", "treemapChart")
                 .style("width", w + "px")
                 .style("height", h + "px")
-                //.style("margin-bottom", 200 + "px")
                 .style("right", 7 + "px")
               .append("svg")
                 .attr("width", w)
@@ -243,7 +241,6 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                     }
                 }
             });
-            //console.log(d3.event.target.value);
             
             parDropDown.enter().append("option")
                     .attr("id",function(d){return d.name;})
@@ -460,7 +457,6 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                 y.domain([d.y, d.y + d.dy]);
                 var auditParam=null;
                 auditParam = parent + "." + name;       //string to send to audit service
-                //console.log(auditParam);
                 if(auditParam === "0.0")headerFlag = true;
                
                 if((name !== "flag" && parent !== "flag")){     //checks if zoomout was not clicked
@@ -572,8 +568,6 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                             
                     d3.selectAll("g.cell")          //replaces click event to zoom in on individual cells once within a parent node
                     .on("click", function(d) { return zoom((node === d.parent ? root : d.parent),(d3.select(this).attr("id")),(d3.select(this).attr("parent"))); });
-
-                     //console.log(d3.select("#treemapZoom").select("svg").selectAll("g")[0])
                      scope.treemapSaver.envSave = scope.env;
                     //remakeFlag = false;
                     //if(zoomFlag)zoomFlag2=true;
@@ -674,8 +668,6 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                 }
                 
                 var area = "("+extent[0][0]+", "+extent[0][1]+") ("+extent[1][0]+", "+extent[1][1]+")";
-                //console.log(area);
-//                    console.log(nodes)
                 var selected = null;
                 var newSVGFlag = false;
                 if(d3.selectAll("#newSvg")[0].length === 0){
@@ -684,7 +676,6 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                         return (((((d.x+d.dx) > extent[0][0] && d.x  < extent[1][0]))) && 
                         ((d.y+d.dy) > extent[0][1] && d.y  < extent[1][1]))? this : null;
                     });
-                    //console.log(selected);
                 }
                 else{
                     selected = d3.select("svg.newSVG").selectAll("g.cell").data(nodes)
@@ -692,7 +683,6 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                         return (((((d.x+d.dx) > extent[0][0] && d.x  < extent[1][0]))) && 
                         ((d.y+d.dy) > extent[0][1] && d.y  < extent[1][1]))? this : null;
                     });
-//                    console.log(selected)
 
                      d3.selectAll("svg.newSVG").remove();
                      
@@ -714,7 +704,6 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                 selected = tempSel;
                 
                 scope.treemapSaver.gCounter = tempSelCounter;
-                   //console.log(selected);
                     scope.treemapSaver.svgCounter++;
                     
                     
@@ -728,9 +717,6 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                 for(var i = 0; i < selected[0].length; i++){        //appends old DOM elements into new DOM
                     newerSVG.append(function(){return selected[0][i];});
                 }
-                //console.log(d3.selectAll("#newSvg")[0].length);   
-
-               //console.log(selected[0].__data__.parent.name);
                 var childTextGet = null;
                 if(!newSVGFlag) childTextGet = selected[0].children.length-1;
 
@@ -741,9 +727,7 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                     childTextGet = selected[b].children.length-1;
                     treeChildren[b] = ({size:selected[b].children[childTextGet].children[1].innerHTML, name:selected[b].id });
                 }
-                treeData.children[0] = ({children:treeChildren, name:selected[0].__data__.parent.name});
-
-                //console.log(treeData);    
+                treeData.children[0] = ({children:treeChildren, name:selected[0].__data__.parent.name});   
 
                 treeChildren = [{}];
 
@@ -766,7 +750,6 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
                         .selectAll("div").select("#treemapSVG");
                 scope.treemapSaver.zoomClicked = undefined;
                 createZoomTree(treeData, element, "true", scope, true);
-                //console.log(nodes);
                 d3.select("#zoomOut").on("click", function() { zoomOutBrushed(); });
                 d3.select("#zoomIn").style("cursor","pointer");
                 
@@ -810,10 +793,8 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
             
             
             function sendAudit(parent, name){       //sends audits directly instead of through controller function
-                //scope.getAuditsForInterface(auditParam);
                 scope.treemapSaver.data = d3.select("#treemapZoom").select("svg").selectAll("g")[0];
                 var interfaceQuery = '{"application":"'+name+'","interface1":"'+parent+'","timestamp":{"$gte":{"$date":"'+scope.fromDate+'"},"$lt":{"$date":"'+scope.toDate+'"}},"$and":[{"severity":{"$ne":"null"}},{"severity":{"$exists":"true","$ne":""}}]}';
-                //console.log(scope.fromDate);
                 if(scope.newFilter){
                     interfaceQuery = '{'+scope.newFilter+'"application":"'+name+'","interface1":"'+parent+'","timestamp":{"$gte":{"$date":"'+scope.fromDate+'"},"$lt":{"$date":"'+scope.toDate+'"}},"$and":[{"severity":{"$ne":"null"}},{"severity":{"$exists":"true","$ne":""}}]}';
                 }

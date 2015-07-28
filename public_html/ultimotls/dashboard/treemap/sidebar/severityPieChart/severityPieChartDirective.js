@@ -6,8 +6,7 @@ severityPieChartDirectiveModule.directive('severityPieChart',['queryFilter', fun
         if (data === 0){ //Will append a Message for no data and return out of the function
             d3.select("#severityPieChart").select("svg").remove();
             var svg = d3.select("#severityPieChart").append("svg")
-                .attr("width", width).attr("height", height)
-                .append("g")
+                .attr("width", width).attr("height", height).append("g")
                 .attr("transform", "translate(" + width*.13 + "," + height*.5 + ")");
             svg.append("text").text("No Data Available");
           return;
@@ -40,11 +39,10 @@ severityPieChartDirectiveModule.directive('severityPieChart',['queryFilter', fun
         d3.select("#severityOuterSlice"+i).style("opacity",1);
         
         var svg = d3.select("#severityPieChart").select("svg")
-                .append("g")
-                .attr("transform", "translate("+width*.7+",15)")
-                .attr("id","reset")
-                .on("click", function(d){onReset();});
-            svg.append("text").text("Reset");
+            .append("g").attr("transform", "translate("+width*.7+",15)")
+            .attr("id","reset")
+            .on("click", function(d){onReset();});
+        svg.append("text").text("Reset");
     }
     function pieChart(data,status){
         var Donut3D = {};
@@ -93,24 +91,22 @@ severityPieChartDirectiveModule.directive('severityPieChart',['queryFilter', fun
             ret.push("M",sx, sy,"A",ir*rx,ir*ry,"0 0 1",ex,ey, "L",ex,h+ey,"A",ir*rx, ir*ry,"0 0 0",sx,h+sy,"z");
             return ret.join(" ");
 	};
-        
         Donut3D.draw=function(id, data, x /*center x*/, y/*center y*/, 
 			rx/*radius x*/, ry/*radius y*/, h/*height*/, ir/*inner radius*/){
                  function mouseOverSlice(d) {
-                     d3.select(this).attr("stroke","black")
-                     tooltip.html(d.data._id);
-                     return tooltip.transition()
-                     .duration(50)
-                     .style("opacity", 0.9);
+                    d3.select(this).attr("stroke","black")
+                    tooltip.html(d.data._id);
+                    return tooltip.transition()
+                    .duration(50).style("opacity", 0.9);
                  };
                  function mouseOutSlice(){
-                     d3.select(this).attr("stroke","")
-                     return tooltip.style("opacity", 0);
+                    d3.select(this).attr("stroke","")
+                    return tooltip.style("opacity", 0);
                  };
                  function mouseMoveSlice () {
-                     return tooltip
-                     .style("top", (d3.event.pageY)+"px")
-                     .style("left", (d3.event.pageX)+"px");
+                    return tooltip
+                    .style("top", (d3.event.pageY)+"px")
+                    .style("left", (d3.event.pageX)+"px");
                  };
 		var _data = d3.layout.pie().sort(null).value(function(d) {return d.count;})(data);
 		
@@ -152,46 +148,46 @@ severityPieChartDirectiveModule.directive('severityPieChart',['queryFilter', fun
                     .each(function(d){this._current=d;});
 
 		slices.selectAll(".label").data(_data).enter().append("text").attr("class", "label")
-			.attr("x",function(d){ return .7*rx*Math.cos(0.5*(d.startAngle+d.endAngle));})
-			.attr("y",function(d){ return 0.6*ry*Math.sin(0.5*(d.startAngle+d.endAngle));})
-                        .on("click", function(d,i){upDateTreemap(d);onSelection(d,i);})
-                        .on("mouseover", mouseOverSlice)
-                        .on("mousemove", mouseMoveSlice)
-                        .on("mouseout", mouseOutSlice)
-                        .style("fill", "black")
-                        .style("font-size", "12px")
-			.text(function(d){return d.data._id})
-                        .each(function(d){this._current=d;});
+                    .attr("x",function(d){ return .7*rx*Math.cos(0.5*(d.startAngle+d.endAngle));})
+                    .attr("y",function(d){ return 0.6*ry*Math.sin(0.5*(d.startAngle+d.endAngle));})
+                    .on("click", function(d,i){upDateTreemap(d);onSelection(d,i);})
+                    .on("mouseover", mouseOverSlice)
+                    .on("mousemove", mouseMoveSlice)
+                    .on("mouseout", mouseOutSlice)
+                    .style("fill", "black")
+                    .style("font-size", "12px")
+                    .text(function(d){return d.data._id})
+                    .each(function(d){this._current=d;});
 
 	};
         Donut3D.transition = function(id, data, rx, ry, h, ir){
-            function arcTweenInner(a) {
+            function arcTweenInner(a){
                 var i = d3.interpolate(this._current, a);
                 this._current = i(0);
-                return function(t) { return pieInner(i(t), rx+0.5, ry+0.5, h, ir);  };
+                return function(t){return pieInner(i(t), rx+0.5, ry+0.5, h, ir);};
             }
-            function arcTweenTop(a) {
+            function arcTweenTop(a){
               var i = d3.interpolate(this._current, a);
               this._current = i(0);
-              return function(t) { return pieTop(i(t), rx, ry, ir);  };
+              return function(t){return pieTop(i(t), rx, ry, ir);};
             }
-            function arcTweenOuter(a) {
+            function arcTweenOuter(a){
               var i = d3.interpolate(this._current, a);
               this._current = i(0);
-              return function(t) { return pieOuter(i(t), rx-.5, ry-.5, h);  };
+              return function(t){return pieOuter(i(t), rx-.5, ry-.5, h);};
             }
-            function textTweenX(a) {
+            function textTweenX(a){
               var i = d3.interpolate(this._current, a);
               this._current = i(0);
-              return function(t) { return 0.6*rx*Math.cos(0.5*(i(t).startAngle+i(t).endAngle));  };
+              return function(t){return 0.6*rx*Math.cos(0.5*(i(t).startAngle+i(t).endAngle));};
             }
             function textTweenY(a) {
               var i = d3.interpolate(this._current, a);
               this._current = i(0);
-              return function(t) { return 0.6*rx*Math.sin(0.5*(i(t).startAngle+i(t).endAngle));  };
+              return function(t){return 0.6*rx*Math.sin(0.5*(i(t).startAngle+i(t).endAngle));};
             }
 
-            var _data = d3.layout.pie().sort(null).value(function(d) {return d.count;})(data);
+            var _data = d3.layout.pie().sort(null).value(function(d){return d.count;})(data);
 
             d3.select("#"+id).selectAll(".innerSlice").data(_data)
                     .transition().duration(750).attrTween("d", arcTweenInner); 
@@ -217,12 +213,9 @@ severityPieChartDirectiveModule.directive('severityPieChart',['queryFilter', fun
         if (status === "no_data"){ //Will append a Message for no data and return out of the function
             d3.select("#severityPieChart").select("svg").remove();
             var svg = d3.select("#severityPieChart").append("svg")
-                .attr("width", width)
-                .attr("height", height)
-              .append("g")
-                .attr("transform", "translate(" + width*.13 + "," + height*.5 + ")");
-          svg.append("text")
-                .text("No Data Available")
+                .attr("width", width).attr("height", height)
+                .append("g").attr("transform", "translate(" + width*.13 + "," + height*.5 + ")");
+          svg.append("text").text("No Data Available");
           return;
         };
         if (status === "createChart"){

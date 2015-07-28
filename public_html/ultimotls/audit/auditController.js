@@ -300,12 +300,13 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                     urlParam = "&searchtype=advanced&count&pagesize="+$scope.rowNumber.rows+"&searchdb="+dbType+"&searchkeyword="+keyPhrase;
                 }
                 if(dbType === "payload" && keyPhrase === (""||undefined)){
-                  
+                    $scope.errorWarning = "Keyword must be entered for Payload Search";
+                    return;
                 };
             };
             //GENERATE FINAL QUERY
             var finalAdvanceSearchQuery = "?filter={\"$and\":[{"+(envQuery+query+customQuery+nameValueQuery+dateQuery).slice(0,-1)+"}]}";
-            $scope.replayQueryHolder = finalAdvanceSearchQuery // for replay services
+            $scope.replayQueryHolder = finalAdvanceSearchQuery; // for replay services
             //PERFORM GET CALL
             if(doAdvanceSearch){
                 $scope.errorWarning = "";
@@ -317,7 +318,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                         $scope.data = response;
                         $scope.treemapSaver.auditData = $scope.data;
                         $scope.errorWarning = "";
-                    }).error(function(d){
+                    }).error(function(){
                         $scope.errorWarning = "Call Timed Out";
                     });
                 $scope.predicate = 'timestamp.$date'; //by defualt it will order results by date
@@ -391,7 +392,6 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                         $scope.treemapSaver.auditData = $scope.data;
                     });
         };
-        
         $scope.rowSelected = function(toDate, fromDate){//toggle between Search and AdvanceSearch
             if($scope.dbTypeSetter){ //if the row number is selected and a dbType is set run the search function
                 if(searchFlag){
@@ -426,7 +426,6 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                     resetTimerService.set(auth_token_valid_until);
                     $scope.relatedTransactionData = response._embedded['rh:doc'];
                     if($scope.relatedTransactionData.length === 1){//need a service to check for duplicate values and single returns
-                        console.log($scope.relatedTransactionData._id.$oid);
                         
                     }
             });
@@ -437,7 +436,6 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
         };
         $scope.callPayload = function(data){ //from Database Page datalocation makes a call
             var dataLocationId = data;
-            console.log(dataLocationId);
             var payloadUrl = TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/_logic/PayloadService?id=";
             $http.get(payloadUrl+dataLocationId, {timeout:TLS_SERVER_TIMEOUT})
                 .success(function (response,status, header, config){ 
@@ -474,14 +472,10 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                     for(var z = 0; z < $scope.headerCounter; z++){
                         var tempType = document.getElementById("headerType" + (z)).value;
                         var tempVal = document.getElementById("headerValue" + (z)).value;
-                        console.log(tempType, tempVal);
                         if(tempType === "")tempType = "Authorization";
                         headerHolder += ', "type"="'+tempType+'", "value"="'+headerVal+'"';
-                        console.log(tempType);
                     }
                 }
-                
-                console.log(headerType);
                 var restPayload = 'type=REST~, endpoint='+$scope.restReplay.endpointUrl+'~, method='+
                     methodVal+'~, content-type='+contentVal+'~, payload='+$scope.payloadPageData+
                     '~, header=['+headerHolder+']';
@@ -490,13 +484,11 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                         var auth_token_valid_until = header()['auth-token-valid-until'];
                         resetTimerService.set(auth_token_valid_until);
                         document.getElementById("replayResponseRest").innerHTML = "Rest Replay Success";
-                        console.log(d);
                     }).error(function(d,status, header, config){
                         var auth_token_valid_until = header()['auth-token-valid-until'];
                         resetTimerService.set(auth_token_valid_until);
                         document.getElementById("replayResponseRest").innerHTML = "Error: Could Not Connect";
                         document.getElementById("replayResponseRest").innerHTML = "Error: " + d["http status code"] + ": " + d["message"];
-                        console.log(d);
                     });
             }else{
                 var batchVals = $scope.batchValues();
@@ -525,19 +517,16 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                 var batchPayload = '{  "replaySavedTimestamp":"'+batchVals[0]+'",  "replayedBy":"'+batchVals[1]+'", '+
                         '"batchProcessedTimestamp":"", "replayDestinationInfo": { '+restPayload+' },'+
                                     '"auditID": ['+auditIDs+']}';
-                console.log(batchPayload);
                 $http.post(replayPostUrlBatch, batchPayload, {timeout:TLS_SERVER_TIMEOUT})
                         .success(function(d,status, header, config){
                         var auth_token_valid_until = header()['auth-token-valid-until'];
                         resetTimerService.set(auth_token_valid_until);
                         document.getElementById("replayResponseRest").innerHTML = "Success: " + d;
-                        console.log(d);
                     }).error(function(d,status, header, config){
                         var auth_token_valid_until = header()['auth-token-valid-until'];
                         resetTimerService.set(auth_token_valid_until);
                         document.getElementById("replayResponseRest").innerHTML = "Error: Could Not Connect";
                         document.getElementById("replayResponseRest").innerHTML = "Error: " + d["http status code"] + ": " + d["message"];
-                        console.log(d);
                     });
             }
             
@@ -552,13 +541,11 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                         var auth_token_valid_until = header()['auth-token-valid-until'];
                         resetTimerService.set(auth_token_valid_until);
                         document.getElementById("replayResponseFile").innerHTML = "File Replay Success";
-                        console.log(d);
                     }).error(function(d,status, header, config){
                         var auth_token_valid_until = header()['auth-token-valid-until'];
                         resetTimerService.set(auth_token_valid_until);
                         document.getElementById("replayResponseFile").innerHTML = "Error: Could Not Connect";
                         document.getElementById("replayResponseFile").innerHTML = "Error: " + d["http status code"] + ": " + d["message"];
-                        console.log(d);
                     });
             }else{
                 var batchVals = $scope.batchValues();
@@ -573,13 +560,11 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                         var auth_token_valid_until = header()['auth-token-valid-until'];
                         resetTimerService.set(auth_token_valid_until);
                         document.getElementById("replayResponseFile").innerHTML = "Success: " + d;
-                        console.log(d);
                     }).error(function(d,status, header, config){
                         var auth_token_valid_until = header()['auth-token-valid-until'];
                         resetTimerService.set(auth_token_valid_until);
                         document.getElementById("replayResponseFile").innerHTML = "Error: Could Not Connect";
                         document.getElementById("replayResponseFile").innerHTML = "Error: " + d["http status code"] + ": " + d["message"];
-                        console.log(d);
                     });
             }
             
@@ -596,13 +581,11 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                         var auth_token_valid_until = header()['auth-token-valid-until'];
                         resetTimerService.set(auth_token_valid_until);
                         document.getElementById("replayResponseWs").innerHTML = "Web Service Replay Success";
-                        console.log(d);
                     }).error(function(d,status, header, config){
                         var auth_token_valid_until = header()['auth-token-valid-until'];
                         resetTimerService.set(auth_token_valid_until);
                         document.getElementById("replayResponseWs").innerHTML = "Error: Could Not Connect";
                         document.getElementById("replayResponseWs").innerHTML = "Error: " + d["http status code"] + ": " + d["message"];
-                        console.log(d);
                     });
             }else{
                 var batchVals = $scope.batchValues();
@@ -618,20 +601,16 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                         var auth_token_valid_until = header()['auth-token-valid-until'];
                         resetTimerService.set(auth_token_valid_until);
                         document.getElementById("replayResponseWs").innerHTML = "Success: " + d;
-                        console.log(d);
                     }).error(function(d,status, header, config){
                         var auth_token_valid_until = header()['auth-token-valid-until'];
                         resetTimerService.set(auth_token_valid_until);
                         document.getElementById("replayResponseWs").innerHTML = "Error: Could Not Connect";
                         document.getElementById("replayResponseWs").innerHTML = "Error: " + d["http status code"] + ": " + d["message"];
-                        console.log(d);
                     });
             }
-            
         };
         $scope.ftpServiceReplay = {};
         $scope.runFTPService = function(){
-            var checkRest = $scope.checkChecked();
             document.getElementById("replayResponseRest").innerHTML = " ";
             if($scope.batchChecker === false){
                 var ftpPayload = "type=FTP~, host="+$scope.ftpServiceReplay.host+"~, username="+$scope.ftpServiceReplay.username+"~, password="+
@@ -643,13 +622,11 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                         var auth_token_valid_until = header()['auth-token-valid-until'];
                         resetTimerService.set(auth_token_valid_until);
                         document.getElementById("replayResponseFTP").innerHTML = "FTP Replay Success";
-                        console.log(d);
                     }).error(function(d,status, header, config){
                         var auth_token_valid_until = header()['auth-token-valid-until'];
                         resetTimerService.set(auth_token_valid_until);
                         document.getElementById("replayResponseFTP").innerHTML = "Error: Could Not Connect";
                         document.getElementById("replayResponseFTP").innerHTML = "Error: " + d["http status code"] + ": " + d["message"];
-                        console.log(d);
                     });
             }
             else{
@@ -660,26 +637,22 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                     '"payload":"'+$scope.replayQueryHolder+'", "header":"["type":\"'+$scope.ftpServiceReplay.headerType+'","value":"'+$scope.ftpServiceReplay.headerValue+'"]"';
                 var batchPayload = '{  "replaySavedTimestamp":"'+batchVals[0]+'",  "replayedBy":"'+batchVals[1]+'", '+
                         '"batchProcessedTimestamp":"", "replayDestinationInfo": { '+ftpPayloadBatch+' },'+
-                                    '"auditID": ['+auditIDs+']}';
+                        '"auditID": ['+auditIDs+']}';
                 $http.post(replayPostUrlBatch, batchPayload, {timeout:TLS_SERVER_TIMEOUT})
                         .success(function(d,status, header, config){
                         var auth_token_valid_until = header()['auth-token-valid-until'];
                         resetTimerService.set(auth_token_valid_until);
                         document.getElementById("replayResponseFTP").innerHTML = "Success: " + d;
-                        console.log(d);
                     }).error(function(d,status, header, config){
                         var auth_token_valid_until = header()['auth-token-valid-until'];
                         resetTimerService.set(auth_token_valid_until);
                         document.getElementById("replayResponseFTP").innerHTML = "Error: Could Not Connect";
                         document.getElementById("replayResponseFTP").innerHTML = "Error: " + d["http status code"] + ": " + d["message"];
-                        console.log(d);
                     });
             }
         };
         $scope.changeReplay = function(){
-            console.log($scope.batchChecker);
             $scope.batchChecker = true;
-            console.log($scope.batchChecker);
             if($scope.treemapSaver.checkboxChecked !== undefined){
                 $("#replayPage").css("top","15%").addClass("col-sm-offset-3").removeClass("col-sm-offset-6");
                 document.getElementById("replayResponseRest").innerHTML = " ";
@@ -705,17 +678,6 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                 }
             }
         };
-        $scope.checkChecked = function(){
-            var isChecked = false;
-            var checkboxes = document.getElementsByName('auditCheckbox');
-            var auditData = $scope.treemapSaver.auditData._embedded['rh:doc'];
-            for(var i=0, n=checkboxes.length;i<n;i++) {
-                if(checkboxes[i].checked){
-                    isChecked = true;
-                }
-            }
-            return isChecked;
-        };
         $scope.addHeaders = function(){
             $("#headerType").clone(false).prop("id","headerType" + $scope.headerCounter).css("left", "16.5%").appendTo("#restHeaderDiv");
             $("#headerValue").clone(false).prop("id","headerValue" + $scope.headerCounter).css("left", "16.5%").appendTo("#restHeaderDiv");
@@ -725,7 +687,6 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
         };
 //        $scope.deleteHeaders = function(){
 //            $scope.headerCounter--;
-//            console.log("here");
 //            $("#headerType" + $scope.headerCounter).remove();
 //            $("#headerValue" + $scope.headerCounter).remove();
 //            $("#deleteHeader" + $scope.headerCounter).remove();
@@ -742,12 +703,6 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
             }else{
                 methodValText.style.display = "none";
             }
-            if(contentVal.value === "other"){
-                contentValText.style.display = "inline";
-            }else{
-                contentValText.style.display = "none";
-            }
-            
         };
         $scope.batchValues = function(){
             var timestamp = new Date().toISOString();
@@ -758,11 +713,9 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
             
             for(var i=0, n=checkboxes.length;i<n;i++) {
                 if(checkboxes[i].checked){
-                    console.log(auditData[i]._id.$oid);
                     auditIDs.push(auditData[i]._id.$oid);
                 }
             }
-            console.log(auditIDs);
             var batchVals = [timestamp, username, auditIDs];
             return batchVals;
         };
@@ -794,7 +747,6 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                 }else{
                     checkboxes[i].checked = false;
                 }
-              
             }
         };
     }]);
