@@ -104,6 +104,8 @@ treemapDirectiveModule.directive('treemapZoom', ['$http','$injector', '$location
         if(treeDataset === 0){
             svg.selectAll("rect").remove();
             svg.selectAll("text").remove();
+            d3.select("#zoomOut").on("click", "").style("cursor","auto");
+            d3.select("#zoomIn").on("click", "").style("cursor","auto");
             svg.append("text")
                 .attr("x", w/3)
                 .attr("y", h/3)
