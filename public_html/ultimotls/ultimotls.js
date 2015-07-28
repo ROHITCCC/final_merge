@@ -4,9 +4,12 @@
  * and open the template in the editor.
  */
 //GLOBAL VARIABLES FOR INTITIAL SETUP
-var TLS_PROTOCOL = "http";
+/*var TLS_PROTOCOL = "http";
 var TLS_SERVER = "172.16.120.157";
-var TLS_PORT = "8080";
+var TLS_PORT = "8080";*/
+var TLS_PROTOCOL = location.protocol;
+var TLS_SERVER = location.hostname;
+var TLS_PORT = location.port;
 var TLS_DBNAME = "ES";
 var TLS_SERVER_TIMEOUT = 6000;
 var TLS_BATCH_REPLAY_COLLECTION = "ErrorSpotBatchReplay";
