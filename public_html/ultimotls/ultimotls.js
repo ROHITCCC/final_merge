@@ -7,7 +7,7 @@
 /*var TLS_PROTOCOL = "http";
 var TLS_SERVER = "172.16.120.157";
 var TLS_PORT = "8080";*/
-var TLS_PROTOCOL = location.protocol;
+var TLS_PROTOCOL = location.protocol.replace(/[:]/g , '');
 var TLS_SERVER = location.hostname;
 var TLS_PORT = location.port;
 var TLS_DBNAME = "ES";
