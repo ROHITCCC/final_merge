@@ -173,6 +173,7 @@ a#advanceSearch {
 #paginationNav{
     padding-right: 0;
     height: 30px;
+    font-size: 10px;
 }
 #paginationTitle{
     padding: 0;
@@ -280,8 +281,7 @@ text{
 #tooltip{
     top:-10px;
   background-color:black;
-  
-    color: yellow;
+  color:white;
   border-radius:5px;
   opacity:0;
   position:absolute;
@@ -637,7 +637,7 @@ div#legend {
 
 select#legendSelect {
     padding: 5px;
-    background-color: white;
+    /* background-color: white; */
     border-radius: 4px;
     text-decoration: none;
     text-align: center;
@@ -1118,7 +1118,7 @@ select.inputable{
 
 .xdsoft_datetimepicker .xdsoft_calendar td.xdsoft_disabled:hover,
 .xdsoft_datetimepicker .xdsoft_timepicker .xdsoft_time_box >div >div.xdsoft_disabled:hover {
-    color: inherit	!important;
+    color: inherit  !important;
     background: inherit !important;
     box-shadow: inherit !important;
 }
@@ -1431,7 +1431,6 @@ button.collapsed .caret {
 div#landingPageHeader {
   min-width: 320px;
 }
-
 #customDateTimes{
     display: none;
     background-color: yellow;
@@ -1443,7 +1442,6 @@ div#landingPageHeader {
 #schedulermodal .help-block {
     padding: 10px;
 }
-
 select {
    width: 100px;
    border:none;
@@ -1451,15 +1449,22 @@ select {
    -webkit-appearance: none;
    appearance: none;
 }
-
 select::-ms-expand {
     display: none;
 }
-
 select#replayOptions {
     width: 78px;
 }
-
 button#replayButton {
     font-size: 10px;
+}
+#replaySelectAll {
+    vertical-align: bottom;
+}
+div#loginFormContainer .panel-body {
+    padding: 15px;
+}
+
+div#loginFormContainer .panel-body label {
+    font-size: 14px;
 }
