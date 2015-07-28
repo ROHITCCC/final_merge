@@ -145,3 +145,25 @@ $('#customDateTimes').waitUntilExists(function () {
 $('#legendSelect').waitUntilExists(function () {
     $('#legendDropDown').next().css('display','inline-block');
 });
+
+$('#errorTypePieChart').waitUntilExists(function () {
+    $(this).on({
+        mouseenter: function () {
+            $(this).children('div.menuselector').addClass('open');
+        },
+        mouseleave: function () {
+            $(this).children('div.menuselector').removeClass('open');
+        }
+    })
+});
+
+$('#severityPieChart').waitUntilExists(function () {
+    $(this).on({
+        mouseenter: function () {
+            $(this).children('div.menuselector').addClass('open');
+        },
+        mouseleave: function () {
+            $(this).children('div.menuselector').removeClass('open');
+        }
+    })
+});
