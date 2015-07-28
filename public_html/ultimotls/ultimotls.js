@@ -4,16 +4,10 @@
  * and open the template in the editor.
  */
 //GLOBAL VARIABLES FOR INTITIAL SETUP
-/*var TLS_PROTOCOL = "http";
-var TLS_SERVER = "172.16.120.157";
-var TLS_PORT = "8080";*/
 var TLS_PROTOCOL = location.protocol.replace(/[:]/g , '');
 var TLS_SERVER = location.hostname;
 var TLS_PORT = location.port;
-var TLS_DBNAME = "ES";
 var TLS_SERVER_TIMEOUT = 6000;
-var TLS_BATCH_REPLAY_COLLECTION = "ErrorSpotBatchReplay";
-var TLS_EXPIRATION_TIME =  15 //in minutes
    
 //(function(angular){
 var ultimotls = angular.module('ultimotls', ['auditControllerModule', 'sunburstDirectiveModule', 'auditDirectiveModule' , 'treemapDirectiveModule', 'base64', 
