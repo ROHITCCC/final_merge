@@ -118,7 +118,6 @@ treemapControllerModule.controller('treemapController', ['$scope', '$location', 
                     "{'$date': '"+$scope.fromDate+"'}, '$lt': {'$date': '"+ $scope.toDate +"'} } }, { '$and': [ {'severity': {'$ne': null}}, {'severity': {'$exists': true, '$ne': ''}},{'envid':'"+$scope.env.name+"'} ] } ] } },{ '$group': { '_id' : { 'interface1': '$interface1', 'application': '$application' }, 'count': {'$sum': 1} } } , { '$group': { '_id' : { 'application': '$_id.application' }, 'data': { '$addToSet':{ 'name': '$_id.interface1', 'size': '$count' } } } } , { '$project': { '_id': 1, 'name': '$_id.application', 'children': '$data' } } ]";
         $scope.treemapSaver.dropdownClicked = true;
         $scope.treemapPromise = mongoAggregateService.callHttp(sliderDataQuery);
-        console.log("hereTree2");
         $scope.treemapSaver.dropdownVal = $scope.timeSelected.time;//Saves TimeSelected when drop down value changes
         document.getElementById("customDateTimes").innerHTML = "";
     };
