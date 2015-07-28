@@ -20,12 +20,12 @@ transactionTypeBarChartControllerModule.controller('transactionTypeBarChartContr
         $scope.toDate = timeTemp.toDate;
         $scope.fromDate = timeTemp.fromDate;
         $scope.transactionTypeBarChartData($scope.fromDate, $scope.toDate);
-    })
+    });
     //Listening to the environment change broadcast
     $scope.$on("envChangeBroadcast", function(){//Listens for Environment Change
         $scope.env = queryEnv.getEnv();
         $scope.transactionTypeBarChartData($scope.fromDate, $scope.toDate);
-    })
+    });
     //Function that will send our promise to the value that our directive is listening for
     $scope.transactionTypeBarChartData = function(fromDate, toDate){
         var dataQuery = "[{\"$match\":{\"$and\":[{\"timestamp\":{\"$gte\":{\"$date\":\""+fromDate+"\"},\"$lt\":{\"$date\":\""+

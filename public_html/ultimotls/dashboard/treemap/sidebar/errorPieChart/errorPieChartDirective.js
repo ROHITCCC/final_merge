@@ -26,20 +26,19 @@ errorPieChartDirectiveModule.directive('errorPieChart',['queryFilter', function(
         d3.select("#severity").selectAll("path").style("opacity", 1);
         d3.select("#error").selectAll("path").style("opacity", 1);
         d3.select("#transactionType").selectAll("rect").style("opacity",1);
-        
         queryFilter.appendQuery("","");
         queryFilter.broadcast();
     }
     function onSelection(d,i){
         var width = document.getElementById('errorTypePieChartDiv').offsetWidth;
         cleanUp();
-        d3.select("#error").selectAll("path").style("opacity", 0.3)
-        d3.select("#severity").selectAll("path").style("opacity", 0.3)
-        d3.select("#transactionType").selectAll("rect").style("opacity", 0.3)
+        d3.select("#error").selectAll("path").style("opacity", 0.3);
+        d3.select("#severity").selectAll("path").style("opacity", 0.3);
+        d3.select("#transactionType").selectAll("rect").style("opacity", 0.3);
         
-        d3.select("#errorInnerSlice"+i).style("opacity",1)
-        d3.select("#errorTopSlice"+i).style("opacity",1)
-        d3.select("#errorOuterSlice"+i).style("opacity",1)
+        d3.select("#errorInnerSlice"+i).style("opacity",1);
+        d3.select("#errorTopSlice"+i).style("opacity",1);
+        d3.select("#errorOuterSlice"+i).style("opacity",1);
         
         var svg = d3.select("#errorTypePieChart").select("svg")
                 .append("g")
@@ -97,7 +96,6 @@ errorPieChartDirectiveModule.directive('errorPieChart',['queryFilter', function(
 	};
         Donut3D.draw=function(id, data, x /*center x*/, y/*center y*/, 
 			rx/*radius x*/, ry/*radius y*/, h/*height*/, ir/*inner radius*/){
-	
 		var _data = d3.layout.pie().sort(null).value(function(d) {return d.count;})(data);
 		
 		var slices = d3.select("#"+id).append("g").attr("transform", "translate(" + x + "," + y + ")")
@@ -139,27 +137,27 @@ errorPieChartDirectiveModule.directive('errorPieChart',['queryFilter', function(
             function arcTweenInner(a) {
                 var i = d3.interpolate(this._current, a);
                 this._current = i(0);
-                return function(t) { return pieInner(i(t), rx+0.5, ry+0.5, h, ir);  };
+                return function(t){return pieInner(i(t), rx+0.5, ry+0.5, h, ir);};
             }
             function arcTweenTop(a) {
               var i = d3.interpolate(this._current, a);
               this._current = i(0);
-              return function(t) { return pieTop(i(t), rx, ry, ir);  };
+              return function(t){return pieTop(i(t), rx, ry, ir);};
             }
-            function arcTweenOuter(a) {
+            function arcTweenOuter(a){
               var i = d3.interpolate(this._current, a);
               this._current = i(0);
-              return function(t) { return pieOuter(i(t), rx-.5, ry-.5, h);  };
+              return function(t){return pieOuter(i(t), rx-.5, ry-.5, h);};
             }
-            function textTweenX(a) {
+            function textTweenX(a){
               var i = d3.interpolate(this._current, a);
               this._current = i(0);
-              return function(t) { return 0.6*rx*Math.cos(0.5*(i(t).startAngle+i(t).endAngle));  };
+              return function(t){return 0.6*rx*Math.cos(0.5*(i(t).startAngle+i(t).endAngle));};
             }
-            function textTweenY(a) {
+            function textTweenY(a){
               var i = d3.interpolate(this._current, a);
               this._current = i(0);
-              return function(t) { return 0.6*rx*Math.sin(0.5*(i(t).startAngle+i(t).endAngle));  };
+              return function(t){return 0.6*rx*Math.sin(0.5*(i(t).startAngle+i(t).endAngle));};
             }
 
             var _data = d3.layout.pie().sort(null).value(function(d) {return d.count;})(data);
@@ -180,19 +178,15 @@ errorPieChartDirectiveModule.directive('errorPieChart',['queryFilter', function(
         if (status === "no_data"){ //Will append a Message for no data and return out of the function
             d3.select("#errorTypePieChart").select("svg").remove();
             var svg = d3.select("#errorTypePieChart").append("svg")
-                .attr("width", width)
-                .attr("height", height)
-              .append("g")
+                .attr("width", width).attr("height", height).append("g")
                 .attr("transform", "translate(" + width*.13 + "," + height*.5 + ")");
-          svg.append("text")
-                .text("No Data Available")
-          return;
+            svg.append("text").text("No Data Available");
+            return;
         };
         if(status === "updateChart"){
             d3.select("#errorTypePieChart").select("svg").remove();
             var svg = d3.select("#errorTypePieChart").append("svg").attr("width",width).attr("height",height);
-            svg.append("g").attr("id","error")
-               .append("text").attr("transform", "translate(0,15)").text("Error Type Chart");
+            svg.append("g").attr("id","error").append("text").attr("transform", "translate(0,15)").text("Error Type Chart");
             Donut3D.draw("error",data,centerX,centerY,radiusX,radiusY,pieHeight,innerRadius);
             return;
         };

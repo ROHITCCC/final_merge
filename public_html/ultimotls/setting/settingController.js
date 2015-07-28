@@ -142,7 +142,6 @@ settingModule.controller('SettingsController',['$scope','$http','localStorageSer
         //Env dropdown
         $scope.envDropdown = angular.copy($scope.environments);
         $scope.$watch('envDropdown', function(){
-            console.log("inside the function");
             localStorageService.cookie.add('envOptions',$scope.envDropdown);
         })
         $scope.reload = function(){
@@ -263,7 +262,6 @@ settingModule.controller('SettingsController',['$scope','$http','localStorageSer
         }else{
           $scope.batch.frequency.starttime="";  
         }
-        console.log($scope.batch);
         $scope.scheduler($scope.batch, 1);
     };
 
@@ -275,7 +273,6 @@ settingModule.controller('SettingsController',['$scope','$http','localStorageSer
 
 
     $scope.scheduler = function (object, opt) {
-        console.log('here');
         var conAjax = $http.post(schedulerURL, object);
         conAjax.success(function (response, status) {
             $scope.schedulerstatus = opt;
@@ -297,14 +294,12 @@ settingModule.controller('SettingsController',['$scope','$http','localStorageSer
     
     $scope.startscheduler = function () {
         $scope.schedulerObj.requestType="startScheduler";
-        console.log($scope.schedulerObj);
         $scope.scheduler($scope.schedulerObj, 3);
         
     };
     
     $scope.stopscheduler = function () {
         $scope.schedulerObj.requestType="stopScheduler";
-        console.log($scope.schedulerObj);
         $scope.scheduler($scope.schedulerObj, 4);
     };
 }]);

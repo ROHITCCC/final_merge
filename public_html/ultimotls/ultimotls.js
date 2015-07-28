@@ -20,7 +20,6 @@ ultimotls.controller('loginControllerModule', ['$scope', '$http', '$q', '$base64
     function ($scope, $http, $q, $base64, $location, localStorageService, treemapSaver, queryEnv, resetTimerService ){ //loging Controller
         $scope.cred;
         $scope.treemapSaver = treemapSaver;
-        console.log('*************** LoginCtrl');
         $scope.treemapSaver.nameSaver=localStorageService.cookie.get('name');
         if(localStorageService.cookie.get('showNav')){
             var username = localStorageService.cookie.get('name');
@@ -74,7 +73,6 @@ ultimotls.controller('loginControllerModule', ['$scope', '$http', '$q', '$base64
             $scope.treemapSaver.credEnvId = $scope.cred.envid;
             var credentials = $base64.encode($scope.cred.username + ":" + $scope.cred.password);
             $scope.treemapSaver.nameSaver = $scope.cred.username;
-            console.log('*** authorization header: ' + credentials);
 
             $http.defaults.headers.common["Authorization"] = 'Basic ' + credentials;
             $http.defaults.headers.common["No-Auth-Challenge"];
@@ -95,9 +93,6 @@ ultimotls.controller('loginControllerModule', ['$scope', '$http', '$q', '$base64
                 localStorageService.cookie.add('name', $scope.cred.username);
                 if (!angular.isUndefined(data) && data !== null && !angular.isUndefined(data.authenticated) && data.authenticated) {
                     $scope.loginError = "";
-                    console.log('*** authenticated.');
-                    console.log('*** user roles: ' + data.roles);
-                    console.log(credentials);
                     treemapSaver.showNav = true;
                     localStorageService.cookie.add('showNav', treemapSaver.showNav);
                     $http.defaults.headers.common["Authorization"] = 'Basic ' + credentials;
@@ -112,7 +107,6 @@ ultimotls.controller('loginControllerModule', ['$scope', '$http', '$q', '$base64
                 }
                 else {
                     $scope.loginError = "Username and/or password is incorrect";
-                    console.log('*** authentication failed. wrong credentials.');
                     localStorageService.cookie.remove('creds');
                     delete $http.defaults.headers.common["Authorization"];
                     $scope.authWrongCredentials = true;
@@ -192,7 +186,6 @@ ultimotls.run(['$rootScope', '$location', 'treemapSaver', 'localStorageService',
             var _credentials = localStorageService.cookie.get('creds');
             treemapSaver.showNav = localStorageService.cookie.get('showNav');
             if (angular.isUndefined(_credentials) || _credentials === null) {
-                console.log('NO CREDENTIALS');
                 if(document.getElementById("loginContainter") !== null)event.preventDefault();
                 delete $http.defaults.headers.common["Authorization"];
                 $location.path('/login');
@@ -200,13 +193,11 @@ ultimotls.run(['$rootScope', '$location', 'treemapSaver', 'localStorageService',
             }
             else {
                 if (!treemapSaver.showNav) {
-                    console.log('ACCESS DENIED');
                     if(document.getElementById("loginContainter") !== null)event.preventDefault();
                     $location.path('/login');
                 }
                 else {
                     $http.defaults.headers.common["Authorization"] = 'Basic ' + _credentials;
-                    console.log('ACCESS GRANTED');
                 }
             }
             
@@ -358,9 +349,7 @@ ultimotls.factory("mongoAggregateService", ['$http','resetTimerService',function
             .success(function (result, status, header, config) {
                 var auth_token_valid_until = header()['auth-token-valid-until'];
                 resetTimerService.set(auth_token_valid_until);
-            //console.log(result);
         }).error(function () { //need to pass error message through the service???
-            console.log("error");
         });
         return promise;
     };
@@ -382,7 +371,6 @@ ultimotls.service("queryEnv",['$http', '$rootScope',function($http,$rootScope){ 
         return envid;
     };
     environment.getEnvOptions = function(){
-        console.log("getEnvOptions")
         var promise = $http.get(TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/_logic/SettingService?object=setting.envsetup",{timeout:TLS_SERVER_TIMEOUT})
             .success(function(data){
             })
@@ -457,7 +445,6 @@ ultimotls.service("auditSearch",['$http','queryEnv', 'resetTimerService',functio
                         var auth_token_valid_until = header()['auth-token-valid-until'];
                         resetTimerService.set(auth_token_valid_until);
                 }).error(function () {
-                    console.log("error");
                 });
                 audits.inputError = "";
         }
@@ -468,7 +455,6 @@ ultimotls.service("auditSearch",['$http','queryEnv', 'resetTimerService',functio
                     var auth_token_valid_until = header()['auth-token-valid-until'];
                     resetTimerService.set(auth_token_valid_until);
             }).error(function () {
-                console.log("error");
             });
             audits.inputError = "";
         }
@@ -506,7 +492,6 @@ ultimotls.service("resetTimerService",['localStorageService', function(localStor
         var currentDate = new Date();
         var newDate = new Date(newTime);
         var newExpiration = ((newDate.getTime() - currentDate.getTime())/60000)/(24*60);
-        console.log(newExpiration)
         var userCred = localStorageService.cookie.get('creds'),
             username = localStorageService.cookie.get('name'),
             showNav = localStorageService.cookie.get('showNav'),
