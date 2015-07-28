@@ -161,7 +161,7 @@ treemapDirectiveModule.directive('treemapZoom', ['$location', function($location
             .sort(function(a,b) {
                 return a.value - b.value;
             });
-        if(scope.treemapSaver.dropdownClicked === true){
+        if(treeDataset.constructor === Array){
             d3.selectAll(".brush").call(brushStorage[scope.treemapSaver.brushCounter].clear());
             d3.selectAll("g.brush").remove();
             d3.selectAll("svg.newSVG").remove();
