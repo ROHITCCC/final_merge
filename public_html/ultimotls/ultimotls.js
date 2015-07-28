@@ -4,15 +4,15 @@
  * and open the template in the editor.
  */
 //GLOBAL VARIABLES FOR INTITIAL SETUP
-//var TLS_PROTOCOL = "http";
-//var TLS_SERVER = "172.16.120.157";
-//var TLS_PORT = "8080";
-//var TLS_DBNAME = "ES";
-//var TLS_SERVER_TIMEOUT = 6000;
-var TLS_PROTOCOL = location.protocol.replace(/[:]/g , '');
-var TLS_SERVER = location.hostname;
-var TLS_PORT = location.port;
+var TLS_PROTOCOL = "http";
+var TLS_SERVER = "172.16.120.157";
+var TLS_PORT = "8080";
+var TLS_DBNAME = "ES";
 var TLS_SERVER_TIMEOUT = 6000;
+//var TLS_PROTOCOL = location.protocol.replace(/[:]/g , '');
+//var TLS_SERVER = location.hostname;
+//var TLS_PORT = location.port;
+//var TLS_SERVER_TIMEOUT = 6000;
    
 //(function(angular){
 var ultimotls = angular.module('ultimotls', ['auditControllerModule', 'auditDirectiveModule' , 'treemapDirectiveModule', 'base64', 
@@ -156,7 +156,6 @@ ultimotls.controller("indexControllerModule", ['$scope','$http','$location','loc
         
         
         $scope.logout = function () {
-            $scope.$apply($location.path("/login"));
             $scope.auth = false;
             localStorageService.cookie.remove('creds');
             localStorageService.cookie.remove('showNav');
@@ -165,6 +164,7 @@ ultimotls.controller("indexControllerModule", ['$scope','$http','$location','loc
             localStorageService.cookie.remove('envid');
             delete $http.defaults.headers.common["Authorization"];
             $scope.treemapSaver.showNav = false;
+            $scope.$apply($location.path("/login"));
         };
         
         $scope.setEnvironment = function(env){//Set the environment when changed
