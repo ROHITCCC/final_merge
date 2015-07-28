@@ -384,10 +384,10 @@
                                         <div class="col-sm-2">
                                             <input type="text" class="form-control" name="batchFrequency" value="{{batch.frequency.duration}}" style="width: 100%;" ng-model="batch.frequency.duration" placeholder="Frequency" required>
                                         </div>
-                                        <div class="col-sm-2">
+                                        <div class="col-sm-1">
                                             <label class="control-label">Unit:</label>
                                         </div>
-                                        <div class="col-sm-1">
+                                        <div class="col-sm-2">
                                             <select class="form-control"  name="batchUnit" ng-options='unit for unit in units' ng-model="batch.frequency.unit" required>
                                                 <option value="" disabled selected style='display:none;'>{{batch.frequency.unit}}</option>
                                             </select>

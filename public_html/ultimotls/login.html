@@ -1,25 +1,35 @@
-<div id="loginContainter" class="container-fluid" >
-    <div id="loginFormContainer" class="container-fluid">
-        <form class="form-signin">
-            <h2 class="form-signin-heading">Please sign in</h2>
-            <label for="inputEmail" class="sr-only">Username</label>
-            <input ng-model="cred.username" type="text" id="userName" 
-                   class="form-control" placeholder="Username" required autofocus>
-            <label for="inputPassword" class="sr-only">Password</label>
-            <input ng-model="cred.password" type="password" id="inputPassword" 
-                   class="form-control" placeholder="Password" required>
-            <label for="inputEnvID" class="sr-only">EnvID</label>
-            <input ng-model="cred.envid" type="text" id="inputEnvID" 
-                   class="form-control" placeholder="Environment ID">
-            <div class="checkbox">
-                <label>
-                    <input type="checkbox" value="remember-me"> Remember me
-                </label>
+<div id="loginContainter" class="container">
+    <div id="loginFormContainer" class="row">
+        <div class="col-md-4 col-md-offset-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Please sign in</h3>
+                </div>
+                <div class="panel-body">
+                    <form accept-charset="UTF-8" role="form">
+                        <fieldset>
+                            <div class="form-group">
+                                <input ng-model="cred.username" type="text" id="userName" class="form-control" placeholder="Username" required autofocus>
+                            </div>
+                            <div class="form-group">
+                                <input ng-model="cred.password" type="password" id="inputPassword" class="form-control" placeholder="Password" required>
+                            </div>
+                            <div class="form-group">
+                                <input ng-model="cred.envid" type="text" id="inputEnvID" class="form-control" placeholder="Environment ID">
+                            </div>
+                            <div class="checkbox">
+                                <label>
+                                    <input name="remember" type="checkbox" value="remember-me"> Remember Me
+                                </label>
+                            </div>
+                            <div id="loginError" class="container-fluid" style="color: red">
+                                <center>{{loginError}}</center>
+                            </div>
+                            <input class="btn btn-lg btn-block" ng-click="login()" type="submit" value="Login">
+                        </fieldset>
+                    </form>
+                </div>
             </div>
-            <button class="btn btn-lg btn-primary btn-block" ng-click="login()" type="submit">Sign in</button>
-        </form>
-        <div id="loginError" class="container-fluid" style="color: red">
-            <center>{{loginError}}</center>
         </div>
     </div>
 </div>
