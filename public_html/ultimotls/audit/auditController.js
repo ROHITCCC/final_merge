@@ -484,7 +484,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                         "Content-Type: application/json; \n\n" +
                         "{"+restPayload+"} \n\n" + 
                         "--boundaryREST \n" +
-                        "Content-Type: text/plain \n\n" + 
+                        "Content-Type: text/plain; charset: utf-8; \n\n" + 
                         $scope.payloadPageData+
                         "\n\n --boundaryREST--";
                 console.log(multipartPayload);    
@@ -550,7 +550,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                     "Content-Type: application/json; \n\n" +
                     "{"+filePayload+"} \n\n" + 
                     "--boundaryFILE \n" +
-                    "Content-Type: text/plain \n\n" + 
+                    "Content-Type: text/plain; charset: utf-8; \n\n" + 
                     $scope.payloadPageData+
                     "\n\n --boundaryFILE--";
             console.log(multipartPayload);
@@ -598,7 +598,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                     "Content-Type: application/json; \n\n" +
                     "{"+webServicePayload+"} \n\n" + 
                     "--boundaryWS \n" +
-                    "Content-Type: text/plain \n\n" + 
+                    "Content-Type: text/plain; charset: utf-8; \n\n" + 
                     $scope.payloadPageData+
                     "\n\n --boundaryWS--";
             console.log(multipartPayload);
@@ -648,7 +648,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                     "Content-Type: application/json; \n\n" +
                     "{"+ftpPayload+"} \n\n" + 
                     "--boundaryFTP \n" +
-                    "Content-Type: text/plain \n\n" + 
+                    "Content-Type: text/plain; charset: utf-8; \n\n" + 
                     $scope.payloadPageData+
                     "\n\n --boundaryFTP--";    
             console.log(multipartPayload);
