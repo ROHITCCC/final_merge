@@ -479,14 +479,14 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                 var restPayload = '"type":"REST", "endpoint":"'+$scope.restReplay.endpointUrl+'", "method":"'+
                     methodVal+'", "content-type":"'+contentVal+'", "restHeaders":['+headerHolder+']';
                 
-                var multipartPayload = "Content-Type: multipart/mixed; boundary=boundaryREST \n"+
-                        "--boundaryREST \n" +
-                        "Content-Type: application/json; \n\n" +
-                        "{"+restPayload+"} \n\n" + 
-                        "--boundaryREST \n" +
-                        "Content-Type: text/plain; charset: utf-8; \n\n" + 
+                var multipartPayload = "Content-Type: multipart/mixed; boundary=boundaryREST\n"+
+                        "--boundaryREST\n" +
+                        "Content-Type: application/json;\n\n" +
+                        "{"+restPayload+"}\n\n" + 
+                        "--boundaryREST\n" +
+                        "Content-Type: text/plain; charset: utf-8;\n\n" + 
                         $scope.payloadPageData+
-                        "\n\n --boundaryREST--";
+                        "\n\n--boundaryREST--";
                 console.log(multipartPayload);    
             $http.post(replayPostUrl, multipartPayload, {timeout:TLS_SERVER_TIMEOUT})
                     .success(function(d,status, header, config){
@@ -545,14 +545,14 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
             document.getElementById("replayResponseFile").innerHTML = " ";
             if($scope.batchChecker === false){
                 var filePayload = '"type":"FILE", "file-location":"'+$scope.fileReplay.location+'" ';
-                var multipartPayload = "Content-Type: multipart/mixed; boundary=boundaryFILE \n"+
-                    "--boundaryFILE \n" +
-                    "Content-Type: application/json; \n\n" +
-                    "{"+filePayload+"} \n\n" + 
-                    "--boundaryFILE \n" +
-                    "Content-Type: text/plain; charset: utf-8; \n\n" + 
+                var multipartPayload = "Content-Type: multipart/mixed; boundary=boundaryFILE\n"+
+                    "--boundaryFILE\n" +
+                    "Content-Type: application/json;\n\n" +
+                    "{"+filePayload+"}\n\n" + 
+                    "--boundaryFILE\n" +
+                    "Content-Type: text/plain; charset: utf-8;\n\n" + 
                     $scope.payloadPageData+
-                    "\n\n --boundaryFILE--";
+                    "\n\n--boundaryFILE--";
             console.log(multipartPayload);
                 $http.post(replayPostUrl, multipartPayload, {timeout:TLS_SERVER_TIMEOUT})
                     .success(function(d,status, header, config){
@@ -593,14 +593,14 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
             if($scope.batchChecker === false){
                 var webServicePayload = '"type":"WS", "wsdl":"'+$scope.webServiceReplay.wsdl+'", "operation":"'+$scope.webServiceReplay.operation+'",'+
                         '"soapaction":"'+$scope.webServiceReplay.soapAction+'", "binding":"'+$scope.webServiceReplay.binding+'"';
-                var multipartPayload = "Content-Type: multipart/mixed; boundary=boundaryWS \n"+
-                    "--boundaryWS \n" +
-                    "Content-Type: application/json; \n\n" +
-                    "{"+webServicePayload+"} \n\n" + 
-                    "--boundaryWS \n" +
-                    "Content-Type: text/plain; charset: utf-8; \n\n" + 
+                var multipartPayload = "Content-Type: multipart/mixed; boundary=boundaryWS\n"+
+                    "--boundaryWS\n" +
+                    "Content-Type: application/json;\n\n" +
+                    "{"+webServicePayload+"}\n\n" + 
+                    "--boundaryWS\n" +
+                    "Content-Type: text/plain; charset: utf-8;\n\n" + 
                     $scope.payloadPageData+
-                    "\n\n --boundaryWS--";
+                    "\n\n--boundaryWS--";
             console.log(multipartPayload);
                 $http.post(replayPostUrl, multipartPayload, {timeout:TLS_SERVER_TIMEOUT})
                     .success(function(d,status, header, config){
@@ -643,14 +643,14 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                         '"port":"'+$scope.ftpServiceReplay.port+'", "username":"'+$scope.ftpServiceReplay.username+'", '+
                         '"password":"'+$scope.ftpServiceReplay.password+'", "location":"'+$scope.ftpServiceReplay.location+'", '+
                         '"fileType":"'+$scope.ftpServiceReplay.fileType+'"';
-                var multipartPayload = "Content-Type: multipart/mixed; boundary=boundaryFTP \n"+
-                    "--boundaryFTP \n" +
-                    "Content-Type: application/json; \n\n" +
-                    "{"+ftpPayload+"} \n\n" + 
-                    "--boundaryFTP \n" +
-                    "Content-Type: text/plain; charset: utf-8; \n\n" + 
+                var multipartPayload = "Content-Type: multipart/mixed; boundary=boundaryFTP\n"+
+                    "--boundaryFTP\n" +
+                    "Content-Type: application/json;\n\n" +
+                    "{"+ftpPayload+"}\n\n" + 
+                    "--boundaryFTP\n" +
+                    "Content-Type: text/plain; charset: utf-8;\n\n" + 
                     $scope.payloadPageData+
-                    "\n\n --boundaryFTP--";    
+                    "\n\n--boundaryFTP--";    
             console.log(multipartPayload);
                 $http.post(replayPostUrl, multipartPayload, {timeout:TLS_SERVER_TIMEOUT})
                     .success(function(d,status, header, config){
