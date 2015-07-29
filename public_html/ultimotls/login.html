@@ -9,13 +9,13 @@
                     <form accept-charset="UTF-8" role="form">
                         <fieldset>
                             <div class="form-group">
-                                <input ng-model="cred.username" type="text" id="userName" class="form-control" placeholder="Username" required autofocus>
+                                <input ng-model="cred.username"  onkeypress="clearError()" type="text" id="userName" class="form-control" placeholder="Username" required autofocus>
                             </div>
                             <div class="form-group">
-                                <input ng-model="cred.password" type="password" id="inputPassword" class="form-control" placeholder="Password" required>
+                                <input ng-model="cred.password"  onkeypress="clearError()" type="password" id="inputPassword" class="form-control" placeholder="Password" required>
                             </div>
                             <div class="form-group">
-                                <input ng-model="cred.envid" type="text" id="inputEnvID" class="form-control" placeholder="Environment ID">
+                                <input ng-model="cred.envid"  onkeypress="clearError()" type="text" id="inputEnvID" class="form-control" placeholder="Environment ID" required>
                             </div>
                             <div class="checkbox">
                                 <label>

@@ -23,6 +23,13 @@ ultimotls.controller('loginControllerModule', ['$scope', '$http', '$q', '$base64
         $scope.cred;
         $scope.treemapSaver = treemapSaver;
         $scope.treemapSaver.nameSaver=localStorageService.cookie.get('name');
+        clearError = function(){ //onKeyPress error message will clear
+            $scope.loginError = "";
+        };
+        if(treemapSaver.envError){
+            $scope.loginError = treemapSaver.envError;
+            treemapSaver.envError = "";
+        }
         if(localStorageService.cookie.get('showNav')){
             var username = localStorageService.cookie.get('name');
             var cred = localStorageService.cookie.get('creds'); 
@@ -138,23 +145,6 @@ ultimotls.controller("indexControllerModule", ['$scope','$http','$location','loc
         $scope.treemapSaver = treemapSaver;
         $scope.treemapSaver.showNav = localStorageService.cookie.get('showNav');
         $scope.treemapSaver.nameSaver = localStorageService.cookie.get('name');
-        $scope.$on("performedLogin", function(){
-            $scope.treemapSaver.showNav = true;
-            queryEnv.getEnvOptions().then(function(response){
-                $scope.envOptions = response.data._embedded['rh:doc'][0].envsetup;
-                for(var i =0; i< $scope.envOptions.length; i++){
-                    if (treemapSaver.envid === $scope.envOptions[i].name){
-                        $scope.envSelected = $scope.envOptions[i]; 
-                        $scope.setEnvironment($scope.envSelected);
-                    }
-                };
-                localStorageService.cookie.add('envOptions',$scope.envOptions);
-                localStorageService.cookie.add('envid', $scope.envSelected);
-                localStorageService.cookie.add('name', treemapSaver.username);
-            });
-        });
-        
-        
         $scope.logout = function () {
             $scope.auth = false;
             localStorageService.cookie.remove('creds');
@@ -166,7 +156,6 @@ ultimotls.controller("indexControllerModule", ['$scope','$http','$location','loc
             $scope.treemapSaver.showNav = false;
             $scope.$apply($location.path("/login"));
         };
-        
         $scope.setEnvironment = function(env){//Set the environment when changed
             if(!env){
                 return;
@@ -177,6 +166,28 @@ ultimotls.controller("indexControllerModule", ['$scope','$http','$location','loc
             queryEnv.setEnv(env);
             queryEnv.broadcast();
         };
+        $scope.$on("performedLogin", function(){
+            $scope.treemapSaver.showNav = true;
+            queryEnv.getEnvOptions().then(function(response){
+                $scope.envOptions = response.data._embedded['rh:doc'][0].envsetup;
+                var environmentFound = false;
+                for(var i =0; i< $scope.envOptions.length; i++){
+                    if (treemapSaver.envid === $scope.envOptions[i].name){
+                        $scope.envSelected = $scope.envOptions[i]; 
+                        $scope.setEnvironment($scope.envSelected);
+                        environmentFound = true;
+                        break;
+                    }
+                };
+                if(!environmentFound){
+                    treemapSaver.envError = "Environment has not been setup"
+                    $scope.logout()
+                };
+                localStorageService.cookie.add('envOptions',$scope.envOptions);
+                //localStorageService.cookie.add('envid', $scope.envSelected);
+                localStorageService.cookie.add('name', treemapSaver.username);
+            });
+        });
         $scope.envSelected = localStorageService.cookie.get('envid');
         $scope.setEnvironment($scope.envSelected);
         $scope.envOptions = localStorageService.cookie.get('envOptions');
