@@ -34,7 +34,7 @@ ultimotls.controller('loginControllerModule', ['$scope', '$http', '$q', '$base64
             
             var deferred = $q.defer();
             
-            var loggedInRequest = $http.get(TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/_logic/LoginService/"+username, {});
+            var loggedInRequest = $http.get(TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/_logic/LoginService/"+username, {timeout:TLS_SERVER_TIMEOUT});
             loggedInRequest.success(function (data, status, header, config) {
                 var auth_token_valid_until = header()['auth-token-valid-until'];
                 treemapSaver.username = username;

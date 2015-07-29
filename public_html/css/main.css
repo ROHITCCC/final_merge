@@ -356,6 +356,15 @@ html {
 .modal #replayPage{
     top: 50%; 
 }
+.modal .replayButtons{
+    margin-right: 5px;
+}
+.modal .replayButtons button:first-child{
+    margin-left: 5px;
+}
+.modal .replayInputBox{
+    width: 80%;
+}
 
 //////TIME SELECTED AND ENV SELECTED DROP DOWN MENU//////
 .dropdown-menu{

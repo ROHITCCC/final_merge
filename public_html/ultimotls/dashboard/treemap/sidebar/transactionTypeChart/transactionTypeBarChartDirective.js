@@ -46,7 +46,7 @@ transactionTypeBarChartDirectiveModule.directive('transactionTypeBarChart',['que
     function barChart(data, status){
         if(data.length){
             var dynamicSize = data.length/5;
-            var adjustedWidth = dynamicSize *.5 + 1;
+            var adjustedWidth = dynamicSize *.7 + 1;
         }
         var width = document.getElementById('transactionTypeBarChartDiv').offsetWidth*adjustedWidth, height = (window.innerHeight*.28);
         var width2 = document.getElementById('transactionTypeBarChartDiv').offsetWidth;
@@ -63,6 +63,7 @@ transactionTypeBarChartDirectiveModule.directive('transactionTypeBarChart',['que
             x.domain(//sort by descending order
                 data.sort(function(a,b){return b.count - a.count})
                 .map(function(d){return d._id;})
+                //.on("click",function(d){return console.log(d)})
             ).copy();
             y.domain([0,d3.max(data, function(d) { return d.count;})]);
             var yAxis = d3.svg.axis()
