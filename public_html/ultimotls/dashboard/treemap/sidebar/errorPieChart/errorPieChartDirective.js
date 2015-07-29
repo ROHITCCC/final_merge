@@ -100,73 +100,73 @@ errorPieChartDirectiveModule.directive('errorPieChart',['queryFilter', function(
         }
         Donut3D.draw=function(id, data, x /*center x*/, y/*center y*/, 
 			rx/*radius x*/, ry/*radius y*/, h/*height*/, ir/*inner radius*/){
-		 function mouseOverSlice(d) {
-                    d3.select(this).attr("stroke","black")
-                    tooltip.html(d.data._id);
-                    return tooltip.transition()
-                    .duration(50).style("opacity", 0.9);
-                 };
-                 function mouseOutSlice(){
-                    d3.select(this).attr("stroke","")
-                    return tooltip.style("opacity", 0);
-                 };
-                 function mouseMoveSlice () {
-                    return tooltip
-                    .style("top", (d3.event.pageY - 15)+"px")
-                    .style("left", (d3.event.pageX + 15)+"px");
-                 };
-                
-                var _data = d3.layout.pie().sort(function(a,b){return b.count - a.count}).value(function(d) {return d.count;})(data);
-		
-		var slices = d3.select("#"+id).append("g").attr("transform", "translate(" + x + "," + y + ")")
-                    .attr("class", "slices");
-		var tooltip = d3.select("#errorTypePieChart").append("div").attr("id", "tooltip")
-                    .style("position", "fixed").style("opacity", 0);	
-		slices.selectAll(".innerSlice").data(_data).enter().append("path").attr("class","innerSlice")
-                    .attr("id", function(d,i){return "errorInnerSlice"+i})
-                    .style("fill", function(d,i){return color(i);})
-                    .style("stroke", "rgb(87, 87, 87)")
-                    .attr("d",function(d){ return pieInner(d, rx+0.5,ry+0.5, h, ir);})
-                    .on("mouseover", mouseOverSlice)
-                    .on("mousemove", mouseMoveSlice)
-                    .on("mouseout", mouseOutSlice)
-                    .on("click", function(d,i){upDateTreemap(d);onSelection(d,i);})
-                    .each(function(d){this._current=d;});
-		
-		slices.selectAll(".topSlice").data(_data).enter().append("path").attr("class", "topSlice")
-                    .attr("id", function(d,i){return "errorTopSlice"+i})
-                    .style("fill", function(d,i){return color(i);})
-                    .style("stroke", "rgb(87, 87, 87)")
-                    .attr("d",function(d){ return pieTop(d, rx, ry, ir);})
-                    .on("mouseover", mouseOverSlice)
-                    .on("mousemove", mouseMoveSlice)
-                    .on("mouseout", mouseOutSlice)
-                    .on("click", function(d,i){upDateTreemap(d);onSelection(d,i);})
-                    .each(function(d){this._current=d;});
-		
-		slices.selectAll(".outerSlice").data(_data).enter().append("path").attr("class", "outerSlice")
-                    .attr("id", function(d,i){return "errorOuterSlice"+i})
-                    .style("fill", function(d,i){return color(i);})
-                    .style("stroke", "rgb(87, 87, 87)")
-                    .attr("d",function(d){ return pieOuter(d, rx-.5,ry-.5, h);})
-                    .on("mouseover", mouseOverSlice)
-                    .on("mousemove", mouseMoveSlice)
-                    .on("mouseout", mouseOutSlice)
-                    .on("click", function(d,i){upDateTreemap(d);onSelection(d,i);})
-                    .each(function(d){this._current=d;});
+            function mouseOverSlice(d) {
+               d3.select(this).attr("stroke","black")
+               tooltip.html(d.data._id);
+               return tooltip.transition()
+               .duration(50).style("opacity", 0.9);
+            };
+            function mouseOutSlice(){
+               d3.select(this).attr("stroke","")
+               return tooltip.style("opacity", 0);
+            };
+            function mouseMoveSlice () {
+               return tooltip
+               .style("top", (d3.event.pageY - 15)+"px")
+               .style("left", (d3.event.pageX + 15)+"px");
+            };
 
-		slices.selectAll(".label").data(_data).enter().append("text").attr("class", "label")
-                    .attr("x",function(d){ return .7*rx*Math.cos(0.5*(d.startAngle+d.endAngle));})
-                    .attr("y",function(d){ return 0.6*ry*Math.sin(0.5*(d.startAngle+d.endAngle));})
-                    .attr("dx",-12)
-                    .on("mouseover", mouseOverSlice)
-                    .on("mousemove", mouseMoveSlice)
-                    .on("mouseout", mouseOutSlice)
-                    .on("click", function(d,i){upDateTreemap(d);onSelection(d,i);})
-                    .style("fill", "black")
-                    .style("font-size", "11px")
-                    .text(function(d){return fittedText(d)<.4?"":d.data._id})
-                    .each(function(d){this._current=d;});				
+           var _data = d3.layout.pie().sort(function(a,b){return b.count - a.count}).value(function(d) {return d.count;})(data);
+           var not3DPieChart = d3.select("html").selectAll("*:not(.error)").on("mouseover",mouseOutSlice);
+           var slices = d3.select("#"+id).append("g").attr("transform", "translate(" + x + "," + y + ")")
+               .attr("class", "slices");
+           var tooltip = d3.select("#errorTypePieChart").append("div").attr("id", "tooltip")
+               .style("position", "fixed").style("opacity", 0);	
+           slices.selectAll(".innerSlice").data(_data).enter().append("path").attr("class","innerSlice")
+               .attr("id", function(d,i){return "errorInnerSlice"+i})
+               .style("fill", function(d,i){return color(i);})
+               .style("stroke", "rgb(87, 87, 87)")
+               .attr("d",function(d){ return pieInner(d, rx+0.5,ry+0.5, h, ir);})
+               .on("mouseover", mouseOverSlice)
+               .on("mousemove", mouseMoveSlice)
+               .on("mouseout", mouseOutSlice)
+               .on("click", function(d,i){upDateTreemap(d);onSelection(d,i);})
+               .each(function(d){this._current=d;});
+
+           slices.selectAll(".topSlice").data(_data).enter().append("path").attr("class", "topSlice")
+               .attr("id", function(d,i){return "errorTopSlice"+i})
+               .style("fill", function(d,i){return color(i);})
+               .style("stroke", "rgb(87, 87, 87)")
+               .attr("d",function(d){ return pieTop(d, rx, ry, ir);})
+               .on("mouseover", mouseOverSlice)
+               .on("mousemove", mouseMoveSlice)
+               .on("mouseout", mouseOutSlice)
+               .on("click", function(d,i){upDateTreemap(d);onSelection(d,i);})
+               .each(function(d){this._current=d;});
+
+           slices.selectAll(".outerSlice").data(_data).enter().append("path").attr("class", "outerSlice")
+               .attr("id", function(d,i){return "errorOuterSlice"+i})
+               .style("fill", function(d,i){return color(i);})
+               .style("stroke", "rgb(87, 87, 87)")
+               .attr("d",function(d){ return pieOuter(d, rx-.5,ry-.5, h);})
+               .on("mouseover", mouseOverSlice)
+               .on("mousemove", mouseMoveSlice)
+               .on("mouseout", mouseOutSlice)
+               .on("click", function(d,i){upDateTreemap(d);onSelection(d,i);})
+               .each(function(d){this._current=d;});
+
+           slices.selectAll(".label").data(_data).enter().append("text").attr("class", "label")
+               .attr("x",function(d){ return .7*rx*Math.cos(0.5*(d.startAngle+d.endAngle));})
+               .attr("y",function(d){ return 0.6*ry*Math.sin(0.5*(d.startAngle+d.endAngle));})
+               .attr("dx",-12)
+               .on("mouseover", mouseOverSlice)
+               .on("mousemove", mouseMoveSlice)
+               .on("mouseout", mouseOutSlice)
+               .on("click", function(d,i){upDateTreemap(d);onSelection(d,i);})
+               .style("fill", "black")
+               .style("font-size", "11px")
+               .text(function(d){return fittedText(d)<.4?"":d.data._id})
+               .each(function(d){this._current=d;});				
 	};
         Donut3D.transition = function(id, data, rx, ry, h, ir){
             function arcTweenInner(a) {
