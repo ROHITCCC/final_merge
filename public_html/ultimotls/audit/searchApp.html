@@ -824,6 +824,13 @@ and open the template in the editor.
                                         </div>
                                         <div class="form-group">
                                             <div class="form-inline">
+                                                <label for="port" class="control-label col-sm-2"><b>Port: </b></label>
+                                                <input ng-model="ftpServiceReplay.port" type="text" class="form-control col-sm-10" 
+                                                       id="port" placeholder="Port" style="width: 80%">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="form-inline">
                                                 <label for="username" class="control-label col-sm-2"><b>Username: </b></label>
                                                 <input ng-model="ftpServiceReplay.username" type="text" class="form-control col-sm-10" 
                                                        id="operation" placeholder="Username" style="width: 80%">
@@ -848,15 +855,6 @@ and open the template in the editor.
                                                 <label for="fileType" class="control-label col-sm-2"><b>File Type: </b></label>
                                                 <input ng-model="ftpServiceReplay.fileType" type="text" class="form-control col-sm-10" 
                                                        id="binding" placeholder="File Type" style="width: 80%">
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <div class="form-inline">
-                                                <label for="header" class="control-label col-sm-2"><b>Header: </b></label>
-                                                <input ng-model="ftpServiceReplay.headerType" type="text" class="form-control col-sm-6" 
-                                                       id="headerType" placeholder="Header Type" style="width: 35%">
-                                                <input ng-model="ftpServiceReplay.headerValue" type="text" class="form-control col-sm-offset-1 col-sm-5" 
-                                                       id="headerValue" placeholder="Header Value" style="width: 35%">
                                             </div>
                                         </div>
                                         <div class="form-group"> 

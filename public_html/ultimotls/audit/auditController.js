@@ -467,19 +467,28 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                     headerVal = $scope.restReplay.header.value;
                 }
                 
-                headerHolder = '"type"="'+headerType+'", "value"="'+headerVal+'"';
+                headerHolder = '{"type":"'+headerType+'", "value":"'+headerVal+'"}';
                 if($scope.headerCounter > 0){
                     for(var z = 0; z < $scope.headerCounter; z++){
                         var tempType = document.getElementById("headerType" + (z)).value;
                         var tempVal = document.getElementById("headerValue" + (z)).value;
                         if(tempType === "")tempType = "Authorization";
-                        headerHolder += ', "type"="'+tempType+'", "value"="'+headerVal+'"';
+                        headerHolder += ', {"type":"'+tempType+'", "value":"'+tempVal+'"}';
                     }
                 }
-                var restPayload = 'type=REST~, endpoint='+$scope.restReplay.endpointUrl+'~, method='+
-                    methodVal+'~, content-type='+contentVal+'~, payload='+$scope.payloadPageData+
-                    '~, header=['+headerHolder+']';
-            $http.post(replayPostUrl, restPayload, {timeout:TLS_SERVER_TIMEOUT})
+                var restPayload = '"type":"REST", "endpoint":"'+$scope.restReplay.endpointUrl+'", "method":"'+
+                    methodVal+'", "content-type":"'+contentVal+'", "restHeaders":['+headerHolder+']';
+                
+                var multipartPayload = "Content-Type: multipart/mixed; boundary=boundaryREST \n"+
+                        "--boundaryREST \n" +
+                        "Content-Type: application/json; \n\n" +
+                        "{"+restPayload+"} \n\n" + 
+                        "--boundaryREST \n" +
+                        "Content-Type: text/plain \n\n" + 
+                        $scope.payloadPageData+
+                        "\n\n --boundaryREST--";
+                console.log(multipartPayload);    
+            $http.post(replayPostUrl, multipartPayload, {timeout:TLS_SERVER_TIMEOUT})
                     .success(function(d,status, header, config){
                         var auth_token_valid_until = header()['auth-token-valid-until'];
                         resetTimerService.set(auth_token_valid_until);
@@ -535,8 +544,17 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
         $scope.runFileService = function(){ //how do i set a file location
             document.getElementById("replayResponseFile").innerHTML = " ";
             if($scope.batchChecker === false){
-                var filePayload = "type=FILE~, file-location="+$scope.fileReplay.location+"~, payload="+$scope.payloadPageData.payload+"";
-                $http.post(replayPostUrl, filePayload, {timeout:TLS_SERVER_TIMEOUT})
+                var filePayload = '"type":"FILE", "file-location":"'+$scope.fileReplay.location+'" ';
+                var multipartPayload = "Content-Type: multipart/mixed; boundary=boundaryFILE \n"+
+                    "--boundaryFILE \n" +
+                    "Content-Type: application/json; \n\n" +
+                    "{"+filePayload+"} \n\n" + 
+                    "--boundaryFILE \n" +
+                    "Content-Type: text/plain \n\n" + 
+                    $scope.payloadPageData+
+                    "\n\n --boundaryFILE--";
+            console.log(multipartPayload);
+                $http.post(replayPostUrl, multipartPayload, {timeout:TLS_SERVER_TIMEOUT})
                     .success(function(d,status, header, config){
                         var auth_token_valid_until = header()['auth-token-valid-until'];
                         resetTimerService.set(auth_token_valid_until);
@@ -573,10 +591,18 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
         $scope.runWebService = function(){
             document.getElementById("replayResponseWs").innerHTML = " ";
             if($scope.batchChecker === false){
-                var webServicePayload = "type=WS~, wsdl="+$scope.webServiceReplay.wsdl+"~, operation="+$scope.webServiceReplay.operation+
-                    "~,  soapaction="+$scope.webServiceReplay.soapAction+"~, binding="+$scope.webServiceReplay.binding+"~, payload="+
-                    $scope.payloadPageData.payload;
-                $http.post(replayPostUrl, webServicePayload, {timeout:TLS_SERVER_TIMEOUT})
+                var webServicePayload = '"type":"WS", "wsdl":"'+$scope.webServiceReplay.wsdl+'", "operation":"'+$scope.webServiceReplay.operation+'",'+
+                        '"soapaction":"'+$scope.webServiceReplay.soapAction+'", "binding":"'+$scope.webServiceReplay.binding+'"';
+                var multipartPayload = "Content-Type: multipart/mixed; boundary=boundaryWS \n"+
+                    "--boundaryWS \n" +
+                    "Content-Type: application/json; \n\n" +
+                    "{"+webServicePayload+"} \n\n" + 
+                    "--boundaryWS \n" +
+                    "Content-Type: text/plain \n\n" + 
+                    $scope.payloadPageData+
+                    "\n\n --boundaryWS--";
+            console.log(multipartPayload);
+                $http.post(replayPostUrl, multipartPayload, {timeout:TLS_SERVER_TIMEOUT})
                     .success(function(d,status, header, config){
                         var auth_token_valid_until = header()['auth-token-valid-until'];
                         resetTimerService.set(auth_token_valid_until);
@@ -613,11 +639,20 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
         $scope.runFTPService = function(){
             document.getElementById("replayResponseFTP").innerHTML = " ";
             if($scope.batchChecker === false){
-                var ftpPayload = "type=FTP~, host="+$scope.ftpServiceReplay.host+"~, username="+$scope.ftpServiceReplay.username+"~, password="+
-                    $scope.ftpServiceReplay.password+"~, location="+$scope.ftpServiceReplay.location+"~, fileType="+$scope.ftpServiceReplay.fileType+
-                    "~, header=[\"type\"=\""+$scope.ftpServiceReplay.headerType+"\",\"value\"=\""+
-                    $scope.ftpServiceReplay.headerValue+"\"]";
-                $http.post(replayPostUrl, ftpPayload, {timeout:TLS_SERVER_TIMEOUT})
+                var ftpPayload = '"type":"FTP", "host":"'+$scope.ftpServiceReplay.host+'", '+
+                        '"port":"'+$scope.ftpServiceReplay.port+'", "username":"'+$scope.ftpServiceReplay.username+'", '+
+                        '"password":"'+$scope.ftpServiceReplay.password+'", "location":"'+$scope.ftpServiceReplay.location+'", '+
+                        '"fileType":"'+$scope.ftpServiceReplay.fileType+'"';
+                var multipartPayload = "Content-Type: multipart/mixed; boundary=boundaryFTP \n"+
+                    "--boundaryFTP \n" +
+                    "Content-Type: application/json; \n\n" +
+                    "{"+ftpPayload+"} \n\n" + 
+                    "--boundaryFTP \n" +
+                    "Content-Type: text/plain \n\n" + 
+                    $scope.payloadPageData+
+                    "\n\n --boundaryFTP--";    
+            console.log(multipartPayload);
+                $http.post(replayPostUrl, multipartPayload, {timeout:TLS_SERVER_TIMEOUT})
                     .success(function(d,status, header, config){
                         var auth_token_valid_until = header()['auth-token-valid-until'];
                         resetTimerService.set(auth_token_valid_until);
@@ -632,9 +667,10 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
             else{
                 var batchVals = $scope.batchValues();
                 var auditIDs = $scope.pullAuditIDs(batchVals[2]);
-                var ftpPayloadBatch = '"type":"FTP", "host":"'+$scope.ftpServiceReplay.host+'", "username":"'+$scope.ftpServiceReplay.username+'",'+
-                    '"password":"'+$scope.ftpServiceReplay.password+'", "location":"'+$scope.ftpServiceReplay.location+'", "fileType":"'+$scope.ftpServiceReplay.fileType+'",' + 
-                    '"payload":"'+$scope.replayQueryHolder+'", "header":[{"type":\"'+$scope.ftpServiceReplay.headerType+'","value":"'+$scope.ftpServiceReplay.headerValue+'"}]';
+                var ftpPayloadBatch = '"type":"FTP", "host":"'+$scope.ftpServiceReplay.host+'", '+
+                        '"port":"'+$scope.ftpServiceReplay.port+'", "username":"'+$scope.ftpServiceReplay.username+'", '+
+                        '"password":"'+$scope.ftpServiceReplay.password+'","location":"'+$scope.ftpServiceReplay.location+'", '+
+                        '"fileType":"'+$scope.ftpServiceReplay.fileType+'"';
                 var batchPayload = '{  "replaySavedTimestamp":"'+batchVals[0]+'",  "replayedBy":"'+batchVals[1]+'", '+
                         '"batchProcessedTimestamp":"", "replayDestinationInfo": { '+ftpPayloadBatch+' },'+
                         '"auditID": ['+auditIDs+']}';
