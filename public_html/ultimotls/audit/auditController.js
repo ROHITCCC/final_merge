@@ -715,9 +715,9 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
             }
         };
         $scope.addHeaders = function(){
-            $("#headerType").clone(false).prop("id","headerType" + $scope.headerCounter).css("left", "16.5%").appendTo("#restHeaderDiv");
-            $("#headerValue").clone(false).prop("id","headerValue" + $scope.headerCounter).css("left", "16.5%").appendTo("#restHeaderDiv");
-            $("#deleteHeader").clone(false).prop("id","deleteHeader" + $scope.headerCounter).css("display","inline").appendTo("#restHeaderDiv");
+            $("#labelDiv").clone(false).prop("id","labelDiv" + $scope.headerCounter).css("opacity","0").appendTo("#restHeaderDiv");
+            $("#headerTypeDiv").clone(false).prop("id","headerType" + $scope.headerCounter).appendTo("#restHeaderDiv");
+            $("#headerValueDiv").clone(false).prop("id","headerValue" + $scope.headerCounter).addClass("col-sm-5").removeClass("col-sm-4").appendTo("#restHeaderDiv");
             
             $scope.headerCounter++;
         };

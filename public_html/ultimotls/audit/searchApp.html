@@ -711,15 +711,23 @@ and open the template in the editor.
                                             </div>
                                         </div>
                                         <div class="form-group">
-                                            <label for="header" class="control-label col-sm-2"><b>Header: </b></label>
-                                            <div id="restHeaderDiv" class="form-inline">
-
-                                                <input ng-model="restReplay.header.type" type="text" class="form-control col-sm-6" 
-                                                       id="headerType" placeholder="Header Type" style="width: 30%; ">
-                                                <input ng-model="restReplay.header.value" type="text" class="form-control col-sm-offset-1 col-sm-5" 
-                                                       id="headerValue" placeholder="Header Value" style="width: 30%">
+                                            <div id="restHeaderDiv" class="form-inline col-sm-12 row">
+                                                <div class="col-sm-2" id="labelDiv">
+                                                    <label for="header" class="control-label col-sm-2"><b>Header: </b></label>
+                                                </div>
+                                                <div class="col-sm-4" id="headerTypeDiv">
+                                                    <input ng-model="restReplay.header.type" type="text" class="form-control" 
+                                                           id="headerType" placeholder="Header Type" >
+                                                </div>
+                                                <div class="col-sm-4" id="headerValueDiv">
+                                                    <input ng-model="restReplay.header.value" type="text" class="form-control" 
+                                                           id="headerValue" placeholder="Header Value" >
+                                                </div>
+                                                <div class="col-sm-2">
+                                                <button class="btn addfields" ng-click="addHeaders()">+</button>
                                             </div>
-                                            <button class="btn addfields" ng-click="addHeaders()">+</button>
+                                            </div>
+                                            
                                             <!--<button id="deleteHeader" style="display:none" ng-click="deleteHeaders()">-</button>-->
 
                                         </div>
