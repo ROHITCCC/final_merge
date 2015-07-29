@@ -13,7 +13,7 @@ treemapDirectiveModule.directive('treemapZoom', ['$location', function($location
                 y = d3.scale.linear().range([0, h]),
                 x2 = d3.scale.linear().range([0, w]),
                 y2 = d3.scale.linear().range([0, h]),
-                color = d3.scale.category20(),
+                color = d3.scale.ordinal().range(["#1f77b4", "#aec7e8", "#ff7f0e", "#ffbb78", "#2ca02c", "#98df8a", "#d62728", "#ff9896", "#9467bd", "#c5b0d5", "#8c564b", "#c49c94", "#e377c2", "#f7b6d2", "#7f7f7f", "#c7c7c7", "#bcbd22", "#dbdb8d", "#17becf", "#9edae5", "#5254a3", "#8ca252", "#bd9e39", "#ad494a", "#a55194", "#6b6ecf", "#b5cf6b", "#e7ba52", "#d6616b", "#ce6dbd"]),
                 root,
                 node,
                 nodes,
