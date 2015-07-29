@@ -111,7 +111,7 @@ severityPieChartDirectiveModule.directive('severityPieChart',['queryFilter', fun
                     .style("top", (d3.event.pageY - 15)+"px")
                     .style("left", (d3.event.pageX + 15)+"px");
                  };
-		var _data = d3.layout.pie().sort(null).value(function(d) {return d.count;})(data);
+		var _data = d3.layout.pie().sort(function(a,b){return b.count - a.count}).value(function(d) {return d.count;})(data);
 		
 		var slices = d3.select("#"+id).append("g").attr("transform", "translate(" + x + "," + y + ")")
                     .attr("class", "slices");
