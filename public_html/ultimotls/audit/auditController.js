@@ -33,6 +33,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
         $scope.batchChecker = false;
         $scope.treemapSaver = treemapSaver;
         $scope.headerCounter = 0;
+        $scope.rowID = null;
         //Toggle Feature to close Custom or Name Value fields
         $(document).ready(function(){
             $("#collapseCustom").click(function(){
@@ -409,6 +410,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
         //Click event on Rows from Audit Data to be passed to the Slider Window
         $scope.rowClick = function(rowData){
             $scope.sliderWindowData = rowData;
+            $scope.rowID = rowData['_id']['$oid'];
             $scope.batchChecker = false;
             document.getElementById("replayResponseRest").innerHTML = " ";
             document.getElementById("replayResponseFile").innerHTML = " ";
@@ -455,29 +457,35 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                 var methodVal = document.getElementById("replayDropDownMethod").value;
                 var contentVal = document.getElementById("replayDropDownApplication").value;
                 var headerHolder = null;
+                var auditID = $scope.rowID;
+                var batchVals = $scope.batchValues();
+            
                 
                 if(methodVal === "other")methodVal = document.getElementById("methodValue").value;
                 if(contentVal === "other")contentVal = document.getElementById("contentType").value;
-                
+                var restPayload = null;
+            
                 if($scope.restReplay.header === undefined || $scope.restReplay.header === null){
                     headerType = "";
                     headerVal = "";
+                    restPayload = '"type":"REST", "endpoint":"'+$scope.restReplay.endpointUrl+'", "method":"'+
+                        methodVal+'", "content-type":"'+contentVal+'", "auditID":"'+auditID+'", "replayedBy":"'+batchVals[1]+'"';
                 }else{
                     headerType = $scope.restReplay.header.type;
                     headerVal = $scope.restReplay.header.value;
+                    headerHolder = '{"type":"'+headerType+'", "value":"'+headerVal+'"}';
+                    if($scope.headerCounter > 0){
+                        for(var z = 0; z < $scope.headerCounter; z++){
+                            var tempType = document.getElementById("headerType" + (z)).value;
+                            var tempVal = document.getElementById("headerValue" + (z)).value;
+                            if(tempType === "")tempType = "Authorization";
+                            headerHolder += ', {"type":"'+tempType+'", "value":"'+tempVal+'"}';
+                        }
+                    }
+                    restPayload = '"type":"REST", "endpoint":"'+$scope.restReplay.endpointUrl+'", "method":"'+
+                        methodVal+'", "content-type":"'+contentVal+'", "restHeaders":['+headerHolder+'], "auditID":"'+auditID+'", "replayedBy":"'+batchVals[1]+'"';
                 }
                 
-                headerHolder = '{"type":"'+headerType+'", "value":"'+headerVal+'"}';
-//                if($scope.headerCounter > 0){
-//                    for(var z = 0; z < $scope.headerCounter; z++){
-//                        var tempType = document.getElementById("headerType" + (z)).value;
-//                        var tempVal = document.getElementById("headerValue" + (z)).value;
-//                        if(tempType === "")tempType = "Authorization";
-//                        headerHolder += ', {"type":"'+tempType+'", "value":"'+tempVal+'"}';
-//                    }
-//                }
-                var restPayload = '"type":"REST", "endpoint":"'+$scope.restReplay.endpointUrl+'", "method":"'+
-                    methodVal+'", "content-type":"'+contentVal+'", "restHeaders":['+headerHolder+']';
                 
                 var multipartPayload = "Content-Type: multipart/mixed; boundary=boundaryREST\n"+
                         "--boundaryREST\n" +
@@ -510,22 +518,34 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                 
                 if(methodVal === "other")methodVal = document.getElementById("methodValue").value;
                 if(contentVal === "other")contentVal = document.getElementById("contentType").value;
+                var restPayload = null;
                 
-                if($scope.restReplay.header === undefined){
-                    headerType = "Authorization";
+                if($scope.restReplay.header === undefined || $scope.restReplay.header === null){
+                    headerType = "";
                     headerVal = "";
+                    restPayload = '"type":"REST", "endpoint":"'+$scope.restReplay.endpointUrl+'", "method":"'+
+                        methodVal+'", "content-type":"'+contentVal+'"';
                 }else{
                     headerType = $scope.restReplay.header.type;
                     headerVal = $scope.restReplay.header.value;
+                    headerHolder = '{"type":"'+headerType+'", "value":"'+headerVal+'"}';
+                    if($scope.headerCounter > 0){
+                        for(var z = 0; z < $scope.headerCounter; z++){
+                            var tempType = document.getElementById("headerType" + (z)).value;
+                            var tempVal = document.getElementById("headerValue" + (z)).value;
+                            if(tempType === "")tempType = "Authorization";
+                            headerHolder += ', {"type":"'+tempType+'", "value":"'+tempVal+'"}';
+                        }
+                    }
+                    restPayload = '"type":"REST", "endpoint":"'+$scope.restReplay.endpointUrl+'", "method":"'+
+                        methodVal+'", "content-type":"'+contentVal+'", "restHeaders":['+headerHolder+']';
                 }
                 
-                var restPayload = '"type": "REST", "endpoint": "'+$scope.restReplay.endpointUrl+'", '+
-                        '"method": "'+methodVal+'","contentType": "'+contentVal+'",'+
-                        '"headers":{ "'+headerType+'":"'+headerVal+'"}';
 
                 var batchPayload = '{  "replaySavedTimestamp":"'+batchVals[0]+'",  "replayedBy":"'+batchVals[1]+'", '+
                         '"batchProcessedTimestamp":"", "replayDestinationInfo": { '+restPayload+' },'+
                                     '"auditID": ['+auditIDs+']}';
+                            console.log(batchPayload);
                 $http.post(replayPostUrlBatch, batchPayload, {timeout:TLS_SERVER_TIMEOUT})
                         .success(function(d,status, header, config){
                         var auth_token_valid_until = header()['auth-token-valid-until'];
@@ -544,7 +564,9 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
         $scope.runFileService = function(){ //how do i set a file location
             document.getElementById("replayResponseFile").innerHTML = " ";
             if($scope.batchChecker === false){
-                var filePayload = '"type":"FILE", "fileLocation":"'+$scope.fileReplay.location+'" ';
+                var auditID = $scope.rowID;
+                var batchVals = $scope.batchValues();
+                var filePayload = '"type":"FILE", "fileLocation":"'+$scope.fileReplay.location+'", "auditID":"'+auditID+'", "replayedBy":"'+batchVals[1]+'"';
                 var multipartPayload = "Content-Type: multipart/mixed; boundary=boundaryFILE\n"+
                     "--boundaryFILE\n" +
                     "Content-Type: application/json;\n\n" +
@@ -591,8 +613,10 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
         $scope.runWebService = function(){
             document.getElementById("replayResponseWs").innerHTML = " ";
             if($scope.batchChecker === false){
+                var auditID = $scope.rowID;
+                var batchVals = $scope.batchValues();
                 var webServicePayload = '"type":"WS", "wsdl":"'+$scope.webServiceReplay.wsdl+'", "operation":"'+$scope.webServiceReplay.operation+'",'+
-                        '"soapaction":"'+$scope.webServiceReplay.soapAction+'", "binding":"'+$scope.webServiceReplay.binding+'"';
+                        '"soapaction":"'+$scope.webServiceReplay.soapAction+'", "binding":"'+$scope.webServiceReplay.binding+'", "auditID":"'+auditID+'", "replayedBy":"'+batchVals[1]+'"';
                 var multipartPayload = "Content-Type: multipart/mixed; boundary=boundaryWS\n"+
                     "--boundaryWS\n" +
                     "Content-Type: application/json;\n\n" +
@@ -619,7 +643,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                 var webServicePayloadBatch = '"type":"WS", "wsdl":"'+$scope.webServiceReplay.wsdl+'", "operation":"'+$scope.webServiceReplay.operation+'",' + 
                     '"soapaction":"'+$scope.webServiceReplay.soapAction+'", "binding":"'+$scope.webServiceReplay.binding+'"';
                 
-                var batchPayload = '{  "replaySavedTimestamp":"'+batchVals[0]+'",  "replayedBy":"'+batchVals[1]+'", '+
+                var batchPayload = '{  "replaySavedTimestamp":"'+batchVals[0]+'", "replayedBy":"'+batchVals[1]+'", '+
                         '"batchProcessedTimestamp":"", "replayDestinationInfo": { '+webServicePayloadBatch+' },'+
                                     '"auditID": ['+auditIDs+']}';
                 $http.post(replayPostUrlBatch, batchPayload, {timeout:TLS_SERVER_TIMEOUT})
@@ -639,10 +663,12 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
         $scope.runFTPService = function(){
             document.getElementById("replayResponseFTP").innerHTML = " ";
             if($scope.batchChecker === false){
+                var auditID = $scope.rowID;
+                var batchVals = $scope.batchValues();
                 var ftpPayload = '"type":"FTP", "host":"'+$scope.ftpServiceReplay.host+'", '+
                         '"port":"'+$scope.ftpServiceReplay.port+'", "username":"'+$scope.ftpServiceReplay.username+'", '+
                         '"password":"'+$scope.ftpServiceReplay.password+'", "location":"'+$scope.ftpServiceReplay.location+'", '+
-                        '"fileType":"'+$scope.ftpServiceReplay.fileType+'"';
+                        '"fileType":"'+$scope.ftpServiceReplay.fileType+'", "auditID":"'+auditID+'", "replayedBy":"'+batchVals[1]+'"';
                 var multipartPayload = "Content-Type: multipart/mixed; boundary=boundaryFTP\n"+
                     "--boundaryFTP\n" +
                     "Content-Type: application/json;\n\n" +
