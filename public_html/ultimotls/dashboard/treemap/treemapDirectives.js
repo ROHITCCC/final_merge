@@ -7,89 +7,81 @@
 var treemapDirectiveModule = angular.module('treemapDirectiveModule', ['treemapControllerModule']);
 
 treemapDirectiveModule.directive('treemapZoom', ['$location', function($location){
-         var w = document.getElementById('treemapDiv').offsetWidth, w2=w*.8,
-                h = window.innerHeight*.83,
-                x = d3.scale.linear().range([0, w]),
-                y = d3.scale.linear().range([0, h]),
-                x2 = d3.scale.linear().range([0, w]),
-                y2 = d3.scale.linear().range([0, h]),
-                color = d3.scale.ordinal().range(["#1f77b4", "#aec7e8", "#ff7f0e", "#ffbb78", "#2ca02c",
-                    "#98df8a", "#d62728", "#ff9896", "#9467bd", "#c5b0d5", 
-                    "#8c564b", "#c49c94", "#e377c2", "#f7b6d2", "#7f7f7f",
-                    "#c7c7c7", "#bcbd22", "#dbdb8d", "#17becf", "#9edae5",
-                    "#5254a3", "#8ca252", "#bd9e39", "#ad494a", "#a55194", 
-                    "#6b6ecf", "#b5cf6b", "#e7ba52", "#d6616b", "#ce6dbd"]),
-                root,
-                node,
-                nodes,
-                brush,
-                brush1,
-                remakeFlag = true,
-                zoomFlag = false,
-                zoomFlag2 = false,
-                tempName = "",
-                transformArr = [{}],
-                svgDivider = 0,
-                parCellSpacer=0,
-                parCellCounter=1,
-                brushStorage = [],
-                headerFlag = false,
-                cursorFlag = false;
-                x2.domain([0, w]);
-                y2.domain([0, h]);
-                
-        var svg = d3.select("#treemapZoom").append("div")       //creates svg for the treemap to be built into
-                .attr("class", "chart")
-                .attr("id", "treemapChart")
-                .style("width", w + "px").style("height", h + "px")
-                .style("right", 7 + "px")
-              .append("svg")
-                .attr("width", w).attr("height", h)
-                .attr("id", "treemapSVG");
+    var w = document.getElementById('treemapDiv').offsetWidth, w2=w*.8,
+        h = window.innerHeight*.83,
+        x = d3.scale.linear().range([0, w]),
+        y = d3.scale.linear().range([0, h]),
+        x2 = d3.scale.linear().range([0, w]),
+        y2 = d3.scale.linear().range([0, h]),
+        color = d3.scale.ordinal().range(["#1f77b4", "#aec7e8", "#ff7f0e", "#ffbb78", "#2ca02c",
+            "#98df8a", "#d62728", "#ff9896", "#9467bd", "#c5b0d5", 
+            "#8c564b", "#c49c94", "#e377c2", "#f7b6d2", "#7f7f7f",
+            "#c7c7c7", "#bcbd22", "#dbdb8d", "#17becf", "#9edae5",
+            "#5254a3", "#8ca252", "#bd9e39", "#ad494a", "#a55194", 
+            "#6b6ecf", "#b5cf6b", "#e7ba52", "#d6616b", "#ce6dbd"]),
+        root,
+        node,
+        nodes,
+        brush,
+        brush1,
+        remakeFlag = true,
+        zoomFlag = false,
+        zoomFlag2 = false,
+        tempName = "",
+        transformArr = [{}],
+        svgDivider = 0,
+        parCellSpacer=0,
+        parCellCounter=1,
+        brushStorage = [],
+        headerFlag = false,
+        cursorFlag = false;
         
+    x2.domain([0, w]);
+    y2.domain([0, h]);
+
+    var svg = d3.select("#treemapZoom").append("div")       //creates svg for the treemap to be built into
+        .attr("class", "chart")
+        .attr("id", "treemapChart")
+        .style("width", w + "px").style("height", h + "px")
+        .style("right", 7 + "px")
+        .append("svg").attr("width", w).attr("height", h)
+        .attr("id", "treemapSVG");
         
     function updateSize(resizeTemp, element, scope){            //resets all necessary measurements on resizing
         if(resizeTemp === 0){
             svg.selectAll("rect").remove();
             svg.selectAll("text").remove();
-            svg.append("text")
-                .attr("x", w/3)
-                .attr("y", h/3)
+            svg.append("text").attr("x", w/3).attr("y", h/3)
                 .text("No Data Available");
             return;
         }
-            w = document.getElementById('treemapDiv').offsetWidth;
-            w2 = w*.8;
-            h=window.innerHeight*.83;
-            x = d3.scale.linear().range([0, w]);
-            y = d3.scale.linear().range([0, h]);
-            
-            d3.select("#treemapZoom").select("div")
-                .style("width", w + "px").style("height", h + "px")
-            .select("svg").attr("width", w).attr("height", h);
+        w = document.getElementById('treemapDiv').offsetWidth;
+        w2 = w*.8;
+        h=window.innerHeight*.83;
+        x = d3.scale.linear().range([0, w]);
+        y = d3.scale.linear().range([0, h]);
+
+        d3.select("#treemapZoom").select("div")
+            .style("width", w + "px").style("height", h + "px")
+        .select("svg").attr("width", w).attr("height", h);
         
         parCellCounter=1;
-            d3.select("#legend").select("div")
-                .style("width", w2 + "px").style("height","20px")
-            .select("svg")
-                .attr("width", w2).attr("height", "19px")
+        d3.select("#legend").select("div")
+            .style("width", w2 + "px").style("height","20px")
+            .select("svg").attr("width", w2).attr("height", "19px")
             .selectAll("g")
                 .attr("transform", function(d) {parCellSpacer = w2*(parCellCounter/scope.treemapSaver.dividerSaver)*.8;
                 parCellCounter++;return "translate(" + parCellSpacer + ",0)"; });
-        
-            
         $("#zoomOut").d3Click();
-            createZoomTree(resizeTemp, element, "true", scope, false);
-    }    
-        
+        createZoomTree(resizeTemp, element, "true", scope, false);
+    }          
     function createZoomTree(treeDataset, element, flag, scope, resizedWin){     //takes care of all treemap creation
         if(treeDataset === 0){                  //shows a message if no data is present
             svg.selectAll("rect").remove();
             svg.selectAll("text").remove();
             d3.select("#zoomOut").on("click", "").style("cursor","auto");
             d3.select("#zoomIn").on("click", "").style("cursor","auto");
-            svg.append("text")
-                .attr("x", w/3).attr("y", h/3).text("No Data Available");
+            svg.append("text").attr("x", w/3).attr("y", h/3).text("No Data Available");
             return;
         }
         if(scope.treemapSaver.brushCounter === undefined)scope.treemapSaver.brushCounter = 2;               //keeps track of how many brushes
@@ -101,8 +93,7 @@ treemapDirectiveModule.directive('treemapZoom', ['$location', function($location
         var treeChildren = [{}];
         if(jsonRaw !== undefined){
             if(treeDataset.constructor === Array){          //checks for type of data which may not need to be formatted
-                svg = d3.selectAll("#treemapZoom")          
-                    .selectAll("div").select("#treemapSVG");
+                svg = d3.selectAll("#treemapZoom").selectAll("div").select("#treemapSVG");
                 for(var a=0;a<jsonRaw.length;a++){          //Formats incoming data to treemap friendly format
                     for(var b = 0; b < jsonRaw[a].children.length; b++){
                         treeChildren[b] = ({size:jsonRaw[a].children[b].size, name:jsonRaw[a].children[b].name });
@@ -127,26 +118,19 @@ treemapDirectiveModule.directive('treemapZoom', ['$location', function($location
                 .attr("id", "treemapChart")
                 .style("width", w + "px").style("height", h + "px")
                 .style("right", 7 + "px")
-              .append("svg").attr("width", w).attr("height", h)
-                .attr("id", "treemapSVG");
+                .append("svg").attr("width", w).attr("height", h).attr("id", "treemapSVG");
             }
         if(document.getElementById("treemapLegend") === null){  //check for legend dropdown on recreation
             parSvg = d3.select("#legend").append("div")
             .attr("class", "chart").attr("id", "treemapLegend")
             .style("width", w2 + "px").style("height","20px")
-          .append("svg")
-            .attr("width", w2).attr("height", "19px")
-            .attr("id", "treemapLegendSVG");
+            .append("svg").attr("width", w2).attr("height", "19px").attr("id", "treemapLegendSVG");
         }
         brush1 = d3.svg.brush()                 //brush for custom zooming while custom zoomed
-         .x(x2)
-         .y(y2)
-         .on("brushend", brushed);
+         .x(x2).y(y2).on("brushend", brushed);
 
         brushStorage[scope.treemapSaver.brushCounter] = d3.svg.brush()  //initializes dynamically named brushes for initial zoom
-          .x(x)
-          .y(y)
-          .on("brushend", brushed);
+          .x(x).y(y).on("brushend", brushed);
 
         var treemap = d3.layout.treemap()       //sets parameters and sorting methods for treemap
             .size([w, h])
@@ -165,9 +149,9 @@ treemapDirectiveModule.directive('treemapZoom', ['$location', function($location
             scope.treemapSaver.customZoomed = undefined;
         }
         node = root = treeData;
-        svgDivider = 0 ;
+        svgDivider = 0;
         nodes = treemap.nodes(root)         //pulls out parent nodes
-              .filter(function(d) { return !d.children; });
+            .filter(function(d){return!d.children;});
         if(d3.selectAll("#newSvg")[0].length === 0){
             scope.treemapSaver.nodeSaver = nodes;
         }
@@ -187,13 +171,11 @@ treemapDirectiveModule.directive('treemapZoom', ['$location', function($location
                         return zoom((node === d.parent.children[change] ? root : d.parent.children[change]),"0","0");
                     }
                 };
-            });
-            
+            });           
             parDropDown.enter().append("option")
                 .attr("id",function(d){return d.name;})
                 .text(function(d){return d.name;})
-                .style("background", function(d) { return color(d.name); });
-            
+                .style("background", function(d) { return color(d.name); });            
             var ddlSelect = document.getElementById("legendSelect");
             var option = document.createElement("option");
             option.text = "Select...";
@@ -221,7 +203,7 @@ treemapDirectiveModule.directive('treemapZoom', ['$location', function($location
             cell.select("rect").transition().duration(500)
                 .attr("width", function(d) { return d.dx - 1; })
                 .attr("height", function(d) { return d.dy - 1; })
-                .style("fill", function(d) { return color(d.parent.name); });
+                .style("fill", function(d) { return color(d.parent.name);});
             cell.select("text")
                 .attr("x", function(d) { return d.dx / 2; })
                 .attr("y", function(d) { return d.dy / 2; })
@@ -259,14 +241,12 @@ treemapDirectiveModule.directive('treemapZoom', ['$location', function($location
                         d3.select("#zoomIn").on("click", "").style("cursor","auto");
                     }
                 }
-            
             }
             else{       //if the scope was preserved
                 remakeFlag = false;
                 zoomFlag=false;
                 zoomFlag2=false;
                 var newSvg = document.getElementById("treemapSVG");
-                //svg.append(scope.treemapSaver.data[0])
                 for(var i = 0; i < scope.treemapSaver.data.length; i++){        //appends old DOM elements into new DOM
                     newSvg.appendChild(scope.treemapSaver.data[i]);
                 }
@@ -288,8 +268,7 @@ treemapDirectiveModule.directive('treemapZoom', ['$location', function($location
                         else nameholder = d.name + " " + d.size;
                         var arr = nameholder.split(" ");
                         return arr[0];
-                    });
-                    
+                    });                    
                 $("#zoomOut").d3Click();
                 scope.treemapSaver.customZoomed = undefined;
                 d3.select("#zoomOut").style("display","block");
@@ -298,8 +277,7 @@ treemapDirectiveModule.directive('treemapZoom', ['$location', function($location
         else{           //shows message if no data is present
             svg.selectAll("rect").remove();
             svg.selectAll("text").remove();
-            svg.append("text").attr("x", w/3).attr("y", h/3)
-                .text("No Data Available");
+            svg.append("text").attr("x", w/3).attr("y", h/3).text("No Data Available");
         }
         d3.select("#zoomOut").on("click", function() { zoom(root, "flag", "flag"); }).style("cursor","auto");
         d3.select("#zoomIn").on("click", customZoomBtn).style("cursor","auto");
@@ -368,8 +346,7 @@ treemapDirectiveModule.directive('treemapZoom', ['$location', function($location
                     }else{
                         return 1;
                     }
-                });
-                            
+                });                   
             d3.selectAll("g.cell")          //replaces click event to zoom in on individual cells once within a parent node
                 .on("click", function(d) { return zoom((node === d.parent ? root : d.parent),(d3.select(this).attr("id")),(d3.select(this).attr("parent"))); });
             scope.treemapSaver.envSave = scope.env;
@@ -418,22 +395,21 @@ treemapDirectiveModule.directive('treemapZoom', ['$location', function($location
                         };
                     }
                 });
-
             d3.selectAll("g.cell")      //return click event to original
                 .on("click", function(d) { return zoom((node === d.parent ? root : d.parent),(d3.select(this).attr("id")),(d3.select(this).attr("parent"))); });
             remakeFlag = true;
             if(headerFlag){
                 $("#"+tempName).d3Click();
-                   $("#zoomOut").d3Click();
-                   headerFlag=false;
-               }
+                $("#zoomOut").d3Click();
+                headerFlag=false;
+            }
             if(resized === true){
                 if(!zoomFlag){//&&!zoomFlag2){      //if a single cell is zoomed in on, clicks the cell once after zooming out
                     $("#"+tempName).d3Click();  //to return to the parent node
                 }
             }
             if(zoomFlag2)zoomFlag2 = false;
-               zoomFlag = false;
+            zoomFlag = false;
         };
         function zoomOutBrushed(){          //sets all necessary values back to normal when leaving a custom zoom
             d3.selectAll(".brush").call(brushStorage[scope.treemapSaver.brushCounter].clear());
@@ -450,14 +426,15 @@ treemapDirectiveModule.directive('treemapZoom', ['$location', function($location
             scope.treemapSaver.dropdownClicked = false;
             if(d3.selectAll("#newSvg")[0].length === 0){            //gets area of box drawn
                extent = brushStorage[scope.treemapSaver.brushCounter].extent();
-            }else{
+            }
+            else{
                 extent = brush1.extent();
             }
             var area = "("+extent[0][0]+", "+extent[0][1]+") ("+extent[1][0]+", "+extent[1][1]+")";
             var selected = null;
             var newSVGFlag = false;
             if(d3.selectAll("#newSvg")[0].length === 0){            //checks for initial custom zoom
-             selected = d3.select("#treemapSVG").selectAll("g").data(scope.treemapSaver.nodeSaver)
+                selected = d3.select("#treemapSVG").selectAll("g").data(scope.treemapSaver.nodeSaver)
                 .select(function(d){
                     return (((((d.x+d.dx) > extent[0][0] && d.x  < extent[1][0]))) && 
                     ((d.y+d.dy) > extent[0][1] && d.y  < extent[1][1]))? this : null;
@@ -496,9 +473,7 @@ treemapDirectiveModule.directive('treemapZoom', ['$location', function($location
                 treeChildren[b] = ({size:selected[b].children[childTextGet].children[1].innerHTML, name:selected[b].id });
             }
             treeData.children[0] = ({children:treeChildren, name:selected[0].__data__.parent.name});   
-
             treeChildren = [{}];
-
             d3.selectAll(".brush").call(brushStorage[scope.treemapSaver.brushCounter].clear());     //cleans out brush data
             d3.selectAll("g.brush").remove();
 
@@ -507,7 +482,6 @@ treemapDirectiveModule.directive('treemapZoom', ['$location', function($location
                 .select("#treemapSVG")
                 .style("opacity","0")
                 .style("display","none");
-
 
             remakeFlag = true;
 
@@ -525,14 +499,12 @@ treemapDirectiveModule.directive('treemapZoom', ['$location', function($location
             if(scope.treemapSaver.zoomClicked !== undefined){
                 d3.selectAll(".brush").call(brushStorage[scope.treemapSaver.brushCounter].clear());
                 d3.selectAll("g.brush").remove();
-
                 scope.treemapSaver.zoomClicked = undefined;
                 d3.select("#zoomIn").style("cursor","pointer");
             }
             else{
                 d3.selectAll(".brush").call(brushStorage[scope.treemapSaver.brushCounter].clear());
                 d3.selectAll("g.brush").remove();
-
                 d3.select("#zoomIn").style("cursor","crosshair");
                 if(scope.treemapSaver.customZoomed === undefined){
                     svg.append("g")
@@ -558,7 +530,6 @@ treemapDirectiveModule.directive('treemapZoom', ['$location', function($location
             scope.auditQuery.query(interfaceQuery, scope);
             scope.$apply($location.path("/audits"));
             return;
-
         };
     }
     function mouseOverCell(d) {
@@ -573,10 +544,9 @@ treemapDirectiveModule.directive('treemapZoom', ['$location', function($location
             function() 
             {var evt = document.createEvent("MouseEvents");
             evt.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
-
             e.dispatchEvent(evt);}, 1);
         });
-      };
+    };
     function link(scope, element){
         scope.$watch('treemapPromise', function(){
             scope.treemapPromise.then(function(getCall){ //handles the promise

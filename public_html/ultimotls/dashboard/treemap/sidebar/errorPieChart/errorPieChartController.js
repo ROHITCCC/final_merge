@@ -8,7 +8,6 @@ errorPieChartControllerModule.controller('errorPieChartController', ['$scope', '
     $scope.fromDate = time.fromDate;
     //service to get current Environment
     $scope.env = queryEnv.getEnv();
-    
     $scope.treemapSaver = treemapSaver;
     var dataQuery = "[{\"$match\":{\"$and\":[{\"timestamp\":{\"$gte\":{\"$date\":\""+$scope.fromDate+"\"},\"$lt\":{\"$date\":\""+
             $scope.toDate+"\"}}},{\"$and\":[{\"errorType\":{\"$ne\":null}}, {\"errorType\":{\"$exists\":true,\"$ne\":\"\"}},{\"envid\":\""+

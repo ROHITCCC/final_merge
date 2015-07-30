@@ -13,20 +13,20 @@ severityPieChartDirectiveModule.directive('severityPieChart',['queryFilter', fun
         }
         pieChart(data,"updateChart");
         return;
-    }
+    };
     function cleanUp(){
         d3.select("#errorTypePieChartDiv").select("#reset").remove();
         d3.select("#severityPieChartDiv").select("#reset").remove();
         d3.select("#transactionTypeBarChartDiv").select("#reset").remove();
-    }
+    };
     function onReset(){
         cleanUp();
         d3.select("#severity").selectAll("path").style("opacity", 1);
         d3.select("#error").selectAll("path").style("opacity", 1);
-        d3.select("#transactionType").selectAll("rect").style("opacity",1);;
+        d3.select("#transactionType").selectAll("rect").style("opacity",1);
         queryFilter.appendQuery("","");
         queryFilter.broadcast();
-    }
+    };
     function onSelection(d,i){
         var width = document.getElementById('severityPieChartDiv').offsetWidth;
         cleanUp();
@@ -38,12 +38,11 @@ severityPieChartDirectiveModule.directive('severityPieChart',['queryFilter', fun
         d3.select("#severityTopSlice"+i).style("opacity",1);
         d3.select("#severityOuterSlice"+i).style("opacity",1);
         
-        var svg = d3.select("#severityPieChart").select("svg")
+        d3.select("#severityPieChart").select("svg")
             .append("g").attr("transform", "translate("+width*.7+",15)")
-            .attr("id","reset")
-            .on("click", function(d){onReset();});
-        svg.append("text").text("Reset");
-    }
+            .attr("id","reset").on("click", function(d){onReset();})
+            .append("text").text("Reset");
+    };
     function pieChart(data,status){
         var Donut3D = {};
         var color = d3.scale.category10();
@@ -59,7 +58,6 @@ severityPieChartDirectiveModule.directive('severityPieChart',['queryFilter', fun
                 sy = ry*Math.sin(d.startAngle),
                 ex = rx*Math.cos(d.endAngle),
                 ey = ry*Math.sin(d.endAngle);
-
             var ret =[];
             ret.push("M",sx,sy,"A",rx,ry,"0",(d.endAngle-d.startAngle > Math.PI? 1: 0),"1",ex,ey,"L",ir*ex,ir*ey);
             ret.push("A",ir*rx,ir*ry,"0",(d.endAngle-d.startAngle > Math.PI? 1: 0), "0",ir*sx,ir*sy,"z");
@@ -68,12 +66,10 @@ severityPieChartDirectiveModule.directive('severityPieChart',['queryFilter', fun
         function pieOuter(d, rx, ry, h ){
             var startAngle = (d.startAngle > Math.PI ? Math.PI : d.startAngle);
             var endAngle = (d.endAngle > Math.PI ? Math.PI : d.endAngle);
-
             var sx = rx*Math.cos(startAngle),
                 sy = ry*Math.sin(startAngle),
                 ex = rx*Math.cos(endAngle),
                 ey = ry*Math.sin(endAngle);
-
             var ret =[];
             ret.push("M",sx,h+sy,"A",rx,ry,"0 0 1",ex,h+ey,"L",ex,ey,"A",rx,ry,"0 0 0",sx,sy,"z");
             return ret.join(" ");
@@ -81,12 +77,10 @@ severityPieChartDirectiveModule.directive('severityPieChart',['queryFilter', fun
         function pieInner(d, rx, ry, h, ir ){
             var startAngle = (d.startAngle < Math.PI ? Math.PI : d.startAngle);
             var endAngle = (d.endAngle < Math.PI ? Math.PI : d.endAngle);
-
             var sx = ir*rx*Math.cos(startAngle),
                 sy = ir*ry*Math.sin(startAngle),
                 ex = ir*rx*Math.cos(endAngle),
                 ey = ir*ry*Math.sin(endAngle);
-
             var ret =[];
             ret.push("M",sx, sy,"A",ir*rx,ir*ry,"0 0 1",ex,ey, "L",ex,h+ey,"A",ir*rx, ir*ry,"0 0 0",sx,h+sy,"z");
             return ret.join(" ");
@@ -94,25 +88,25 @@ severityPieChartDirectiveModule.directive('severityPieChart',['queryFilter', fun
         function fittedText(d){
             var angle = Math.abs(d.endAngle - d.startAngle);
             return angle;
-        }
+        };
         Donut3D.draw=function(id, data, x /*center x*/, y/*center y*/, 
 			rx/*radius x*/, ry/*radius y*/, h/*height*/, ir/*inner radius*/){
-                 function mouseOverSlice(d) {
-                    d3.select(this).attr("stroke","black")
+                 function mouseOverSlice(d){
+                    d3.select(this).attr("stroke","black");
                     tooltip.html(d.data._id);
                     return tooltip.transition().duration(50).style("opacity", 0.9);
                  };
                  function mouseOutSlice(){
-                    d3.select(this).attr("stroke","")
+                    d3.select(this).attr("stroke","");
                     return tooltip.style("opacity", 0);
                  };
-                 function mouseMoveSlice () {
+                 function mouseMoveSlice(){
                     return tooltip
                     .style("top", (d3.event.pageY - 15)+"px")
                     .style("left", (d3.event.pageX + 15)+"px");
                  };
 		var _data = d3.layout.pie().sort(function(a,b){return b.count - a.count}).value(function(d) {return d.count;})(data);
-		var not3DPieChart = d3.select("html").on("mouseover",mouseOutSlice);
+		d3.select("html").on("mouseover",mouseOutSlice);//Helps remove the tooltip
 		var slices = d3.select("#"+id).append("g").attr("transform", "translate(" + x + "," + y + ")")
                     .attr("class", "slices");
 		var tooltip = d3.select("#severityPieChart").append("div").attr("id", "tooltip")
@@ -127,7 +121,6 @@ severityPieChartDirectiveModule.directive('severityPieChart',['queryFilter', fun
                     .on("mousemove", mouseMoveSlice)
                     .on("mouseout", mouseOutSlice)
                     .each(function(d){this._current=d;});
-		
 		slices.selectAll(".topSlice").data(_data).enter().append("path").attr("class", "topSlice")
                     .attr("id", function(d,i){return "severityTopSlice"+i})
                     .style("fill", function(d,i){return color(i);})
@@ -137,8 +130,7 @@ severityPieChartDirectiveModule.directive('severityPieChart',['queryFilter', fun
                     .on("mouseover", mouseOverSlice)
                     .on("mousemove", mouseMoveSlice)
                     .on("mouseout", mouseOutSlice)
-                    .each(function(d){this._current=d;});
-		
+                    .each(function(d){this._current=d;});		
 		slices.selectAll(".outerSlice").data(_data).enter().append("path").attr("class", "outerSlice")
                     .attr("id", function(d,i){return "severityOuterSlice"+i})
                     .style("fill", function(d,i){return color(i);})
@@ -149,7 +141,6 @@ severityPieChartDirectiveModule.directive('severityPieChart',['queryFilter', fun
                     .on("mousemove", mouseMoveSlice)
                     .on("mouseout", mouseOutSlice)
                     .each(function(d){this._current=d;});
-
 		slices.selectAll(".label").data(_data).enter().append("text").attr("class", "label")
                     .attr("x",function(d){ return .7*rx*Math.cos(0.5*(d.startAngle+d.endAngle));})
                     .attr("y",function(d){ return 0.6*ry*Math.sin(0.5*(d.startAngle+d.endAngle));})
@@ -162,48 +153,6 @@ severityPieChartDirectiveModule.directive('severityPieChart',['queryFilter', fun
                     .style("font-size", "11px")
                     .text(function(d){return fittedText(d)<.4?"":d.data._id})
                     .each(function(d){this._current=d;});
-
-	};
-        Donut3D.transition = function(id, data, rx, ry, h, ir){
-            function arcTweenInner(a){
-                var i = d3.interpolate(this._current, a);
-                this._current = i(0);
-                return function(t){return pieInner(i(t), rx+0.5, ry+0.5, h, ir);};
-            }
-            function arcTweenTop(a){
-              var i = d3.interpolate(this._current, a);
-              this._current = i(0);
-              return function(t){return pieTop(i(t), rx, ry, ir);};
-            }
-            function arcTweenOuter(a){
-              var i = d3.interpolate(this._current, a);
-              this._current = i(0);
-              return function(t){return pieOuter(i(t), rx-.5, ry-.5, h);};
-            }
-            function textTweenX(a){
-              var i = d3.interpolate(this._current, a);
-              this._current = i(0);
-              return function(t){return 0.6*rx*Math.cos(0.5*(i(t).startAngle+i(t).endAngle));};
-            }
-            function textTweenY(a) {
-              var i = d3.interpolate(this._current, a);
-              this._current = i(0);
-              return function(t){return 0.6*rx*Math.sin(0.5*(i(t).startAngle+i(t).endAngle));};
-            }
-
-            var _data = d3.layout.pie().sort(null).value(function(d){return d.count;})(data);
-
-            d3.select("#"+id).selectAll(".innerSlice").data(_data)
-                    .transition().duration(750).attrTween("d", arcTweenInner); 
-
-            d3.select("#"+id).selectAll(".topSlice").data(_data)
-                    .transition().duration(750).attrTween("d", arcTweenTop); 
-
-            d3.select("#"+id).selectAll(".outerSlice").data(_data)
-                    .transition().duration(750).attrTween("d", arcTweenOuter); 	
-
-            d3.select("#"+id).selectAll(".label").data(_data).transition().duration(750)
-                    .attrTween("x",textTweenX).attrTween("y",textTweenY).text(getPercent); 	
 	};
         this.Donut3D = Donut3D;
         if(status === "updateChart"){
@@ -221,8 +170,8 @@ severityPieChartDirectiveModule.directive('severityPieChart',['queryFilter', fun
             var svg = d3.select("#severityPieChart").append("svg")
                 .attr("width", width).attr("height", height)
                 .append("g").attr("transform", "translate(" + width*.13 + "," + height*.5 + ")");
-          svg.append("text").text("No Data Available");
-          return;
+            svg.append("text").text("No Data Available");
+            return;
         };
         if (status === "createChart"){
             d3.select("#severityPieChart").select("svg").remove();

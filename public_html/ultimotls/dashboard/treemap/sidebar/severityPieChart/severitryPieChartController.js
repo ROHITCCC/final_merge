@@ -1,8 +1,3 @@
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 var severityPieChartControllerModule = angular.module('severityPieChartControllerModule', ['ultimotls']);
 
 severityPieChartControllerModule.controller('severityPieChartController', ['$scope', 'mongoAggregateService', 'treemapSaver','queryEnv','timeService',
@@ -13,9 +8,7 @@ severityPieChartControllerModule.controller('severityPieChartController', ['$sco
     $scope.fromDate = time.fromDate;
     //service to get current Environment
     $scope.env = queryEnv.getEnv();
-    
     $scope.treemapSaver = treemapSaver;
-    
     //This will make our initial call when our page is first loaded
     var dataQuery = "[{\"$match\":{\"$and\":[{\"timestamp\":{\"$gte\":{\"$date\":\""+$scope.fromDate+"\"},\"$lt\":{\"$date\":\""+
         $scope.toDate+"\"}}},{\"$and\":[{\"severity\":{\"$ne\":null}}, {\"severity\":{\"$exists\":true,\"$ne\":\"\"}},{\"envid\":\""+
