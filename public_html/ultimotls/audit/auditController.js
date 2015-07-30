@@ -482,8 +482,6 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                         methodVal+'", "content-type":"'+contentVal+'", "restHeaders":['+headerHolder+'], "auditID":"'+auditID+'", "replayedBy":"'+batchVals[1]+'"';
                 }
                 
-               
-                
                 var multipartPayload = "Content-Type: multipart/mixed; boundary=boundaryREST\n"+
                         "--boundaryREST\n" +
                         "Content-Type: application/json;\n\n" +
@@ -492,7 +490,9 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                         "Content-Type: text/plain; charset: utf-8;\n\n" + 
                         $scope.payloadPageData+
                         "\n\n--boundaryREST--";
+                
                 console.log(multipartPayload);
+                
                 $http.post(replayPostUrl, multipartPayload, {timeout:TLS_SERVER_TIMEOUT})
                     .success(function(d,status, header, config){
                         var auth_token_valid_until = header()['auth-token-valid-until'];
@@ -565,7 +565,8 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
             if($scope.batchChecker === false){
                 var auditID = $scope.rowID;
                 var batchVals = $scope.batchValues();
-                var filePayload = '"type":"FILE", "fileLocation":"'+$scope.fileReplay.location+'", "auditID":"'+auditID+'", "replayedBy":"'+batchVals[1]+'"';
+                var filePayload = '"type":"FILE", "fileLocation":"'+$scope.fileReplay.location+'", "fileName":"", '+
+                        '"fileExtension":"", "auditID":"'+auditID+'", "replayedBy":"'+batchVals[1]+'"';
                 var multipartPayload = "Content-Type: multipart/mixed; boundary=boundaryFILE\n"+
                     "--boundaryFILE\n" +
                     "Content-Type: application/json;\n\n" +
