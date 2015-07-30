@@ -75,7 +75,7 @@ ultimotls.controller('loginControllerModule', ['$scope', '$http', '$q', '$base64
             $scope.treemapSaver.nameSaver = $scope.cred.username;
 
             $http.defaults.headers.common["Authorization"] = 'Basic ' + credentials;
-            $http.defaults.headers.common["No-Auth-Challenge"];
+            $http.defaults.headers.common["No-Auth-Challenge"] = "true";
             if(!$scope.cred.envid){
                 $scope.cred.envid = "PROD";
             };
@@ -183,7 +183,7 @@ ultimotls.controller("indexControllerModule", ['$scope','$http','$location','loc
 }]);
 ultimotls.run(['$rootScope', '$location', 'treemapSaver', 'localStorageService', '$http', 
     function ($rootScope, $location, treemapSaver, localStorageService, $http) {
-        $http.defaults.headers.common["No-Auth-Challenge"];
+        $http.defaults.headers.common["No-Auth-Challenge"] = "true";
         $rootScope.$on('$stateChangeStart', function (event) {
             var _credentials = localStorageService.cookie.get('creds');
             treemapSaver.showNav = localStorageService.cookie.get('showNav');
