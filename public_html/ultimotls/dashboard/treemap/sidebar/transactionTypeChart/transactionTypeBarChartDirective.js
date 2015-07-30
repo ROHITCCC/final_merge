@@ -5,7 +5,7 @@ transactionTypeBarChartDirectiveModule.directive('transactionTypeBarChart',['que
         var width = document.getElementById('transactionTypeBarChartDiv').offsetWidth*.9, height = (window.innerHeight*.30);
         if (data === 0){
             d3.select("#transactionTypeBarChart").select("svg").remove();
-            var svg = d3.select("#transactionTypeBarChart").append("svg")
+            d3.select("#transactionTypeBarChart").append("svg")
                 .attr("id", "transactionTypeDiv")
                 .attr("width", width).attr("height", height).append("g")
                 .attr("transform", "translate(" + width*.065 + "," + height*.5 + ")")
@@ -34,9 +34,7 @@ transactionTypeBarChartDirectiveModule.directive('transactionTypeBarChart',['que
         d3.select("#error").selectAll("path").style("opacity", 0.3);
         d3.select("#severity").selectAll("path").style("opacity", 0.3);
         d3.select("#transactionType").selectAll("rect").style("opacity", 0.3);
-        
         d3.select("#transactionTypeBar"+i).style("opacity",1);
-        
         var svg = d3.select("#transactionTypeBarChart").select("svg").append("g")
             .attr("transform", "translate("+width*.7+",15)")
             .attr("id","reset")
@@ -60,14 +58,11 @@ transactionTypeBarChartDirectiveModule.directive('transactionTypeBarChart',['que
             var x = d3.scale.ordinal().rangeRoundBands([0, width*.95], .1);
             var y = d3.scale.linear().range([height*.82,0]);
             var xAxis = d3.svg.axis().scale(x).orient("bottom");
-            x.domain(//sort by descending order
-                data.sort(function(a,b){return b.count - a.count})
+            x.domain(data.sort(function(a,b){return b.count - a.count})
                 .map(function(d){return d._id;})
-                //.on("click",function(d){return console.log(d)})
             ).copy();
             y.domain([0,d3.max(data, function(d) { return d.count;})]);
-            var yAxis = d3.svg.axis()
-                .scale(y).orient("left").ticks(5,"");
+            var yAxis = d3.svg.axis().scale(y).orient("left").ticks(5,"");
             var svg = d3.select("#transactionType")
                 .attr("width", width).attr("height", height).append("g")
                 .attr("transform", "translate(" + width2*.1+ "," + height*.1 + ")");
@@ -99,7 +94,7 @@ transactionTypeBarChartDirectiveModule.directive('transactionTypeBarChart',['que
         };
         if(status === "no_data"){ //Will append a Message for no data and return out of the function
             d3.select("#transactionTypeBarChart").select("svg").remove();
-            var svg = d3.select("#transactionTypeBarChart").append("svg")
+            d3.select("#transactionTypeBarChart").append("svg")
                 .attr("id", "transactionTypeDiv").attr("width", width2).attr("height", height)
                 .append("g").attr("transform", "translate(" + width2*.065 + "," + height*.5 + ")")
                 .append("text").text("No Data Available");

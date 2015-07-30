@@ -21,7 +21,8 @@ var ultimotls = angular.module('ultimotls', ['auditControllerModule', 'auditDire
 ultimotls.controller('loginControllerModule', ['$scope', '$http', '$q', '$base64', '$location','localStorageService', 'treemapSaver','queryEnv','resetTimerService',
     function ($scope, $http, $q, $base64, $location, localStorageService, treemapSaver, queryEnv, resetTimerService ){ //loging Controller
         $scope.cred;
-        $scope.treemapSaver = treemapSaver;        
+        $scope.treemapSaver = treemapSaver;
+        $http.defaults.headers.common["No-Auth-Challenge"];
         if(treemapSaver.envError){
             $scope.loginError = treemapSaver.envError;
             treemapSaver.envError = "";
