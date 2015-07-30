@@ -441,7 +441,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
         };
         $scope.restReplay = {};
         var replayPostUrl = TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/_logic/ReplayService";
-        var replayPostUrlBatch = TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/_logic/ReplayService?batch=true";
+        var replayPostUrlBatch = TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/_logic/BatchReplayService";
         $scope.runRestService = function(){//only takes JSON files not 
             document.getElementById("replayResponseRest").innerHTML = " ";
             if($scope.batchChecker === false){
@@ -565,8 +565,12 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
             if($scope.batchChecker === false){
                 var auditID = $scope.rowID;
                 var batchVals = $scope.batchValues();
-                var filePayload = '"type":"FILE", "fileLocation":"'+$scope.fileReplay.location+'", "fileName":"", '+
-                        '"fileExtension":"", "auditID":"'+auditID+'", "replayedBy":"'+batchVals[1]+'"';
+                var fileName = document.getElementById("fileName").value;
+                var fileExt = document.getElementById("fileDropDownExt").value;
+                if(fileExt === "other")fileExt = document.getElementById("fileType").value;
+                
+                var filePayload = '"type":"FILE", "fileLocation":"'+$scope.fileReplay.location+'", "fileName":"'+fileName+'", '+
+                        '"fileType":"'+fileExt+'", "auditID":"'+auditID+'", "replayedBy":"'+batchVals[1]+'"';
                 var multipartPayload = "Content-Type: multipart/mixed; boundary=boundaryFILE\n"+
                     "--boundaryFILE\n" +
                     "Content-Type: application/json;\n\n" +
@@ -575,6 +579,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                     "Content-Type: text/plain; charset: utf-8;\n\n" + 
                     $scope.payloadPageData+
                     "\n\n--boundaryFILE--";
+                console.log(multipartPayload);
                 $http.post(replayPostUrl, multipartPayload, {timeout:TLS_SERVER_TIMEOUT})
                     .success(function(d,status, header, config){
                         var auth_token_valid_until = header()['auth-token-valid-until'];
@@ -591,11 +596,17 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
             else{
                 var batchVals = $scope.batchValues();
                 var auditIDs = $scope.pullAuditIDs(batchVals[2]);
-                var filePayloadBatch = '"type":"FILE", "file-location":"'+$scope.fileReplay.location+'"';
+                var fileName = document.getElementById("fileName").value;
+                var fileExt = document.getElementById("fileDropDownExt").value;
+                if(fileExt === "other")fileExt = document.getElementById("fileType").value;
+                
+                var filePayloadBatch = '"type":"FILE", "fileLocation":"'+$scope.fileReplay.location+'", "fileName":"'+fileName+'", '+
+                        '"fileType":"'+fileExt+'"';
                 
                 var batchPayload = '{  "replaySavedTimestamp":"'+batchVals[0]+'",  "replayedBy":"'+batchVals[1]+'", '+
                         '"batchProcessedTimestamp":"", "replayDestinationInfo": { '+filePayloadBatch+' },'+
                                     '"auditID": ['+auditIDs+']}';
+                console.log(batchPayload);
                 $http.post(replayPostUrlBatch, batchPayload, {timeout:TLS_SERVER_TIMEOUT})
                     .success(function(d,status, header, config){
                         var auth_token_valid_until = header()['auth-token-valid-until'];
@@ -760,6 +771,24 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
             }
             else{
                 methodValText.style.display = "none";
+            }
+            
+            if(contentVal.value === "other"){
+                contentValText.style.display = "inline";
+            }
+            else{
+                contentValText.style.display = "none";
+            }
+        };
+        $scope.checkSelectedFile = function(){
+            var extVal = document.getElementById("fileDropDownExt");
+            var extValText = document.getElementById("fileType");
+            
+            if(extVal.value === "other"){
+                extValText.style.display = "inline";
+            }
+            else{
+                extValText.style.display = "none";
             }
         };
         $scope.batchValues = function(){
