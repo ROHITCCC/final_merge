@@ -460,7 +460,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                 if(contentVal === "other")contentVal = document.getElementById("contentType").value;
                 
                 if($scope.restReplay.header === undefined || $scope.restReplay.header === null){
-                    headerType = "Authorization";
+                    headerType = "";
                     headerVal = "";
                 }else{
                     headerType = $scope.restReplay.header.type;
@@ -468,14 +468,14 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                 }
                 
                 headerHolder = '{"type":"'+headerType+'", "value":"'+headerVal+'"}';
-                if($scope.headerCounter > 0){
-                    for(var z = 0; z < $scope.headerCounter; z++){
-                        var tempType = document.getElementById("headerType" + (z)).value;
-                        var tempVal = document.getElementById("headerValue" + (z)).value;
-                        if(tempType === "")tempType = "Authorization";
-                        headerHolder += ', {"type":"'+tempType+'", "value":"'+tempVal+'"}';
-                    }
-                }
+//                if($scope.headerCounter > 0){
+//                    for(var z = 0; z < $scope.headerCounter; z++){
+//                        var tempType = document.getElementById("headerType" + (z)).value;
+//                        var tempVal = document.getElementById("headerValue" + (z)).value;
+//                        if(tempType === "")tempType = "Authorization";
+//                        headerHolder += ', {"type":"'+tempType+'", "value":"'+tempVal+'"}';
+//                    }
+//                }
                 var restPayload = '"type":"REST", "endpoint":"'+$scope.restReplay.endpointUrl+'", "method":"'+
                     methodVal+'", "content-type":"'+contentVal+'", "restHeaders":['+headerHolder+']';
                 
@@ -544,7 +544,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
         $scope.runFileService = function(){ //how do i set a file location
             document.getElementById("replayResponseFile").innerHTML = " ";
             if($scope.batchChecker === false){
-                var filePayload = '"type":"FILE", "file-location":"'+$scope.fileReplay.location+'" ';
+                var filePayload = '"type":"FILE", "fileLocation":"'+$scope.fileReplay.location+'" ';
                 var multipartPayload = "Content-Type: multipart/mixed; boundary=boundaryFILE\n"+
                     "--boundaryFILE\n" +
                     "Content-Type: application/json;\n\n" +
