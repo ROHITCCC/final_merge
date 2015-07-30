@@ -182,6 +182,7 @@ ultimotls.controller("indexControllerModule", ['$scope','$http','$location','loc
 }]);
 ultimotls.run(['$rootScope', '$location', 'treemapSaver', 'localStorageService', '$http', 
     function ($rootScope, $location, treemapSaver, localStorageService, $http) {
+        $http.defaults.headers.common["No-Auth-Challenge"];
         $rootScope.$on('$stateChangeStart', function (event) {
             var _credentials = localStorageService.cookie.get('creds');
             treemapSaver.showNav = localStorageService.cookie.get('showNav');
