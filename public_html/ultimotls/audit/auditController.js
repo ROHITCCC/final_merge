@@ -457,7 +457,10 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                 if(methodVal === "other")methodVal = document.getElementById("methodValue").value;
                 if(contentVal === "other")contentVal = document.getElementById("contentType").value;
                 var restPayload = null;
-            
+                var restPayload = '"type":"REST", "endpoint":"'+$scope.restReplay.endpointUrl+'", "method":"'+
+                    methodVal+'", "content-type":"'+contentVal+'", "restHeaders":['+headerHolder+']';
+                    headerHolder = '{"type":"'+headerType+'", "value":"'+headerVal+'"}';
+                    
                 if($scope.restReplay.header === undefined || $scope.restReplay.header === null){
                     headerType = "";
                     headerVal = "";
@@ -479,9 +482,8 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                         methodVal+'", "content-type":"'+contentVal+'", "restHeaders":['+headerHolder+'], "auditID":"'+auditID+'", "replayedBy":"'+batchVals[1]+'"';
                 }
                 
-                headerHolder = '{"type":"'+headerType+'", "value":"'+headerVal+'"}';
-                var restPayload = '"type":"REST", "endpoint":"'+$scope.restReplay.endpointUrl+'", "method":"'+
-                    methodVal+'", "content-type":"'+contentVal+'", "restHeaders":['+headerHolder+']';
+               
+                
                 var multipartPayload = "Content-Type: multipart/mixed; boundary=boundaryREST\n"+
                         "--boundaryREST\n" +
                         "Content-Type: application/json;\n\n" +
@@ -490,6 +492,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                         "Content-Type: text/plain; charset: utf-8;\n\n" + 
                         $scope.payloadPageData+
                         "\n\n--boundaryREST--";
+                console.log(multipartPayload);
                 $http.post(replayPostUrl, multipartPayload, {timeout:TLS_SERVER_TIMEOUT})
                     .success(function(d,status, header, config){
                         var auth_token_valid_until = header()['auth-token-valid-until'];
