@@ -472,7 +472,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                 if(methodVal === "other")methodVal = document.getElementById("methodValue").value;
                 if(contentVal === "other")contentVal = document.getElementById("contentType").value;
                 var restPayload = null;
-                var restPayload = '"type":"REST", "endpoint":"'+$scope.restReplay.endpointUrl+'", "method":"'+
+                restPayload = '"type":"REST", "endpoint":"'+$scope.restReplay.endpointUrl+'", "method":"'+
                     methodVal+'", "content-type":"'+contentVal+'", "restHeaders":['+headerHolder+']';
                     headerHolder = '{"type":"'+headerType+'", "value":"'+headerVal+'"}';
                     
@@ -507,19 +507,21 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                         "\n\n--boundaryREST--";
                 
                 console.log(multipartPayload);
+                if($scope.restReplay.endpointUrl !== undefined && methodVal !== "" && contentVal !== ""){
+                    $http.post(replayPostUrl, multipartPayload, {timeout:TLS_SERVER_TIMEOUT})
+                        .success(function(d,status, header, config){
+                            var auth_token_valid_until = header()['auth-token-valid-until'];
+                            resetTimerService.set(auth_token_valid_until);
+                            document.getElementById("replayResponseRest").innerHTML = "Rest Replay Success";
+                        })
+                        .error(function(d,status, header, config){
+                            var auth_token_valid_until = header()['auth-token-valid-until'];
+                            resetTimerService.set(auth_token_valid_until);
+                            document.getElementById("replayResponseRest").innerHTML = "Error: Could Not Connect";
+                            document.getElementById("replayResponseRest").innerHTML = "Error: " + d["http status code"] + ": " + d["message"];
+                        });
+                }
                 
-                $http.post(replayPostUrl, multipartPayload, {timeout:TLS_SERVER_TIMEOUT})
-                    .success(function(d,status, header, config){
-                        var auth_token_valid_until = header()['auth-token-valid-until'];
-                        resetTimerService.set(auth_token_valid_until);
-                        document.getElementById("replayResponseRest").innerHTML = "Rest Replay Success";
-                    })
-                    .error(function(d,status, header, config){
-                        var auth_token_valid_until = header()['auth-token-valid-until'];
-                        resetTimerService.set(auth_token_valid_until);
-                        document.getElementById("replayResponseRest").innerHTML = "Error: Could Not Connect";
-                        document.getElementById("replayResponseRest").innerHTML = "Error: " + d["http status code"] + ": " + d["message"];
-                    });
             }
             else{
                 var batchVals = $scope.batchValues();
@@ -555,23 +557,25 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                         methodVal+'", "content-type":"'+contentVal+'", "restHeaders":['+headerHolder+']';
                 }
                 
-
                 var batchPayload = '{  "replaySavedTimestamp":"'+batchVals[0]+'",  "replayedBy":"'+batchVals[1]+'", '+
                         '"batchProcessedTimestamp":"", "replayDestinationInfo": { '+restPayload+' },'+
                                     '"auditID": ['+auditIDs+']}';
                             console.log(batchPayload);
-                $http.post(replayPostUrlBatch, batchPayload, {timeout:TLS_SERVER_TIMEOUT})
-                    .success(function(d,status, header, config){
-                        var auth_token_valid_until = header()['auth-token-valid-until'];
-                        resetTimerService.set(auth_token_valid_until);
-                        document.getElementById("replayResponseRest").innerHTML = "Success: " + d;
-                    })
-                    .error(function(d,status, header, config){
-                        var auth_token_valid_until = header()['auth-token-valid-until'];
-                        resetTimerService.set(auth_token_valid_until);
-                        document.getElementById("replayResponseRest").innerHTML = "Error: Could Not Connect";
-                        document.getElementById("replayResponseRest").innerHTML = "Error: " + d["http status code"] + ": " + d["message"];
-                    });
+                if($scope.restReplay.endpointUrl !== undefined && methodVal !== "" && contentVal !== ""){
+                    $http.post(replayPostUrlBatch, batchPayload, {timeout:TLS_SERVER_TIMEOUT})
+                        .success(function(d,status, header, config){
+                            var auth_token_valid_until = header()['auth-token-valid-until'];
+                            resetTimerService.set(auth_token_valid_until);
+                            document.getElementById("replayResponseRest").innerHTML = "Success: " + d;
+                        })
+                        .error(function(d,status, header, config){
+                            var auth_token_valid_until = header()['auth-token-valid-until'];
+                            resetTimerService.set(auth_token_valid_until);
+                            document.getElementById("replayResponseRest").innerHTML = "Error: Could Not Connect";
+                            document.getElementById("replayResponseRest").innerHTML = "Error: " + d["http status code"] + ": " + d["message"];
+                        });
+                }
+                
             }    
         };
         $scope.fileReplay = {};
@@ -595,18 +599,21 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                     $scope.payloadPageData+
                     "\n\n--boundaryFILE--";
                 console.log(multipartPayload);
-                $http.post(replayPostUrl, multipartPayload, {timeout:TLS_SERVER_TIMEOUT})
-                    .success(function(d,status, header, config){
-                        var auth_token_valid_until = header()['auth-token-valid-until'];
-                        resetTimerService.set(auth_token_valid_until);
-                        document.getElementById("replayResponseFile").innerHTML = "File Replay Success";
-                    })
-                    .error(function(d,status, header, config){
-                        var auth_token_valid_until = header()['auth-token-valid-until'];
-                        resetTimerService.set(auth_token_valid_until);
-                        document.getElementById("replayResponseFile").innerHTML = "Error: Could Not Connect";
-                        document.getElementById("replayResponseFile").innerHTML = "Error: " + d["http status code"] + ": " + d["message"];
-                    });
+                if($scope.fileReplay.location !== undefined && fileName !== undefined && fileExt !== ""){
+                    $http.post(replayPostUrl, multipartPayload, {timeout:TLS_SERVER_TIMEOUT})
+                        .success(function(d,status, header, config){
+                            var auth_token_valid_until = header()['auth-token-valid-until'];
+                            resetTimerService.set(auth_token_valid_until);
+                            document.getElementById("replayResponseFile").innerHTML = "File Replay Success";
+                        })
+                        .error(function(d,status, header, config){
+                            var auth_token_valid_until = header()['auth-token-valid-until'];
+                            resetTimerService.set(auth_token_valid_until);
+                            document.getElementById("replayResponseFile").innerHTML = "Error: Could Not Connect";
+                            document.getElementById("replayResponseFile").innerHTML = "Error: " + d["http status code"] + ": " + d["message"];
+                        });
+                }
+                
             }
             else{
                 var batchVals = $scope.batchValues();
@@ -622,18 +629,20 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                         '"batchProcessedTimestamp":"", "replayDestinationInfo": { '+filePayloadBatch+' },'+
                                     '"auditID": ['+auditIDs+']}';
                 console.log(batchPayload);
-                $http.post(replayPostUrlBatch, batchPayload, {timeout:TLS_SERVER_TIMEOUT})
-                    .success(function(d,status, header, config){
-                        var auth_token_valid_until = header()['auth-token-valid-until'];
-                        resetTimerService.set(auth_token_valid_until);
-                        document.getElementById("replayResponseFile").innerHTML = "Success: " + d;
-                    })
-                    .error(function(d,status, header, config){
-                        var auth_token_valid_until = header()['auth-token-valid-until'];
-                        resetTimerService.set(auth_token_valid_until);
-                        document.getElementById("replayResponseFile").innerHTML = "Error: Could Not Connect";
-                        document.getElementById("replayResponseFile").innerHTML = "Error: " + d["http status code"] + ": " + d["message"];
-                    });
+                if($scope.fileReplay.location !== undefined && fileName !== undefined && fileExt !== ""){
+                    $http.post(replayPostUrlBatch, batchPayload, {timeout:TLS_SERVER_TIMEOUT})
+                        .success(function(d,status, header, config){
+                            var auth_token_valid_until = header()['auth-token-valid-until'];
+                            resetTimerService.set(auth_token_valid_until);
+                            document.getElementById("replayResponseFile").innerHTML = "Success: " + d;
+                        })
+                        .error(function(d,status, header, config){
+                            var auth_token_valid_until = header()['auth-token-valid-until'];
+                            resetTimerService.set(auth_token_valid_until);
+                            document.getElementById("replayResponseFile").innerHTML = "Error: Could Not Connect";
+                            document.getElementById("replayResponseFile").innerHTML = "Error: " + d["http status code"] + ": " + d["message"];
+                        });
+                }
             }
         };
         $scope.webServiceReplay = {};
@@ -652,18 +661,20 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                     "Content-Type: text/plain; charset: utf-8;\n\n" + 
                     $scope.payloadPageData+
                     "\n\n--boundaryWS--";
-                $http.post(replayPostUrl, multipartPayload, {timeout:TLS_SERVER_TIMEOUT})
-                    .success(function(d,status, header, config){
-                        var auth_token_valid_until = header()['auth-token-valid-until'];
-                        resetTimerService.set(auth_token_valid_until);
-                        document.getElementById("replayResponseWs").innerHTML = "Web Service Replay Success";
-                    })
-                    .error(function(d,status, header, config){
-                        var auth_token_valid_until = header()['auth-token-valid-until'];
-                        resetTimerService.set(auth_token_valid_until);
-                        document.getElementById("replayResponseWs").innerHTML = "Error: Could Not Connect";
-                        document.getElementById("replayResponseWs").innerHTML = "Error: " + d["http status code"] + ": " + d["message"];
-                    });
+                if($scope.webServiceReplay.wsdl !== undefined && $scope.webServiceReplay.operation !== undefined && $scope.webServiceReplay.binding !== undefined){
+                    $http.post(replayPostUrl, multipartPayload, {timeout:TLS_SERVER_TIMEOUT})
+                        .success(function(d,status, header, config){
+                            var auth_token_valid_until = header()['auth-token-valid-until'];
+                            resetTimerService.set(auth_token_valid_until);
+                            document.getElementById("replayResponseWs").innerHTML = "Web Service Replay Success";
+                        })
+                        .error(function(d,status, header, config){
+                            var auth_token_valid_until = header()['auth-token-valid-until'];
+                            resetTimerService.set(auth_token_valid_until);
+                            document.getElementById("replayResponseWs").innerHTML = "Error: Could Not Connect";
+                            document.getElementById("replayResponseWs").innerHTML = "Error: " + d["http status code"] + ": " + d["message"];
+                        });
+                }
             }
             else{
                 var batchVals = $scope.batchValues();
@@ -674,18 +685,20 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                 var batchPayload = '{  "replaySavedTimestamp":"'+batchVals[0]+'", "replayedBy":"'+batchVals[1]+'", '+
                         '"batchProcessedTimestamp":"", "replayDestinationInfo": { '+webServicePayloadBatch+' },'+
                                     '"auditID": ['+auditIDs+']}';
-                $http.post(replayPostUrlBatch, batchPayload, {timeout:TLS_SERVER_TIMEOUT})
-                    .success(function(d,status, header, config){
-                        var auth_token_valid_until = header()['auth-token-valid-until'];
-                        resetTimerService.set(auth_token_valid_until);
-                        document.getElementById("replayResponseWs").innerHTML = "Success: " + d;
-                    })
-                    .error(function(d,status, header, config){
-                        var auth_token_valid_until = header()['auth-token-valid-until'];
-                        resetTimerService.set(auth_token_valid_until);
-                        document.getElementById("replayResponseWs").innerHTML = "Error: Could Not Connect";
-                        document.getElementById("replayResponseWs").innerHTML = "Error: " + d["http status code"] + ": " + d["message"];
-                    });
+                if($scope.webServiceReplay.wsdl !== undefined && $scope.webServiceReplay.operation !== undefined && $scope.webServiceReplay.binding !== undefined){
+                    $http.post(replayPostUrlBatch, batchPayload, {timeout:TLS_SERVER_TIMEOUT})
+                        .success(function(d,status, header, config){
+                            var auth_token_valid_until = header()['auth-token-valid-until'];
+                            resetTimerService.set(auth_token_valid_until);
+                            document.getElementById("replayResponseWs").innerHTML = "Success: " + d;
+                        })
+                        .error(function(d,status, header, config){
+                            var auth_token_valid_until = header()['auth-token-valid-until'];
+                            resetTimerService.set(auth_token_valid_until);
+                            document.getElementById("replayResponseWs").innerHTML = "Error: Could Not Connect";
+                            document.getElementById("replayResponseWs").innerHTML = "Error: " + d["http status code"] + ": " + d["message"];
+                        });
+                }
             }
         };
         $scope.ftpServiceReplay = {};
@@ -706,17 +719,21 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                     "Content-Type: text/plain; charset: utf-8;\n\n" + 
                     $scope.payloadPageData+
                     "\n\n--boundaryFTP--";   
-                $http.post(replayPostUrl, multipartPayload, {timeout:TLS_SERVER_TIMEOUT})
-                    .success(function(d,status, header, config){
-                        var auth_token_valid_until = header()['auth-token-valid-until'];
-                        resetTimerService.set(auth_token_valid_until);
-                        document.getElementById("replayResponseFTP").innerHTML = "FTP Replay Success";
-                    }).error(function(d,status, header, config){
-                        var auth_token_valid_until = header()['auth-token-valid-until'];
-                        resetTimerService.set(auth_token_valid_until);
-                        document.getElementById("replayResponseFTP").innerHTML = "Error: Could Not Connect";
-                        document.getElementById("replayResponseFTP").innerHTML = "Error: " + d["http status code"] + ": " + d["message"];
-                    });
+                if($scope.ftpServiceReplay.host !== undefined && $scope.ftpServiceReplay.port !== undefined && 
+                        $scope.ftpServiceReplay.username !== undefined && $scope.ftpServiceReplay.password !== undefined &&
+                        $scope.ftpServiceReplay.location !== undefined && $scope.ftpServiceReplay.fileType !== undefined){
+                    $http.post(replayPostUrl, multipartPayload, {timeout:TLS_SERVER_TIMEOUT})
+                        .success(function(d,status, header, config){
+                            var auth_token_valid_until = header()['auth-token-valid-until'];
+                            resetTimerService.set(auth_token_valid_until);
+                            document.getElementById("replayResponseFTP").innerHTML = "FTP Replay Success";
+                        }).error(function(d,status, header, config){
+                            var auth_token_valid_until = header()['auth-token-valid-until'];
+                            resetTimerService.set(auth_token_valid_until);
+                            document.getElementById("replayResponseFTP").innerHTML = "Error: Could Not Connect";
+                            document.getElementById("replayResponseFTP").innerHTML = "Error: " + d["http status code"] + ": " + d["message"];
+                        });
+                }
             }
             else{
                 var batchVals = $scope.batchValues();
@@ -728,18 +745,22 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                 var batchPayload = '{  "replaySavedTimestamp":"'+batchVals[0]+'",  "replayedBy":"'+batchVals[1]+'", '+
                         '"batchProcessedTimestamp":"", "replayDestinationInfo": { '+ftpPayloadBatch+' },'+
                         '"auditID": ['+auditIDs+']}';
-                $http.post(replayPostUrlBatch, batchPayload, {timeout:TLS_SERVER_TIMEOUT})
-                    .success(function(d,status, header, config){
-                        var auth_token_valid_until = header()['auth-token-valid-until'];
-                        resetTimerService.set(auth_token_valid_until);
-                        document.getElementById("replayResponseFTP").innerHTML = "Success: " + d;
-                    })
-                    .error(function(d,status, header, config){
-                        var auth_token_valid_until = header()['auth-token-valid-until'];
-                        resetTimerService.set(auth_token_valid_until);
-                        document.getElementById("replayResponseFTP").innerHTML = "Error: Could Not Connect";
-                        document.getElementById("replayResponseFTP").innerHTML = "Error: " + d["http status code"] + ": " + d["message"];
-                    });
+                if($scope.ftpServiceReplay.host !== undefined && $scope.ftpServiceReplay.port !== undefined && 
+                        $scope.ftpServiceReplay.username !== undefined && $scope.ftpServiceReplay.password !== undefined &&
+                        $scope.ftpServiceReplay.location !== undefined && $scope.ftpServiceReplay.fileType !== undefined){
+                    $http.post(replayPostUrlBatch, batchPayload, {timeout:TLS_SERVER_TIMEOUT})
+                        .success(function(d,status, header, config){
+                            var auth_token_valid_until = header()['auth-token-valid-until'];
+                            resetTimerService.set(auth_token_valid_until);
+                            document.getElementById("replayResponseFTP").innerHTML = "Success: " + d;
+                        })
+                        .error(function(d,status, header, config){
+                            var auth_token_valid_until = header()['auth-token-valid-until'];
+                            resetTimerService.set(auth_token_valid_until);
+                            document.getElementById("replayResponseFTP").innerHTML = "Error: Could Not Connect";
+                            document.getElementById("replayResponseFTP").innerHTML = "Error: " + d["http status code"] + ": " + d["message"];
+                        });
+                }
             }
         };
         $scope.changeReplay = function(){
