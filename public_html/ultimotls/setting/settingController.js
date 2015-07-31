@@ -73,6 +73,7 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
         $scope.selectedNumberAggri = $scope.numbers[4];
         $scope.curPageAggri = 0;
         $scope.pageSizeAggri = 4;
+        $scope.immidatejob ={"requestType": "","jobName": "ImmidateNotificationRefreshJob","jobClass": "ImmidateNotificationRefreshJob","frequency": {"duration": "","unit": "","starttime": ""}};
 
 //////////////////////////////////////SETTINGS//////////////////////////////////////////
         $scope.settingPromise = function () {
@@ -101,7 +102,7 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
         });
         $scope.settingPromise().catch(function () {
             $scope.newsettingcreator = 1;
-            newsetting = {setting: {apisetup: {hostname: '', port: '', database: '', collections: {payload: '', audits: ''}}, notification: {immidate: {frequency: {duration: '1', unit: 'hrs'}, notification: [{envid: '', severity: '', email: '', application: {name: '', interfaces: ['']}}]}}, envsetup: [{name: '', description: '', label: ''}]}};
+            newsetting = {setting: {apisetup: {hostname: '', port: '', database: '', collections: {payload: '', audits: ''}}, notification: {immidate: {frequency: {duration: '1', unit: 'hrs'}, jobRefreshRate: {duration: '100', unit: 'hrs'}, notification: [{envid: '', severity: '', email: '', application: {name: '', interfaces: ['']}}]}}, envsetup: [{name: '', description: '', label: ''}]}};
             $scope.settings = newsetting;
             $scope.environments = $scope.settings.setting.envsetup;
             $scope.notifications = $scope.settings.setting.notification;
@@ -151,6 +152,22 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
             $scope.numberOfPagesImmi = function () {
                 $scope.pageSizeImmi = $scope.selectedNumber;
                 return Math.ceil($scope.notifications.immidate.notification.length / $scope.pageSizeImmi);
+            };
+            
+            $scope.inmidateStartjob = function (){
+                console.log($scope.notifications);
+                $scope.immidatejob.requestType = 'startJob';
+                $scope.immidatejob.frequency.duration = $scope.notifications.immidate.jobRefreshRate.duration;
+                $scope.immidatejob.frequency.unit = $scope.notifications.immidate.jobRefreshRate.unit;
+                console.log($scope.immidatejob);
+                $scope.scheduler($scope.immidatejob);
+            };
+            $scope.inmidateStopjob = function (){
+                temporal = $scope.immidatejob;
+                $scope.immidatejob.requestType = 'stopJob';
+                delete temporal.frequency;
+                console.log($scope.immidatejob);
+                $scope.scheduler(temporal);  
             };
             //Env dropdown
             $scope.envDropdown = angular.copy($scope.environments);
