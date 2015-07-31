@@ -50,6 +50,8 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
         };
         //Flag and variable for keyword used in Advance Search
         var keywordFlag = false;
+        //Flag for objectID 
+        var objectIDFlag = false;
         //check if initPromise from resolve has data.
         if (initPromise && initPromise.data) {
             var queryFromResolve = initPromise.config.url;
@@ -172,7 +174,12 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
             if(!advanceSearch){
                 return false;
             }
-            if(advanceSearch.keyword) {
+            else if(advanceSearch.objectID){
+                objectIDFlag = true;
+                keywordFlag = false;
+                checkObjFlag = true;
+            }
+            else if(advanceSearch.keyword) {
                 keywordFlag = true;
                 checkObjFlag = true;
             }
@@ -212,10 +219,15 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                 checkObjFlag = false;
                 keywordFlag = false;
             }
-            return checkObjFlag; keywordFlag;
+            return checkObjFlag; keywordFlag, objectIDFlag;
         };
         function appendFields(advanceSearch){
             var string = "";
+            if (advanceSearch.objectID){
+                var appendApp = "\"_id\":{\"$oid\":\""+advanceSearch.objectID+"\"},";
+                string = appendApp;
+                return string;
+            }
             if (advanceSearch.application) {
                 var appendApp = "\"application\":\""+advanceSearch.application.toLowerCase()+"\",";
                 string = appendApp;
@@ -304,6 +316,9 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
             };
             //GENERATE FINAL QUERY
             var finalAdvanceSearchQuery = "?filter={\"$and\":[{"+(envQuery+query+customQuery+nameValueQuery+dateQuery).slice(0,-1)+"}]}";
+            if(objectIDFlag){
+                finalAdvanceSearchQuery = "?filter={\"$and\":[{"+(envQuery+query).slice(0,-1)+"}]}";
+            }
             $scope.replayQueryHolder = finalAdvanceSearchQuery; // for replay services
             //PERFORM GET CALL
             if(doAdvanceSearch){

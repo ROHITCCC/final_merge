@@ -47,48 +47,53 @@ and open the template in the editor.
                                     <div class="col-sm-12 bordertab">  
                                         <div class="row">
                                             <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 form-inline text-right">
+                                                <label class="control-label">Object ID</label>
+                                                <input ng-model="advanceSearch.objectID" class="form-control input-sm" 
+                                                       type="text" placeholder="Object ID..."/>
+                                            </div>
+                                            <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 form-inline text-right">
                                                 <label class="control-label">Application</label>
-                                                <input ng-model="advanceSearch.application" class="form-control input-sm" 
+                                                <input ng-model="advanceSearch.application" ng-disabled="advanceSearch.objectID" class="form-control input-sm" 
                                                        type="text" placeholder="Application..."  />
                                             </div>
                                             <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 form-inline text-right">
                                                 <label class="control-label">Interface</label>
-                                                <input ng-model="advanceSearch.interface" class="form-control input-sm" 
+                                                <input ng-model="advanceSearch.interface" ng-disabled="advanceSearch.objectID" class="form-control input-sm" 
                                                        type="text" placeholder="Interface...">
                                             </div>
                                             <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 form-inline text-right">
                                                 <label class="control-label">Hostname</label>
-                                                <input ng-model="advanceSearch.hostname" class="form-control input-sm" 
+                                                <input ng-model="advanceSearch.hostname" ng-disabled="advanceSearch.objectID" class="form-control input-sm" 
                                                        type="text" placeholder="Hostname...">
                                             </div>
                                             <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 form-inline text-right">
                                                 <label class="control-label">Transaction Domain</label>
-                                                <input ng-model="advanceSearch.txDomain" class="form-control input-sm" 
+                                                <input ng-model="advanceSearch.txDomain" ng-disabled="advanceSearch.objectID" class="form-control input-sm" 
                                                        type="text" placeholder="Transaction Domain...">
                                             </div>
                                             <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 form-inline text-right">
                                                 <label class="control-label">Transaction Type</label>
-                                                <input ng-model="advanceSearch.txType" class="form-control input-sm" 
+                                                <input ng-model="advanceSearch.txType" ng-disabled="advanceSearch.objectID" class="form-control input-sm" 
                                                        type="text" placeholder="Transaction Type...">
                                             </div>
                                             <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 form-inline text-right">
                                                 <label class="control-label">Transaction ID</label>
-                                                <input ng-model="advanceSearch.txID" class="form-control input-sm" 
+                                                <input ng-model="advanceSearch.txID" ng-disabled="advanceSearch.objectID" class="form-control input-sm" 
                                                        type="text" placeholder="Transaction ID...">
                                             </div>
                                             <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 form-inline text-right">
                                                 <label class="control-label">Severity</label>
-                                                <input ng-model="advanceSearch.severity" class="form-control input-sm" 
+                                                <input ng-model="advanceSearch.severity" ng-disabled="advanceSearch.objectID" class="form-control input-sm" 
                                                        type="text" placeholder="Severity...">
                                             </div>
                                             <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 form-inline text-right">
                                                 <label class="control-label">Error Type</label>
-                                                <input ng-model="advanceSearch.errorType" class="form-control input-sm" 
+                                                <input ng-model="advanceSearch.errorType" ng-disabled="advanceSearch.objectID" class="form-control input-sm" 
                                                        type="text" placeholder="Error Type...">
                                             </div>
                                             <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 form-inline text-right">
                                                 <label class="control-label">Keyword</label>
-                                                <input ng-model="advanceSearch.keyword" class="form-control input-sm" 
+                                                <input ng-model="advanceSearch.keyword" ng-disabled="advanceSearch.objectID" class="form-control input-sm" 
                                                        type="text" placeholder="Keyword...">
                                             </div>
                                             <div class="col-md-12 col-sm-12"></div>
@@ -97,10 +102,10 @@ and open the template in the editor.
                                                 <div class="customField" >
                                                     <div class="container-fluid" data-ng-repeat="custom in customField"> 
                                                         <div>
-                                                            <input type="text" class="form-control input-sm" ng-model="custom.name" placeholder="Name...">
+                                                            <input type="text" class="form-control input-sm" ng-model="custom.name" ng-disabled="advanceSearch.objectID" placeholder="Name...">
                                                         </div>
                                                         <div>
-                                                            <input type="text" class="form-control input-sm" ng-model="custom.value" placeholder="Value...">
+                                                            <input type="text" class="form-control input-sm" ng-model="custom.value" ng-disabled="advanceSearch.objectID" placeholder="Value...">
                                                         </div>
                                                         <div>
                                                             <button class="btn addfields" ng-click="addNewCustom()">+</button>
@@ -114,10 +119,10 @@ and open the template in the editor.
                                                 <div class="customField" >
                                                     <div class="container-fluid" data-ng-repeat="nameValue in nameValueField"> 
                                                         <div>
-                                                            <input type="text" class="form-control input-sm" ng-model="nameValue.name" placeholder="Name...">
+                                                            <input type="text" class="form-control input-sm" ng-model="nameValue.name" ng-disabled="advanceSearch.objectID" placeholder="Name...">
                                                         </div>
                                                         <div>
-                                                            <input type="text" class="form-control input-sm" ng-model="nameValue.value" placeholder="Value...">
+                                                            <input type="text" class="form-control input-sm" ng-model="nameValue.value" ng-disabled="advanceSearch.objectID" placeholder="Value...">
                                                         </div>
                                                         <div>
                                                             <button class="btn addfields" ng-click="addNewNameValue()">+</button>
@@ -132,19 +137,20 @@ and open the template in the editor.
                                                 From
                                             </label>
                                             <div class="col-sm-3 col-lg-3" id="optionField">
-                                                <input  ng-model="calender.from" type="text" name="fromdate" class="form-control input-sm datetimepicker2" placeholder="mm/dd/yyyy">
+                                                <input  ng-model="calender.from" ng-disabled="advanceSearch.objectID" type="text" name="fromdate" class="form-control input-sm datetimepicker2" placeholder="mm/dd/yyyy">
                                             </div>
                                             <label class="control-label col-sm-1 col-lg-1 label-centered">
                                                 to 
                                             </label>
                                             <div class="col-sm-3 col-lg-3" id="optionField">
-                                                <input  ng-model="calender.to" type="text" name="todate" class="form-control input-sm datetimepicker2" placeholder="mm/dd/yyyy">
+                                                <input  ng-model="calender.to" ng-disabled="advanceSearch.objectID" type="text" name="todate" class="form-control input-sm datetimepicker2" placeholder="mm/dd/yyyy">
                                             </div>
                                             <div class="col-sm-4 col-lg-4 form-group" style="bottom: 2px;">
                                                 <button ng-click="doAdvanceSearch(calender.to, calender.from, 'audit')" type="submit" class="btn btn-default" style="min-width: 110px; min-height: 30px; font-size: 11px;">
                                                     Audit Search
                                                 </button>
-                                                <button ng-click="doAdvanceSearch(calender.to, calender.from, 'payload')" type="submit" class="btn btn-default" style="min-width: 110px; min-height: 30px; font-size: 11px;">
+                                                <button ng-click="doAdvanceSearch(calender.to, calender.from, 'payload')" type="submit" class="btn btn-default" style="min-width: 110px; min-height: 30px; font-size: 11px;"
+                                                        ng-disabled="!advanceSearch.keyword||advanceSearch.objectID">
                                                     Payload Search
                                                 </button>
                                             </div>  
