@@ -185,15 +185,15 @@
                                                 <tr data-toggle="collapse" class="immidateinfo" data-ng-repeat="notification in notifications.immidate.notification| pagination: curPageImmi * pageSizeImmi | limitTo: pageSizeImmi">
                                                     <td>
                                                         <select class="form-control inputable"   name="envid" ng-options='name.name as name.name for name in envDropdown' ng-model="notification.envid" required>
-                                                            <option value="" selected style='display:none;'>{{notification.envid}}</option>
+                                                            <option style='display:none;'>{{notification.envid}}</option>
                                                         </select>
                                                         <span class="caret" style="margin-left: -18px;margin-top: 3px; display: none;"></span>
                                                     </td>    
                                                     <td col-sm-1>
-                                                        <input type="text" class="form-control inputable" id="immi_severity"  name="severity" ng-model="notification.severity" value="{{notification.severity}}" placeholder="Severity" required>
+                                                        <input type="text" class="form-control inputable" id="immi_severity"  name="severity" ng-model="notification.severity" value="{{notification.severity}}" placeholder="Severity" required lowercased>
                                                     </td>
                                                     <td>
-                                                        <input type="text" class="form-control inputable" id="immi_application" name="name" ng-model="notification.application.name" value="{{notification.application.name}}" placeholder="Application" required>
+                                                        <input type="text" class="form-control inputable" id="immi_application" name="name" ng-model="notification.application.name" value="{{notification.application.name}}" placeholder="Application" required lowercased>
                                                     </td>
                                                     <td style="white-space: nowrap; overflow:hidden;" class="hideinterfacebtn interfaceimmi">
                                                         <div class="entry input-group" data-ng-repeat="interface in notification.application.interfaces track by $index">
@@ -281,19 +281,19 @@
                                         <tr data-toggle="collapse" id="{{$index}}" class="immidateinfo" data-ng-repeat="report in reports| pagination: curPageAggri * pageSizeAggri | limitTo: pageSizeAggri">                               
                                             <td class="col-md-1">
                                                 <select class="form-control inputable"   name="envid" ng-options='name.name as name.name for name in envDropdown' ng-model="report.report.envid" style="display: inline-block; width: 76%;">
-                                                    <option value="" selected style='display:none;'>{{report.report.envid}}</option>
+                                                    <option value="" selected >{{report.report.envid}}</option>
                                                 </select>
                                                 <span class="caret" style="margin-left: -18px;margin-top: 3px; display: none;"></span>
                                                 <!--<input type="text" class="form-control inputable" ng-model="report.report.environment" value="{{report.report.environment}}" placeholder="Environment" required>-->
                                             </td>
                                             <td class="col-md-1">
-                                                <input type="text" class="form-control inputable" ng-model="report.report.application" value="{{report.report.application}}" placeholder="App" required>
+                                                <input type="text" class="form-control inputable" ng-model="report.report.application" value="{{report.report.application}}" placeholder="App" required lowercased>
                                             </td>
                                             <td class="col-md-1">
-                                                <input type="text" class="form-control inputable" ng-model="report.report.interface1" value="{{report.report.interface1}}"  placeholder="Interface" required>
+                                                <input type="text" class="form-control inputable" ng-model="report.report.interface1" value="{{report.report.interface1}}"  placeholder="Interface">
                                             </td>
                                             <td class="col-md-2">
-                                                <input type="text" class="form-control inputable" ng-model="report.report.errorType" value="{{report.report.errorType}}" placeholder="ErrorType" required>
+                                                <input type="text" class="form-control inputable" ng-model="report.report.errorType" value="{{report.report.errorType}}" placeholder="ErrorType"lowercased>
                                             </td>
                                             <td class="col-md-2">
                                                 <input type="text" class="form-control inputable datetimepicker" ng-model="report.report.frequency.starttime" value="{{report.report.frequency.starttime}}" placeholder="Start Time">
@@ -417,7 +417,7 @@
                                                     <th>Key</th>
                                                     <th>Next Fire Time</th>
                                                     <th>Status</th>
-                                                    <th></th>
+                                                    <th class="pull-right"><button class="btn" ng-click="schedulerJob()">Refresh All</button></th>
                                                 </tr>
                                             </thead>
                                             <tdbody>
