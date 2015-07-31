@@ -698,7 +698,7 @@ and open the template in the editor.
                                                 </div>
                                                 <div class="col-sm-10">
                                                     <input ng-model="restReplay.endpointUrl" type="text" class="form-control col-sm-10" 
-                                                       id="endpoinrUrl" placeholder="Endpoint" style="width: 100%">
+                                                           id="endpoinrUrl" placeholder="Endpoint" style="width: 100%" required>
                                                 </div>
                                             </div>
                                         </div>
@@ -708,8 +708,8 @@ and open the template in the editor.
                                                     <label for="contentType" class="control-label col-sm-2"><b>Content-Type: </b></label>
                                                 </div>
                                                 <div class="col-sm-6">
-                                                    <select class="replayDropDown" ng-click="checkSelected()" id="replayDropDownApplication" style="width: 135px;">
-                                                        <option value="select" style="display: none">Select...</option>
+                                                    <select class="replayDropDown" ng-click="checkSelected()" id="replayDropDownApplication" style="width: 135px;" required>
+                                                        <option value="" style="display: none">Select...</option>
                                                         <option value="application/json">application/json</option>
                                                         <option value="application/xml">application/xml</option>
                                                         <option value="text/html">text/html</option>
@@ -751,8 +751,8 @@ and open the template in the editor.
                                                     <label for="header" class="control-label col-sm-2"><b>Method: </b></label>
                                                 </div>
                                                 <div class="col-sm-6">
-                                                    <select class="replayDropDown" ng-click="checkSelected()" id="replayDropDownMethod" style="width: 135px">
-                                                        <option value="select" style="display: none">Select...</option>
+                                                    <select class="replayDropDown" ng-click="checkSelected()" id="replayDropDownMethod" style="width: 135px" required>
+                                                        <option value="" style="display: none">Select...</option>
                                                         <option value="GET">GET</option>
                                                         <option value="POST">POST</option>
                                                         <option value="PUT">PUT</option>
@@ -792,7 +792,7 @@ and open the template in the editor.
                                                 </div>
                                                 <div class="col-sm-6">
                                                     <input ng-model="fileReplay.location" type="text" class="form-control col-sm-10 replayInputBox" 
-                                                       id="fileLocation" placeholder="File Location">
+                                                       id="fileLocation" placeholder="File Location" required>
                                                 </div>
                                             </div>
                                         </div>
@@ -803,7 +803,7 @@ and open the template in the editor.
                                                 </div>
                                                 <div class="col-sm-6">
                                                     <input ng-model="fileReplay.name" type="text" class="form-control col-sm-10 replayInputBox" 
-                                                       id="fileName" placeholder="File Name">
+                                                       id="fileName" placeholder="File Name" required>
                                                 </div>
                                             </div>
                                         </div>
@@ -813,8 +813,8 @@ and open the template in the editor.
                                                     <label for="fileType" class="control-label col-sm-2"><b>FileType: </b></label>
                                                 </div>
                                                 <div class="col-sm-6">
-                                                    <select class="replayDropDown" ng-click="checkSelectedFile()" id="fileDropDownExt" style="width: 135px">
-                                                        <option value="select" style="display: none">Select...</option>
+                                                    <select class="replayDropDown" ng-click="checkSelectedFile()" id="fileDropDownExt" style="width: 135px" required>
+                                                        <option value="" style="display: none">Select...</option>
                                                         <option value="txt">.txt</option>
                                                         <option value="xml">.xml</option>
                                                         <option value="rtf">.rtf</option>
@@ -841,14 +841,14 @@ and open the template in the editor.
                                             <div class="form-inline">
                                                 <label for="wsdl" class="control-label col-sm-2"><b>WSDL: </b></label>
                                                 <input ng-model="webServiceReplay.wsdl" type="text" class="form-control col-sm-10 replayInputBox" 
-                                                       id="wsdl" placeholder="Web Serive Definition Language">
+                                                       id="wsdl" placeholder="Web Serive Definition Language" required>
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <div class="form-inline">
                                                 <label for="operation" class="control-label col-sm-2"><b>Operation: </b></label>
                                                 <input ng-model="webServiceReplay.operation" type="text" class="form-control col-sm-10 replayInputBox" 
-                                                       id="operation" placeholder="Operation">
+                                                       id="operation" placeholder="Operation" required>
                                             </div>
                                         </div>
                                         <div class="form-group">
@@ -862,7 +862,7 @@ and open the template in the editor.
                                             <div class="form-inline">
                                                 <label for="binding" class="control-label col-sm-2"><b>Binding: </b></label>
                                                 <input ng-model="webServiceReplay.binding" type="text" class="form-control col-sm-10 replayInputBox" 
-                                                       id="binding" placeholder="Binding">
+                                                       id="binding" placeholder="Binding" required>
                                             </div>
                                         </div>
                                         <div class="form-group replayButtons"> 
@@ -879,42 +879,42 @@ and open the template in the editor.
                                             <div class="form-inline">
                                                 <label for="host" class="control-label col-sm-2"><b>Host: </b></label>
                                                 <input ng-model="ftpServiceReplay.host" type="text" class="form-control col-sm-10 replayInputBox" 
-                                                       id="wsdl" placeholder="Host">
+                                                       id="wsdl" placeholder="Host" required>
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <div class="form-inline">
                                                 <label for="port" class="control-label col-sm-2"><b>Port: </b></label>
                                                 <input ng-model="ftpServiceReplay.port" type="text" class="form-control col-sm-10" 
-                                                       id="port" placeholder="Port" style="width: 80%">
+                                                       id="port" placeholder="Port" style="width: 80%" required>
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <div class="form-inline">
                                                 <label for="username" class="control-label col-sm-2"><b>Username: </b></label>
                                                 <input ng-model="ftpServiceReplay.username" type="text" class="form-control col-sm-10 replayInputBox" 
-                                                       id="operation" placeholder="Username">
+                                                       id="operation" placeholder="Username" required>
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <div class="form-inline">
                                                 <label for="password" class="control-label col-sm-2"><b>Password: </b></label>
                                                 <input ng-model="ftpServiceReplay.password" type="password" class="form-control col-sm-10 replayInputBox" 
-                                                       id="soapAction" placeholder="Password">
+                                                       id="soapAction" placeholder="Password" required>
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <div class="form-inline">
                                                 <label for="location" class="control-label col-sm-2"><b>Location: </b></label>
                                                 <input ng-model="ftpServiceReplay.location" type="text" class="form-control col-sm-10 replayInputBox" 
-                                                       id="binding" placeholder="Location">
+                                                       id="binding" placeholder="Location" required>
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <div class="form-inline">
                                                 <label for="fileType" class="control-label col-sm-2"><b>File Type: </b></label>
                                                 <input ng-model="ftpServiceReplay.fileType" type="text" class="form-control col-sm-10 replayInputBox" 
-                                                       id="binding" placeholder="File Type">
+                                                       id="binding" placeholder="File Type" required>
                                             </div>
                                         </div>
                                         <div class="form-group replayButtons"> 
