@@ -181,6 +181,7 @@ settingModule.controller('SettingsController',['$scope','$http','localStorageSer
             $scope.pageSizeAggri = $scope.selectedNumberAggri;
             return Math.ceil($scope.reports.length / $scope.pageSizeAggri);
         };
+        
         $scope.validatereport = function (object, index) {
             if (object.envid === undefined || object.application === '' ||
                     object.application === undefined || object.application === '' ||
@@ -209,6 +210,7 @@ settingModule.controller('SettingsController',['$scope','$http','localStorageSer
                 $scope.validatereport($scope.reports[index].report, index);
             }
         };
+        
         $scope.delrowreport = function (index) {
             if ($scope.reports[index]._id !== undefined) {
                 $scope.temprep._id = {$oid: $scope.reports[index]._id.$oid};
@@ -219,8 +221,44 @@ settingModule.controller('SettingsController',['$scope','$http','localStorageSer
             }
         };
     });
+
+//////////////////////////////////////SCHEDULE INFO///////////////////////////////////// 
+    $scope.schedulerJob = function () {
+        var getjobs = { "requestType": "getAllJobs"}
+        var schedulerjob = $http.post(schedulerURL, getjobs).success(function (data, status, header, config) {
+        //var schedulerjob = $http.get(settingURL + "?object=jobs").success(function (data, status, header, config) {
+            var auth_token_valid_until = header()['auth-token-valid-until'];
+            resetTimerService.set(auth_token_valid_until);
+        });
+        return schedulerjob;
+    };
     
+    $scope.schedulerJob().then(function (data){
+        $scope.schedulers = data.data;
+        console.log($scope.schedulers);
+        
+    });
+    
+    $scope.schedulerJob().finally(function (){
+        $scope.starter ={};
+        
+            $scope.resumeJob = function (index){
+                temporalkey = $scope.schedulers[index].jobKey;
+                $scope.starter = {"requestType": "resumeJob","jobKey": $scope.schedulers[index].jobKey};
+                console.log($scope.starter);
+                $scope.scheduler($scope.starter);
+            };
+            
+            $scope.pauseJob = function (index){
+                temporalkey = $scope.schedulers[index].jobKey;
+                $scope.starter = {"requestType": "suspendJob","jobKey": $scope.schedulers[index].jobKey};
+                console.log($scope.starter);
+                $scope.scheduler($scope.starter);
+            };
+    });
+
 //////////////////////////////////////GLOBAL//////////////////////////////////////////// 
+
     $scope.batch = {requestType:'', jobName: "BatchReplayJob", jobClass: "BatchReplayJob", frequency: {starttime:'', duration: '', unit: ''}};
     $scope.schedulerObj ={requestType:'', propertiesFile:''};
     $scope.savedata = function (insert, index) {
@@ -239,9 +277,10 @@ settingModule.controller('SettingsController',['$scope','$http','localStorageSer
             $('#savefail').modal();
         });
     };
-
+    
     $scope.delinfo = function (insert, remove) {
         var conAjax = $http.delete(settingURL, {data: insert});
+        ;
         conAjax.success(function (response) {
             $scope.reports.splice(remove, 1);
             $('#deletesuccess').modal();
@@ -250,23 +289,24 @@ settingModule.controller('SettingsController',['$scope','$http','localStorageSer
             $('#deletefail').modal();
         });
     };
-
+    
     $scope.batchstart = function () {
         $scope.batch.requestType= "startJob";
         if ($scope.batch.frequency.starttime) {
-            $scope.batch.frequency.starttime = $scope.batch.frequency.starttime.replace(/ /g, "T");
+                    $scope.batch.frequency.starttime = $scope.batch.frequency.starttime.replace(/ /g, "T");
         }else{
           $scope.batch.frequency.starttime="";  
         }
         $scope.scheduler($scope.batch, 1);
     };
-
+    
     $scope.batchstop = function () {
         $scope.batch.requestType= "stopJob";
         delete $scope.batch.frequency;
         $scope.scheduler($scope.batch, 2);
     };
 
+        
     $scope.scheduler = function (object, opt) {
         var conAjax = $http.post(schedulerURL, object);
         conAjax.success(function (response, status, header, config) {
@@ -278,7 +318,8 @@ settingModule.controller('SettingsController',['$scope','$http','localStorageSer
                 $scope.batchScheduler.batchFrequency.$touched = false;
                 $scope.batchScheduler.batchFrequency.$invalid = false;
                 $scope.batchScheduler.batchUnit.$touched = false;
-                $scope.batchScheduler.batchUnit.$invalid = false;               
+                $scope.batchScheduler.batchUnit.$invalid = false;
+                
             }
         });
         conAjax.error(function (response) {

@@ -276,7 +276,6 @@
                                                 <th>Unit</th>
                                                 <th>Email Address</th>
                                                 <th>Template<th>
-                                                <th></th>
                                             </tr>
                                         </thead>
                                         <tr data-toggle="collapse" id="{{$index}}" class="immidateinfo" data-ng-repeat="report in reports| pagination: curPageAggri * pageSizeAggri | limitTo: pageSizeAggri">                               
@@ -353,54 +352,86 @@
                     <div class="panel-body" >
                         <div class="col-sm-12">
                             <div class="row">
-                                <div class="form-group bordertab col-sm-4">
-                                    <form name="Scheduler" class="form-inline">
-                                        <h4>Scheduler service</h4>
+                                <form name="Scheduler" class="form-inline">
+                                    <div class="form-group bordertab col-sm-4">
 
-                                        <div class="col-sm-3">
-                                            <label class="control-label">Properties File:</label>
+                                        <h4>Scheduler service</h4>
+                                        <div class="row">
+                                            <div class="col-sm-2">
+                                                <label class="control-label">Properties File:</label>
+                                            </div>
+                                            <div class="col-sm-2 text-left">
+                                                <input type="text" class="form-control" name="sched_prop" value="" ng-model="schedulerObj.propertiesFile" placeholder="Properties file" required>
+                                            </div>
+                                            <div class="col-sm-4 pull-right">
+                                                <button type="button" class="btn btn-primary" ng-click="startscheduler()">Start</button>
+                                                <button type="button" class="btn btn-primary" ng-click="stopscheduler()">Stop</button>
+                                            </div>
                                         </div>
-                                        <div class="col-sm-2 text-left">
-                                            <input type="text" class="form-control" name="sched_prop" value="" ng-model="schedulerObj.propertiesFile" placeholder="Properties file" required>
-                                        </div>
-                                        <div class="col-sm-4 pull-right">
-                                            <button type="button" class="btn btn-primary" ng-click="startscheduler()">Start</button>
-                                            <button type="button" class="btn btn-primary" ng-click="stopscheduler()">Stop</button>
-                                        </div>
-                                    </form>
-                                </div>
+
+                                    </div>
+                                </form>
                                 <form name="batchScheduler" class="form-inline" >
                                     <div class="form-group bordertab col-sm-8">
                                         <h4>Batch replay job start/stop</h4>
-                                        <div class="col-sm-1">
-                                            <label class="control-label">Start time:</label>
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <input type="text" class="form-control datetimepicker" name="batchStartime" value="{{batch.frequency.starttime}}" style="width: 100%;" ng-model="batch.frequency.starttime" placeholder="Start Time">
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <label class="control-label">Frequency:</label>
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <input type="text" class="form-control" name="batchFrequency" value="{{batch.frequency.duration}}" style="width: 100%;" ng-model="batch.frequency.duration" placeholder="Frequency" required>
-                                        </div>
-                                        <div class="col-sm-1">
-                                            <label class="control-label">Unit:</label>
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <select class="form-control"  name="batchUnit" ng-options='unit for unit in units' ng-model="batch.frequency.unit" required>
-                                                <option value="" disabled selected style='display:none;'>{{batch.frequency.unit}}</option>
-                                            </select>
-                                            <span class="caret" style="margin-left: -18px;margin-top: 3px;"></span>
-                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-1">
+                                                <label class="control-label">Start time:</label>
+                                            </div>
+                                            <div class="col-sm-2">
+                                                <input type="text" class="form-control datetimepicker" name="batchStartime" value="{{batch.frequency.starttime}}" style="width: 100%;" ng-model="batch.frequency.starttime" placeholder="Start Time">
+                                            </div>
+                                            <div class="col-sm-2">
+                                                <label class="control-label">Frequency:</label>
+                                            </div>
+                                            <div class="col-sm-2">
+                                                <input type="text" class="form-control" name="batchFrequency" value="{{batch.frequency.duration}}" style="width: 100%;" ng-model="batch.frequency.duration" placeholder="Frequency" required>
+                                            </div>
+                                            <div class="col-sm-1">
+                                                <label class="control-label">Unit:</label>
+                                            </div>
+                                            <div class="col-sm-2">
+                                                <select class="form-control"  name="batchUnit" ng-options='unit for unit in units' ng-model="batch.frequency.unit" required>
+                                                    <option value="" disabled selected style='display:none;'>{{batch.frequency.unit}}</option>
+                                                </select>
+                                                <span class="caret" style="margin-left: -18px;margin-top: 3px;"></span>
+                                            </div>
 
-                                        <div class="col-sm-2 pull-right">
-                                            <button type="button" class="btn btn-primary" ng-click="batchstart()" ng-disabled="batchScheduler.$invalid">Start</button>
-                                            <button type="button" class="btn btn-primary" ng-click="batchstop()">Stop</button>
+                                            <div class="col-sm-2 pull-right">
+                                                <button type="button" class="btn btn-primary" ng-click="batchstart()" ng-disabled="batchScheduler.$invalid">Start</button>
+                                                <button type="button" class="btn btn-primary" ng-click="batchstop()">Stop</button>
+                                            </div>
+                                            <div class="col-sm-12" ng-show="batchScheduler.batchUnit.$invalid && batchScheduler.batchUnit.$touched || batchScheduler.batchFrequency.$invalid && batchScheduler.batchFrequency.$touched">
+                                                <span class="error">Frequency and Unit is required in order to start the batch scheduler</span>
+                                            </div>
                                         </div>
-                                        <div class="col-sm-12" ng-show="batchScheduler.batchUnit.$invalid && batchScheduler.batchUnit.$touched || batchScheduler.batchFrequency.$invalid && batchScheduler.batchFrequency.$touched">
-                                            <span class="error">Frequency and Unit is required in order to start the batch scheduler</span>
-                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="row">
+                                <form name="Schedulerreport" role="form" class="form-inline">
+                                    <div id="tableContainer" class="container-fluid"> 
+                                        <table class="table table-striped table-bordered table-hover" id="table">
+                                            <thead id="tableHeader">
+                                                <tr>
+                                                    <th>Key</th>
+                                                    <th>Next Fire Time</th>
+                                                    <th>Status</th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                            <tdbody>
+                                                <tr data-toggle="collapse" id="{{$index}}" class="immidateinfo" data-ng-repeat="scheduler in schedulers">
+                                                    <td class="col-md-3">{{scheduler.jobKey}}</td>
+                                                    <td class="col-md-3">{{scheduler.nextFireTime | date : 'medium'}}</td>
+                                                    <td class="col-md-3">{{scheduler.status}}</td>
+                                                    <td>
+                                                        <button type="submit" ng-click="resumeJob($index)" class="btn">Start</button>
+                                                        <button type="submit" ng-click="pauseJob($index)" class="btn">Suspend</button>
+                                                    </td>
+                                                </tr>
+                                            </tdbody>
+                                        </table>
                                     </div>
                                 </form>
                             </div>
@@ -408,127 +439,128 @@
                     </div>
                 </div>
             </div>
-        </div> <!-- Panel group general -->  
-    </div> <!-- col general -->
-    <div class="modal fade" id="validaterror" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
-                    <h4 class="modal-title ng-binding"><b><span class="glyphicon glyphicon-warning-sign" aria-hidden="true"></span> Error</b></h4>
+        </div>
+    </div> <!-- Panel group general -->  
+</div> <!-- col general -->
+<div class="modal fade" id="validaterror" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title ng-binding"><b><span class="glyphicon glyphicon-warning-sign" aria-hidden="true"></span> Error</b></h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <p class="help-block">Environment, Application, Interface, Error Type, Duration, Unit and Email are required.</p>
+                    <p class="help-block">Please check the inputs and try again</p>
                 </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <p class="help-block">Environment, Application, Interface, Error Type, Duration, Unit and Email are required.</p>
-                        <p class="help-block">Please check the inputs and try again</p>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="" data-dismiss="modal"  role="button">Close</button>
-                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="" data-dismiss="modal"  role="button">Close</button>
             </div>
         </div>
     </div>
+</div>
 
-    <div class="modal fade" id="savefail" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
-                    <h4 class="modal-title ng-binding"><b><span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Error</b></h4>
+<div class="modal fade" id="savefail" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title ng-binding"><b><span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Error</b></h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <p class="help-block">Error while saving the information, please try again or contact your support team</p>
                 </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <p class="help-block">Error while saving the information, please try again or contact your support team</p>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="" data-dismiss="modal"  role="button">Close</button>
-                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="" data-dismiss="modal"  role="button">Close</button>
             </div>
         </div>
     </div>
+</div>
 
-    <div class="modal fade" id="savesuccess" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
-                    <h4 class="modal-title ng-binding"><b><span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Saved</b></h4>
+<div class="modal fade" id="savesuccess" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title ng-binding"><b><span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Saved</b></h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <p class="help-block">Information has been saved correctly</p>
                 </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <p class="help-block">Information has been saved correctly</p>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button ng-if="reloadPage" ng-click="reload()" type="button" class="" data-dismiss="modal"  role="button">Close</button>
-                    <button ng-if="!reloadPage" type="button" class="" data-dismiss="modal"  role="button">Close</button>
-                </div>
+            </div>
+            <div class="modal-footer">
+                <button ng-if="reloadPage" ng-click="reload()" type="button" class="" data-dismiss="modal"  role="button">Close</button>
+                <button ng-if="!reloadPage" type="button" class="" data-dismiss="modal"  role="button">Close</button>
             </div>
         </div>
     </div>
+</div>
 
-    <div class="modal fade" id="deletesuccess" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
-                    <h4 class="modal-title ng-binding"><b><span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Saved</b></h4>
+<div class="modal fade" id="deletesuccess" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title ng-binding"><b><span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Saved</b></h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <p class="help-block">Information has been deleted correctly</p>
                 </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <p class="help-block">Information has been deleted correctly</p>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="" data-dismiss="modal"  role="button">Close</button>
-                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="" data-dismiss="modal"  role="button">Close</button>
             </div>
         </div>
     </div>
+</div>
 
-    <div class="modal fade" id="deletefail" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
-                    <h4 class="modal-title ng-binding"><b><span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Error</b></h4>
+<div class="modal fade" id="deletefail" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title ng-binding"><b><span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Error</b></h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <p class="help-block">Error while deleting the information, please try again or contact your support team</p>
                 </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <p class="help-block">Error while deleting the information, please try again or contact your support team</p>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="" data-dismiss="modal"  role="button">Close</button>
-                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="" data-dismiss="modal"  role="button">Close</button>
             </div>
         </div>
     </div>
-    
-    <div class="modal fade" id="schedulermodal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
-                    <h4 class="modal-title ng-binding" ng-show="schedulerstatus===0"><b><span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Error</b></h4>
-                    <h4 class="modal-title ng-binding" ng-show="schedulerstatus===1 || schedulerstatus===2 || schedulerstatus===3 || schedulerstatus===4"><b><span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Success</b></h4>
+</div>
+
+<div class="modal fade" id="schedulermodal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title ng-binding" ng-show="schedulerstatus === 0"><b><span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Error</b></h4>
+                <h4 class="modal-title ng-binding" ng-show="schedulerstatus === 1 || schedulerstatus === 2 || schedulerstatus === 3 || schedulerstatus === 4"><b><span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Success</b></h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <p class="help-block" ng-show="schedulerstatus === 0"> Error while scheduling the service. <b>{{errormsg}}</b></p>
+                    <p class="help-block" ng-show="schedulerstatus === 1"> Batch Service has been started</p>
+                    <p class="help-block" ng-show="schedulerstatus === 2"> Batch Service has been stopped</p>
+                    <p class="help-block" ng-show="schedulerstatus === 3"> Scheduler Service has been started</p>
+                    <p class="help-block" ng-show="schedulerstatus === 4"> Scheduler Service has been stopped</p>
                 </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <p class="help-block" ng-show="schedulerstatus===0"> Error while scheduling the service. <b>{{errormsg}}</b></p>
-                        <p class="help-block" ng-show="schedulerstatus===1"> Batch Service has been started</p>
-                        <p class="help-block" ng-show="schedulerstatus===2"> Batch Service has been stopped</p>
-                        <p class="help-block" ng-show="schedulerstatus===3"> Scheduler Service has been started</p>
-                        <p class="help-block" ng-show="schedulerstatus===4"> Scheduler Service has been stopped</p>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="" data-dismiss="modal"  role="button">Close</button>
-                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="" data-dismiss="modal"  role="button">Close</button>
             </div>
         </div>
     </div>
-    
+</div>
+
 </div> <!--Controller -->
