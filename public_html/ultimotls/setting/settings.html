@@ -141,7 +141,7 @@
                             <div class="row">
                                 <form name="FreqForm" role="form" class="form-inline">
                                     <div class="form-group bordertab col-sm-12">
-                                        <h4>Immidiate Notification</h4>
+                                        <h4>Immidiate Notification Refresh</h4>
                                         <div class="col-sm-1">
                                             <label class="control-label">Start Time</label>
                                         </div>
@@ -384,9 +384,9 @@
                         <div class="col-sm-12">
                             <div class="row">
                                 <form name="Scheduler" class="form-inline">
-                                    <div class="form-group bordertab col-sm-4">
+                                    <div class="form-group bordertab col-sm-4 inlinestyle">
 
-                                        <h4>Scheduler service</h4>
+                                        <h4>Scheduler service  </h4>  <div id="numberCircle" class='{{SchedulerStatus}}'></div>
                                         <div class="row">
                                             <div class="col-sm-2">
                                                 <label class="control-label">Properties File:</label>
@@ -395,8 +395,8 @@
                                                 <input type="text" class="form-control" name="sched_prop" value="" ng-model="schedulerObj.propertiesFile" placeholder="Properties file" required>
                                             </div>
                                             <div class="col-sm-4 pull-right">
-                                                <button type="button" class="btn btn-primary" ng-click="startscheduler()">Start</button>
-                                                <button type="button" class="btn btn-primary" ng-click="stopscheduler()">Stop</button>
+                                                <button type="button" class="btn btn-primary" ng-click="startscheduler()" ng-disabled="SchedulerStatus=='started'">Start</button>
+                                                <button type="button" class="btn btn-primary" ng-click="stopscheduler()" ng-disabled="SchedulerStatus=='stopped'">Stop</button>
                                             </div>
                                         </div>
 

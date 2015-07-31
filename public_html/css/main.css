@@ -1476,3 +1476,48 @@ div#loginFormContainer .panel-body {
 div#loginFormContainer .panel-body label {
     font-size: 14px;
 }
+
+div.inlinestyle h4, #numberCircle{
+    display: inline-block;
+}
+
+span.started.glyphicon.glyphicon-ok-circle {
+    color: green;
+    font-weight: bolder;
+    font-size: 15px;
+}
+
+span.started.glyphicon.glyphicon-ok-circle {
+    color: green;
+    font-weight: bolder;
+    font-size: 15px;
+}
+
+span.stopped.glyphicon.glyphicon-remove-circle {
+    color: red;
+    font-weight: bolder;
+    font-size: 15px;
+}
+
+#numberCircle {
+    border-radius: 50%;
+
+    width: 5px;
+    height: 5px;
+    padding: 8px;
+
+    background: #fff;
+    border: 2px solid #666;
+    color: #666;
+    text-align: center;
+}
+
+div#numberCircle.started {
+    background-color: green;
+}
+
+div#numberCircle.stopped {
+    background-color: red;
+}
+
+

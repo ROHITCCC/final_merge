@@ -165,5 +165,5 @@ $('#severityPieChart').waitUntilExists(function () {
         mouseleave: function () {
             $(this).children('div.menuselector').removeClass('open');
         }
-    })
+    });
 });
