@@ -1528,5 +1528,14 @@ span#noticebatch.stopped {
     color: red;
     display: block;
 }
+.immidiate_refresh input {
+    width: 96% !important;
+}
 
+.immidiate_refresh select.smaller{
+    width: 91%;
+}
 
+.immidiate_refresh h4 {
+    margin-top: 3px;
+}
