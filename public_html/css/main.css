@@ -365,7 +365,16 @@ html {
 .modal .replayInputBox{
     width: 80%;
 }
-
+#replayInfoPage .btn-primary{
+    font-size: 11px;
+}
+#replayInfoPage .pagination{
+    right: 10px;
+    padding: 3px 0 3px 0;
+}
+#replayInfoPage.btn.btn-primary{
+    height: 26px !important;
+}
 //////TIME SELECTED AND ENV SELECTED DROP DOWN MENU//////
 .dropdown-menu{
     min-width: 100px;

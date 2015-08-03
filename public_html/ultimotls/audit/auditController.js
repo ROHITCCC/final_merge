@@ -27,9 +27,9 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
         //Replay Page Options
         $scope.replayOptions = [{type: "REST"}, {type: "FILE"}, {type: "WS"}, {type: "FTP"}];
         $scope.replayType = $scope.replayOptions[0];
-        //For Custom Field
-        $scope.curCustomPage = 0, $scope.curNameValuePage = 0;
-        $scope.pageSize = 2;
+        //For Replay Data Page
+        $scope.pageSize = 20;
+        $scope.replayCurPage = 0;
         $scope.batchChecker = false;
         $scope.treemapSaver = treemapSaver;
         $scope.headerCounter = 0;
@@ -751,6 +751,20 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                 document.getElementById("replayResponseWs").innerHTML = " ";
                 document.getElementById("replayResponseFTP").innerHTML = " ";
             };
+        };
+        $scope.replayRowClicked = function(d){
+            $scope.singleSelectedReplayData = d;
+        }
+        $scope.replayedData = function(d){
+            console.log(d)
+            $scope.replaySelected = d.replayInfo;
+            $scope.replaySelectedLength = $scope.replaySelected.length;
+        };
+        $scope.numberOfPagesReplay = function () {
+            return Math.ceil($scope.replaySelectedLength / $scope.pageSize);
+        };
+        $scope.resetReplayCurPage = function(){
+            $scope.replayCurPage = 0;
         };
         $scope.replayButtonChecker = function(){
             var checkboxes = document.getElementsByName('auditCheckbox');
