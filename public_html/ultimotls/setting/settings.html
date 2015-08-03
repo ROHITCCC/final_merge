@@ -404,7 +404,7 @@
                                 </form>
                                 <form name="batchScheduler" class="form-inline" >
                                     <div class="form-group bordertab col-sm-8">
-                                        <h4>Batch replay job start/stop</h4>
+                                        <h4>Batch replay job start/stop <span id="noticebatch" class="pull-right {{SchedulerStatus}}">Scheduler server must be running in order to start/stop batch services</span></h4>
                                         <div class="row">
                                             <div class="col-sm-1">
                                                 <label class="control-label">Start time:</label>
@@ -416,7 +416,7 @@
                                                 <label class="control-label">Frequency:</label>
                                             </div>
                                             <div class="col-sm-2">
-                                                <input type="text" class="form-control" name="batchFrequency" value="{{schedulers.frequency}}" style="width: 100%;" ng-model="schedulers.frequency" placeholder="Frequency" required>
+                                                <input type="text" class="form-control" name="batchFrequency" value="{{batch.frequency.duration}}" style="width: 100%;" ng-model="batch.frequency.duration" placeholder="Frequency" required>
                                             </div>
                                             <div class="col-sm-1">
                                                 <label class="control-label">Unit:</label>
@@ -429,8 +429,8 @@
                                             </div>
 
                                             <div class="col-sm-2 pull-right">
-                                                <button type="button" class="btn btn-primary" ng-click="batchstart()" ng-disabled="batchScheduler.$invalid">Start</button>
-                                                <button type="button" class="btn btn-primary" ng-click="batchstop()">Stop</button>
+                                                <button type="button" class="btn btn-primary" ng-click="batchstart()" ng-disabled="batchScheduler.$invalid || SchedulerStatus=='stopped'">Start</button>
+                                                <button type="button" class="btn btn-primary" ng-click="batchstop()" ng-disabled="SchedulerStatus=='stopped'">Stop</button>
                                             </div>
                                             <div class="col-sm-12" ng-show="batchScheduler.batchUnit.$invalid && batchScheduler.batchUnit.$touched || batchScheduler.batchFrequency.$invalid && batchScheduler.batchFrequency.$touched">
                                                 <span class="error">Frequency and Unit is required in order to start the batch scheduler</span>

@@ -1520,4 +1520,13 @@ div#numberCircle.stopped {
     background-color: red;
 }
 
+span#noticebatch.started{
+    display: none;
+}
+span#noticebatch.stopped {
+    font-size: smaller;
+    color: red;
+    display: block;
+}
+
 

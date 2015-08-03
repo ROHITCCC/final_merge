@@ -153,18 +153,15 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
                 return Math.ceil($scope.notifications.immidate.notification.length / $scope.pageSizeImmi);
             };
             $scope.inmidateStartjob = function () {
-                console.log($scope.notifications);
                 $scope.immidatejob.requestType = 'startJob';
                 $scope.immidatejob.frequency.duration = $scope.notifications.immidate.jobRefreshRate.duration;
                 $scope.immidatejob.frequency.unit = $scope.notifications.immidate.jobRefreshRate.unit;
-                console.log($scope.immidatejob);
                 $scope.scheduler($scope.immidatejob);
             };
             $scope.inmidateStopjob = function () {
                 temporal = $scope.immidatejob;
                 $scope.immidatejob.requestType = 'stopJob';
                 delete temporal.frequency;
-                console.log($scope.immidatejob);
                 $scope.scheduler(temporal);
             };
             //Env dropdown
@@ -252,20 +249,44 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
                 var auth_token_valid_until = header()['auth-token-valid-until'];
                 resetTimerService.set(auth_token_valid_until);
                 $scope.schedulers = data;
-                console.log($scope.schedulers);
+                //find BatchReplayJob in the array
+                Tlength = $scope.schedulers.length;
+                for (i = 0; i < Tlength; i++) {
+                    if ($scope.schedulers[i].jobKey === "BatchReplayJob") {
+                        Batchlenght = $scope.schedulers[i].frequency;
+                    }
+                }
+                        if (Batchlenght <= 59) {
+                            $scope.batch.frequency.duration = Batchlenght;
+                            $scope.batch.frequency.unit = $scope.units[0];
+                        }
+                        if ((Batchlenght >= 61) && (Batchlenght <= 3599)) {
+                            minutes = Math.floor(Batchlenght / 60) % 60;
+                            $scope.batch.frequency.duration = minutes;
+                            $scope.batch.frequency.unit = $scope.units[1];
+                        }
+                        if ((Batchlenght >= 3600) && (Batchlenght <= 86399)) {
+                            hours = Math.floor(Batchlenght / 3600) % 24;
+                            $scope.batch.frequency.duration = hours;
+                            $scope.batch.frequency.unit = $scope.units[2];
+                        }
+                        if (Batchlenght >= 86400) {
+                            days = Math.floor(Batchlenght / 86400);
+                            days * 86400;
+                            $scope.batch.frequency.duration = days;
+                            $scope.batch.frequency.unit = $scope.units[3];
+                        }
                 $scope.starter = {};
                 $scope.resumeJob = function (index) {
                     status = 'resume';
                     temporalkey = $scope.schedulers[index].jobKey;
                     $scope.starter = {"requestType": "resumeJob", "jobKey": $scope.schedulers[index].jobKey};
-                    console.log($scope.starter);
                     $scope.scheduler($scope.starter, status);
                 };
                 $scope.pauseJob = function (index) {
                     status = 'suspend';
                     temporalkey = $scope.schedulers[index].jobKey;
                     $scope.starter = {"requestType": "suspendJob", "jobKey": $scope.schedulers[index].jobKey};
-                    console.log($scope.starter);
                     $scope.scheduler($scope.starter, status);
                 };
             });
@@ -281,10 +302,12 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
             });
             return schedulerstatus;
         };
-        
-        $scope.schedulerStatus().then(function (data){
+
+        $scope.schedulerStatus().then(function (data) {
             $scope.SchedulerStatus = data.data;
-            console.log($scope.SchedulerStatus);
+            if ($scope.SchedulerStatus === 'started') {
+                $scope.schedulerJob();
+            }
         });
 
 
@@ -321,8 +344,6 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
         };
         $scope.batchstart = function () {
             $scope.batch.requestType = "startJob";
-            console.log($scope.schedulers);
-            $scope.batch.frequency.duration = $scope.schedulers.frequency;
             if ($scope.batch.frequency.starttime) {
                 $scope.batch.frequency.starttime = $scope.batch.frequency.starttime.replace(/ /g, "T");
             } else {
@@ -351,15 +372,13 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
                 if (opt == 'resume' || opt == 'suspend') {
                     $scope.schedulerJob();
                 }
-                if (opt == "4"){
-                    $scope.SchedulerStatus="stopped";
+                if (opt == "4") {
+                    $scope.SchedulerStatus = "stopped";
                     $('.SchedulerJob').remove();
                 }
-                if (opt == "3"){
-                    $scope.SchedulerStatus="started";
+                if (opt == "3") {
+                    $scope.SchedulerStatus = "started";
                 }
-                console.log('none');
-                console.log($scope.SchedulerStatus);
             });
             conAjax.error(function (response) {
                 $scope.schedulerstatus = 0;
