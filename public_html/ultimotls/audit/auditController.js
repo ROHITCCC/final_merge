@@ -585,7 +585,13 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                 var batchVals = $scope.batchValues();
                 var fileName = document.getElementById("fileName").value;
                 var fileExt = document.getElementById("fileDropDownExt").value;
-                if(fileExt === "other")fileExt = document.getElementById("fileType").value;
+                if(fileExt === "other"){
+                    fileExt = document.getElementById("fileType").value;
+                    if(fileExt.indexOf('.') === -1)
+                    {
+                      fileExt = "." + document.getElementById("fileType").value;
+                    }
+                }
                 
                 var filePayload = null; 
                 if(fileName === undefined){
@@ -625,7 +631,13 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                 var auditIDs = $scope.pullAuditIDs(batchVals[2]);
                 var fileName = document.getElementById("fileName").value;
                 var fileExt = document.getElementById("fileDropDownExt").value;
-                if(fileExt === "other")fileExt = document.getElementById("fileType").value;
+                if(fileExt === "other"){
+                    fileExt = document.getElementById("fileType").value;
+                    if(fileExt.indexOf('.') === -1)
+                    {
+                      fileExt = "." + document.getElementById("fileType").value;
+                    }
+                }
                 
                 var filePayloadBatch = null;'"type":"FILE", "fileLocation":"'+$scope.fileReplay.location+'", "fileName":"'+fileName+'", '+
                         '"fileType":"'+fileExt+'"';
