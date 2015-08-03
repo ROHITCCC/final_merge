@@ -386,7 +386,7 @@
                                 <form name="Scheduler" class="form-inline">
                                     <div class="form-group bordertab col-sm-4 inlinestyle">
 
-                                        <h4>Scheduler service  </h4>  <div id="numberCircle" class='{{SchedulerStatus}}'></div>
+                                        <h4>Scheduler service  </h4>  <h4 class="pull-right">Server status</h4><div id="numberCircle" class='{{SchedulerStatus}} pull-right'></div>
                                         <div class="row">
                                             <div class="col-sm-2">
                                                 <label class="control-label">Properties File:</label>
@@ -452,12 +452,12 @@
                                                 </tr>
                                             </thead>
                                             <tdbody>
-                                                <tr data-toggle="collapse" id="{{$index}}" class="immidateinfo" data-ng-repeat="scheduler in schedulers">
+                                                <tr data-toggle="collapse" id="{{$index}}" class="SchedulerJob" data-ng-repeat="scheduler in schedulers">
                                                     <td class="col-md-3">{{scheduler.jobKey}}</td>
                                                     <td class="col-md-3">{{scheduler.nextFireTime | date : 'medium'}}</td>
                                                     <td class="col-md-3">{{scheduler.status}}</td>
                                                     <td>
-                                                        <button type="submit" ng-click="resumeJob($index)" class="btn">Start</button>
+                                                        <button type="submit" ng-click="resumeJob($index)" class="btn">Restart</button>
                                                         <button type="submit" ng-click="pauseJob($index)" class="btn">Suspend</button>
                                                     </td>
                                                 </tr>

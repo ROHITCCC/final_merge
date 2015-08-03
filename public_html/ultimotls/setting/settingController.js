@@ -346,12 +346,14 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
                     $scope.batchScheduler.batchFrequency.$invalid = false;
                     $scope.batchScheduler.batchUnit.$touched = false;
                     $scope.batchScheduler.batchUnit.$invalid = false;
+                    $('.SchedulerJob').remove();
                 }
                 if (opt == 'resume' || opt == 'suspend') {
                     $scope.schedulerJob();
                 }
                 if (opt == "4"){
                     $scope.SchedulerStatus="stopped";
+                    $('.SchedulerJob').remove();
                 }
                 if (opt == "3"){
                     $scope.SchedulerStatus="started";
