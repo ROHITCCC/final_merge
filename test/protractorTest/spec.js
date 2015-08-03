@@ -148,6 +148,9 @@ describe('Ultimo TLS', function() {
 		browser.sleep(500);
 		enterRestData("http://demo9083151.mockable.io/rest","application/json","Authorization","Basic YTph","POST");
 		browser.sleep(2500);
+		element(by.cssContainingText('option', 'FILE')).click();
+		enterFileData("C:", "testing", ".txt")
+		browser.sleep(2500);
   });
   
 });
