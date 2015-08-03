@@ -4,15 +4,15 @@
  * and open the template in the editor.
  */
 //GLOBAL VARIABLES FOR INTITIAL SETUP
-//var TLS_PROTOCOL = "http";
-//var TLS_SERVER = "172.16.120.157";
-//var TLS_PORT = "8080";
-//var TLS_DBNAME = "ES";
-//var TLS_SERVER_TIMEOUT = 6000;
-var TLS_PROTOCOL = location.protocol.replace(/[:]/g , '');
-var TLS_SERVER = location.hostname;
-var TLS_PORT = location.port;
+var TLS_PROTOCOL = "http";
+var TLS_SERVER = "172.16.120.157";
+var TLS_PORT = "8080";
+var TLS_DBNAME = "ES";
 var TLS_SERVER_TIMEOUT = 6000;
+//var TLS_PROTOCOL = location.protocol.replace(/[:]/g , '');
+//var TLS_SERVER = location.hostname;
+//var TLS_PORT = location.port;
+//var TLS_SERVER_TIMEOUT = 6000;
    
 //(function(angular){
 var ultimotls = angular.module('ultimotls', ['auditControllerModule', 'auditDirectiveModule' , 'treemapDirectiveModule', 'base64', 
@@ -81,7 +81,7 @@ ultimotls.controller('loginControllerModule', ['$scope', '$http', '$q', '$base64
             };
             $http.defaults.headers.common["Env-ID"] = $scope.cred.envid;
             var deferred = $q.defer();
-            var request = $http.get(TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/_logic/LoginService/"+$scope.cred.username, {});
+            var request = $http.get(TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/_logic/LoginService/"+$scope.cred.username, {timeout:TLS_SERVER_TIMEOUT});
             
             request.success(function (data, status, header, config) {
                 var auth_token = header()['auth-token'];
@@ -118,7 +118,12 @@ ultimotls.controller('loginControllerModule', ['$scope', '$http', '$q', '$base64
                 }
             });
             request.error(function (data, status, header, config) {
-                $scope.loginError = "Username and/or password is incorrect";
+                if(status === 0){
+                    $scope.loginError = "Backend timed out";
+                }
+                if(status === 401){
+                    $scope.loginError = "Username and/or password is incorrect";
+                }
                 localStorageService.cookie.remove('creds');
                 localStorageService.cookie.remove('showNav');
                 localStorageService.cookie.remove('name');
@@ -427,9 +432,14 @@ ultimotls.service("auditSearch",['$http','queryEnv', 'resetTimerService',functio
                 .success(function (response, status, header, config) {
                     var auth_token_valid_until = header()['auth-token-valid-until'];
                     resetTimerService.set(auth_token_valid_until);
-            }).error(function () {
-            });
-            audits.inputError = "";
+                    audits.inputError = "";
+                })
+                .error(function (response, status, header, config) {
+                    if(status===0){
+                        audits.inputError = "Backend timed out";
+                    }
+                });
+            
         }
         else {
             var textUrl = postUrl + textSearch;
@@ -437,9 +447,14 @@ ultimotls.service("auditSearch",['$http','queryEnv', 'resetTimerService',functio
                 .success(function(response, status, header, config){
                     var auth_token_valid_until = header()['auth-token-valid-until'];
                     resetTimerService.set(auth_token_valid_until);
-            }).error(function () {
-            });
-            audits.inputError = "";
+                    audits.inputError = "";
+                })
+                .error(function (response, status, header, config) {
+                    if(status === 0){
+                        audits.inputError = "Backend timed out";
+                    }
+                });
+            
         }
         return searchPromise;
     };

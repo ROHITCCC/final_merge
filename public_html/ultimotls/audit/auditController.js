@@ -27,9 +27,9 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
         //Replay Page Options
         $scope.replayOptions = [{type: "REST"}, {type: "FILE"}, {type: "WS"}, {type: "FTP"}];
         $scope.replayType = $scope.replayOptions[0];
-        //For Custom Field
-        $scope.curCustomPage = 0, $scope.curNameValuePage = 0;
-        $scope.pageSize = 2;
+        //For Replay Data Page
+        $scope.pageSize = 20;
+        $scope.replayCurPage = 0;
         $scope.batchChecker = false;
         $scope.treemapSaver = treemapSaver;
         $scope.headerCounter = 0;
@@ -575,7 +575,6 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                             document.getElementById("replayResponseRest").innerHTML = "Error: " + d["http status code"] + ": " + d["message"];
                         });
                 }
-                
             }    
         };
         $scope.fileReplay = {};
@@ -586,10 +585,22 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                 var batchVals = $scope.batchValues();
                 var fileName = document.getElementById("fileName").value;
                 var fileExt = document.getElementById("fileDropDownExt").value;
-                if(fileExt === "other")fileExt = document.getElementById("fileType").value;
+                if(fileExt === "other"){
+                    fileExt = document.getElementById("fileType").value;
+                    if(fileExt.indexOf('.') === -1)
+                    {
+                      fileExt = "." + document.getElementById("fileType").value;
+                    }
+                }
                 
-                var filePayload = '"type":"FILE", "fileLocation":"'+$scope.fileReplay.location+'", "fileName":"'+fileName+'", '+
+                var filePayload = null; 
+                if(fileName === undefined){
+                    filePayload = '"type":"FILE", "fileLocation":"'+$scope.fileReplay.location+'", '+
                         '"fileType":"'+fileExt+'", "auditID":"'+auditID+'", "replayedBy":"'+batchVals[1]+'"';
+                }else{
+                    filePayload = '"type":"FILE", "fileLocation":"'+$scope.fileReplay.location+'", "fileName":"'+fileName+'", '+
+                        '"fileType":"'+fileExt+'", "auditID":"'+auditID+'", "replayedBy":"'+batchVals[1]+'"';
+                }
                 var multipartPayload = "Content-Type: multipart/mixed; boundary=boundaryFILE\n"+
                     "--boundaryFILE\n" +
                     "Content-Type: application/json;\n\n" +
@@ -620,10 +631,23 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                 var auditIDs = $scope.pullAuditIDs(batchVals[2]);
                 var fileName = document.getElementById("fileName").value;
                 var fileExt = document.getElementById("fileDropDownExt").value;
-                if(fileExt === "other")fileExt = document.getElementById("fileType").value;
+                if(fileExt === "other"){
+                    fileExt = document.getElementById("fileType").value;
+                    if(fileExt.indexOf('.') === -1)
+                    {
+                      fileExt = "." + document.getElementById("fileType").value;
+                    }
+                }
                 
-                var filePayloadBatch = '"type":"FILE", "fileLocation":"'+$scope.fileReplay.location+'", "fileName":"'+fileName+'", '+
+                var filePayloadBatch = null;'"type":"FILE", "fileLocation":"'+$scope.fileReplay.location+'", "fileName":"'+fileName+'", '+
                         '"fileType":"'+fileExt+'"';
+                if(fileName === undefined){
+                    filePayloadBatch = '"type":"FILE", "fileLocation":"'+$scope.fileReplay.location+'", '+
+                        '"fileType":"'+fileExt+'"';
+                }else{
+                    filePayloadBatch = '"type":"FILE", "fileLocation":"'+$scope.fileReplay.location+'", "fileName":"'+fileName+'", '+
+                        '"fileType":"'+fileExt+'"';
+                }
                 
                 var batchPayload = '{  "replaySavedTimestamp":"'+batchVals[0]+'",  "replayedBy":"'+batchVals[1]+'", '+
                         '"batchProcessedTimestamp":"", "replayDestinationInfo": { '+filePayloadBatch+' },'+
@@ -772,6 +796,20 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                 document.getElementById("replayResponseWs").innerHTML = " ";
                 document.getElementById("replayResponseFTP").innerHTML = " ";
             };
+        };
+        $scope.replayRowClicked = function(d){
+            $scope.singleSelectedReplayData = d;
+        }
+        $scope.replayedData = function(d){
+            console.log(d)
+            $scope.replaySelected = d.replayInfo;
+            $scope.replaySelectedLength = $scope.replaySelected.length;
+        };
+        $scope.numberOfPagesReplay = function () {
+            return Math.ceil($scope.replaySelectedLength / $scope.pageSize);
+        };
+        $scope.resetReplayCurPage = function(){
+            $scope.replayCurPage = 0;
         };
         $scope.replayButtonChecker = function(){
             var checkboxes = document.getElementsByName('auditCheckbox');

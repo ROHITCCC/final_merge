@@ -107,7 +107,7 @@ errorPieChartDirectiveModule.directive('errorPieChart',['queryFilter', function(
             };
 
             var _data = d3.layout.pie().sort(function(a,b){return b.count - a.count}).value(function(d) {return d.count;})(data);
-            d3.select("html").selectAll("*:not(.error)").on("mouseover",mouseOutSlice);//helps remove tooltip
+            //d3.select("html").selectAll("*:not(svg)").on("mouseover",mouseOutSlice);//helps remove tooltip
             var slices = d3.select("#"+id).append("g").attr("transform", "translate(" + x + "," + y + ")")
                 .attr("class", "slices");
             var tooltip = d3.select("#errorTypePieChart").append("div").attr("id", "tooltip")

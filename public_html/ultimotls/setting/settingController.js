@@ -145,7 +145,10 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
             $scope.savesetting = function (reloadFlag) {
                 $scope.temp = $scope.settings;
                 $scope.savedata($scope.temp);
-                $scope.reloadPage = reloadFlag;
+                $scope.reloadPage = true;
+                if(reloadFlag === 'reload'){
+                    $scope.reloadPage = true;
+                };
             };
             $scope.numberOfPagesImmi = function () {
                 $scope.pageSizeImmi = $scope.selectedNumber;
@@ -169,6 +172,7 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
                 localStorageService.cookie.add('envOptions', $scope.envDropdown);
             });
             $scope.reload = function () {
+                console.log("reload")
                 location.reload();
             };
         });

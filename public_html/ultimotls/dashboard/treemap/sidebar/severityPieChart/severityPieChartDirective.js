@@ -106,7 +106,7 @@ severityPieChartDirectiveModule.directive('severityPieChart',['queryFilter', fun
                     .style("left", (d3.event.pageX + 15)+"px");
                  };
 		var _data = d3.layout.pie().sort(function(a,b){return b.count - a.count}).value(function(d) {return d.count;})(data);
-		d3.select("html").on("mouseover",mouseOutSlice);//Helps remove the tooltip
+		//d3.select("html").selectAll("*:not(svg)").on("mouseover",mouseOutSlice);//Helps remove the tooltip
 		var slices = d3.select("#"+id).append("g").attr("transform", "translate(" + x + "," + y + ")")
                     .attr("class", "slices");
 		var tooltip = d3.select("#severityPieChart").append("div").attr("id", "tooltip")

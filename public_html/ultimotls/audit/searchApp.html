@@ -229,10 +229,7 @@ and open the template in the editor.
             <thead id="tableHeader">
                 <tr> 
                     <th>
-                        <!--                        <a href="" ng-click="reverse = !reverse; predicate='timestamp.$date'">-->
                         <span></span> Replay
-
-                        <!--                        </a>-->
                     </th> 
                     <th>
                         <a href="" ng-click="reverse = !reverse;
@@ -280,7 +277,10 @@ and open the template in the editor.
             </thead>
             <tbody>
                 <tr ng-repeat="d in data._embedded['rh:doc']| orderBy:predicate:reverse" ng-click="rowClick(d)" data-toggle="modal" data-target="#dataBasePage">
-                    <td ng-click="$event.stopPropagation()"><input type="checkbox" ng-checked="replayButtonChecker()" name="auditCheckbox" class="checkbox1" ></td>
+                    <td ng-click="$event.stopPropagation()">
+                        <input type="checkbox" ng-checked="replayButtonChecker()" name="auditCheckbox" class="checkbox1 pull-left" >
+                        <span ng-if="d.replayInfo" ng-click="replayedData(d)" class="glyphicon glyphicon-repeat replayInfoButton" style="left: 15px;"></span>
+                    </td>
                     <td>{{d.timestamp.$date| date:'EEE MMM dd, yyyy hh:mm:ss'}}</td>
                     <td>{{d.transactionDomain}}</td>
                     <td>{{d.transactionType}}</td>
@@ -291,13 +291,108 @@ and open the template in the editor.
                         <span ng-if="d.exceptionFlag == 0" id="iconSymbol" class="glyphicon glyphicon-ok-sign" style="color: green"></span>
                         <span ng-if="d.exceptionFlag == 1" id="iconSymbol" class="glyphicon glyphicon-remove-sign" style="color: red"></span>
                     </td>
-
                 </tr>
             </tbody> 
         </table>
     </div> 
 </div> 
 <!-- Modal -->
+<div id="replayInfoPage" class="modal fade col-sm-6" role="dialog" 
+     style="height: 100%; z-index: 1999;">
+    <div class="modal-dialog col-sm-6" style="width: 100%">
+        <!-- Modal content-->
+        <div class="modal-content  mainmodal">
+            <div class="modal-header">
+                <div class="container-fluid">
+                    <h4 class="modal-title col-sm-6">Replay List</h4> 
+                    <div class="col-sm-6">
+                        <button ng-click="resetReplayCurPage()" type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid" ng-model="data">
+                    <div class="pagination pagination_env pagination-centered pull-right">
+                        <ul class="pagination-controle pagination">
+                            <li>
+                                <button type="button" class="btn btn-primary" ng-disabled="replayCurPage == 0"ng-click="replayCurPage = replayCurPage - 1"> &lt; PREV</button>
+                            </li>
+                            <li>
+                                <span>Page {{replayCurPage + 1}} of {{ numberOfPagesReplay()}}</span>
+                            </li>
+                            <li>
+                                <button type="button" class="btn btn-primary" ng-disabled="replayCurPage >= numberOfPagesReplay()-1" ng-click="replayCurPage = replayCurPage + 1">NEXT &gt;</button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div id="tableContainer" class="container-fluid" ng-model="replaySelected"> 
+                    <table id="table" class="table table-striped table-bordered table-hover">
+                        <thead id="tableHeader">
+                            <tr> 
+                                <th>
+                                    <a href="" ng-click="predicate = 'replayedBy';
+                                        reverse = !reverse">
+                                        <span class="caret"></span> Replayed By
+                                    </a>
+                                </th>
+                                <th>
+                                    <a href="" ng-click="predicate = 'type';
+                                        reverse = !reverse">
+                                        <span class="caret"></span> Type
+                                    </a>
+                                </th>
+                                <th>
+                                    <a href="" ng-click="predicate = 'status';
+                                        reverse = !reverse">
+                                        <span class="caret"></span> Status
+                                    </a>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-click="replayRowClicked(d)" ng-repeat="d in replaySelected| orderBy:predicate:reverse| pagination: replayCurPage * pageSize | limitTo: pageSize"
+                                data-toggle="modal" data-target="#replayInfoSinglePage">
+                                <td>{{d.replayedBy}}</td>
+                                <td>{{d.type}}</td>
+                                <td>{{d.status}}</td>
+                            </tr>
+                        </tbody> 
+                    </table>
+                </div> 
+            </div>
+            <div class="modal-footer">
+                <button ng-click="resetReplayCurPage()" type="button" class="btn btn-default closemainmodal" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="replayInfoSinglePage" class="modal fade col-sm-offset-6 col-sm-6" role="dialog">
+    <div class="modal-dialog col-sm-6" style="width: 100%">
+        <!-- Modal content-->
+        <div class="modal-content" ng-model="singleSelectedReplayData">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Replay Detail</h4>
+            </div>
+            <div class="modal-body" style="overflow: scroll;
+                 overflow-x: hidden;
+                 overflow-y: auto;
+                 height: 100%;">
+                <div>
+                    <div class="list-group container-fluid" style="margin: 10px;">
+                        <ul class="list-group">
+                            <li class="list-group-item" ng-repeat="(key,value) in singleSelectedReplayData">
+                                <b>{{key}}:</b> {{value}}
+                            </li>
+                        </ul>
+                        <button type="button" style="float: right" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>    
+</div>
 <div id="dataBasePage" class="modal fade col-sm-6" role="dialog">
     <div class="modal-dialog col-sm-6" style="width: 100%">
         <!-- Modal content-->
@@ -400,15 +495,7 @@ and open the template in the editor.
                         <button type="button" style="float: right" id="closeMainBtn" class="btn btn-default closemainmodal" data-dismiss="modal">Close</button>
                     </div>
                 </div>
-
             </div>
-            <!--            <div class="modal-footer">
-                            <button style="float: left" ng-click="callPayload(sliderWindowData.dataLocation)" 
-                                    data-toggle="modal" data-target="#payloadPage">
-                                Payload
-                            </button>
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        </div>-->
         </div>
     </div>    
 </div>
@@ -614,11 +701,11 @@ and open the template in the editor.
                                 <b>{{key}}:</b> {{value}}
                             </li>
                         </ul>
-                        <button style="float: left" ng-click="callPayload(relatedSearchData.dataLocation)" 
-                                data-toggle="modal" data-target="#payloadPage">
+                        <button  class="btn btn-default" style="float: left" ng-click="callPayload(relatedSearchData.dataLocation)" 
+                                 data-toggle="modal" id="payloadBtn" data-target="#payloadPage">
                             Payload
                         </button>
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="button" style="float: right" class="btn btn-default closemainmodal" data-dismiss="modal">Close</button>
                     </div>
                 </div>
             </div>
@@ -707,21 +794,19 @@ and open the template in the editor.
                                                 <div class="col-sm-2">
                                                     <label for="contentType" class="control-label col-sm-2"><b>Content-Type: </b></label>
                                                 </div>
-                                                <div class="col-sm-6">
+                                                <div class="col-sm-4">
                                                     <select class="replayDropDown" ng-click="checkSelected()" id="replayDropDownApplication" style="width: 135px;" required>
-                                                        <option value="" style="display: none">Select...</option>
-                                                        <option value="application/json">application/json</option>
-                                                        <option value="application/xml">application/xml</option>
-                                                        <option value="text/html">text/html</option>
-                                                        <option value="text/plain">text/plain</option>
-                                                        <option value="other">other</option>
+                                                        <option ng-click="checkSelected()" value="" style="display: none">Select...</option>
+                                                        <option ng-click="checkSelected()" value="application/json">application/json</option>
+                                                        <option ng-click="checkSelected()" value="application/xml">application/xml</option>
+                                                        <option ng-click="checkSelected()" value="text/html">text/html</option>
+                                                        <option ng-click="checkSelected()" value="text/plain">text/plain</option>
+                                                        <option ng-click="checkSelected()" value="other">other</option>
                                                     </select>
                                                     <span class="caret" style="margin-left: -18px;"></span>
                                                 </div>
                                                 <input ng-model="restReplay.contentType" type="text" class="form-control" 
                                                        id="contentType" placeholder="application/json" style="width: 30%;float: none; display:none">
-
-
                                             </div>
                                         </div>
                                         <div class="form-group">
@@ -738,8 +823,8 @@ and open the template in the editor.
                                                            id="headerValue" placeholder="Header Value" >
                                                 </div>
                                                 <div class="col-sm-2">
-                                                <button class="btn addfields" ng-click="addHeaders()">+</button>
-                                            </div>
+                                                    <button class="btn addfields" ng-click="addHeaders()">+</button>
+                                                </div>
                                             </div>
                                             
                                             <!--<button id="deleteHeader" style="display:none" ng-click="deleteHeaders()">-</button>-->
@@ -748,18 +833,18 @@ and open the template in the editor.
                                         <div class="form-group">
                                             <div class="form-inline col-sm-12 row">
                                                 <div class="col-sm-2" id="labelDiv">
-                                                    <label for="header" class="control-label col-sm-2"><b>Method: </b></label>
+                                                    <label for="replayDropDownMethod" class="control-label col-sm-2"><b>Method: </b></label>
                                                 </div>
-                                                <div class="col-sm-6">
+                                                <div class="col-sm-4">
                                                     <select class="replayDropDown" ng-click="checkSelected()" id="replayDropDownMethod" style="width: 135px" required>
-                                                        <option value="" style="display: none">Select...</option>
-                                                        <option value="GET">GET</option>
-                                                        <option value="POST">POST</option>
-                                                        <option value="PUT">PUT</option>
-                                                        <option value="DELETE">DELETE</option>
-                                                        <option value="HEAD">HEAD</option>
-                                                        <option value="OPTIONS">OPTIONS</option>
-                                                        <option value="other">other</option>
+                                                        <option ng-click="checkSelected()" value="" style="display: none">Select...</option>
+                                                        <option ng-click="checkSelected()" value="GET">GET</option>
+                                                        <option ng-click="checkSelected()" value="POST">POST</option>
+                                                        <option ng-click="checkSelected()" value="PUT">PUT</option>
+                                                        <option ng-click="checkSelected()" value="DELETE">DELETE</option>
+                                                        <option ng-click="checkSelected()" value="HEAD">HEAD</option>
+                                                        <option ng-click="checkSelected()" value="OPTIONS">OPTIONS</option>
+                                                        <option ng-click="checkSelected()" value="other">other</option>
                                                     </select>
                                                     <span class="caret" style="margin-left: -18px;"></span>
                                                     
@@ -787,23 +872,23 @@ and open the template in the editor.
                                     <form class="form-horizontal" role="form">
                                         <div class="form-group">
                                             <div class="form-inline col-sm-12 row">
-                                                <div class="col-sm-2" id="labelDiv">
+                                                <div class="col-sm-2" id="fileLocationLabelDiv">
                                                     <label for="fileLocation" class="control-label col-sm-2"><b>Location: </b></label>
                                                 </div>
-                                                <div class="col-sm-6">
+                                                <div class="col-sm-10">
                                                     <input ng-model="fileReplay.location" type="text" class="form-control col-sm-10 replayInputBox" 
-                                                       id="fileLocation" placeholder="File Location" required>
+                                                       id="fileLocation" style="width: 100%" placeholder="File Location" required>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="form-inline col-sm-12 row">
-                                            <div class="form-inline row">
-                                                <div class="col-sm-2" id="labelDiv">
+                                        <div class="form-group">
+                                            <div class="form-inline col-sm-12 row">
+                                                <div class="col-sm-2" id="filenameLabelDiv">
                                                     <label for="fileName" class="control-label col-sm-2"><b>FileName: </b></label>
                                                 </div>
-                                                <div class="col-sm-6">
+                                                <div class="col-sm-10">
                                                     <input ng-model="fileReplay.name" type="text" class="form-control col-sm-10 replayInputBox" 
-                                                       id="fileName" placeholder="File Name" required>
+                                                       id="fileName" style="width: 100%" placeholder="File Name">
                                                 </div>
                                             </div>
                                         </div>
@@ -812,21 +897,22 @@ and open the template in the editor.
                                                 <div class="col-sm-2" id="fileTypeLabelDiv">
                                                     <label for="fileType" class="control-label col-sm-2"><b>FileType: </b></label>
                                                 </div>
-                                                <div class="col-sm-6">
+                                                <div class="col-sm-4">
                                                     <select class="replayDropDown" ng-click="checkSelectedFile()" id="fileDropDownExt" style="width: 135px" required>
-                                                        <option value="" style="display: none">Select...</option>
-                                                        <option value="txt">.txt</option>
-                                                        <option value="xml">.xml</option>
-                                                        <option value="rtf">.rtf</option>
-                                                        <option value="other">other</option>
+                                                        <option ng-click="checkSelectedFile()" value="" style="display: none">Select...</option>
+                                                        <option ng-click="checkSelectedFile()" value=".txt">txt</option>
+                                                        <option ng-click="checkSelectedFile()" value=".xml">xml</option>
+                                                        <option ng-click="checkSelectedFile()" value=".rtf">rtf</option>
+                                                        <option ng-click="checkSelectedFile()" value="other">other</option>
                                                     </select>
                                                     <span class="caret" style="margin-left: -18px;"></span>
                                                     
                                                 </div>
                                                 <input ng-model="fileReplay.extension" type="text" class="form-control " 
-                                                       id="fileType" placeholder="Method" style="width: 30%; float:none; display:none">
+                                                       id="fileType" placeholder="File Type" style="width: 30%; display:none">
                                             </div>
                                         </div>
+                                        
                                         <div class="form-group replayButtons">
                                             <button ng-click="runFileService()" class="btn btn-default pull-right">Submit</button>
                                             <button type="button" class="btn btn-default pull-right" ng-click="changeReplayBack()" data-dismiss="modal">Close</button>
