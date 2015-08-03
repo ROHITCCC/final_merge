@@ -177,4 +177,4 @@ $('.replayInfoButton').waitUntilExists(function () {
             $("#replayInfoPage").modal();
         });
     });
-})
+});

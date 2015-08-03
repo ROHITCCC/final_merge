@@ -140,14 +140,44 @@
                         <div class="col-sm-12">
                             <div class="row">
                                 <form name="FreqForm" role="form" class="form-inline">
+                                    <div class="form-group bordertab col-sm-12">
+                                        <h4>Immidiate Notification Refresh</h4>
+                                        <div class="col-sm-1">
+                                            <label class="control-label">Start Time</label>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <input type="text" class="form-control datetimepicker" ng-model="immidatejob.frequency.starttime" value="{{immidatejob.frequency.starttime}}" placeholder="Start Time">
+                                        </div>
+                                        <div class="col-sm-1">
+                                            <label class="control-label">Frequency:</label>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <input type="text" class="form-control" name="immDuration" value="{{notifications.immidate.jobRefreshRate.duration}}" ng-model="notifications.immidate.jobRefreshRate.duration" placeholder="Frequency" required>
+                                        </div>
+                                        <div class="col-sm-1">
+                                            <label class="control-label">Unit:</label>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <select class="form-control"  name="immUnit" ng-options='unit for unit in units' ng-model="notifications.immidate.jobRefreshRate.unit" required>
+                                                <option value="" disabled selected style='display:none;'>{{notifications.immidate.jobRefreshRate.unit}}</option>
+                                            </select>
+                                            <span class="caret" style="margin-left: -18px;margin-top: 3px;"></span>
+                                        </div>
+                                         <div class="col-sm-2 pull-right">
+                                                <button type="button" class="btn btn-primary" ng-click="inmidateStartjob()">Start</button>
+                                                <button type="button" class="btn btn-primary" ng-click="inmidateStopjob()">Stop</button>
+                                            </div>
+                                    </div>
                                     <div class="form-group bordertab col-sm-3">                                       
                                         <div class="col-sm-12">
+                                            <h4 style="visibility:hidden">none</h4>
                                             <label class="control-label">Items per page :</label>
                                             <select class="form-control" ng-model='selectedNumber'  ng-options='number for number in numbers'></select>
                                             <span class="caret" style="margin-left: -18px;margin-top: 3px;"></span>
                                         </div>
                                     </div>
-                                    <div class="form-group bordertab col-sm-8">                                       
+                                    <div class="form-group bordertab col-sm-8"> 
+                                        <h4>Report Delivery</h4>
                                         <div class="col-sm-2">
                                             <label class="control-label">Frequency:</label>
                                         </div>
@@ -164,6 +194,7 @@
                                             <span class="caret" style="margin-left: -18px;margin-top: 3px;"></span>
                                         </div>
                                     </div>
+                                    
                                 </form>
                             </div>
                             <div class="row">
@@ -185,15 +216,15 @@
                                                 <tr data-toggle="collapse" class="immidateinfo" data-ng-repeat="notification in notifications.immidate.notification| pagination: curPageImmi * pageSizeImmi | limitTo: pageSizeImmi">
                                                     <td>
                                                         <select class="form-control inputable"   name="envid" ng-options='name.name as name.name for name in envDropdown' ng-model="notification.envid" required>
-                                                            <option value="" selected style='display:none;'>{{notification.envid}}</option>
+                                                            <option style='display:none;'>{{notification.envid}}</option>
                                                         </select>
                                                         <span class="caret" style="margin-left: -18px;margin-top: 3px; display: none;"></span>
                                                     </td>    
                                                     <td col-sm-1>
-                                                        <input type="text" class="form-control inputable" id="immi_severity"  name="severity" ng-model="notification.severity" value="{{notification.severity}}" placeholder="Severity" required>
+                                                        <input type="text" class="form-control inputable" id="immi_severity"  name="severity" ng-model="notification.severity" value="{{notification.severity}}" placeholder="Severity" required lowercased>
                                                     </td>
                                                     <td>
-                                                        <input type="text" class="form-control inputable" id="immi_application" name="name" ng-model="notification.application.name" value="{{notification.application.name}}" placeholder="Application" required>
+                                                        <input type="text" class="form-control inputable" id="immi_application" name="name" ng-model="notification.application.name" value="{{notification.application.name}}" placeholder="Application" required lowercased>
                                                     </td>
                                                     <td style="white-space: nowrap; overflow:hidden;" class="hideinterfacebtn interfaceimmi">
                                                         <div class="entry input-group" data-ng-repeat="interface in notification.application.interfaces track by $index">
@@ -280,20 +311,20 @@
                                         </thead>
                                         <tr data-toggle="collapse" id="{{$index}}" class="immidateinfo" data-ng-repeat="report in reports| pagination: curPageAggri * pageSizeAggri | limitTo: pageSizeAggri">                               
                                             <td class="col-md-1">
-                                                <select class="form-control inputable"   name="envid" ng-options='name.name as name.name for name in envDropdown' ng-model="report.report.envid" style="display: inline-block; width: 76%;">
-                                                    <option value="" selected style='display:none;'>{{report.report.envid}}</option>
+                                                <select class="form-control inputable"   name="envid" ng-options='name.name as name.name for name in envDropdown track by name.name' ng-model="report.report.envid" style="display: inline-block; width: 76%;">
+                                                    <option value="" selected >{{report.report.envid}}</option>
                                                 </select>
                                                 <span class="caret" style="margin-left: -18px;margin-top: 3px; display: none;"></span>
                                                 <!--<input type="text" class="form-control inputable" ng-model="report.report.environment" value="{{report.report.environment}}" placeholder="Environment" required>-->
                                             </td>
                                             <td class="col-md-1">
-                                                <input type="text" class="form-control inputable" ng-model="report.report.application" value="{{report.report.application}}" placeholder="App" required>
+                                                <input type="text" class="form-control inputable" ng-model="report.report.application" value="{{report.report.application}}" placeholder="App" required lowercased>
                                             </td>
                                             <td class="col-md-1">
-                                                <input type="text" class="form-control inputable" ng-model="report.report.interface1" value="{{report.report.interface1}}"  placeholder="Interface" required>
+                                                <input type="text" class="form-control inputable" ng-model="report.report.interface1" value="{{report.report.interface1}}"  placeholder="Interface">
                                             </td>
                                             <td class="col-md-2">
-                                                <input type="text" class="form-control inputable" ng-model="report.report.errorType" value="{{report.report.errorType}}" placeholder="ErrorType" required>
+                                                <input type="text" class="form-control inputable" ng-model="report.report.errorType" value="{{report.report.errorType}}" placeholder="ErrorType"lowercased>
                                             </td>
                                             <td class="col-md-2">
                                                 <input type="text" class="form-control inputable datetimepicker" ng-model="report.report.frequency.starttime" value="{{report.report.frequency.starttime}}" placeholder="Start Time">
@@ -353,9 +384,9 @@
                         <div class="col-sm-12">
                             <div class="row">
                                 <form name="Scheduler" class="form-inline">
-                                    <div class="form-group bordertab col-sm-4">
+                                    <div class="form-group bordertab col-sm-4 inlinestyle">
 
-                                        <h4>Scheduler service</h4>
+                                        <h4>Scheduler service  </h4>  <h4 class="pull-right">Server status</h4><div id="numberCircle" class='{{SchedulerStatus}} pull-right'></div>
                                         <div class="row">
                                             <div class="col-sm-2">
                                                 <label class="control-label">Properties File:</label>
@@ -364,8 +395,8 @@
                                                 <input type="text" class="form-control" name="sched_prop" value="" ng-model="schedulerObj.propertiesFile" placeholder="Properties file" required>
                                             </div>
                                             <div class="col-sm-4 pull-right">
-                                                <button type="button" class="btn btn-primary" ng-click="startscheduler()">Start</button>
-                                                <button type="button" class="btn btn-primary" ng-click="stopscheduler()">Stop</button>
+                                                <button type="button" class="btn btn-primary" ng-click="startscheduler()" ng-disabled="SchedulerStatus=='started'">Start</button>
+                                                <button type="button" class="btn btn-primary" ng-click="stopscheduler()" ng-disabled="SchedulerStatus=='stopped'">Stop</button>
                                             </div>
                                         </div>
 
@@ -373,7 +404,7 @@
                                 </form>
                                 <form name="batchScheduler" class="form-inline" >
                                     <div class="form-group bordertab col-sm-8">
-                                        <h4>Batch replay job start/stop</h4>
+                                        <h4>Batch replay job start/stop <span id="noticebatch" class="pull-right {{SchedulerStatus}}">Scheduler server must be running in order to start/stop batch services</span></h4>
                                         <div class="row">
                                             <div class="col-sm-1">
                                                 <label class="control-label">Start time:</label>
@@ -398,8 +429,8 @@
                                             </div>
 
                                             <div class="col-sm-2 pull-right">
-                                                <button type="button" class="btn btn-primary" ng-click="batchstart()" ng-disabled="batchScheduler.$invalid">Start</button>
-                                                <button type="button" class="btn btn-primary" ng-click="batchstop()">Stop</button>
+                                                <button type="button" class="btn btn-primary" ng-click="batchstart()" ng-disabled="batchScheduler.$invalid || SchedulerStatus=='stopped'">Start</button>
+                                                <button type="button" class="btn btn-primary" ng-click="batchstop()" ng-disabled="SchedulerStatus=='stopped'">Stop</button>
                                             </div>
                                             <div class="col-sm-12" ng-show="batchScheduler.batchUnit.$invalid && batchScheduler.batchUnit.$touched || batchScheduler.batchFrequency.$invalid && batchScheduler.batchFrequency.$touched">
                                                 <span class="error">Frequency and Unit is required in order to start the batch scheduler</span>
@@ -417,16 +448,16 @@
                                                     <th>Key</th>
                                                     <th>Next Fire Time</th>
                                                     <th>Status</th>
-                                                    <th></th>
+                                                    <th class="pull-right"><button class="btn" ng-click="schedulerJob()">Refresh All</button></th>
                                                 </tr>
                                             </thead>
                                             <tdbody>
-                                                <tr data-toggle="collapse" id="{{$index}}" class="immidateinfo" data-ng-repeat="scheduler in schedulers">
+                                                <tr data-toggle="collapse" id="{{$index}}" class="SchedulerJob" data-ng-repeat="scheduler in schedulers">
                                                     <td class="col-md-3">{{scheduler.jobKey}}</td>
                                                     <td class="col-md-3">{{scheduler.nextFireTime | date : 'medium'}}</td>
                                                     <td class="col-md-3">{{scheduler.status}}</td>
                                                     <td>
-                                                        <button type="submit" ng-click="resumeJob($index)" class="btn">Start</button>
+                                                        <button type="submit" ng-click="resumeJob($index)" class="btn">Restart</button>
                                                         <button type="submit" ng-click="pauseJob($index)" class="btn">Suspend</button>
                                                     </td>
                                                 </tr>
