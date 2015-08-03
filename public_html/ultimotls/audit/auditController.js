@@ -575,7 +575,6 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                             document.getElementById("replayResponseRest").innerHTML = "Error: " + d["http status code"] + ": " + d["message"];
                         });
                 }
-                
             }    
         };
         $scope.fileReplay = {};
