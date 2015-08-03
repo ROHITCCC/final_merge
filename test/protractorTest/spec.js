@@ -17,6 +17,7 @@ describe('Ultimo TLS', function() {
   var auditSearchBox = element(by.model('searchCriteria'));
   var auditSearchButton = element(by.id('auditSearchBtn'));
   var payloadButton = element(by.id('payloadBtn'));
+  var replayTypeDDL = element(by.model('replayType'));
   var replayButton = element(by.id('replayBtnPayload'));
   var restSubmitButton = element(by.id('replayRestBtn'));
   var restEndpoint = element(by.model('restReplay.endpointUrl'));
@@ -24,15 +25,26 @@ describe('Ultimo TLS', function() {
   var restHeaderVal = element(by.model('restReplay.header.value'));
   var replayCloseBtn = element(by.id('closeMainBtn'));
   var replayButtonBatch = element(by.id('replayButton'));
+  var fileLocation = element(by.model('fileReplay.location'));
+  var filenameInput = element(by.model('fileReplay.name'));
+  var fileSubmit = element(by.css('[ng-click="runFileService()"]'));
 
   function login(name, pass, envid) {
-	loginName.sendKeys(name);
-	loginPass.sendKeys(pass);
-	loginEnv.sendKeys(envid);
+	loginName.clear().then(function(){
+		loginName.sendKeys(name);
+	});
+	loginPass.clear().then(function(){
+		loginPass.sendKeys(pass);
+	});
+	loginEnv.clear().then(function(){
+		loginEnv.sendKeys(envid);
+	});	
 	loginButton.click();
   }
   function searchAudit(search){
-	auditSearchBox.sendKeys(search);
+	auditSearchBox.clear().then(function(){
+		auditSearchBox.sendKeys(search);
+	});
 	auditSearchButton.click();
   };
   function enterRestData(endpoint, content, headerType, headerVal, method){
@@ -48,6 +60,16 @@ describe('Ultimo TLS', function() {
 	});
 	element(by.cssContainingText('option', 'POST')).click();
 	restSubmitButton.click();
+  }
+  function enterFileData(location, filename, filetype){
+	  fileLocation.clear().then(function(){
+		fileLocation.sendKeys(location);  
+	  })
+	  filenameInput.clear().then(function(){
+		filenameInput.sendKeys(filename);  
+	  })
+	  element(by.cssContainingText('option', filetype)).click();
+	  fileSubmit.click();
   }
 
   beforeEach(function() {
@@ -65,6 +87,12 @@ describe('Ultimo TLS', function() {
 		browser.sleep(100);
 		element.all(by.repeater('env in envOptions')).
 			get(1).$('a').click();
+		browser.sleep(750);
+		severityChart.get(0).
+		$('svg').$('g').$('g').$('text').click();
+		browser.sleep(750);
+		errorChart.get(0).
+		$('svg').$('g').$('g').$('text').click();
 		browser.sleep(750);
 		transactionChart.get(0).
 			$('g').$('rect').click();
@@ -102,6 +130,15 @@ describe('Ultimo TLS', function() {
 		browser.sleep(500);
 		enterRestData("http://demo9083151.mockable.io/rest","application/json","Authorization","Basic YTph","POST");
 		browser.sleep(2500);
+		element(by.cssContainingText('option', 'FILE')).click();
+		enterFileData("C:", "testing", ".txt")
+		browser.sleep(2500);
+		element(by.cssContainingText('option', 'WS')).click();
+		browser.sleep(250);
+		element(by.cssContainingText('option', 'FTP')).click();
+		browser.sleep(250);
+		element(by.cssContainingText('option', 'REST')).click();
+		browser.sleep(250);
 		replayCloseBtn.click();
 		browser.sleep(500);
 		element.all(by.repeater("d in data._embedded['rh:doc']| orderBy:predicate:reverse")).

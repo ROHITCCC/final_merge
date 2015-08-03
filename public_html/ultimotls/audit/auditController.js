@@ -588,8 +588,14 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                 var fileExt = document.getElementById("fileDropDownExt").value;
                 if(fileExt === "other")fileExt = document.getElementById("fileType").value;
                 
-                var filePayload = '"type":"FILE", "fileLocation":"'+$scope.fileReplay.location+'", "fileName":"'+fileName+'", '+
+                var filePayload = null; 
+                if(fileName === undefined){
+                    filePayload = '"type":"FILE", "fileLocation":"'+$scope.fileReplay.location+'", '+
                         '"fileType":"'+fileExt+'", "auditID":"'+auditID+'", "replayedBy":"'+batchVals[1]+'"';
+                }else{
+                    filePayload = '"type":"FILE", "fileLocation":"'+$scope.fileReplay.location+'", "fileName":"'+fileName+'", '+
+                        '"fileType":"'+fileExt+'", "auditID":"'+auditID+'", "replayedBy":"'+batchVals[1]+'"';
+                }
                 var multipartPayload = "Content-Type: multipart/mixed; boundary=boundaryFILE\n"+
                     "--boundaryFILE\n" +
                     "Content-Type: application/json;\n\n" +
@@ -622,8 +628,15 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                 var fileExt = document.getElementById("fileDropDownExt").value;
                 if(fileExt === "other")fileExt = document.getElementById("fileType").value;
                 
-                var filePayloadBatch = '"type":"FILE", "fileLocation":"'+$scope.fileReplay.location+'", "fileName":"'+fileName+'", '+
+                var filePayloadBatch = null;'"type":"FILE", "fileLocation":"'+$scope.fileReplay.location+'", "fileName":"'+fileName+'", '+
                         '"fileType":"'+fileExt+'"';
+                if(fileName === undefined){
+                    filePayloadBatch = '"type":"FILE", "fileLocation":"'+$scope.fileReplay.location+'", '+
+                        '"fileType":"'+fileExt+'"';
+                }else{
+                    filePayloadBatch = '"type":"FILE", "fileLocation":"'+$scope.fileReplay.location+'", "fileName":"'+fileName+'", '+
+                        '"fileType":"'+fileExt+'"';
+                }
                 
                 var batchPayload = '{  "replaySavedTimestamp":"'+batchVals[0]+'",  "replayedBy":"'+batchVals[1]+'", '+
                         '"batchProcessedTimestamp":"", "replayDestinationInfo": { '+filePayloadBatch+' },'+
