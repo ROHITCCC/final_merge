@@ -798,10 +798,15 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
             };
         };
         $scope.replayRowClicked = function(d){
+            for(var key in d){
+                if(d[key].$date){
+                    var temp = new Date(d[key].$date);
+                    d[key] = temp.toGMTString();
+                }
+            }
             $scope.singleSelectedReplayData = d;
         }
         $scope.replayedData = function(d){
-            console.log(d)
             $scope.replaySelected = d.replayInfo;
             $scope.replaySelectedLength = $scope.replaySelected.length;
         };
