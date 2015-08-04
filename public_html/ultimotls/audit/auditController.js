@@ -594,7 +594,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                 }
                 
                 var filePayload = null; 
-                if(fileName === undefined){
+                if(fileName === ""){
                     filePayload = '"type":"FILE", "fileLocation":"'+$scope.fileReplay.location+'", '+
                         '"fileType":"'+fileExt+'", "auditID":"'+auditID+'", "replayedBy":"'+batchVals[1]+'"';
                 }else{
@@ -641,7 +641,8 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                 
                 var filePayloadBatch = null;'"type":"FILE", "fileLocation":"'+$scope.fileReplay.location+'", "fileName":"'+fileName+'", '+
                         '"fileType":"'+fileExt+'"';
-                if(fileName === undefined){
+                
+                if(fileName === ""){
                     filePayloadBatch = '"type":"FILE", "fileLocation":"'+$scope.fileReplay.location+'", '+
                         '"fileType":"'+fileExt+'"';
                 }else{
@@ -798,10 +799,15 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
             };
         };
         $scope.replayRowClicked = function(d){
+            for(var key in d){
+                if(d[key].$date){
+                    var temp = new Date(d[key].$date);
+                    d[key] = temp.toGMTString();
+                }
+            }
             $scope.singleSelectedReplayData = d;
         }
         $scope.replayedData = function(d){
-            console.log(d)
             $scope.replaySelected = d.replayInfo;
             $scope.replaySelectedLength = $scope.replaySelected.length;
         };

@@ -465,12 +465,20 @@ treemapDirectiveModule.directive('treemapZoom', ['$location', function($location
             for(var i = 0; i < selected[0].length; i++){        //appends old DOM elements into new DOM
                 newerSVG.append(function(){return selected[0][i];});
             }
+            console.log(area, selected);
             var childTextGet = null;
-            if(!newSVGFlag) childTextGet = selected[0].children.length-1;
+            if(!newSVGFlag) childTextGet = selected[0].childNodes.length-1;
             treeData = {name:"tree", children:[{}]};
+            var isIE = getInternetExplorerVersion();
             for(var b = 0; b < selected.length; b++){               //restructures data into treemap friendly format
-                childTextGet = selected[b].children.length-1;
-                treeChildren[b] = ({size:selected[b].children[childTextGet].children[1].innerHTML, name:selected[b].id });
+                childTextGet = selected[b].childNodes.length-1;
+                console.log(selected[b].childNodes[childTextGet].childNodes[1].innerHTML);
+                if(isIE === -1){
+                    treeChildren[b] = ({size:selected[b].childNodes[childTextGet].childNodes[1].innerHTML, name:selected[b].id });
+                }else{
+                    treeChildren[b] = ({size:selected[b].childNodes[childTextGet].childNodes[1].textContent, name:selected[b].id });
+                }
+                
             }
             treeData.children[0] = ({children:treeChildren, name:selected[0].__data__.parent.name});   
             treeChildren = [{}];
@@ -495,6 +503,25 @@ treemapDirectiveModule.directive('treemapZoom', ['$location', function($location
             d3.select("#zoomOut").on("click", function() { zoomOutBrushed(); });
             d3.select("#zoomIn").style("cursor","pointer");
         };
+        function getInternetExplorerVersion()
+        {
+          var rv = -1;
+          if (navigator.appName === 'Microsoft Internet Explorer')
+          {
+            var ua = navigator.userAgent;
+            var re  = new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})");
+            if (re.exec(ua) !== null)
+              rv = parseFloat( RegExp.$1 );
+          }
+          else if (navigator.appName === 'Netscape')
+          {
+            var ua = navigator.userAgent;
+            var re  = new RegExp("Trident/.*rv:([0-9]{1,}[\.0-9]{0,})");
+            if (re.exec(ua) !== null)
+              rv = parseFloat( RegExp.$1 );
+          }
+          return rv;
+        }
         function customZoomBtn(){                           //handles deleting or creating new brush
             if(scope.treemapSaver.zoomClicked !== undefined){
                 d3.selectAll(".brush").call(brushStorage[scope.treemapSaver.brushCounter].clear());
