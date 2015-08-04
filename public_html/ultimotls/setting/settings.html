@@ -171,8 +171,8 @@
                                             <span class="caret" style="margin-left: -18px;margin-top: 3px;"></span>
                                         </div>
                                         <div class="col-sm-3">
-                                            <button type="button" class="btn btn-primary" ng-click="inmidateStartjob()" ng-disabled="SchedulerStatus == 'stopped' || startservice =='started'">Start</button>
-                                            <button type="button" class="btn btn-primary" ng-click="inmidateStopjob()" ng-disabled="SchedulerStatus == 'stopped' || startservice =='stopped'">Stop</button>
+                                            <button type="button" class="btn btn-primary" ng-click="inmidateStartjob()" ng-disabled="SchedulerStatus == 'stopped' || startserviceImmediate =='started'">Start</button>
+                                            <button type="button" class="btn btn-primary" ng-click="inmidateStopjob()" ng-disabled="SchedulerStatus == 'stopped' || startserviceImmediate =='stopped'">Stop</button>
                                         </div>
                                     </div>
 
@@ -429,8 +429,8 @@
                                             </div>
 
                                             <div class="col-sm-2 pull-right">
-                                                <button type="button" class="btn btn-primary" ng-click="batchstart()" ng-disabled="batchScheduler.$invalid || SchedulerStatus == 'stopped'">Start</button>
-                                                <button type="button" class="btn btn-primary" ng-click="batchstop()" ng-disabled="SchedulerStatus == 'stopped'">Stop</button>
+                                                <button type="button" class="btn btn-primary" ng-click="batchstart()" ng-disabled="batchScheduler.$invalid || SchedulerStatus == 'stopped' || startserviceBatch =='started'">Start</button>
+                                                <button type="button" class="btn btn-primary" ng-click="batchstop()" ng-disabled="SchedulerStatus == 'stopped' || startserviceBatch =='stopped'">Stop</button>
                                             </div>
                                             <div class="col-sm-12" ng-show="batchScheduler.batchUnit.$invalid && batchScheduler.batchUnit.$touched || batchScheduler.batchFrequency.$invalid && batchScheduler.batchFrequency.$touched">
                                                 <span class="error">Frequency and Unit is required in order to start the batch scheduler</span>

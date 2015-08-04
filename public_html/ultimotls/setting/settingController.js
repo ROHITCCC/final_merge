@@ -31,7 +31,7 @@ settingModule.directive('lowercased', function () {
         require: 'ngModel',
         link: function (scope, element, attrs, modelCtrl) {
             modelCtrl.$parsers.push(function (input) {
-                return input ? input.toUpperCase() : "";
+                return input ? input.toLowerCase() : "";
             });
             element.css("text-transform", "lowercase");
         }
@@ -70,7 +70,8 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
         $scope.numbers = ['3', '5', '10', '15', '20', '30', '40', '50', '100', '200'];
         $scope.selectedNumber = $scope.numbers[7];
         $scope.selectedNumberAggri = $scope.numbers[4];
-        $scope.startservice = '';
+        $scope.startserviceImmediate = '';
+        $scope.startserviceBatch = '';
         $scope.curPageAggri = 0;
         $scope.pageSizeAggri = 4;
         $scope.immidatejob = {"requestType": "", "jobName": "ImmediateNotificationRefreshJob", "jobClass": "ImmediateNotificationRefreshJob", "frequency": {"duration": "", "unit": "", "starttime": ""}};
@@ -110,7 +111,7 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
 
 ////Immidate tools
             $scope.addNewImmidate = function () {
-                newson = {envid: '', severity: '', email: '', template: '', application: {name: '', interfaces: ['']}};
+                newson = {envid: '', severity: '', email: '', template: 'ImmediateNotification.html', application: {name: '', interfaces: ['']}};
                 $scope.notifications.immediate.notification.push(newson);
             };
             $scope.addImmidateInterface = function (upindex) {
@@ -161,14 +162,14 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
                 $scope.immidatejob.frequency.duration = $scope.notifications.immediate.jobRefreshRate.duration;
                 $scope.immidatejob.frequency.unit = $scope.notifications.immediate.jobRefreshRate.unit;
                 $scope.scheduler($scope.immidatejob);
-                $scope.startservice = 'started';
+                $scope.startserviceImmediate = 'started';
             };
             $scope.inmidateStopjob = function () {
                 temporal = $scope.immidatejob;
                 $scope.immidatejob.requestType = 'stopJob';
                 delete temporal.frequency;
                 $scope.scheduler(temporal);
-                $scope.startservice = 'stopped';
+                $scope.startserviceImmediate = 'stopped';
             };
             //Env dropdown
             $scope.envDropdown = angular.copy($scope.environments);
@@ -193,11 +194,11 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
         });
         $scope.reportPromise().catch(function () {
             $scope.newreport = 1;
-            $scope.reports = [{report: {envid: '', application: '', interface1: '', errorType: '', frequency: {starttime: '', duration: '', unit: ''}, email: '', template: ''}}];
+            $scope.reports = [{report: {envid: '', application: '', interface1: '', errorType: '', frequency: {starttime: '', duration: '', unit: ''}, email: '', template: 'ReportNotification.html'}}];
         });
         $scope.reportPromise().finally(function () {
             $scope.addNewAggrigated = function () {
-                newson = {report: {envid: null, application: null, email: null, interface1: null, errorType: null, frequency: {duration: null, starttime: null, unit: null}}};
+                newson = {report: {envid: null, application: null, email: null, template:'ReportNotification.html', interface1: null, errorType: null, frequency: {duration: null, starttime: null, unit: null}}};
                 $scope.reports.push(newson);
             };
             $scope.removeAggrigated = function (index) {
@@ -314,7 +315,8 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
             $scope.SchedulerStatus = data.data;
             if ($scope.SchedulerStatus === 'started') {
                 $scope.schedulerJob();
-                $scope.startservice = 'stopped';
+                $scope.startserviceImmediate = 'stopped';
+                $scope.startserviceBatch = 'stopped';
             }
         });
 /////////////////////////////////////BATCH JOBS////////////////////////////////////////
@@ -389,11 +391,13 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
                 $scope.batch.frequency.starttime = "";
             }
             $scope.scheduler($scope.batch, 1);
+            $scope.startserviceBatch = 'started'
         };
         $scope.batchstop = function () {
             $scope.batch.requestType = "stopJob";
             delete $scope.batch.frequency;
             $scope.scheduler($scope.batch, 2);
+            $scope.startserviceBatch = 'stopped';
         };
         $scope.scheduler = function (object, opt) {
             var conAjax = $http.post(schedulerURL, object);
@@ -427,6 +431,8 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
         };
         $scope.startscheduler = function () {
             $scope.schedulerObj.requestType = "startScheduler";
+            $scope.startserviceImmediate = 'stopped';
+            $scope.startserviceBatch = 'stopped';
             $scope.scheduler($scope.schedulerObj, 3);
         };
         $scope.stopscheduler = function () {
