@@ -102,7 +102,7 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
         });
         $scope.settingPromise().catch(function () {
             $scope.newsettingcreator = 1;
-            newsetting = {setting: {apisetup: {hostname: '', port: '', database: '', collections: {payload: '', audits: ''}}, notification: {immediate: {frequency: {duration: '1', unit: 'hrs'}, jobRefreshRate: {duration: '1', unit: 'hrs'}, notification: [{envid: '', severity: '', email: '', application: {name: '', interfaces: ['']}}]}}, envsetup: [{name: '', description: '', label: ''}]}};
+            newsetting = {setting: {apisetup: {hostname: '', port: '', database: '', collections: {payload: '', audits: ''}}, notification: {immediate: {frequency: {duration: '1', unit: 'hrs'}, jobRefreshRate: {duration: '1', unit: 'hrs'}, notification: [{envid: '', severity: '', email: '', template:'ImmediateNotification.html', application: {name: '', interfaces: ['']}}]}}, envsetup: [{name: '', description: '', label: ''}]}};
             $scope.settings = newsetting;
             $scope.environments = $scope.settings.setting.envsetup;
             $scope.notifications = $scope.settings.setting.notification;
@@ -165,8 +165,8 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
                 $scope.startserviceImmediate = 'started';
             };
             $scope.inmidateStopjob = function () {
-                temporal = $scope.immidatejob;
                 $scope.immidatejob.requestType = 'stopJob';
+                temporal = angular.copy($scope.immidatejob);
                 delete temporal.frequency;
                 $scope.scheduler(temporal);
                 $scope.startserviceImmediate = 'stopped';
@@ -337,7 +337,6 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
                 $scope.sendBatchJob = {};
                 if ($scope.curPageBatchjob >= 1) {
                     temp = ($scope.curPageBatchjob * $scope.pageSizeBatchjob) + index;
-                    $scope.sendBatchJob.status = $scope.Batchjobs[temp].status;
                     $scope.sendBatchJob.id = $scope.Batchjobs[temp]._id.$oid;
                     $scope.batchupdater($scope.sendBatchJob);
                 } else {
