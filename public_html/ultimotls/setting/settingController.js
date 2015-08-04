@@ -91,7 +91,7 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
             }
             ;
             if ($scope.settings.setting.notification === undefined) {
-                $scope.settings.setting.notification = {immidiate: {frequency: {duration: '', unit: ''}, notification: [{severity: '', email: '', application: {name: '', interfaces: ['']}}]}};
+                $scope.settings.setting.notification = {immediate: {frequency: {duration: '', unit: ''}, notification: [{severity: '', email: '', application: {name: '', interfaces: ['']}}]}};
                 $scope.notifications = $scope.settings.setting.notification;
             } else {
                 $scope.notifications = $scope.settings.setting.notification;
@@ -100,7 +100,7 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
         });
         $scope.settingPromise().catch(function () {
             $scope.newsettingcreator = 1;
-            newsetting = {setting: {apisetup: {hostname: '', port: '', database: '', collections: {payload: '', audits: ''}}, notification: {immidiate: {frequency: {duration: '1', unit: 'hrs'}, jobRefreshRate: {duration: '1', unit: 'hrs'}, notification: [{envid: '', severity: '', email: '', application: {name: '', interfaces: ['']}}]}}, envsetup: [{name: '', description: '', label: ''}]}};
+            newsetting = {setting: {apisetup: {hostname: '', port: '', database: '', collections: {payload: '', audits: ''}}, notification: {immediate: {frequency: {duration: '1', unit: 'hrs'}, jobRefreshRate: {duration: '1', unit: 'hrs'}, notification: [{envid: '', severity: '', email: '', application: {name: '', interfaces: ['']}}]}}, envsetup: [{name: '', description: '', label: ''}]}};
             $scope.settings = newsetting;
             $scope.environments = $scope.settings.setting.envsetup;
             $scope.notifications = $scope.settings.setting.notification;
@@ -110,26 +110,26 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
 ////Immidate tools
             $scope.addNewImmidate = function () {
                 newson = {envid: '', severity: '', email: '', template: '', application: {name: '', interfaces: ['']}};
-                $scope.notifications.immidiate.notification.push(newson);
+                $scope.notifications.immediate.notification.push(newson);
             };
             $scope.addImmidateInterface = function (upindex) {
                 if ($scope.curPageImmi >= 1) {
                     temp = ($scope.curPageImmi * $scope.pageSizeImmi) + upindex;
-                    $scope.notifications.immidiate.notification[temp].application.interfaces.push({});
+                    $scope.notifications.immediate.notification[temp].application.interfaces.push({});
                 } else {
-                    $scope.notifications.immidiate.notification[upindex].application.interfaces.push('');
+                    $scope.notifications.immediate.notification[upindex].application.interfaces.push('');
                 }
             };
             $scope.removeImmidateInterface = function (upindex, index) {
                 if ($scope.curPageImmi >= 1) {
                     temp = ($scope.curPageImmi * $scope.pageSizeImmi) + upindex;
-                    $scope.notifications.immidiate.notification[temp].application.interfaces.splice(index, 1);
+                    $scope.notifications.immediate.notification[temp].application.interfaces.splice(index, 1);
                 } else {
-                    $scope.notifications.immidiate.notification[upindex].application.interfaces.splice(index, 1);
+                    $scope.notifications.immediate.notification[upindex].application.interfaces.splice(index, 1);
                 }
             };
             $scope.removeImmidate = function (index) {
-                $scope.notifications.immidiate.notification.splice(index, 1);
+                $scope.notifications.immediate.notification.splice(index, 1);
             };
             //Environment tools
             $scope.addNewEnv = function () {
@@ -146,18 +146,19 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
                 $scope.temp = $scope.settings;
                 $scope.savedata($scope.temp);
                 $scope.reloadPage = true;
-                if(reloadFlag === 'reload'){
+                if (reloadFlag === 'reload') {
                     $scope.reloadPage = true;
-                };
+                }
+                ;
             };
             $scope.numberOfPagesImmi = function () {
                 $scope.pageSizeImmi = $scope.selectedNumber;
-                return Math.ceil($scope.notifications.immidiate.notification.length / $scope.pageSizeImmi);
+                return Math.ceil($scope.notifications.immediate.notification.length / $scope.pageSizeImmi);
             };
             $scope.inmidateStartjob = function () {
                 $scope.immidatejob.requestType = 'startJob';
-                $scope.immidatejob.frequency.duration = $scope.notifications.immidiate.jobRefreshRate.duration;
-                $scope.immidatejob.frequency.unit = $scope.notifications.immidiate.jobRefreshRate.unit;
+                $scope.immidatejob.frequency.duration = $scope.notifications.immediate.jobRefreshRate.duration;
+                $scope.immidatejob.frequency.unit = $scope.notifications.immediate.jobRefreshRate.unit;
                 $scope.scheduler($scope.immidatejob);
             };
             $scope.inmidateStopjob = function () {
@@ -322,17 +323,27 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
         };
         $scope.BatchjobPromise().then(function (data) {
             $scope.Batchjobs = data.data;
-            console.log($scope.Batchjob);
             $scope.selectedNumberBatchJobs = $scope.numbers[4];
             $scope.curPageBatchjob = 0;
             $scope.pageSizeBatchjob = 4;
-            
-            $scope.batchchooser = function (index){
+
+            $scope.batchchooser = function (index) {
                 $scope.sendBatchJob = {};
-                 $scope.sendBatchJob.status = $scope.Batchjobs[index].status;
-                 $scope.sendBatchJob.id = $scope.Batchjobs[index]._id.$oid;
-                 $scope.batchupdater($scope.sendBatchJob);
-                
+                if ($scope.curPageBatchjob >= 1) {
+                    temp = ($scope.curPageBatchjob * $scope.pageSizeBatchjob) + index;
+                    $scope.sendBatchJob.status = $scope.Batchjobs[temp].status;
+                    $scope.sendBatchJob.id = $scope.Batchjobs[temp]._id.$oid;
+                    $scope.batchupdater($scope.sendBatchJob);
+                } else {
+                    $scope.sendBatchJob.status = $scope.Batchjobs[index].status;
+                    $scope.sendBatchJob.id = $scope.Batchjobs[index]._id.$oid;
+                    $scope.batchupdater($scope.sendBatchJob);
+                }
+            };
+
+            $scope.numberOfPagesBatch = function () {
+                $scope.pageSizeBatchjob = $scope.selectedNumberBatchJobs;
+                return Math.ceil($scope.Batchjobs.length / $scope.pageSizeBatchjob);
             };
         });
 
@@ -419,6 +430,7 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
             $scope.scheduler($scope.schedulerObj, 4);
         };
         $scope.batchupdater = function (insert) {
+            console.log(insert);
             var conAjax = $http.put(batchURL, insert);
             conAjax.success(function (response, status, header, config) {
                 var auth_token_valid_until = header()['auth-token-valid-until'];
