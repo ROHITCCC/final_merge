@@ -263,6 +263,7 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
                         Batchlenght = $scope.schedulers[i].frequency;
                     }
                 }
+                
                 if (Batchlenght !== null) {
                     if (Batchlenght <= 59) {
                         $scope.batch.frequency.duration = Batchlenght;
