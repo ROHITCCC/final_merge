@@ -1,6 +1,7 @@
 var severityPieChartDirectiveModule = angular.module('severityPieChartDirectiveModule', ['severityPieChartControllerModule']);
 
 severityPieChartDirectiveModule.directive('severityPieChart',['queryFilter', function(queryFilter){
+    var initialHeight = document.getElementById("row2").offsetHeight;
     function updateSize(data){
         var width = document.getElementById('severityPieChartDiv').offsetWidth, height = (window.innerHeight*.28);
         if (data === 0){ //Will append a Message for no data and return out of the function
@@ -102,7 +103,8 @@ severityPieChartDirectiveModule.directive('severityPieChart',['queryFilter', fun
                  };
                  function mouseMoveSlice(){
                     return tooltip
-                    .style("top", (d3.event.pageY - 15)+"px")
+                    .style("top", (d3.event.pageY - 15)-
+                          ((document.getElementById("row2").offsetHeight - initialHeight)*.8)+"px")
                     .style("left", (d3.event.pageX + 15)+"px");
                  };
 		var _data = d3.layout.pie().sort(function(a,b){return b.count - a.count}).value(function(d) {return d.count;})(data);
@@ -110,7 +112,7 @@ severityPieChartDirectiveModule.directive('severityPieChart',['queryFilter', fun
 		var slices = d3.select("#"+id).append("g").attr("transform", "translate(" + x + "," + y + ")")
                     .attr("class", "slices");
 		var tooltip = d3.select("#severityPieChart").append("div").attr("id", "tooltip")
-                    .style("position", "fixed").style("opacity", 0);	
+                    .style("position", "fixed").style("opacity", 0).style("z-index", 1000);	
 		slices.selectAll(".innerSlice").data(_data).enter().append("path").attr("class","innerSlice")
                     .attr("id", function(d,i){return "severityInnerSlice"+i})
                     .style("fill", function(d,i){return color(i);})

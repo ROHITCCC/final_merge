@@ -115,42 +115,6 @@ describe('Ultimo TLS', function() {
 		browser.sleep(750);
 		
   });
-  it('should search audits and do a rest replay', function() {
-	  //login("a", "a", "PROD");
-		element.all(by.repeater('tab in tabs')).
-			get(1).$('a').click();
-		searchAudit("ebs");
-		element.all(by.repeater("d in data._embedded['rh:doc']| orderBy:predicate:reverse")).
-			get(0).
-			click();
-		browser.sleep(500);
-		payloadButton.click();
-		browser.sleep(500);
-		replayButton.click();
-		browser.sleep(500);
-		enterRestData("http://demo9083151.mockable.io/rest","application/json","Authorization","Basic YTph","POST");
-		browser.sleep(2500);
-		element(by.cssContainingText('option', 'FILE')).click();
-		enterFileData("C:", "testing", "txt")
-		browser.sleep(2500);
-		element(by.cssContainingText('option', 'WS')).click();
-		browser.sleep(250);
-		element(by.cssContainingText('option', 'FTP')).click();
-		browser.sleep(250);
-		element(by.cssContainingText('option', 'REST')).click();
-		browser.sleep(250);
-		replayCloseBtn.click();
-		browser.sleep(500);
-		element.all(by.repeater("d in data._embedded['rh:doc']| orderBy:predicate:reverse")).
-			get(0).$('td').$('input').click();
-		browser.sleep(100);
-		replayButtonBatch.click();
-		browser.sleep(500);
-		enterRestData("http://demo9083151.mockable.io/rest","application/json","Authorization","Basic YTph","POST");
-		browser.sleep(2500);
-		element(by.cssContainingText('option', 'FILE')).click();
-		enterFileData("C:", "testing", "txt")
-		browser.sleep(2500);
-  });
+  
   
 });

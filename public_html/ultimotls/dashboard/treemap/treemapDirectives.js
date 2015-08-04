@@ -79,11 +79,11 @@ treemapDirectiveModule.directive('treemapZoom', ['$location', function($location
         if(treeDataset === 0){                  //shows a message if no data is present
             svg.selectAll("rect").remove();
             svg.selectAll("text").remove();
-            d3.select("#zoomOut").on("click", "").style("cursor","auto");
-            d3.select("#zoomIn").on("click", "").style("cursor","auto");
             svg.append("text").attr("x", w/3).attr("y", h/3).text("No Data Available");
             return;
         }
+        d3.select("#zoomOut").on("click", "").style("cursor","auto");
+        d3.select("#zoomIn").on("click", "").style("cursor","auto");
         if(scope.treemapSaver.brushCounter === undefined)scope.treemapSaver.brushCounter = 2;               //keeps track of how many brushes
         if(scope.treemapSaver.brushCounterZoomed === undefined)scope.treemapSaver.brushCounterZoomed = 0;   //have been created
         if(scope.treemapSaver.svgCounter === undefined)scope.treemapSaver.svgCounter = 0;                   //
@@ -103,6 +103,8 @@ treemapDirectiveModule.directive('treemapZoom', ['$location', function($location
                 };
             }
             else{
+                d3.select("#zoomOut").on("click", function() { zoom(root, "flag", "flag"); }).style("cursor","auto");
+                d3.select("#zoomIn").on("click", customZoomBtn).style("cursor","auto");
                 treeData = treeDataset;
                 svg = d3.selectAll("#treemapZoom").selectAll("div").select("svg.newSVG");       //change svg for custom zooming
             }
@@ -143,7 +145,7 @@ treemapDirectiveModule.directive('treemapZoom', ['$location', function($location
             d3.selectAll(".brush").call(brushStorage[scope.treemapSaver.brushCounter].clear());
             d3.selectAll("g.brush").remove();
             d3.selectAll("svg.newSVG").remove();
-            d3.select("#zoomIn").style("cursor","pointer");
+            //d3.select("#zoomIn").style("cursor","pointer");
             d3.selectAll("#treemapSVG").transition().duration(750).style("opacity","1").style("display","inline");
             d3.select("#zoomOut").on("click", function() { zoom(root, "flag", "flag"); });
             scope.treemapSaver.customZoomed = undefined;
@@ -279,8 +281,7 @@ treemapDirectiveModule.directive('treemapZoom', ['$location', function($location
             svg.selectAll("text").remove();
             svg.append("text").attr("x", w/3).attr("y", h/3).text("No Data Available");
         }
-        d3.select("#zoomOut").on("click", function() { zoom(root, "flag", "flag"); }).style("cursor","auto");
-        d3.select("#zoomIn").on("click", customZoomBtn).style("cursor","auto");
+        
 
         function zoom(d, name, parent, resize) {            //function for zooming in
             var kx = w / d.dx, ky = h / d.dy;
@@ -472,7 +473,6 @@ treemapDirectiveModule.directive('treemapZoom', ['$location', function($location
             var isIE = getInternetExplorerVersion();
             for(var b = 0; b < selected.length; b++){               //restructures data into treemap friendly format
                 childTextGet = selected[b].childNodes.length-1;
-                console.log(selected[b].childNodes[childTextGet].childNodes[1].innerHTML);
                 if(isIE === -1){
                     treeChildren[b] = ({size:selected[b].childNodes[childTextGet].childNodes[1].innerHTML, name:selected[b].id });
                 }else{
