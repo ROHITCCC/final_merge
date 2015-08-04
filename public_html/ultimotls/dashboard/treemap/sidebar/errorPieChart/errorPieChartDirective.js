@@ -45,7 +45,6 @@ errorPieChartDirectiveModule.directive('errorPieChart',['queryFilter', function(
             .append("text").text("Reset");
     }
     function pieChart(data, status){
-        console.log(document.getElementById("row2").offsetHeight - initialHeight)
         var Donut3D = {};
         var color = d3.scale.category10();
         var width = document.getElementById('errorTypePieChartDiv').offsetWidth, height = (window.innerHeight*.28);
