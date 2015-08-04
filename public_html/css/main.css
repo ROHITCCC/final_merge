@@ -1548,3 +1548,22 @@ span#noticebatch.stopped {
 .immidiate_refresh h4 {
     margin-top: 3px;
 }
+
+.info{
+    margin:0px !important;
+}
+
+#apireport{
+    display: inline-block;
+    opacity: 0;
+}
+
+.info.sucess {
+    color: green;
+}
+
+.info.error{
+    color:red;
+    
+    
+}
