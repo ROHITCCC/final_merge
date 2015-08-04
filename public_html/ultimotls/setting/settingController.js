@@ -70,9 +70,10 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
         $scope.numbers = ['3', '5', '10', '15', '20', '30', '40', '50', '100', '200'];
         $scope.selectedNumber = $scope.numbers[7];
         $scope.selectedNumberAggri = $scope.numbers[4];
+        $scope.startservice = '';
         $scope.curPageAggri = 0;
         $scope.pageSizeAggri = 4;
-        $scope.immidatejob = {"requestType": "", "jobName": "ImmidateNotificationRefreshJob", "jobClass": "ImmidateNotificationRefreshJob", "frequency": {"duration": "", "unit": "", "starttime": ""}};
+        $scope.immidatejob = {"requestType": "", "jobName": "ImmediateNotificationRefreshJob", "jobClass": "ImmediateNotificationRefreshJob", "frequency": {"duration": "", "unit": "", "starttime": ""}};
 //////////////////////////////////////SETTINGS//////////////////////////////////////////
         $scope.settingPromise = function () {
             var promise = $http.get(settingURL + "?object=setting").success(function (data, status, header, config) {
@@ -160,12 +161,14 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
                 $scope.immidatejob.frequency.duration = $scope.notifications.immediate.jobRefreshRate.duration;
                 $scope.immidatejob.frequency.unit = $scope.notifications.immediate.jobRefreshRate.unit;
                 $scope.scheduler($scope.immidatejob);
+                $scope.startservice = 'started';
             };
             $scope.inmidateStopjob = function () {
                 temporal = $scope.immidatejob;
                 $scope.immidatejob.requestType = 'stopJob';
                 delete temporal.frequency;
                 $scope.scheduler(temporal);
+                $scope.startservice = 'stopped';
             };
             //Env dropdown
             $scope.envDropdown = angular.copy($scope.environments);
@@ -311,6 +314,7 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
             $scope.SchedulerStatus = data.data;
             if ($scope.SchedulerStatus === 'started') {
                 $scope.schedulerJob();
+                $scope.startservice = 'stopped';
             }
         });
 /////////////////////////////////////BATCH JOBS////////////////////////////////////////
