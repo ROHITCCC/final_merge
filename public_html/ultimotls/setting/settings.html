@@ -49,13 +49,13 @@
 
                             <div class="col-sm-12" style="color: red;">
                                 <button class="btn btn-success" ng-click="savesetting()" ng-disabled="Apiform.payload.$error.required || Apiform.audit.$error.required || Apiform.database.$error.required || Apiform.hostname.$error.required || Apiform.port.$error.required" disabled="disabled">Save API setup</button>
-                                <span ng-show="Apiform.payload.$error.required || Apiform.audit.$error.required || Apiform.database.$error.required || Apiform.hostname.$error.required || Apiform.port.$error.required">Value for: </span>
+                                <p ng-show="Apiform.payload.$touched || Apiform.audit.$touched || Apiform.database.touched || Apiform.hostname.$touched || Apiform.port.$touched"><span ng-show="Apiform.payload.$error.required || Apiform.audit.$error.required || Apiform.database.$error.required || Apiform.hostname.$error.required || Apiform.port.$error.required">Value for: </span>
                                 <span ng-show="Apiform.payload.$error.required">Payload, </span>
                                 <span ng-show="Apiform.audit.$error.required">Audit, </span>
                                 <span ng-show="Apiform.database.$error.required">Database, </span>
                                 <span ng-show="Apiform.hostname.$error.required">Hostname, </span>
                                 <span ng-show="Apiform.port.$error.required">Port, </span>
-                                <span ng-show="Apiform.payload.$error.required || Apiform.audit.$error.required || Apiform.database.$error.required || Apiform.hostname.$error.required || Apiform.port.$error.required"><strong>required</strong></span>
+                                <span ng-show="Apiform.payload.$error.required || Apiform.audit.$error.required || Apiform.database.$error.required || Apiform.hostname.$error.required || Apiform.port.$error.required"><strong>required</strong></span></p>
                             </div>  
                         </form>
                     </div>

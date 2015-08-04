@@ -163,6 +163,8 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
                 $scope.immidatejob.frequency.unit = $scope.notifications.immediate.jobRefreshRate.unit;
                 $scope.scheduler($scope.immidatejob);
                 $scope.startserviceImmediate = 'started';
+                $scope.savesetting();
+                
             };
             $scope.inmidateStopjob = function () {
                 $scope.immidatejob.requestType = 'stopJob';
@@ -337,12 +339,12 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
                 $scope.sendBatchJob = {};
                 if ($scope.curPageBatchjob >= 1) {
                     temp = ($scope.curPageBatchjob * $scope.pageSizeBatchjob) + index;
-                    $scope.sendBatchJob.id = $scope.Batchjobs[temp]._id.$oid;
-                    $scope.batchupdater($scope.sendBatchJob);
+                    batchid = $scope.Batchjobs[temp]._id.$oid;
+                    $scope.batchupdater(batchid);
                 } else {
                     $scope.sendBatchJob.status = $scope.Batchjobs[index].status;
-                    $scope.sendBatchJob.id = $scope.Batchjobs[index]._id.$oid;
-                    $scope.batchupdater($scope.sendBatchJob);
+                    batchid = $scope.Batchjobs[index]._id.$oid;
+                    $scope.batchupdater(batchid);
                 }
             };
 
@@ -442,7 +444,8 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
         };
         $scope.batchupdater = function (insert) {
             console.log(insert);
-            var conAjax = $http.put(batchURL, insert);
+            send = batchURL+'/?id='+insert;
+            var conAjax = $http.put(send);
             conAjax.success(function (response, status, header, config) {
                 var auth_token_valid_until = header()['auth-token-valid-until'];
                 resetTimerService.set(auth_token_valid_until);
