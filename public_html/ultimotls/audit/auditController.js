@@ -566,7 +566,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                 }
                 
                 var batchPayload = '{  "replaySavedTimestamp":"'+batchVals[0]+'",  "replayedBy":"'+batchVals[1]+'", '+
-                        '"batchProcessedTimestamp":"", "replayDestinationInfo": { '+restPayload+' },'+
+                        '"batchProcessedTimestamp":"", "status":"new", "replayDestinationInfo": { '+restPayload+' },'+
                                     '"auditID": ['+auditIDs+']}';
                             console.log(batchPayload);
                 if($scope.restReplay.endpointUrl !== undefined && methodVal !== "" && contentVal !== ""){
@@ -659,7 +659,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                 }
                 
                 var batchPayload = '{  "replaySavedTimestamp":"'+batchVals[0]+'",  "replayedBy":"'+batchVals[1]+'", '+
-                        '"batchProcessedTimestamp":"", "replayDestinationInfo": { '+filePayloadBatch+' },'+
+                        '"batchProcessedTimestamp":"", "status":"new", "replayDestinationInfo": { '+filePayloadBatch+' },'+
                                     '"auditID": ['+auditIDs+']}';
                 console.log(batchPayload);
                 if($scope.fileReplay.location !== undefined && fileName !== undefined && fileExt !== ""){
@@ -694,6 +694,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                     "Content-Type: text/plain; charset: utf-8;\n\n" + 
                     $scope.payloadPageData+
                     "\n\n--boundaryWS--";
+                console.log(multipartPayload);
                 if($scope.webServiceReplay.wsdl !== undefined && $scope.webServiceReplay.operation !== undefined && $scope.webServiceReplay.binding !== undefined){
                     $http.post(replayPostUrl, multipartPayload, {timeout:TLS_SERVER_TIMEOUT})
                         .success(function(d,status, header, config){
@@ -716,8 +717,9 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                     '"soapaction":"'+$scope.webServiceReplay.soapAction+'", "binding":"'+$scope.webServiceReplay.binding+'"';
                 
                 var batchPayload = '{  "replaySavedTimestamp":"'+batchVals[0]+'", "replayedBy":"'+batchVals[1]+'", '+
-                        '"batchProcessedTimestamp":"", "replayDestinationInfo": { '+webServicePayloadBatch+' },'+
+                        '"batchProcessedTimestamp":"", "status":"new", "replayDestinationInfo": { '+webServicePayloadBatch+' },'+
                                     '"auditID": ['+auditIDs+']}';
+                console.log(batchPayload);
                 if($scope.webServiceReplay.wsdl !== undefined && $scope.webServiceReplay.operation !== undefined && $scope.webServiceReplay.binding !== undefined){
                     $http.post(replayPostUrlBatch, batchPayload, {timeout:TLS_SERVER_TIMEOUT})
                         .success(function(d,status, header, config){
@@ -776,7 +778,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                         '"password":"'+$scope.ftpServiceReplay.password+'","location":"'+$scope.ftpServiceReplay.location+'", '+
                         '"fileType":"'+$scope.ftpServiceReplay.fileType+'"';
                 var batchPayload = '{  "replaySavedTimestamp":"'+batchVals[0]+'",  "replayedBy":"'+batchVals[1]+'", '+
-                        '"batchProcessedTimestamp":"", "replayDestinationInfo": { '+ftpPayloadBatch+' },'+
+                        '"batchProcessedTimestamp":"", "status":"new", "replayDestinationInfo": { '+ftpPayloadBatch+' },'+
                         '"auditID": ['+auditIDs+']}';
                 if($scope.ftpServiceReplay.host !== undefined && $scope.ftpServiceReplay.port !== undefined && 
                         $scope.ftpServiceReplay.username !== undefined && $scope.ftpServiceReplay.password !== undefined &&
