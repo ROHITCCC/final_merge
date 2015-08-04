@@ -320,7 +320,7 @@ ultimotls.config(function ($stateProvider, $urlRouterProvider) {
     // this trick must be done so that we don't receive
     // `Uncaught Error: [$injector:cdep] Circular dependency found`
 });
-ultimotls.factory("mongoAggregateService", ['$http','resetTimerService',function ($http,resetTimerService) {
+ultimotls.factory("mongoAggregateService", ['$http','resetTimerService','$location',function ($http,resetTimerService,$location) {
     var postUrl = TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/_logic/AggregateService";
     var callAggregate = {};
     callAggregate.httpResponse = {};
@@ -332,7 +332,11 @@ ultimotls.factory("mongoAggregateService", ['$http','resetTimerService',function
             .success(function (result, status, header, config) {
                 var auth_token_valid_until = header()['auth-token-valid-until'];
                 resetTimerService.set(auth_token_valid_until);
-        }).error(function () { //need to pass error message through the service???
+        })
+        .error(function (result, status, header, config) { //need to pass error message through the service???
+            if(status===401){
+                $location.path('/login');
+            }
         });
         return promise;
     };
@@ -437,6 +441,10 @@ ultimotls.service("auditSearch",['$http','queryEnv', 'resetTimerService',functio
                 .error(function (response, status, header, config) {
                     if(status===0){
                         audits.inputError = "Backend timed out";
+                    }
+                    if(status===401){
+                        audits.inputError = "Unauthorized"
+                        $location.path('/login');
                     }
                 });
             

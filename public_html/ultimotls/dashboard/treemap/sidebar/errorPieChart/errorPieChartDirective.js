@@ -1,6 +1,7 @@
 var errorPieChartDirectiveModule = angular.module('errorPieChartDirectiveModule', ['errorPieChartControllerModule']);
 
 errorPieChartDirectiveModule.directive('errorPieChart',['queryFilter', function(queryFilter){
+    var initialHeight = document.getElementById("row2").offsetHeight;
     function updateSize(data){
         var width = document.getElementById('errorTypePieChartDiv').offsetWidth, height = (window.innerHeight*.28);
         if (data === 0){ //Will append a Message for no data and return out of the function
@@ -44,6 +45,7 @@ errorPieChartDirectiveModule.directive('errorPieChart',['queryFilter', function(
             .append("text").text("Reset");
     }
     function pieChart(data, status){
+        console.log(document.getElementById("row2").offsetHeight - initialHeight)
         var Donut3D = {};
         var color = d3.scale.category10();
         var width = document.getElementById('errorTypePieChartDiv').offsetWidth, height = (window.innerHeight*.28);
@@ -102,7 +104,8 @@ errorPieChartDirectiveModule.directive('errorPieChart',['queryFilter', function(
             };
             function mouseMoveSlice () {
                return tooltip
-               .style("top", (d3.event.pageY - 15)+"px")
+               .style("top", (d3.event.pageY - 15)-
+               ((document.getElementById("row2").offsetHeight - initialHeight)*.8)+"px")
                .style("left", (d3.event.pageX + 15)+"px");
             };
 
@@ -111,7 +114,7 @@ errorPieChartDirectiveModule.directive('errorPieChart',['queryFilter', function(
             var slices = d3.select("#"+id).append("g").attr("transform", "translate(" + x + "," + y + ")")
                 .attr("class", "slices");
             var tooltip = d3.select("#errorTypePieChart").append("div").attr("id", "tooltip")
-                .style("position", "fixed").style("opacity", 0);	
+                .style("position", "fixed").style("opacity", 0).style("z-index", 1000);	
             slices.selectAll(".innerSlice").data(_data).enter().append("path").attr("class","innerSlice")
                 .attr("id", function(d,i){return "errorInnerSlice"+i})
                 .style("fill", function(d,i){return color(i);})
