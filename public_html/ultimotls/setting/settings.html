@@ -110,7 +110,7 @@
                                 <span style="color: red;" ng-show="EnvForm.description.$error.required">Description, </span>
                                 <span style="color: red;" ng-show="EnvForm.label.$error.required">Label, </span>
                                 <span style="color: red;" ng-show="EnvForm.name.$error.required || EnvForm.description.$error.required || EnvForm.label.$error.required"> <strong>required</strong> </span>
-                                <div class="pagination pagination_env pagination-centered" ng-show="environments">
+                                <div class="pagination pagination_env pagination-centered pull-right" ng-show="environments">
                                     <ul class="pagination-controle pagination">
                                         <li>
                                             <button type="button" class="btn btn-primary" ng-disabled="curPage == 0"ng-click="curPage = curPage - 1"> &lt; PREV</button>
@@ -250,7 +250,7 @@
                             </div>
                             <button class="btn addfields" ng-click="addNewImmidate()">New Notification</button>
                             <button class="btn btn-success" ng-click="savesetting()" ng-disabled="ImmiForm.envid.$error.required || ImmiForm.template.$error.required || ImmiForm.interface.$error.required || ImmiForm.name.$error.required || ImmiForm.email.$error.required || ImmiForm.email.$error.email || ImmiForm.severity.$error.required || FreqForm.immDuration.$error.required || FreqForm.immUnit.$error.required">Save Notifications</button>
-                            <div class="pagination pagination-centered" ng-show="notifications.immediate.notification"><!-- Pagination -->
+                            <div class="pagination pagination-centered pull-right" ng-show="notifications.immediate.notification"><!-- Pagination -->
                                 <ul class="pagination-controle pagination">
                                     <li>
                                         <button type="button" class="btn btn-primary" ng-disabled="curPageImmi == 0"ng-click="curPageImmi = curPageImmi - 1"> &lt; PREV</button>
@@ -355,7 +355,7 @@
                         </div>
                         <div class="col-sm-12">
                             <button class="btn addfields" ng-click="addNewAggrigated()">New Report</button>
-                            <div class="pagination pagination-centered" ng-show="reports"> <!-- Pagination Aggrigated -->
+                            <div class="pagination pagination-centered pull-right" ng-show="reports"> <!-- Pagination Aggrigated -->
                                 <ul class="pagination-controle pagination">
                                     <li>
                                         <button type="button" class="btn btn-primary" ng-disabled="curPageAggri == 0"ng-click="curPageAggri = curPageAggri - 1"> &lt; PREV</button>
@@ -524,7 +524,7 @@
                                         </table>
                                     </div>
                                 </form>
-                                <div class="pagination pagination-centered" ng-show="notifications.immediate.notification"><!-- Pagination -->
+                                <div class="pagination pagination-centered pull-right" ng-show="notifications.immediate.notification"><!-- Pagination -->
                                     <ul class="pagination-controle pagination">
                                         <li>
                                             <button type="button" class="btn btn-primary" ng-disabled="curPageBatchjob == 0"ng-click="curPageBatchjob = curPageBatchjob - 1"> &lt; PREV</button>

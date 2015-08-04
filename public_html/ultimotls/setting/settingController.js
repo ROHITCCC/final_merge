@@ -108,8 +108,6 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
             $scope.notifications = $scope.settings.setting.notification;
         });
         $scope.settingPromise().finally(function () {
-
-////Immidate tools
             $scope.addNewImmidate = function () {
                 newson = {envid: '', severity: '', email: '', template: 'ImmediateNotification.html', application: {name: '', interfaces: ['']}};
                 $scope.notifications.immediate.notification.push(newson);
@@ -151,7 +149,6 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
                 if (reloadFlag === 'reload') {
                     $scope.reloadPage = true;
                 }
-                ;
             };
             $scope.numberOfPagesImmi = function () {
                 $scope.pageSizeImmi = $scope.selectedNumber;
@@ -164,7 +161,6 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
                 $scope.scheduler($scope.immidatejob);
                 $scope.startserviceImmediate = 'started';
                 $scope.savesetting();
-                
             };
             $scope.inmidateStopjob = function () {
                 $scope.immidatejob.requestType = 'stopJob';
