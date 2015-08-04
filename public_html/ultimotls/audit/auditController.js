@@ -17,8 +17,8 @@ auditControllerModule.filter('pagination', function () {
     };
 });
 
-auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'auditSearch', 'initPromise', 'queryEnv', 'treemapSaver','resetTimerService',
-    function ($scope, $log, $http, auditSearch, initPromise, queryEnv, treemapSaver,resetTimerService) {
+auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'auditSearch', 'initPromise', 'queryEnv', 'treemapSaver','resetTimerService','logoutService',
+    function ($scope, $log, $http, auditSearch, initPromise, queryEnv, treemapSaver,resetTimerService, logoutService) {
         //Initialize scope data 
         $scope.rowsOptions = [{rows: 5}, {rows: 10}, {rows: 25}, {rows: 50}, {rows: 100}];
         $scope.rowNumber = $scope.rowsOptions[2];
@@ -78,7 +78,10 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
             }
             var searchPromise = auditSearch.doSearch(query, $scope.rowNumber, dbType);
             $scope.inputError = "";
-            searchPromise.then(function (response) {
+            searchPromise.then(function (response, status, header, config) {
+                if(status===401){
+                    logoutService.logout();
+                }
                 var extractedURL = response.config.url, pos1=extractedURL.indexOf("="), pos2=extractedURL.indexOf("&");
                 var extractedQuery = extractedURL.slice(pos1+1,pos2);
                 $scope.replayQueryHolder = extractedQuery;//Used for replay services
@@ -331,8 +334,13 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                         $scope.data = response;
                         $scope.treemapSaver.auditData = $scope.data;
                         $scope.errorWarning = "";
-                    }).error(function(){
-                        $scope.errorWarning = "Call Timed Out";
+                    }).error(function(data,status,header,config){
+                        if(status === 0){
+                            $scope.errorWarning = "Call Timed Out";
+                        }
+                        if(status === 401){
+                            logoutService.logout();
+                        }
                     });
                 $scope.predicate = 'timestamp.$date'; //by defualt it will order results by date
             }
@@ -423,10 +431,10 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
             $scope.sliderWindowData = rowData;
             $scope.rowID = rowData['_id']['$oid'];
             $scope.batchChecker = false;
-            document.getElementById("replayResponseRest").innerHTML = " ";
-            document.getElementById("replayResponseFile").innerHTML = " ";
-            document.getElementById("replayResponseWs").innerHTML = " ";
-            document.getElementById("replayResponseFTP").innerHTML = " ";
+            $scope.replayResponseRest = " ";
+            $scope.replayResponseFile = " ";
+            $scope.replayResponseWs = " ";
+            $scope.replayResponseFTP = " ";
         };
         //makes a http call for related transactionId
         $scope.relatedTransaction = function(transactionID){
@@ -458,7 +466,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
         var replayPostUrl = TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/_logic/ReplayService";
         var replayPostUrlBatch = TLS_PROTOCOL+"://"+TLS_SERVER+":"+TLS_PORT+"/_logic/BatchReplayService";
         $scope.runRestService = function(){//only takes JSON files not 
-            document.getElementById("replayResponseRest").innerHTML = " ";
+            $scope.replayResponseRest= " ";
             if($scope.batchChecker === false){
                 var headerType = null;
                 var headerVal = null;
@@ -512,13 +520,13 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                         .success(function(d,status, header, config){
                             var auth_token_valid_until = header()['auth-token-valid-until'];
                             resetTimerService.set(auth_token_valid_until);
-                            document.getElementById("replayResponseRest").innerHTML = "Rest Replay Success";
+                            $scope.replayResponseRest= "Rest Replay Success";
                         })
                         .error(function(d,status, header, config){
                             var auth_token_valid_until = header()['auth-token-valid-until'];
                             resetTimerService.set(auth_token_valid_until);
-                            document.getElementById("replayResponseRest").innerHTML = "Error: Could Not Connect";
-                            document.getElementById("replayResponseRest").innerHTML = "Error: " + d["http status code"] + ": " + d["message"];
+                            $scope.replayResponseRest = "Error: Could Not Connect";
+                            //$scope.replayResponseRest = "Error: " + d["http status code"] + ": " + d["message"];
                         });
                 }
                 
@@ -566,20 +574,20 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                         .success(function(d,status, header, config){
                             var auth_token_valid_until = header()['auth-token-valid-until'];
                             resetTimerService.set(auth_token_valid_until);
-                            document.getElementById("replayResponseRest").innerHTML = "Success: " + d;
+                            $scope.replayResponseRest = "Success: " + d;
                         })
                         .error(function(d,status, header, config){
                             var auth_token_valid_until = header()['auth-token-valid-until'];
                             resetTimerService.set(auth_token_valid_until);
-                            document.getElementById("replayResponseRest").innerHTML = "Error: Could Not Connect";
-                            document.getElementById("replayResponseRest").innerHTML = "Error: " + d["http status code"] + ": " + d["message"];
+                            $scope.replayResponseRest = "Error: Could Not Connect";
+                            //$scope.replayResponseRest = "Error: " + d["http status code"] + ": " + d["message"];
                         });
                 }
             }    
         };
         $scope.fileReplay = {};
         $scope.runFileService = function(){
-            document.getElementById("replayResponseFile").innerHTML = " ";
+            $scope.replayResponseFile =  " ";
             if($scope.batchChecker === false){
                 var auditID = $scope.rowID;
                 var batchVals = $scope.batchValues();
@@ -615,13 +623,13 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                         .success(function(d,status, header, config){
                             var auth_token_valid_until = header()['auth-token-valid-until'];
                             resetTimerService.set(auth_token_valid_until);
-                            document.getElementById("replayResponseFile").innerHTML = "File Replay Success";
+                            $scope.replayResponseFile = "File Replay Success";
                         })
                         .error(function(d,status, header, config){
                             var auth_token_valid_until = header()['auth-token-valid-until'];
                             resetTimerService.set(auth_token_valid_until);
-                            document.getElementById("replayResponseFile").innerHTML = "Error: Could Not Connect";
-                            document.getElementById("replayResponseFile").innerHTML = "Error: " + d["http status code"] + ": " + d["message"];
+                            $scope.replayResponseFile = "Error: Could Not Connect";
+                            //$scope.replayResponseFile =  "Error: " + d["http status code"] + ": " + d["message"];
                         });
                 }
                 
@@ -659,20 +667,20 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                         .success(function(d,status, header, config){
                             var auth_token_valid_until = header()['auth-token-valid-until'];
                             resetTimerService.set(auth_token_valid_until);
-                            document.getElementById("replayResponseFile").innerHTML = "Success: " + d;
+                            $scope.replayResponseFile =  "Success: " + d;
                         })
                         .error(function(d,status, header, config){
                             var auth_token_valid_until = header()['auth-token-valid-until'];
                             resetTimerService.set(auth_token_valid_until);
-                            document.getElementById("replayResponseFile").innerHTML = "Error: Could Not Connect";
-                            document.getElementById("replayResponseFile").innerHTML = "Error: " + d["http status code"] + ": " + d["message"];
+                            $scope.replayResponseFile =  "Error: Could Not Connect";
+                            //$scope.replayResponseFile =  "Error: " + d["http status code"] + ": " + d["message"];
                         });
                 }
             }
         };
         $scope.webServiceReplay = {};
         $scope.runWebService = function(){
-            document.getElementById("replayResponseWs").innerHTML = " ";
+            $scope.replayResponseWs = " ";
             if($scope.batchChecker === false){
                 var auditID = $scope.rowID;
                 var batchVals = $scope.batchValues();
@@ -691,13 +699,13 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                         .success(function(d,status, header, config){
                             var auth_token_valid_until = header()['auth-token-valid-until'];
                             resetTimerService.set(auth_token_valid_until);
-                            document.getElementById("replayResponseWs").innerHTML = "Web Service Replay Success";
+                            $scope.replayResponseWs = "Web Service Replay Success";
                         })
                         .error(function(d,status, header, config){
                             var auth_token_valid_until = header()['auth-token-valid-until'];
                             resetTimerService.set(auth_token_valid_until);
-                            document.getElementById("replayResponseWs").innerHTML = "Error: Could Not Connect";
-                            document.getElementById("replayResponseWs").innerHTML = "Error: " + d["http status code"] + ": " + d["message"];
+                            $scope.replayResponseWs = "Error: Could Not Connect";
+//                            $scope.replayResponseWs = "Error: " + d["http status code"] + ": " + d["message"];
                         });
                 }
             }
@@ -715,20 +723,20 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                         .success(function(d,status, header, config){
                             var auth_token_valid_until = header()['auth-token-valid-until'];
                             resetTimerService.set(auth_token_valid_until);
-                            document.getElementById("replayResponseWs").innerHTML = "Success: " + d;
+                            $scope.replayResponseWs = "Success: " + d;
                         })
                         .error(function(d,status, header, config){
                             var auth_token_valid_until = header()['auth-token-valid-until'];
                             resetTimerService.set(auth_token_valid_until);
-                            document.getElementById("replayResponseWs").innerHTML = "Error: Could Not Connect";
-                            document.getElementById("replayResponseWs").innerHTML = "Error: " + d["http status code"] + ": " + d["message"];
+                            $scope.replayResponseWs = "Error: Could Not Connect";
+//                            $scope.replayResponseWs = "Error: " + d["http status code"] + ": " + d["message"];
                         });
                 }
             }
         };
         $scope.ftpServiceReplay = {};
         $scope.runFTPService = function(){
-            document.getElementById("replayResponseFTP").innerHTML = " ";
+            $scope.replayResponseFTP = " ";
             if($scope.batchChecker === false){
                 var auditID = $scope.rowID;
                 var batchVals = $scope.batchValues();
@@ -751,12 +759,12 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                         .success(function(d,status, header, config){
                             var auth_token_valid_until = header()['auth-token-valid-until'];
                             resetTimerService.set(auth_token_valid_until);
-                            document.getElementById("replayResponseFTP").innerHTML = "FTP Replay Success";
+                            $scope.replayResponseFTP = "FTP Replay Success";
                         }).error(function(d,status, header, config){
                             var auth_token_valid_until = header()['auth-token-valid-until'];
                             resetTimerService.set(auth_token_valid_until);
-                            document.getElementById("replayResponseFTP").innerHTML = "Error: Could Not Connect";
-                            document.getElementById("replayResponseFTP").innerHTML = "Error: " + d["http status code"] + ": " + d["message"];
+                            $scope.replayResponseFTP = "Error: Could Not Connect";
+//                            $scope.replayResponseFTP = "Error: " + d["http status code"] + ": " + d["message"];
                         });
                 }
             }
@@ -777,13 +785,13 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                         .success(function(d,status, header, config){
                             var auth_token_valid_until = header()['auth-token-valid-until'];
                             resetTimerService.set(auth_token_valid_until);
-                            document.getElementById("replayResponseFTP").innerHTML = "Success: " + d;
+                            $scope.replayResponseFTP = "Success: " + d;
                         })
                         .error(function(d,status, header, config){
                             var auth_token_valid_until = header()['auth-token-valid-until'];
                             resetTimerService.set(auth_token_valid_until);
-                            document.getElementById("replayResponseFTP").innerHTML = "Error: Could Not Connect";
-                            document.getElementById("replayResponseFTP").innerHTML = "Error: " + d["http status code"] + ": " + d["message"];
+                            $scope.replayResponseFTP = "Error: Could Not Connect";
+//                            $scope.replayResponseFTP = "Error: " + d["http status code"] + ": " + d["message"];
                         });
                 }
             }
@@ -792,10 +800,10 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
             $scope.batchChecker = true;
             if($scope.treemapSaver.checkboxChecked !== undefined){
                 $("#replayPage").css("top","15%").addClass("col-sm-offset-3").removeClass("col-sm-offset-6");
-                document.getElementById("replayResponseRest").innerHTML = " ";
-                document.getElementById("replayResponseFile").innerHTML = " ";
-                document.getElementById("replayResponseWs").innerHTML = " ";
-                document.getElementById("replayResponseFTP").innerHTML = " ";
+                $scope.replayResponseRest = " ";
+                $scope.replayResponseFile = " ";
+                $scope.replayResponseWs = " ";
+                $scope.replayResponseFTP = " ";
             };
         };
         $scope.replayRowClicked = function(d){
@@ -899,10 +907,10 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
         };
         $scope.changeReplayBack = function(){
             $("#replayPage").css("top","50%").addClass("col-sm-offset-6").removeClass("col-sm-offset-3");
-            document.getElementById("replayResponseRest").innerHTML = " ";
-            document.getElementById("replayResponseFile").innerHTML = " ";
-            document.getElementById("replayResponseWs").innerHTML = " ";
-            document.getElementById("replayResponseFTP").innerHTML = " ";
+            $scope.replayResponseRest = " ";
+            $scope.replayResponseFile = " ";
+            $scope.replayResponseWs = " ";
+            $scope.replayResponseFTP = " ";
             $scope.batchChecker = false;
         };
         $scope.checkAll = function(source){

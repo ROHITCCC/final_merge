@@ -863,7 +863,7 @@ and open the template in the editor.
                                             <!--                                                perform Rest service, come up with a better name-->
                                             <button ng-click="runRestService()" id="replayRestBtn" class="btn btn-default pull-right">Submit</button>
                                             <button type="button" class="btn btn-default pull-right" ng-click="changeReplayBack()" data-dismiss="modal">Close</button>
-                                        </div><span id="replayResponseRest"></span>
+                                        </div><span id="replayResponseRest">{{replayResponseRest}}</span>
                                     </form>
                                 </div>
                             </li>
@@ -916,7 +916,7 @@ and open the template in the editor.
                                         <div class="form-group replayButtons">
                                             <button ng-click="runFileService()" class="btn btn-default pull-right">Submit</button>
                                             <button type="button" class="btn btn-default pull-right" ng-click="changeReplayBack()" data-dismiss="modal">Close</button>
-                                        </div><span id="replayResponseFile"></span>
+                                        </div><span id="replayResponseFile">{{replayResponseFile}}</span>
                                     </form>
                                 </div>
                             </li>
@@ -954,7 +954,7 @@ and open the template in the editor.
                                         <div class="form-group replayButtons"> 
                                             <button ng-click="runWebService()" class="btn btn-default pull-right">Submit</button>
                                             <button type="button" class="btn btn-default pull-right" ng-click="changeReplayBack()" data-dismiss="modal">Close</button>
-                                        </div><span id="replayResponseWs"></span>
+                                        </div><span id="replayResponseWs">{{replayResponseWs}}</span>
                                     </form>
                                 </div>
                             </li>
@@ -1006,7 +1006,7 @@ and open the template in the editor.
                                         <div class="form-group replayButtons"> 
                                             <button ng-click="runFTPService()" class="btn btn-default pull-right">Submit</button>
                                             <button type="button" class="btn btn-default pull-right" ng-click="changeReplayBack()" data-dismiss="modal">Close</button>
-                                        </div><span id="replayResponseFTP"></span>
+                                        </div><span id="replayResponseFTP">{{replayResponseFTP}}</span>
                                     </form>
                                 </div>
                             </li>
