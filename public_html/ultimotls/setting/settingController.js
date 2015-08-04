@@ -160,6 +160,7 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
                 $scope.immidatejob.frequency.unit = $scope.notifications.immediate.jobRefreshRate.unit;
                 $scope.scheduler($scope.immidatejob);
                 $scope.startserviceImmediate = 'started';
+                fromservice = 1;
                 $scope.savesetting();
             };
             $scope.inmidateStopjob = function () {
@@ -175,7 +176,7 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
                 localStorageService.cookie.add('envOptions', $scope.envDropdown);
             });
             $scope.reload = function () {
-                console.log("reload")
+                console.log("reload");
                 location.reload();
             };
         });
@@ -217,7 +218,7 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
                         object.frequency.duration === undefined || object.frequency.duration === '' ||
                         object.frequency.unit === undefined || object.frequency.unit === '' ||
                         object.email === undefined || object.email === '') {
-                    $('#validaterror').modal();
+                        alertify.error("Application, Duration, Unit and Email are required, please review the information and try again");
                 } else {
                     if (object.frequency.starttime) {
                         object.frequency.starttime = object.frequency.starttime.replace(/ /g, "T");
@@ -322,14 +323,15 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
             var batchjobpromise = $http.get(batchURL).success(function (data, status, header, config) {
                 var auth_token_valid_until = header()['auth-token-valid-until'];
                 resetTimerService.set(auth_token_valid_until);
+                $scope.Batchjobs = data;
+                $scope.selectedNumberBatchJobs = $scope.numbers[4];
+                $scope.curPageBatchjob = 0;
+                $scope.pageSizeBatchjob = 4;
             });
             return batchjobpromise;
         };
         $scope.BatchjobPromise().then(function (data) {
-            $scope.Batchjobs = data.data;
-            $scope.selectedNumberBatchJobs = $scope.numbers[4];
-            $scope.curPageBatchjob = 0;
-            $scope.pageSizeBatchjob = 4;
+            
 
             $scope.batchchooser = function (index) {
                 $scope.sendBatchJob = {};
@@ -359,14 +361,14 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
                 var auth_token_valid_until = header()['auth-token-valid-until'];
                 resetTimerService.set(auth_token_valid_until);
                 $scope.envDropdown = angular.copy($scope.environments);
-                $('#savesuccess').modal();
+                alertify.success("Information was successfully saved");
                 if (typeof index !== "undefined") {
                     $scope.reports[index]._id = {$oid: response};
                 }
             });
             conAjax.error(function (response) {
                 $scope.envDropdown = angular.copy($scope.environments);
-                $('#savefail').modal();
+                alertify.error("Error while saving the information, please try again");
             });
         };
         $scope.delinfo = function (insert, remove) {
@@ -374,10 +376,10 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
             ;
             conAjax.success(function (response) {
                 $scope.reports.splice(remove, 1);
-                $('#deletesuccess').modal();
+                alertify.sucess("Information has been deleted correctly");
             });
             conAjax.error(function (response) {
-                $('#deletefail').modal();
+                alertify.error("Information was not deleted, please try again");
             });
         };
         $scope.batchstart = function () {
@@ -423,7 +425,7 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
             conAjax.error(function (response) {
                 $scope.schedulerstatus = 0;
                 $scope.errormsg = response.message;
-                $('#schedulermodal').modal();
+                alertify.error("Scheduler Error");
             });
         };
         $scope.startscheduler = function () {
@@ -445,9 +447,10 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
             conAjax.success(function (response, status, header, config) {
                 var auth_token_valid_until = header()['auth-token-valid-until'];
                 resetTimerService.set(auth_token_valid_until);
+                $scope.BatchjobPromise();
             });
             conAjax.error(function (response) {
-                $('#savefail').modal();
+                alertify.error("Batch Scheduler Error");
             });
         };
     }]);
