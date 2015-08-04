@@ -594,7 +594,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                 }
                 
                 var filePayload = null; 
-                if(fileName === undefined){
+                if(fileName === ""){
                     filePayload = '"type":"FILE", "fileLocation":"'+$scope.fileReplay.location+'", '+
                         '"fileType":"'+fileExt+'", "auditID":"'+auditID+'", "replayedBy":"'+batchVals[1]+'"';
                 }else{
@@ -641,7 +641,8 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                 
                 var filePayloadBatch = null;'"type":"FILE", "fileLocation":"'+$scope.fileReplay.location+'", "fileName":"'+fileName+'", '+
                         '"fileType":"'+fileExt+'"';
-                if(fileName === undefined){
+                
+                if(fileName === ""){
                     filePayloadBatch = '"type":"FILE", "fileLocation":"'+$scope.fileReplay.location+'", '+
                         '"fileType":"'+fileExt+'"';
                 }else{
