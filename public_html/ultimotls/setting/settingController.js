@@ -437,6 +437,8 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
         };
         $scope.stopscheduler = function () {
             $scope.schedulerObj.requestType = "stopScheduler";
+            $scope.startserviceImmediate = 'stopped';
+            $scope.startserviceBatch = 'stopped';
             $scope.scheduler($scope.schedulerObj, 4);
         };
         $scope.batchupdater = function (insert) {
