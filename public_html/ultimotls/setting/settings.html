@@ -132,7 +132,7 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h4 class="panel-title">
-                        <button type="button" class="tabselector col-sm-12 text-left collapsed" data-toggle="collapse" data-target="#immidate"  data-parent="#accordion" aria-controls="immidate"><span class="caret"></span>  Immidiate Notification</button>
+                        <button type="button" class="tabselector col-sm-12 text-left collapsed" data-toggle="collapse" data-target="#immidate"  data-parent="#accordion" aria-controls="immidate"><span class="caret"></span>  Immediate Notification</button>
                     </h4>
                 </div>
                 <div id="immidate" class="panel-collapse collapse">
@@ -148,31 +148,31 @@
                                         </div>
                                     </div>
                                     <div class="form-group bordertab col-sm-7 immidiate_refresh">
-                                        <h4>Immidiate Notification Refresh</h4>
+                                        <h4>Immediate Notification Refresh <span id="noticebatch" class="pull-right {{SchedulerStatus}}">Scheduler server must be running in order to start/stop batch services</span></h4>
                                         <div class="col-sm-1">
                                             <label class="control-label">Start Time</label>
                                         </div>
                                         <div class="col-sm-2">
-                                            <input type="text" class="form-control datetimepicker" ng-model="immidiatejob.frequency.starttime" value="{{immidatejob.frequency.starttime}}" placeholder="Start Time">
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <label class="control-label">Frequency:</label>
+                                            <input type="text" class="form-control datetimepicker" ng-model="immediatejob.frequency.starttime" value="{{immedatejob.frequency.starttime}}" placeholder="Start Time">
                                         </div>
                                         <div class="col-sm-1">
-                                            <input type="text" class="form-control" name="immDuration" value="{{notifications.immidiate.jobRefreshRate.duration}}" ng-model="notifications.immidiate.jobRefreshRate.duration" placeholder="Frequency" required>
+                                            <label class="control-label">Frequency:</label>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <input type="text" class="form-control" name="immDuration" value="{{notifications.immediate.jobRefreshRate.duration}}" ng-model="notifications.immediate.jobRefreshRate.duration" placeholder="Frequency" required>
                                         </div>
                                         <div class="col-sm-1">
                                             <label class="control-label">Unit:</label>
                                         </div>
                                         <div class="col-sm-2">
-                                            <select class="form-control smaller"  name="immUnit" ng-options='unit for unit in units' ng-model="notifications.immidiate.jobRefreshRate.unit" required>
-                                                <option value="" disabled selected style='display:none;'>{{notifications.immidiate.jobRefreshRate.unit}}</option>
+                                            <select class="form-control smaller"  name="immUnit" ng-options='unit for unit in units' ng-model="notifications.immediate.jobRefreshRate.unit" required>
+                                                <option value="" disabled selected style='display:none;'>{{notifications.immediate.jobRefreshRate.unit}}</option>
                                             </select>
                                             <span class="caret" style="margin-left: -18px;margin-top: 3px;"></span>
                                         </div>
                                         <div class="col-sm-3">
-                                            <button type="button" class="btn btn-primary" ng-click="inmidateStartjob()">Start</button>
-                                            <button type="button" class="btn btn-primary" ng-click="inmidateStopjob()">Stop</button>
+                                            <button type="button" class="btn btn-primary" ng-click="inmidateStartjob()" ng-disabled="SchedulerStatus == 'stopped' || startserviceImmediate =='started'">Start</button>
+                                            <button type="button" class="btn btn-primary" ng-click="inmidateStopjob()" ng-disabled="SchedulerStatus == 'stopped' || startserviceImmediate =='stopped'">Stop</button>
                                         </div>
                                     </div>
 
@@ -182,14 +182,14 @@
                                             <label class="control-label">Frequency:</label>
                                         </div>
                                         <div class="col-sm-2">
-                                            <input type="text" class="form-control" name="immDuration" value="{{notifications.immidiate.frequency.duration}}" ng-model="notifications.immidiate.frequency.duration" placeholder="Frequency" required>
+                                            <input type="text" class="form-control" name="immDuration" value="{{notifications.immediate.frequency.duration}}" ng-model="notifications.immediate.frequency.duration" placeholder="Frequency" required>
                                         </div>
                                         <div class="col-sm-2">
                                             <label class="control-label">Unit:</label>
                                         </div>
                                         <div class="col-sm-3">
-                                            <select class="form-control"  name="immUnit" ng-options='unit for unit in units' ng-model="notifications.immidiate.frequency.unit" required>
-                                                <option value="" disabled selected style='display:none;'>{{notifications.immidiate.frequency.unit}}</option>
+                                            <select class="form-control"  name="immUnit" ng-options='unit for unit in units' ng-model="notifications.immediate.frequency.unit" required>
+                                                <option value="" disabled selected style='display:none;'>{{notifications.immediate.frequency.unit}}</option>
                                             </select>
                                             <span class="caret" style="margin-left: -18px;margin-top: 3px;"></span>
                                         </div>
@@ -213,7 +213,7 @@
                                                 </tr>
                                             </thead>
                                             <tdbody>
-                                                <tr data-toggle="collapse" class="immidateinfo" data-ng-repeat="notification in notifications.immidiate.notification| pagination: curPageImmi * pageSizeImmi | limitTo: pageSizeImmi">
+                                                <tr data-toggle="collapse" class="immidateinfo" data-ng-repeat="notification in notifications.immediate.notification| pagination: curPageImmi * pageSizeImmi | limitTo: pageSizeImmi">
                                                     <td>
                                                         <select class="form-control inputable"   name="envid" ng-options='name.name as name.name for name in envDropdown' ng-model="notification.envid" required>
                                                             <option style='display:none;'>{{notification.envid}}</option>
@@ -250,7 +250,7 @@
                             </div>
                             <button class="btn addfields" ng-click="addNewImmidate()">New Notification</button>
                             <button class="btn btn-success" ng-click="savesetting()" ng-disabled="ImmiForm.envid.$error.required || ImmiForm.template.$error.required || ImmiForm.interface.$error.required || ImmiForm.name.$error.required || ImmiForm.email.$error.required || ImmiForm.email.$error.email || ImmiForm.severity.$error.required || FreqForm.immDuration.$error.required || FreqForm.immUnit.$error.required">Save Notifications</button>
-                            <div class="pagination pagination-centered" ng-show="notifications.immidiate.notification"><!-- Pagination -->
+                            <div class="pagination pagination-centered" ng-show="notifications.immediate.notification"><!-- Pagination -->
                                 <ul class="pagination-controle pagination">
                                     <li>
                                         <button type="button" class="btn btn-primary" ng-disabled="curPageImmi == 0"ng-click="curPageImmi = curPageImmi - 1"> &lt; PREV</button>
@@ -259,7 +259,7 @@
                                         <span>Page {{curPageImmi + 1}} of {{ numberOfPagesImmi()}}</span>
                                     </li>
                                     <li>
-                                        <button type="button" class="btn btn-primary" ng-disabled="curPageImmi >= notifications.immidiate.notification.length / pageSizeImmi - 1" ng-click="curPageImmi = curPageImmi + 1">NEXT &gt;</button>
+                                        <button type="button" class="btn btn-primary" ng-disabled="curPageImmi >= notifications.immediate.notification.length / pageSizeImmi - 1" ng-click="curPageImmi = curPageImmi + 1">NEXT &gt;</button>
                                     </li>
                                 </ul>
                             </div>
@@ -429,8 +429,8 @@
                                             </div>
 
                                             <div class="col-sm-2 pull-right">
-                                                <button type="button" class="btn btn-primary" ng-click="batchstart()" ng-disabled="batchScheduler.$invalid || SchedulerStatus == 'stopped'">Start</button>
-                                                <button type="button" class="btn btn-primary" ng-click="batchstop()" ng-disabled="SchedulerStatus == 'stopped'">Stop</button>
+                                                <button type="button" class="btn btn-primary" ng-click="batchstart()" ng-disabled="batchScheduler.$invalid || SchedulerStatus == 'stopped' || startserviceBatch =='started'">Start</button>
+                                                <button type="button" class="btn btn-primary" ng-click="batchstop()" ng-disabled="SchedulerStatus == 'stopped' || startserviceBatch =='stopped'">Stop</button>
                                             </div>
                                             <div class="col-sm-12" ng-show="batchScheduler.batchUnit.$invalid && batchScheduler.batchUnit.$touched || batchScheduler.batchFrequency.$invalid && batchScheduler.batchFrequency.$touched">
                                                 <span class="error">Frequency and Unit is required in order to start the batch scheduler</span>
@@ -457,7 +457,7 @@
                                                     <td class="col-md-3">{{scheduler.nextFireTime| date : 'medium'}}</td>
                                                     <td class="col-md-3">{{scheduler.status}}</td>
                                                     <td>
-                                                        <button type="submit" ng-click="resumeJob($index)" class="btn">Restart</button>
+                                                        <button type="submit" ng-click="resumeJob($index)" class="btn">Resume</button>
                                                         <button type="submit" ng-click="pauseJob($index)" class="btn">Suspend</button>
                                                     </td>
                                                 </tr>
@@ -524,16 +524,16 @@
                                         </table>
                                     </div>
                                 </form>
-                                <div class="pagination pagination-centered" ng-show="notifications.immidiate.notification"><!-- Pagination -->
+                                <div class="pagination pagination-centered" ng-show="notifications.immediate.notification"><!-- Pagination -->
                                     <ul class="pagination-controle pagination">
                                         <li>
-                                            <button type="button" class="btn btn-primary" ng-disabled="curPageImmi == 0"ng-click="curPageImmi = curPageImmi - 1"> &lt; PREV</button>
+                                            <button type="button" class="btn btn-primary" ng-disabled="curPageBatchjob == 0"ng-click="curPageBatchjob = curPageBatchjob - 1"> &lt; PREV</button>
                                         </li>
                                         <li>
-                                            <span>Page {{curPageImmi + 1}} of {{ numberOfPagesImmi()}}</span>
+                                            <span>Page {{curPageBatchjob + 1}} of {{ numberOfPagesBatch()}}</span>
                                         </li>
                                         <li>
-                                            <button type="button" class="btn btn-primary" ng-disabled="curPageImmi >= notifications.immidiate.notification.length / pageSizeImmi - 1" ng-click="curPageImmi = curPageImmi + 1">NEXT &gt;</button>
+                                            <button type="button" class="btn btn-primary" ng-disabled="curPageBatchjob >= Batchjobs.length / pageSizeBatchjob - 1" ng-click="curPageBatchjob = curPageBatchjob + 1">NEXT &gt;</button>
                                         </li>
                                     </ul>
                                 </div>
