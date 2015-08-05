@@ -272,6 +272,9 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
                 //find BatchReplayJob in the array
                 Batchlenght = null;
                 Tlength = $scope.schedulers.length;
+                if (Tlength >= 1){
+                    $scope.startserviceBatch ='started';
+                }
                 for (i = 0; i < Tlength; i++) {
                     if ($scope.schedulers[i].jobKey === "BatchReplayJob") {
                         Batchlenght = $scope.schedulers[i].frequency;
@@ -365,18 +368,14 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
                     $scope.batchupdater(batchid);
                 }
             };
-
             $scope.numberOfPagesBatch = function () {
                 $scope.pageSizeBatchjob = $scope.selectedNumberBatchJobs;
                 return Math.ceil($scope.Batchjobs.length / $scope.pageSizeBatchjob);
             };
-
             $scope.DeleteSelectedBatch = function () {
                 temporal = Object.keys($scope.selectedBatch);
                 $scope.batchupdelete(temporal);
             };
-
-
             $scope.checkAll = function (source) {
                         $('.batchcheckdata, .batchcheck').click();
 
@@ -483,7 +482,6 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
                 alertify.error("Batch Scheduler Error");
             });
         };
-
         $scope.batchupdelete = function (insert) {
             var conAjax = $http.delete(batchURL, {"data": insert});
             conAjax.success(function (response, status, header, config) {

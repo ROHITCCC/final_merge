@@ -1,7 +1,7 @@
 <div id="settingpage" ng-controller="SettingsController">
     <div class="[ col-xs-12 col-sm-12 ]">
         <div class="panel-group" id="accordion">
-            <div class="panel panel-default">
+<!--            <div class="panel panel-default">
                 <div class="panel-heading">
                     <h4 class="panel-title">
                         <button type="button" class="tabselector col-sm-12 text-left collapsed" data-toggle="collapse" data-target="#api" data-parent="#accordion" aria-controls="immidate"><span class="caret"></span> REST API Setup</button>
@@ -60,7 +60,7 @@
                         </form>
                     </div>
                 </div>
-            </div>
+            </div>-->
             <!-- second accordion -->
             <div class="panel panel-default">
                 <div class="panel-heading">
@@ -299,7 +299,7 @@
                                         <thead id="tableHeader">
                                             <tr>
                                                 <th>Environment</th>
-                                                <th class="small">Document ID</th>
+                                                <th>Document ID</th>
                                                 <th>Application</th>
                                                 <th>Interface</th>
                                                 <th>Error Type</th>
@@ -317,7 +317,7 @@
                                                 </select>
                                                 <span class="caret" style="margin-left: -18px;margin-top: 3px; display: none;"></span>
                                             </td>
-                                            <td>
+                                            <td class="small" style="width: 10%;">
                                                 {{reports[key]._id.$oid}}
                                             </td>
                                             <td class="col-md-1">
@@ -517,7 +517,7 @@
                                             </thead>
                                             <tdbody>
                                                 <tr data-toggle="collapse" id="{{$index}}" class="SchedulerJob" data-ng-repeat="batchjob in Batchjobs | pagination: curPageBatchjob * pageSizeBatchjob | limitTo: pageSizeBatchjob">
-                                                    <td  ng-click="$event.stopPropagation()">
+                                                    <td style="width: 10%"  ng-click="$event.stopPropagation()">
                                                     <input type="checkbox" name="auditCheckbox" class="batchcheckdata" ng-model="selectedBatch[batchjob._id.$oid]"></td>
                                                     <td>{{batchjob.replaySavedTimestamp.$date| date : 'medium'}}</td>
                                                     <td>{{batchjob.replayedBy}}</td>
