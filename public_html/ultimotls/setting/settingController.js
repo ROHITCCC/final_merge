@@ -102,7 +102,7 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
         });
         $scope.settingPromise().catch(function () {
             $scope.newsettingcreator = 1;
-            newsetting = {setting: {apisetup: {hostname: '', port: '', database: '', collections: {payload: '', audits: ''}}, notification: {immediate: {frequency: {duration: '1', unit: 'hrs'}, jobRefreshRate: {duration: '1', unit: 'hrs'}, notification: [{envid: '', severity: '', email: '', template:'ImmediateNotification.html', application: {name: '', interfaces: ['']}}]}}, envsetup: [{name: '', description: '', label: ''}]}};
+            newsetting = {setting: {apisetup: {hostname: '', port: '', database: '', collections: {payload: '', audits: ''}}, notification: {immediate: {frequency: {duration: '1', unit: 'hrs'}, jobRefreshRate: {duration: '1', unit: 'hrs'}, notification: [{envid: '', severity: '', email: '', template: 'ImmediateNotification.html', application: {name: '', interfaces: ['']}}]}}, envsetup: [{name: '', description: '', label: ''}]}};
             $scope.settings = newsetting;
             $scope.environments = $scope.settings.setting.envsetup;
             $scope.notifications = $scope.settings.setting.notification;
@@ -197,7 +197,7 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
         });
         $scope.reportPromise().finally(function () {
             $scope.addNewAggrigated = function () {
-                newson = {report: {envid: null, application: null, email: null, template:'ReportNotification.html', interface1: null, errorType: null, frequency: {duration: null, starttime: null, unit: null}}};
+                newson = {report: {envid: null, application: null, email: null, template: 'ReportNotification.html', interface1: null, errorType: null, frequency: {duration: null, starttime: null, unit: null}}};
                 $scope.reports.push(newson);
             };
             $scope.removeAggrigated = function (index) {
@@ -218,7 +218,7 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
                         object.frequency.duration === undefined || object.frequency.duration === '' ||
                         object.frequency.unit === undefined || object.frequency.unit === '' ||
                         object.email === undefined || object.email === '') {
-                        alertify.error("Application, Duration, Unit and Email are required, please review the information and try again");
+                    alertify.error("Application, Duration, Unit and Email are required, please review the information and try again");
                 } else {
                     if (object.frequency.starttime) {
                         object.frequency.starttime = object.frequency.starttime.replace(/ /g, "T");
@@ -263,13 +263,13 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
                         Batchlenght = $scope.schedulers[i].frequency;
                     }
                 }
-                
+
                 if (Batchlenght !== null) {
                     if (Batchlenght <= 59) {
                         $scope.batch.frequency.duration = Batchlenght;
                         $scope.batch.frequency.unit = $scope.units[0];
                     }
-                    if ((Batchlenght >= 61) && (Batchlenght <= 3599)) {
+                    if ((Batchlenght >= 60) && (Batchlenght <= 3599)) {
                         minutes = Math.floor(Batchlenght / 60) % 60;
                         $scope.batch.frequency.duration = minutes;
                         $scope.batch.frequency.unit = $scope.units[1];
@@ -328,12 +328,11 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
                 $scope.selectedNumberBatchJobs = $scope.numbers[4];
                 $scope.curPageBatchjob = 0;
                 $scope.pageSizeBatchjob = 4;
+                $scope.selectedBatch = {};
             });
             return batchjobpromise;
         };
         $scope.BatchjobPromise().then(function (data) {
-            
-
             $scope.batchchooser = function (index) {
                 $scope.sendBatchJob = {};
                 if ($scope.curPageBatchjob >= 1) {
@@ -350,6 +349,12 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
             $scope.numberOfPagesBatch = function () {
                 $scope.pageSizeBatchjob = $scope.selectedNumberBatchJobs;
                 return Math.ceil($scope.Batchjobs.length / $scope.pageSizeBatchjob);
+            };
+
+            $scope.DeleteSelectedBatch = function () {
+                $scope.deleteBatchId = $.grep($scope.Batchjobs, function (batchjob) {
+                    $scope.batchupdelete($scope.deleteBatchId);
+                });
             };
         });
 
@@ -443,7 +448,7 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
         };
         $scope.batchupdater = function (insert) {
             console.log(insert);
-            send = batchURL+'/?id='+insert;
+            send = batchURL + '/?id=' + insert;
             var conAjax = $http.put(send);
             conAjax.success(function (response, status, header, config) {
                 var auth_token_valid_until = header()['auth-token-valid-until'];
@@ -452,6 +457,16 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
             });
             conAjax.error(function (response) {
                 alertify.error("Batch Scheduler Error");
+            });
+        };
+        
+        $scope.batchupdelete = function (insert){
+            console.log(insert);
+            var conAjax = $http.delete(batchURL, {data: insert});
+            conAjax.success(function (response, status, header, config) {
+                var auth_token_valid_until = header()['auth-token-valid-until'];
+                resetTimerService.set(auth_token_valid_until);
+                $scope.BatchjobPromise();
             });
         };
     }]);
