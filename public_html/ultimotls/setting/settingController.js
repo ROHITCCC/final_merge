@@ -207,6 +207,9 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
             $scope.reports = [{report: {envid: '', application: '', interface1: '', errorType: '', frequency: {starttime: '', duration: '', unit: ''}, email: '', template: 'ReportNotification.html'}}];
         });
         $scope.reportPromise().finally(function () {
+            //Env dropdown
+            $scope.envDropdown = angular.copy($scope.environments);
+            
             $scope.addNewAggrigated = function () {
                 newson = {report: {envid: null, application: null, email: null, template: 'ReportNotification.html', interface1: null, errorType: null, frequency: {duration: null, starttime: null, unit: null}}};
                 $scope.reports.push(newson);
