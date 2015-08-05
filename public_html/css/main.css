@@ -491,6 +491,7 @@ html {
 
 #settingpage .form-inline .form-control {
     font-size: 10px !important;
+    width: 98;
 }
 
 #settingpage .paginationclass{
