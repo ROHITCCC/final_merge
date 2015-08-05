@@ -66,6 +66,7 @@ $('body').on('click', '.mainmodal .close, .closemainmodal', function () {
             window.clearInterval(window.waitUntilExists_Intervals[this.selector]);
         }
         return $this;
+        
     };
 }(jQuery));
 
