@@ -1779,8 +1779,8 @@ span#noticebatch.stopped {
 	background: rgba(0,0,0,.9);
 	padding: 15px;
 	border-radius: 4px;
-	color: #FFF;
-	text-shadow: -1px -1px 0 rgba(0,0,0,.5);
+	color: black;
+	/* text-shadow: -1px -1px 0 rgba(0,0,0,.5); */
 }
 	.alertify-log-error {
 		background: #FE1A00;
