@@ -486,7 +486,11 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
             conAjax.success(function (response, status, header, config) {
                 var auth_token_valid_until = header()['auth-token-valid-until'];
                 resetTimerService.set(auth_token_valid_until);
-                $scope.BatchjobPromise();
+                alertify.sucess("Information has been deleted correctly");
+                $scope.BatchjobPromise();   
+            });
+            conAjax.error(function (response) {
+                alertify.error("Batch Delete Error");
             });
         };
     }]);
