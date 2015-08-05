@@ -54,7 +54,8 @@ settingModule.directive('confirmationNeeded', function () {
 });
 
 
-settingModule.controller('SettingsController', ['$scope', '$http', 'localStorageService', 'resetTimerService', function ($scope, $http, localStorageService, resetTimerService) {
+settingModule.controller('SettingsController', ['$scope', '$http', 'localStorageService', 'resetTimerService', 'logoutService',
+    function ($scope, $http, localStorageService, resetTimerService, logoutService) {
         var settingURL = TLS_PROTOCOL + "://" + TLS_SERVER + ":" + TLS_PORT + "/_logic/SettingService";
         var schedulerURL = TLS_PROTOCOL + "://" + TLS_SERVER + ":" + TLS_PORT + "/_logic/SchedulerService";
         var batchURL = TLS_PROTOCOL + "://" + TLS_SERVER + ":" + TLS_PORT + "/_logic/BatchReplayService";
@@ -80,6 +81,11 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
             var promise = $http.get(settingURL + "?object=setting").success(function (data, status, header, config) {
                 var auth_token_valid_until = header()['auth-token-valid-until'];
                 resetTimerService.set(auth_token_valid_until);
+            })
+            .error(function(data,status,header,config){
+                if(status ==401){
+                    logoutService.logout();
+                }
             });
             return promise;
         };
@@ -185,6 +191,11 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
             var reportpromise = $http.get(settingURL + "?object=report").success(function (data, status, header, config) {
                 var auth_token_valid_until = header()['auth-token-valid-until'];
                 resetTimerService.set(auth_token_valid_until);
+            })
+            .error(function(data,status,header,config){
+                if(status === 401){
+                    logoutService.logout();
+                }
             });
             return reportpromise;
         };
@@ -299,6 +310,11 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
                     $scope.starter = {"requestType": "suspendJob", "jobKey": $scope.schedulers[index].jobKey};
                     $scope.scheduler($scope.starter, status);
                 };
+            })
+            .error(function(data, status, header, config){
+                if(status === 401){
+                    logoutService.logout();
+                }
             });
             return schedulerjob;
         };
