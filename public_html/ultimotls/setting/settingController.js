@@ -82,11 +82,11 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
                 var auth_token_valid_until = header()['auth-token-valid-until'];
                 resetTimerService.set(auth_token_valid_until);
             })
-            .error(function(data,status,header,config){
-                if(status ==401){
-                    logoutService.logout();
-                }
-            });
+                    .error(function (data, status, header, config) {
+                        if (status == 401) {
+                            logoutService.logout();
+                        }
+                    });
             return promise;
         };
         $scope.settingPromise().then(function (data) {
@@ -192,11 +192,11 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
                 var auth_token_valid_until = header()['auth-token-valid-until'];
                 resetTimerService.set(auth_token_valid_until);
             })
-            .error(function(data,status,header,config){
-                if(status === 401){
-                    logoutService.logout();
-                }
-            });
+                    .error(function (data, status, header, config) {
+                        if (status === 401) {
+                            logoutService.logout();
+                        }
+                    });
             return reportpromise;
         };
         $scope.reportPromise().then(function (data) {
@@ -311,11 +311,11 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
                     $scope.scheduler($scope.starter, status);
                 };
             })
-            .error(function(data, status, header, config){
-                if(status === 401){
-                    logoutService.logout();
-                }
-            });
+                    .error(function (data, status, header, config) {
+                        if (status === 401) {
+                            logoutService.logout();
+                        }
+                    });
             return schedulerjob;
         };
 //////////////////////////////////////SCHEDULE STATUS //////////////////////////////////
@@ -344,7 +344,8 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
                 $scope.selectedNumberBatchJobs = $scope.numbers[4];
                 $scope.curPageBatchjob = 0;
                 $scope.pageSizeBatchjob = 4;
-                $scope.selectedBatch = {};
+                $scope.selectedBatch = [];
+                $scope.selectedBatchDeleter = [];
             });
             return batchjobpromise;
         };
@@ -368,9 +369,14 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
             };
 
             $scope.DeleteSelectedBatch = function () {
-                $scope.deleteBatchId = $.grep($scope.Batchjobs, function (batchjob) {
-                    $scope.batchupdelete($scope.deleteBatchId);
-                });
+                temporal = Object.keys($scope.selectedBatch);
+                $scope.batchupdelete(temporal);
+            };
+
+
+            $scope.checkAll = function (source) {
+                        $('.batchcheckdata, .batchcheck').click();
+
             };
         });
 
@@ -395,7 +401,6 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
         };
         $scope.delinfo = function (insert, remove) {
             var conAjax = $http.delete(settingURL, {data: insert});
-            ;
             conAjax.success(function (response) {
                 $scope.reports.splice(remove, 1);
                 alertify.sucess("Information has been deleted correctly");
@@ -475,10 +480,9 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
                 alertify.error("Batch Scheduler Error");
             });
         };
-        
-        $scope.batchupdelete = function (insert){
-            console.log(insert);
-            var conAjax = $http.delete(batchURL, {data: insert});
+
+        $scope.batchupdelete = function (insert) {
+            var conAjax = $http.delete(batchURL, {"data": insert});
             conAjax.success(function (response, status, header, config) {
                 var auth_token_valid_until = header()['auth-token-valid-until'];
                 resetTimerService.set(auth_token_valid_until);
