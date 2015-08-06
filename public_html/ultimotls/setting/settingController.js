@@ -405,7 +405,7 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
             var conAjax = $http.delete(settingURL, {data: insert});
             conAjax.success(function (response) {
                 $scope.reports.splice(remove, 1);
-                alertify.sucess("Information has been deleted correctly");
+                alertify.success("Information has been deleted correctly");
             });
             conAjax.error(function (response) {
                 alertify.error("Information was not deleted, please try again");
@@ -487,7 +487,7 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
             conAjax.success(function (response, status, header, config) {
                 var auth_token_valid_until = header()['auth-token-valid-until'];
                 resetTimerService.set(auth_token_valid_until);
-                alertify.sucess("Information has been deleted correctly");
+                alertify.success("Information has been deleted correctly");
                 $scope.BatchjobPromise();   
             });
             conAjax.error(function (response) {
