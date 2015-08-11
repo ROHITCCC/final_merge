@@ -209,7 +209,7 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
         $scope.reportPromise().finally(function () {
             //Env dropdown
             $scope.envDropdown = angular.copy($scope.environments);
-            
+
             $scope.addNewAggrigated = function () {
                 newson = {report: {envid: null, application: null, email: null, template: 'ReportNotification.html', interface1: null, errorType: null, frequency: {duration: null, starttime: null, unit: null}}};
                 $scope.reports.push(newson);
@@ -275,7 +275,7 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
                 for (i = 0; i < Tlength; i++) {
                     if ($scope.schedulers[i].jobKey === "BatchReplayJob") {
                         Batchlenght = $scope.schedulers[i].frequency;
-                        $scope.startserviceBatch ='started';
+                        $scope.startserviceBatch = 'started';
                     }
                 }
 
@@ -375,7 +375,7 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
                 $scope.batchupdelete(temporal);
             };
             $scope.checkAll = function (source) {
-                        $('.batchcheckdata, .batchcheck').click();
+                $('.batchcheckdata, .batchcheck').click();
 
             };
         });
@@ -422,6 +422,10 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
         $scope.batchstop = function () {
             $scope.batch.requestType = "stopJob";
             delete $scope.batch.frequency;
+            $scope.batchScheduler.batchFrequency.$touched = false;
+            $scope.batchScheduler.batchFrequency.$invalid = false;
+            $scope.batchScheduler.batchUnit.$touched = false;
+            $scope.batchScheduler.batchUnit.$invalid = false;
             $scope.scheduler($scope.batch, 2);
             $scope.startserviceBatch = 'stopped';
         };
@@ -435,10 +439,6 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
                     $scope.schedulerJob();
                 }
                 if (opt == "2") {
-                    $scope.batchScheduler.batchFrequency.$touched = false;
-                    $scope.batchScheduler.batchFrequency.$invalid = false;
-                    $scope.batchScheduler.batchUnit.$touched = false;
-                    $scope.batchScheduler.batchUnit.$invalid = false;
                     $scope.schedulerJob();
                 }
                 if (opt == 'resume' || opt == 'suspend') {
@@ -489,7 +489,7 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
                 var auth_token_valid_until = header()['auth-token-valid-until'];
                 resetTimerService.set(auth_token_valid_until);
                 alertify.success("Information has been deleted correctly");
-                $scope.BatchjobPromise();   
+                $scope.BatchjobPromise();
             });
             conAjax.error(function (response) {
                 alertify.error("Batch Delete Error");
