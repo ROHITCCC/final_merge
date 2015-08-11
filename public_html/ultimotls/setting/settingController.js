@@ -417,7 +417,7 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
                 $scope.batch.frequency.starttime = "";
             }
             $scope.scheduler($scope.batch, 1);
-            $scope.startserviceBatch = 'started'
+            $scope.startserviceBatch = 'started';
         };
         $scope.batchstop = function () {
             $scope.batch.requestType = "stopJob";
@@ -436,7 +436,7 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
                     $scope.batchScheduler.batchFrequency.$invalid = false;
                     $scope.batchScheduler.batchUnit.$touched = false;
                     $scope.batchScheduler.batchUnit.$invalid = false;
-                    $('.SchedulerJob').remove();
+                    $scope.schedulerJob();
                 }
                 if (opt == 'resume' || opt == 'suspend') {
                     $scope.schedulerJob();
