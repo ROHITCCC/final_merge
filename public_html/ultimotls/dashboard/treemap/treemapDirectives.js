@@ -187,7 +187,7 @@ treemapDirectiveModule.directive('treemapZoom', ['$location', function($location
                                 return zoom((node === d.parent.children[change] ? root : d.parent.children[change]),"0","0");
                             }
                         };
-                    }, 100);
+                    }, 110);
                     
                 }
                 
