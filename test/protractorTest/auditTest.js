@@ -22,11 +22,13 @@ describe('Ultimo TLS', function() {
   var restEndpoint = element(by.model('restReplay.endpointUrl'));
   var restHeaderType = element(by.model('restReplay.header.type'));
   var restHeaderVal = element(by.model('restReplay.header.value'));
+  var restResponse = element(by.id('replayResponseRest'));
   var replayCloseBtn = element(by.id('closeMainBtn'));
   var replayButtonBatch = element(by.id('replayButton'));
   var fileLocation = element(by.model('fileReplay.location'));
   var filenameInput = element(by.model('fileReplay.name'));
   var fileSubmit = element(by.css('[ng-click="runFileService()"]'));
+  var fileResponse = element(by.id('replayResponseFile'));
 
   function login(name, pass, envid) {
 	loginName.clear().then(function(){
@@ -76,7 +78,7 @@ describe('Ultimo TLS', function() {
 	browser.driver.manage().window().maximize();
   });
 
-  it('should search audits and do a rest replay', function() {
+  it('should do a single rest replay', function() {
 	  login("a", "a", "PROD");
 		element.all(by.repeater('tab in tabs')).
 			get(1).$('a').click();
@@ -91,27 +93,21 @@ describe('Ultimo TLS', function() {
 		browser.sleep(500);
 		enterRestData("http://demo9083151.mockable.io/rest","application/json","Authorization","Basic YTph","POST");
 		browser.sleep(2500);
+		restResponse.getText().then(function (text) {
+			expect(text).toContain("Success");
+		});
 		element(by.cssContainingText('option', 'FILE')).click();
 		enterFileData("C:", "testing", "txt")
 		browser.sleep(2500);
+		fileResponse.getText().then(function (text) {
+			expect(text).toContain("Success");
+		});
 		element(by.cssContainingText('option', 'WS')).click();
 		browser.sleep(250);
 		element(by.cssContainingText('option', 'FTP')).click();
 		browser.sleep(250);
 		element(by.cssContainingText('option', 'REST')).click();
 		browser.sleep(250);
-		replayCloseBtn.click();
-		browser.sleep(500);
-		element.all(by.repeater("d in data._embedded['rh:doc']| orderBy:predicate:reverse")).
-			get(0).$('td').$('input').click();
-		browser.sleep(100);
-		replayButtonBatch.click();
-		browser.sleep(500);
-		enterRestData("http://demo9083151.mockable.io/rest","application/json","Authorization","Basic YTph","POST");
-		browser.sleep(2500);
-		element(by.cssContainingText('option', 'FILE')).click();
-		enterFileData("C:", "testing", "txt")
-		browser.sleep(2500);
   });
   
 });

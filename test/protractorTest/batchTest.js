@@ -1,4 +1,3 @@
-// spec.js
 describe('Ultimo TLS', function() {
   var loginName = element(by.model('cred.username'));
   var loginPass = element(by.model('cred.password'));
@@ -14,7 +13,6 @@ describe('Ultimo TLS', function() {
   var severityChart = element.all(by.id('severityPieChart'));
   var errorChart = element.all(by.id('errorTypePieChart'));
   var transactionChart = element.all(by.id('transactionType'));
-  var customZoomIn = element(by.id('zoomIn'));
   var auditSearchBox = element(by.model('searchCriteria'));
   var auditSearchButton = element(by.id('auditSearchBtn'));
   var payloadButton = element(by.id('payloadBtn'));
@@ -24,11 +22,13 @@ describe('Ultimo TLS', function() {
   var restEndpoint = element(by.model('restReplay.endpointUrl'));
   var restHeaderType = element(by.model('restReplay.header.type'));
   var restHeaderVal = element(by.model('restReplay.header.value'));
+  var restResponse = element(by.id('replayResponseRest'));
   var replayCloseBtn = element(by.id('closeMainBtn'));
   var replayButtonBatch = element(by.id('replayButton'));
   var fileLocation = element(by.model('fileReplay.location'));
   var filenameInput = element(by.model('fileReplay.name'));
   var fileSubmit = element(by.css('[ng-click="runFileService()"]'));
+  var fileResponse = element(by.id('replayResponseFile'));
 
   function login(name, pass, envid) {
 	loginName.clear().then(function(){
@@ -78,27 +78,29 @@ describe('Ultimo TLS', function() {
 	browser.driver.manage().window().maximize();
   });
 
-  it('should do a custom zoom', function() {
-		login("a", "a", "PROD");
-		toggle.click();
-		element.all(by.repeater('time in timeOptions')).
-			get(5).$('a').click();
+  it('should do a batch replay', function() {
+	  login("a", "a", "PROD");
+		element.all(by.repeater('tab in tabs')).
+			get(1).$('a').click();
+		searchAudit("ebs");
 		browser.sleep(500);
-		fromDate.sendKeys("07/01/2015");
-		toDate.sendKeys("07/31/2015");
-		calendarSub.click();
-		browser.sleep(750);
-		treemapSVG.get(0).
-			$('g').click();
-		browser.sleep(750);
-		customZoomIn.click();
-		browser.actions().mouseMove({x: -100, y: 50 }).perform();
-		browser.actions().mouseDown().perform();
-		browser.actions().mouseMove({x:  100, y: 350}).perform();
-		browser.sleep(1250);
-		browser.actions().mouseUp().perform();
-		browser.sleep(750);
+		element.all(by.repeater("d in data._embedded['rh:doc']| orderBy:predicate:reverse")).
+			get(0).$('td').$('input').click();
+		browser.sleep(200);
+		replayButtonBatch.click();
+		browser.sleep(500);
+		enterRestData("http://demo9083151.mockable.io/rest","application/json","Authorization","Basic YTph","POST");
+		browser.sleep(2500);
+		
+		restResponse.getText().then(function (text) {
+			expect(text).toContain("Success");
+		});
+		element(by.cssContainingText('option', 'FILE')).click();
+		enterFileData("C:", "testing", "txt")
+		browser.sleep(2500);
+		fileResponse.getText().then(function (text) {
+			expect(text).toContain("Success");
+		});
   });
-  
   
 });

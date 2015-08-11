@@ -28,6 +28,7 @@ describe('Ultimo TLS', function() {
   var fileLocation = element(by.model('fileReplay.location'));
   var filenameInput = element(by.model('fileReplay.name'));
   var fileSubmit = element(by.css('[ng-click="runFileService()"]'));
+  var customZoomIn = element(by.id('zoomIn'));
 
   function login(name, pass, envid) {
 	loginName.clear().then(function(){
@@ -99,6 +100,13 @@ describe('Ultimo TLS', function() {
 		browser.sleep(750);
 		treemapSVG.get(0).
 			$('g').click();
+		browser.sleep(750);
+		customZoomIn.click();
+		browser.actions().mouseMove({x: -100, y: 50 }).perform();
+		browser.actions().mouseDown().perform();
+		browser.actions().mouseMove({x:  100, y: 350}).perform();
+		browser.sleep(1250);
+		browser.actions().mouseUp().perform();
 		browser.sleep(750);
 		toggle.click();
 		element.all(by.repeater('time in timeOptions')).

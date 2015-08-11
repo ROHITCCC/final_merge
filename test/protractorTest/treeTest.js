@@ -77,7 +77,7 @@ describe('Ultimo TLS', function() {
 	browser.driver.manage().window().maximize();
   });
 
-  it('should log in and do treemap commands', function() {
+  it('should do treemap commands', function() {
 		login("a", "a", "PROD");
 		toggle.click();
 		element.all(by.repeater('time in timeOptions')).
