@@ -431,6 +431,9 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
                 var auth_token_valid_until = header()['auth-token-valid-until'];
                 resetTimerService.set(auth_token_valid_until);
                 $scope.schedulerstatus = opt;
+                if (opt == "1") {
+                    $scope.schedulerJob();
+                }
                 if (opt == "2") {
                     $scope.batchScheduler.batchFrequency.$touched = false;
                     $scope.batchScheduler.batchFrequency.$invalid = false;
