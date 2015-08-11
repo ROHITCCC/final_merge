@@ -272,12 +272,10 @@ settingModule.controller('SettingsController', ['$scope', '$http', 'localStorage
                 //find BatchReplayJob in the array
                 Batchlenght = null;
                 Tlength = $scope.schedulers.length;
-                if (Tlength >= 1){
-                    $scope.startserviceBatch ='started';
-                }
                 for (i = 0; i < Tlength; i++) {
                     if ($scope.schedulers[i].jobKey === "BatchReplayJob") {
                         Batchlenght = $scope.schedulers[i].frequency;
+                        $scope.startserviceBatch ='started';
                     }
                 }
 
