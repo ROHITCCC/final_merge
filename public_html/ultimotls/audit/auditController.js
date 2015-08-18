@@ -839,7 +839,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                         '"password":"' + $scope.jmsReplay.password + '", ' + 
                         '"deliveryMode":"' + $scope.jmsReplay.deliveryMode + '"';
                 
-                if(serverType === "Tibco"){
+                if(serverType === "Weblogic"){
                     jmsPayload += ', "initalContextFactory":"' + $scope.jmsReplay.initalContextFactory + '" ';
                 }
                 
@@ -892,7 +892,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                         '"password":"' + $scope.jmsReplay.password + '", ' + 
                         '"deliveryMode":"' + $scope.jmsReplay.deliveryMode + '"';
                 
-                if(serverType === "Tibco"){
+                if(serverType === "Weblogic"){
                     jmsPayloadBatch += ', "initalContextFactory":"' + $scope.jmsReplay.initalContextFactory + '"';
                 }
                 
