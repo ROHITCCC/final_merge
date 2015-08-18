@@ -840,10 +840,10 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                         '"deliveryMode":"' + $scope.jmsReplay.deliveryMode + '"';
                 
                 if(serverType === "Tibco"){
-                    jmsPayload += ', "initalContextFactory":"' + $scope.jmsReplay.initalContextFactory + '", ';
+                    jmsPayload += ', "initalContextFactory":"' + $scope.jmsReplay.initalContextFactory + '" ';
                 }
                 
-                jmsPayload += '"auditID":"'+auditID+'", '+
+                jmsPayload += ', "auditID":"'+auditID+'", '+
                         '"replayedBy":"'+batchVals[1]+'"';
                 
                 var multipartPayload = "Content-Type: multipart/mixed; boundary=boundaryJMS\n"+
@@ -854,7 +854,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                     "Content-Type: text/plain; charset: utf-8;\n\n" + 
                     $scope.payloadPageData+
                     "\n\n--boundaryJMS--";   
-            console.log(jmsPayload);
+            console.log(multipartPayload);
                 if(serverType !== undefined && 
                         $scope.jmsReplay.destinationName !== undefined && 
                         $scope.jmsReplay.destinationType !== undefined && 
@@ -899,6 +899,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                 var batchPayload = '{  "replaySavedTimestamp":"'+batchVals[0]+'",  "replayedBy":"'+batchVals[1]+'", '+
                         '"batchProcessedTimestamp":"", "status":"new", "replayDestinationInfo": { '+jmsPayloadBatch+' },'+
                         '"auditID": ['+auditIDs+']}';
+                console.log(batchPayload);
                 if(serverType !== undefined && 
                         $scope.jmsReplay.destinationName !== undefined && 
                         $scope.jmsReplay.destinationType !== undefined && 
