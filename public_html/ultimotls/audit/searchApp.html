@@ -215,7 +215,7 @@ and open the template in the editor.
             </div>
             <div id="paginationDropDown" class="col-sm-3 col-xs-6">
                 <label class="control-label">Rows:</label>
-                <select class="replayDropDown" ng-model="rowNumber" id="rowsOptions" class="form-control input-sm"
+                <select class="replayDropDown form-control input-sm" ng-model="rowNumber" id="rowsOptions"
                         data-ng-options="p as p.rows for p in rowsOptions"
                         ng-change="rowSelected(calender.to, calender.from)">
                 </select>
@@ -1028,102 +1028,66 @@ and open the template in the editor.
                                                 </div>
                                             </div>
                                         <div class="form-group">
-                                            <div class="form-inline col-sm-12 row">
-                                                <div class="col-sm-2" id="jmsDestinationNameLabelDiv">
-                                                    <label for="jmsDestinationName" class="control-label col-sm-2"><b>Destination Name: </b></label>
-                                                </div>
-                                                <div class="col-sm-10">
-                                                    <input ng-model="jmsReplay.destinationName" type="text" class="form-control col-sm-10 replayInputBox" 
-                                                       id="jmsDestinationName" style="width: 100%" placeholder="Destination Name" required>
-                                                </div>
+                                            <div class="form-inline">
+                                                <label for="jmsDestinationName" class="control-label col-sm-2"><b>Destination Name: </b></label>
+                                                <input ng-model="jmsReplay.destinationName" type="text" class="form-control col-sm-10 replayInputBox" 
+                                                       id="jmsDestinationName" placeholder="Destination Name" required>
                                             </div>
                                         </div>
                                         <div class="form-group">
-                                            <div class="form-inline col-sm-12 row">
-                                                <div class="col-sm-2" id="jmsDestinationTypeLabelDiv">
-                                                    <label for="jmsDestinationType" class="control-label col-sm-2"><b>Destination Type: </b></label>
-                                                </div>
-                                                <div class="col-sm-10">
-                                                    <input ng-model="jmsReplay.destinationType" type="text" class="form-control col-sm-10 replayInputBox" 
-                                                       id="jmsDestinationType" style="width: 100%" placeholder="Destination Type" required>
-                                                </div>
+                                            <div class="form-inline">
+                                                <label for="jmsDestinationType" class="control-label col-sm-2"><b>Destination Type: </b></label>
+                                                <input ng-model="jmsReplay.destinationType" type="text" class="form-control col-sm-10 replayInputBox" 
+                                                       id="jmsDestinationType" placeholder="Destination Type" required>
                                             </div>
                                         </div>
                                         <div class="form-group">
-                                            <div class="form-inline col-sm-12 row">
-                                                <div class="col-sm-2" id="jmsConnectionFactoryLabelDiv">
-                                                    <label for="jmsConnectionFactory" class="control-label col-sm-2"><b>Connection Factory: </b></label>
-                                                </div>
-                                                <div class="col-sm-10">
-                                                    <input ng-model="jmsReplay.connectionFactory" type="text" class="form-control col-sm-10 replayInputBox" 
-                                                       id="jmsConnectionFactory" style="width: 100%" placeholder="Destination Type" required>
-                                                </div>
+                                            <div class="form-inline">
+                                                <label for="jmsConnectionFactory" class="control-label col-sm-2"><b>Connection Factory: </b></label>
+                                                <input ng-model="jmsReplay.connectionFactory" type="text" class="form-control col-sm-10 replayInputBox" 
+                                                       id="jmsConnectionFactory" placeholder="Connection Factory" required>
                                             </div>
                                         </div>
                                         <div class="form-group">
-                                            <div class="form-inline col-sm-12 row">
-                                                <div class="col-sm-2" id="jmsHostLabelDiv">
-                                                    <label for="jmsHost" class="control-label col-sm-2"><b>Host: </b></label>
-                                                </div>
-                                                <div class="col-sm-10">
-                                                    <input ng-model="jmsReplay.host" type="text" class="form-control col-sm-10 replayInputBox" 
-                                                       id="jmsHost" style="width: 100%" placeholder="Host" required>
-                                                </div>
+                                            <div class="form-inline">
+                                                <label for="jmsHost" class="control-label col-sm-2"><b>Host: </b></label>
+                                                <input ng-model="jmsReplay.host" type="text" class="form-control col-sm-10 replayInputBox" 
+                                                       id="jmsHost" placeholder="Host" required>
                                             </div>
                                         </div>
                                         <div class="form-group">
-                                            <div class="form-inline col-sm-12 row">
-                                                <div class="col-sm-2" id="jmsPortLabelDiv">
-                                                    <label for="jmsPort" class="control-label col-sm-2"><b>Port: </b></label>
-                                                </div>
-                                                <div class="col-sm-10">
-                                                    <input ng-model="jmsReplay.port" type="text" class="form-control col-sm-10 replayInputBox" 
-                                                       id="jmsPort" style="width: 100%" placeholder="Port" required>
-                                                </div>
+                                            <div class="form-inline">
+                                                <label for="jmsPort" class="control-label col-sm-2"><b>Port: </b></label>
+                                                <input ng-model="jmsReplay.port" type="text" class="form-control col-sm-10 replayInputBox" 
+                                                       id="jmsPort" placeholder="Port" required>
                                             </div>
                                         </div>
                                         <div class="form-group">
-                                            <div class="form-inline col-sm-12 row">
-                                                <div class="col-sm-2" id="jmsUsernameLabelDiv">
-                                                    <label for="jmsUsername" class="control-label col-sm-2"><b>Username: </b></label>
-                                                </div>
-                                                <div class="col-sm-10">
-                                                    <input ng-model="jmsReplay.username" type="text" class="form-control col-sm-10 replayInputBox" 
-                                                       id="jmsUsername" style="width: 100%" placeholder="Username" required>
-                                                </div>
+                                            <div class="form-inline">
+                                                <label for="jmsUsername" class="control-label col-sm-2"><b>Username: </b></label>
+                                                <input ng-model="jmsReplay.username" type="text" class="form-control col-sm-10 replayInputBox" 
+                                                       id="jmsUsername" placeholder="Username" required>
                                             </div>
                                         </div>
                                         <div class="form-group">
-                                            <div class="form-inline col-sm-12 row">
-                                                <div class="col-sm-2" id="jmsPasswordLabelDiv">
-                                                    <label for="jmsPassword" class="control-label col-sm-2"><b>Password: </b></label>
-                                                </div>
-                                                <div class="col-sm-10">
-                                                    <input ng-model="jmsReplay.password" type="text" class="form-control col-sm-10 replayInputBox" 
-                                                       id="jmsPassword" style="width: 100%" placeholder="Password" required>
-                                                </div>
+                                            <div class="form-inline">
+                                                <label for="jmsPassword" class="control-label col-sm-2"><b>Password: </b></label>
+                                                <input ng-model="jmsReplay.password" type="text" class="form-control col-sm-10 replayInputBox" 
+                                                       id="jmsPassword" placeholder="Password" required>
                                             </div>
                                         </div>
                                         <div class="form-group">
-                                            <div class="form-inline col-sm-12 row">
-                                                <div class="col-sm-2" id="jmsDeliveryModeLabelDiv">
-                                                    <label for="jmsDeliveryMode" class="control-label col-sm-2"><b>Delivery Mode: </b></label>
-                                                </div>
-                                                <div class="col-sm-10">
-                                                    <input ng-model="jmsReplay.deliveryMode" type="text" class="form-control col-sm-10 replayInputBox" 
-                                                       id="jmsDeliveryMode" style="width: 100%" placeholder="DeliveryMode" required>
-                                                </div>
+                                            <div class="form-inline">
+                                                <label for="jmsDeliveryMode" class="control-label col-sm-2"><b>Delivery Mode: </b></label>
+                                                <input ng-model="jmsReplay.deliveryMode" type="text" class="form-control col-sm-10 replayInputBox" 
+                                                       id="jmsDeliveryMode" placeholder="Delivery Mode" required>
                                             </div>
                                         </div>
-                                        <div class="form-group" id="jmsInitialContextFactoryDiv" style="display:none" >
-                                            <div class="form-inline col-sm-12 row">
-                                                <div class="col-sm-2" id="jmsInitalContextFactoryLabelDiv">
-                                                    <label for="jmsInitalContextFactory" class="control-label col-sm-2"><b>Inital Context Factory: </b></label>
-                                                </div>
-                                                <div class="col-sm-10">
-                                                    <input ng-model="jmsReplay.initalContextFactory" type="text" class="form-control col-sm-10 replayInputBox" 
-                                                       id="jmsInitalContextFactory" style="width: 100%" placeholder="InitalContextFactory" required>
-                                                </div>
+                                        <div class="form-group" id="jmsInitialContextFactoryDiv" style="display:none">
+                                            <div class="form-inline">
+                                                <label for="jmsInitalContextFactory" class="control-label col-sm-2"><b>Initial Context Factory: </b></label>
+                                                <input ng-model="jmsReplay.initalContextFactory" type="text" class="form-control col-sm-10 replayInputBox" 
+                                                       id="jmsInitalContextFactory" placeholder="Initial Context Factory" required>
                                             </div>
                                         </div>
                                         

@@ -854,6 +854,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                     "Content-Type: text/plain; charset: utf-8;\n\n" + 
                     $scope.payloadPageData+
                     "\n\n--boundaryJMS--";   
+            console.log(jmsPayload);
                 if(serverType !== undefined && 
                         $scope.jmsReplay.destinationName !== undefined && 
                         $scope.jmsReplay.destinationType !== undefined && 
