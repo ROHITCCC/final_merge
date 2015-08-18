@@ -832,11 +832,11 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                         '"jmsServerType":"' + serverType + '", '+
                         '"destinationName":"' + $scope.jmsReplay.destinationName + '",' +
                         '"destinationType":"' + $scope.jmsReplay.destinationType + '", '+
-                        '"connectionFactory":"' + $scope.jmsReplay.connectionFactory + '"' + 
-                        '"host":"' + $scope.jmsReplay.host + '"' +
-                        '"port":"' + $scope.jmsReplay.port + '"' +
-                        '"username":"' + $scope.jmsReplay.username + '"' + 
-                        '"password":"' + $scope.jmsReplay.password + '"' + 
+                        '"connectionFactory":"' + $scope.jmsReplay.connectionFactory + '", ' + 
+                        '"host":"' + $scope.jmsReplay.host + '", ' +
+                        '"port":"' + $scope.jmsReplay.port + '", ' +
+                        '"username":"' + $scope.jmsReplay.username + '", ' + 
+                        '"password":"' + $scope.jmsReplay.password + '", ' + 
                         '"deliveryMode":"' + $scope.jmsReplay.deliveryMode + '"';
                 
                 if(serverType === "Tibco"){
@@ -885,11 +885,11 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                         '"jmsServerType":"' + serverType + '", '+
                         '"destinationName":"' + $scope.jmsReplay.destinationName + '",' +
                         '"destinationType":"' + $scope.jmsReplay.destinationType + '", '+
-                        '"connectionFactory":"' + $scope.jmsReplay.connectionFactory + '"' + 
-                        '"host":"' + $scope.jmsReplay.host + '"' +
-                        '"port":"' + $scope.jmsReplay.port + '"' +
-                        '"username":"' + $scope.jmsReplay.username + '"' + 
-                        '"password":"' + $scope.jmsReplay.password + '"' + 
+                        '"connectionFactory":"' + $scope.jmsReplay.connectionFactory + '", ' + 
+                        '"host":"' + $scope.jmsReplay.host + '", ' +
+                        '"port":"' + $scope.jmsReplay.port + '", ' +
+                        '"username":"' + $scope.jmsReplay.username + '", ' + 
+                        '"password":"' + $scope.jmsReplay.password + '", ' + 
                         '"deliveryMode":"' + $scope.jmsReplay.deliveryMode + '"';
                 
                 if(serverType === "Tibco"){
