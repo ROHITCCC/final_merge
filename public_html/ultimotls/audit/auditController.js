@@ -1011,7 +1011,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
             var extVal = document.getElementById("jmsServerType");
             var factoryDiv = document.getElementById("jmsInitialContextFactoryDiv");
             
-            if(extVal.value === "Tibco"){
+            if(extVal.value === "Weblogic"){
                 factoryDiv.style.display = "inline";
             }
             else{
