@@ -828,6 +828,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                 var auditID = $scope.rowID;
                 var batchVals = $scope.batchValues();
                 var serverType = document.getElementById("jmsServerType").value;
+                var deliveryMode = $scope.jmsReplay.deliveryMode;
                 var jmsPayload = '"type":"JMS", '+
                         '"jmsServerType":"' + serverType + '", '+
                         '"destinationName":"' + $scope.jmsReplay.destinationName + '",' +
@@ -837,7 +838,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                         '"port":"' + $scope.jmsReplay.port + '", ' +
                         '"username":"' + $scope.jmsReplay.username + '", ' + 
                         '"password":"' + $scope.jmsReplay.password + '", ' + 
-                        '"deliveryMode":"' + $scope.jmsReplay.deliveryMode + '"';
+                        '"deliveryMode":"' + deliveryMode + '"';
                 
                 if(serverType === "Weblogic"){
                     jmsPayload += ', "initalContextFactory":"' + $scope.jmsReplay.initalContextFactory + '" ';
@@ -862,8 +863,8 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                         $scope.jmsReplay.host !== undefined && 
                         $scope.jmsReplay.port !== undefined && 
                         $scope.jmsReplay.username !== undefined && 
-                        $scope.jmsReplay.password !== undefined && 
-                        $scope.jmsReplay.deliveryMode !== undefined){
+                        //$scope.jmsReplay.password !== undefined && 
+                        deliveryMode !== ""){
                     $http.post(replayPostUrl, multipartPayload, {timeout:TLS_SERVER_TIMEOUT})
                         .success(function(d,status, header, config){
                             var auth_token_valid_until = header()['auth-token-valid-until'];
@@ -881,6 +882,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                 var batchVals = $scope.batchValues();
                 var auditIDs = $scope.pullAuditIDs(batchVals[2]);
                 var serverType = document.getElementById("jmsServerType").value;
+                var deliveryMode = $scope.jmsReplay.deliveryMode;
                 var jmsPayloadBatch = '"type":"JMS", '+
                         '"jmsServerType":"' + serverType + '", '+
                         '"destinationName":"' + $scope.jmsReplay.destinationName + '",' +
@@ -890,7 +892,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                         '"port":"' + $scope.jmsReplay.port + '", ' +
                         '"username":"' + $scope.jmsReplay.username + '", ' + 
                         '"password":"' + $scope.jmsReplay.password + '", ' + 
-                        '"deliveryMode":"' + $scope.jmsReplay.deliveryMode + '"';
+                        '"deliveryMode":"' + deliveryMode + '"';
                 
                 if(serverType === "Weblogic"){
                     jmsPayloadBatch += ', "initalContextFactory":"' + $scope.jmsReplay.initalContextFactory + '"';
@@ -907,8 +909,8 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
                         $scope.jmsReplay.host !== undefined && 
                         $scope.jmsReplay.port !== undefined && 
                         $scope.jmsReplay.username !== undefined && 
-                        $scope.jmsReplay.password !== undefined && 
-                        $scope.jmsReplay.deliveryMode !== undefined){
+                        //$scope.jmsReplay.password !== undefined && 
+                        deliveryMode !== ""){
                     $http.post(replayPostUrlBatch, batchPayload, {timeout:TLS_SERVER_TIMEOUT})
                         .success(function(d,status, header, config){
                             var auth_token_valid_until = header()['auth-token-valid-until'];
@@ -1013,10 +1015,10 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
             var factoryDiv = document.getElementById("jmsInitialContextFactoryDiv");
             
             if(extVal.value === "Weblogic"){
-                factoryDiv.style.display = "inline";
+                factoryDiv.style.visibility = "visible";
             }
             else{
-                factoryDiv.style.display = "none";
+                factoryDiv.style.visibility = "hidden";
             }
         };
         $scope.batchValues = function(){

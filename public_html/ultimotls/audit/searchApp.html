@@ -1014,10 +1014,7 @@ and open the template in the editor.
                                 <div class="container-fluid">
                                     <form class="form-horizontal" role="form">
                                             <div class="form-inline row">
-                                                <div class="col-sm-2" id="jmsServerTypeLabelDiv">
                                                     <label for="jmsServerType" class="control-label col-sm-2"><b>Server: </b></label>
-                                                </div>
-                                                <div class="col-sm-4">
                                                     <select class="replayDropDown" ng-click="checkSelectedJMS()" id="jmsServerType" style="width: 135px" required>
                                                         <option ng-click="checkSelectedJMS()" value="" style="display: none">Select...</option>
                                                         <option ng-click="checkSelectedJMS()" value="Weblogic">Weblogic</option>
@@ -1025,8 +1022,8 @@ and open the template in the editor.
                                                     </select>
                                                     <span class="caret" style="margin-left: -18px;"></span>
                                                     
-                                                </div>
                                             </div>
+                                        <br />
                                         <div class="form-group">
                                             <div class="form-inline">
                                                 <label for="jmsDestinationName" class="control-label col-sm-2"><b>Destination Name: </b></label>
@@ -1073,17 +1070,22 @@ and open the template in the editor.
                                             <div class="form-inline">
                                                 <label for="jmsPassword" class="control-label col-sm-2"><b>Password: </b></label>
                                                 <input ng-model="jmsReplay.password" type="text" class="form-control col-sm-10 replayInputBox" 
-                                                       id="jmsPassword" placeholder="Password" required>
+                                                       id="jmsPassword" placeholder="Password">
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <div class="form-inline">
                                                 <label for="jmsDeliveryMode" class="control-label col-sm-2"><b>Delivery Mode: </b></label>
-                                                <input ng-model="jmsReplay.deliveryMode" type="text" class="form-control col-sm-10 replayInputBox" 
-                                                       id="jmsDeliveryMode" placeholder="Delivery Mode" required>
+                                                <select class="replayDropDown" id="jmsDeliveryMode" style="width: 135px" required>
+                                                    <option value="" style="display: none">Select...</option>
+                                                    <option value="persistent">Persistent</option>
+                                                    <option value="non_persistent">Non-Persistent</option>
+                                                </select>
+                                                <span class="caret" style="margin-left: -18px;"></span>
+                                                
                                             </div>
                                         </div>
-                                        <div class="form-group" id="jmsInitialContextFactoryDiv" style="display:none">
+                                        <div class="form-group" id="jmsInitialContextFactoryDiv" style="visibility: hidden">
                                             <div class="form-inline">
                                                 <label for="jmsInitalContextFactory" class="control-label col-sm-2"><b>Initial Context Factory: </b></label>
                                                 <input ng-model="jmsReplay.initalContextFactory" type="text" class="form-control col-sm-10 replayInputBox" 
