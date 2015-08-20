@@ -115,6 +115,15 @@ $('.datetimepicker').waitUntilExists(function () {
     $(this).datetimepicker('hide');
 });
 
+$('.datetimepicker1').waitUntilExists(function () {
+    $('.datetimepicker1').datetimepicker({
+        timepicker:false,
+        format:'m/d/Y'
+    });
+    $(this).datetimepicker('show');
+     $(this).datetimepicker('hide');
+});
+
 $('.datetimepicker2').waitUntilExists(function () {
     $('.datetimepicker2').datetimepicker({
         timepicker:false,
