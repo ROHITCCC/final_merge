@@ -48,7 +48,7 @@ severityPieChartDirectiveModule.directive('severityPieChart',['queryFilter', fun
         var Donut3D = {};
         var color = d3.scale.category10();
         var width = document.getElementById('severityPieChartDiv').offsetWidth, height = (window.innerHeight*.28);
-        var centerX = width*.5, centerY = height*.45, radiusX = centerX*.7, radiusY = centerY*.66, pieHeight = centerY*.2, innerRadius = .3;
+        var centerX = width*.5, centerY = height*.45, radiusX = centerX*.68, radiusY = centerY*.68, pieHeight = centerY*0, innerRadius = .3;
         function upDateTreemap(filterCriteria){
             queryFilter.appendQuery("severity",filterCriteria.data._id);
             queryFilter.broadcast();
