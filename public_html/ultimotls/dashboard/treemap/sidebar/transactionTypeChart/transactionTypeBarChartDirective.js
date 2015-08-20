@@ -56,12 +56,17 @@ transactionTypeBarChartDirectiveModule.directive('transactionTypeBarChart',['que
         };
         barChart.createChart = function(data){
             var x = d3.scale.ordinal().rangeRoundBands([0, width*.95], .1);
+            //var y = d3.scale.ordinal().rangeRoundBands([0,height*.95],.1);
             var y = d3.scale.linear().range([height*.82,0]);
+            //var x = d3.scale.linear().range([width*.95,0]);
             var xAxis = d3.svg.axis().scale(x).orient("bottom");
+            //var yAxis = d3.svg.axis().scale(y).orient("left");
             x.domain(data.sort(function(a,b){return b.count - a.count})
                 .map(function(d){return d._id;})
             ).copy();
+            //x.domain(0, d3.max(data, function(d){return d.count;}));
             y.domain([0,d3.max(data, function(d) { return d.count;})]);
+            
             var yAxis = d3.svg.axis().scale(y).orient("left").ticks(5,"");
             var svg = d3.select("#transactionType")
                 .attr("width", width).attr("height", height).append("g")
