@@ -25,7 +25,7 @@ auditControllerModule.controller('DataRetrieve', ['$scope', '$log', '$http', 'au
         $scope.predicate = 'timestamp.$date';
         $scope.replayQueryHolder = "";
         //Replay Page Options
-        $scope.replayOptions = [{type: "REST"}, {type: "FILE"}, {type: "WS"}, {type: "FTP"}, {type: "JMS"}];
+        $scope.replayOptions = [{type: "REST"}, {type: "FILE"}, /*{type: "WS"},*/ {type: "FTP"}, {type: "JMS"}];
         $scope.replayType = $scope.replayOptions[0];
         //For Replay Data Page
         $scope.pageSize = 20;

@@ -60,7 +60,7 @@ and open the template in the editor.
       <!-- Modal content-->
         <div class="modal-content" >
             <div class="modal-header">
-                <button style="float: right" type="button" class="close" data-dismiss="modal">&times;</button>  
+                <button style="float: right" id="closeModal" type="button" class="close" data-dismiss="modal">&times;</button>  
                 <h4 class="modal-title"><b>Calendar</b></h4>
             </div>
             <div class="modal-body">
@@ -86,7 +86,8 @@ and open the template in the editor.
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal" id="customTimeSubmit" ng-click="customDate(calender.from, calender.to)">Submit</button>
+                <span ng-model="calender.valid">{{valid}}</span>
+                <button type="button" class="btn btn-default" id="customTimeSubmit" ng-click="customDate(calender.from, calender.to)">Submit</button>
             </div>
       </div>
     </div>
