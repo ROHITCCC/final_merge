@@ -48,7 +48,7 @@ errorPieChartDirectiveModule.directive('errorPieChart',['queryFilter', function(
         var Donut3D = {};
         var color = d3.scale.category10();
         var width = document.getElementById('errorTypePieChartDiv').offsetWidth, height = (window.innerHeight*.28);
-        var centerX = width*.5, centerY = height*.45, radiusX = centerX*.68, radiusY = centerY*.68, pieHeight = centerY*0, innerRadius = .3;
+        var centerX = width*.5, centerY = height*.5, radiusX = Math.min(centerX,centerY)*.7, radiusY = Math.min(centerY,centerX)*.7, pieHeight = centerY*0, innerRadius = 0;
         function upDateTreemap(filterCriteria){
             queryFilter.appendQuery("errorType",filterCriteria.data._id);
             queryFilter.broadcast();
@@ -114,16 +114,16 @@ errorPieChartDirectiveModule.directive('errorPieChart',['queryFilter', function(
                 .attr("class", "slices");
             var tooltip = d3.select("#errorTypePieChart").append("div").attr("id", "tooltip")
                 .style("position", "fixed").style("opacity", 0).style("z-index", 1000);	
-            slices.selectAll(".innerSlice").data(_data).enter().append("path").attr("class","innerSlice")
-                .attr("id", function(d,i){return "errorInnerSlice"+i})
-                .style("fill", function(d,i){return color(i);})
-                .style("stroke", "rgb(87, 87, 87)")
-                .attr("d",function(d){ return pieInner(d, rx+0.5,ry+0.5, h, ir);})
-                .on("mouseover", mouseOverSlice)
-                .on("mousemove", mouseMoveSlice)
-                .on("mouseout", mouseOutSlice)
-                .on("click", function(d,i){upDateTreemap(d);onSelection(d,i);})
-                .each(function(d){this._current=d;});
+//            slices.selectAll(".innerSlice").data(_data).enter().append("path").attr("class","innerSlice")
+//                .attr("id", function(d,i){return "errorInnerSlice"+i})
+//                .style("fill", function(d,i){return color(i);})
+//                .style("stroke", "rgb(87, 87, 87)")
+//                .attr("d",function(d){ return pieInner(d, rx+0.5,ry+0.5, h, ir);})
+//                .on("mouseover", mouseOverSlice)
+//                .on("mousemove", mouseMoveSlice)
+//                .on("mouseout", mouseOutSlice)
+//                .on("click", function(d,i){upDateTreemap(d);onSelection(d,i);})
+//                .each(function(d){this._current=d;});
             slices.selectAll(".topSlice").data(_data).enter().append("path").attr("class", "topSlice")
                 .attr("id", function(d,i){return "errorTopSlice"+i})
                 .style("fill", function(d,i){return color(i);})
@@ -134,16 +134,16 @@ errorPieChartDirectiveModule.directive('errorPieChart',['queryFilter', function(
                 .on("mouseout", mouseOutSlice)
                 .on("click", function(d,i){upDateTreemap(d);onSelection(d,i);})
                 .each(function(d){this._current=d;});
-            slices.selectAll(".outerSlice").data(_data).enter().append("path").attr("class", "outerSlice")
-                .attr("id", function(d,i){return "errorOuterSlice"+i})
-                .style("fill", function(d,i){return color(i);})
-                .style("stroke", "rgb(87, 87, 87)")
-                .attr("d",function(d){ return pieOuter(d, rx-.5,ry-.5, h);})
-                .on("mouseover", mouseOverSlice)
-                .on("mousemove", mouseMoveSlice)
-                .on("mouseout", mouseOutSlice)
-                .on("click", function(d,i){upDateTreemap(d);onSelection(d,i);})
-                .each(function(d){this._current=d;});
+//            slices.selectAll(".outerSlice").data(_data).enter().append("path").attr("class", "outerSlice")
+//                .attr("id", function(d,i){return "errorOuterSlice"+i})
+//                .style("fill", function(d,i){return color(i);})
+//                .style("stroke", "rgb(87, 87, 87)")
+//                .attr("d",function(d){ return pieOuter(d, rx-.5,ry-.5, h);})
+//                .on("mouseover", mouseOverSlice)
+//                .on("mousemove", mouseMoveSlice)
+//                .on("mouseout", mouseOutSlice)
+//                .on("click", function(d,i){upDateTreemap(d);onSelection(d,i);})
+//                .each(function(d){this._current=d;});
             slices.selectAll(".label").data(_data).enter().append("text").attr("class", "label")
                 .attr("x",function(d){ return .7*rx*Math.cos(0.5*(d.startAngle+d.endAngle));})
                 .attr("y",function(d){ return 0.6*ry*Math.sin(0.5*(d.startAngle+d.endAngle));})
