@@ -184,6 +184,16 @@ $('#severityPieChart').waitUntilExists(function () {
         }
     })
 });
+$('#transactionTypeBarChart').waitUntilExists(function () {
+    $(this).on({
+        mouseenter: function () {
+            $(this).children('div.menuselector').addClass('open');
+        },
+        mouseleave: function () {
+            $(this).children('div.menuselector').removeClass('open');
+        }
+    })
+});
 $('.replayInfoButton').waitUntilExists(function () {
     $(document).ready(function(){
         $(".replayInfoButton").click(function(){

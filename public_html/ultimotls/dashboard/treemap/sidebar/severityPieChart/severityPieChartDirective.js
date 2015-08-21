@@ -3,7 +3,7 @@ var severityPieChartDirectiveModule = angular.module('severityPieChartDirectiveM
 severityPieChartDirectiveModule.directive('severityPieChart',['queryFilter', function(queryFilter){
     var initialHeight = document.getElementById("row2").offsetHeight;
     function updateSize(data){
-        var width = document.getElementById('severityPieChartDiv').offsetWidth, height = (window.innerHeight*.28);
+        var width = document.getElementById('severityPieChartDiv').offsetWidth, height = (window.innerHeight*.29);
         if (data === 0){ //Will append a Message for no data and return out of the function
             d3.select("#severityPieChart").select("svg").remove();
             var svg = d3.select("#severityPieChart").append("svg")
@@ -47,8 +47,8 @@ severityPieChartDirectiveModule.directive('severityPieChart',['queryFilter', fun
     function pieChart(data,status){
         var Donut3D = {};
         var color = d3.scale.category10();
-        var width = document.getElementById('severityPieChartDiv').offsetWidth, height = (window.innerHeight*.28);
-        var centerX = width*.5, centerY = height*.5, radiusX = Math.min(centerX,centerY)*.7, radiusY = Math.min(centerY,centerX)*.7, pieHeight = centerY*0, innerRadius = 0;
+        var width = document.getElementById('severityPieChartDiv').offsetWidth, height = (window.innerHeight*.29);
+        var centerX = width*.45, centerY = height*.5, radiusX = Math.min(centerX,centerY)*.7, radiusY = Math.min(centerY,centerX)*.7, pieHeight = centerY*0, innerRadius = 0;
         function upDateTreemap(filterCriteria){
             queryFilter.appendQuery("severity",filterCriteria.data._id);
             queryFilter.broadcast();

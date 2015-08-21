@@ -266,7 +266,7 @@ text{
 }
 //Sidebar CHARTS
 .columnDiv .row, .columnDiv svg{
-    width: 100%;
+    //width: 100%;
 }
 #severity text, #error text, #reset, .columnDiv svg path, .columnDiv rect{
     cursor: pointer;
