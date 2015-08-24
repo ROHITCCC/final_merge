@@ -25,6 +25,8 @@ errorPieChartDirectiveModule.directive('errorPieChart',['queryFilter', function(
         d3.select("#severity").selectAll("path").style("opacity", 1);
         d3.select("#error").selectAll("path").style("opacity", 1);
         d3.select("#transactionType").selectAll("rect").style("opacity",1);
+        d3.selectAll(".transactionTypeText").style("opacity", 1);
+        d3.selectAll(".transactionTypeText").selectAll("text").style("opacity", 1);
         queryFilter.appendQuery("","");
         queryFilter.broadcast();
     }
@@ -34,7 +36,8 @@ errorPieChartDirectiveModule.directive('errorPieChart',['queryFilter', function(
         d3.select("#error").selectAll("path").style("opacity", 0.3);
         d3.select("#severity").selectAll("path").style("opacity", 0.3);
         d3.select("#transactionType").selectAll("rect").style("opacity", 0.3);
-        
+        d3.selectAll(".transactionTypeText").style("opacity", 0.3);
+        d3.selectAll(".transactionTypeText").selectAll("text").style("opacity", 0.3);
         d3.select("#errorInnerSlice"+i).style("opacity",1);
         d3.select("#errorTopSlice"+i).style("opacity",1);
         d3.select("#errorOuterSlice"+i).style("opacity",1);
