@@ -268,7 +268,8 @@ text{
 .columnDiv .row, .columnDiv svg{
     //width: 100%;
 }
-#severity text, #error text, #reset, .columnDiv svg path, .columnDiv rect, #transactionType text{
+#severity text, #error text, #reset, .columnDiv svg path, .columnDiv rect, #transactionType text, 
+#transactionTypeNext, #transactionTypePrevious, #severityPieChart .pathLabel, #errorTypePieChart .pathLabel{
     cursor: pointer;
 }
 #reset{
