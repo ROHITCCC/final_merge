@@ -47,16 +47,17 @@ transactionTypeBarChartDirectiveModule.directive('transactionTypeBarChart',['que
     }
     function barChart(data, status){
         
-        var width = document.getElementById('transactionTypeBarChartDiv').offsetWidth, height = (window.innerHeight*.29);
+        var width = document.getElementById('transactionTypeBarChartDiv').offsetWidth, height = (window.innerHeight*.30);
         var width2 = document.getElementById('transactionTypeBarChartDiv').offsetWidth;
         var color = d3.scale.category10();
         var pageCount = 0;
         var barChart = {};
-        if(data !== undefined && data.length > 10){
+        if(data !== undefined && data.length > 0){
             var pages = Math.ceil(data.length/10);
             var dataHolder = [];
-            dataHolder.push(data);
-            var slicedData = dataHolder[0].slice(0,9)
+            dataHolder.push(data.sort(function(a, b){return b.count-a.count;}));
+            var slicedData = dataHolder[0].slice(0,9);
+            console.log(slicedData);
             d3.select("#transactionTypeDiv").append("text")
                 .attr("transform", "translate("+height*.83+","+width*60+")").text("Next");
         }
@@ -104,7 +105,7 @@ transactionTypeBarChartDirectiveModule.directive('transactionTypeBarChart',['que
             }
             var x = d3.scale.linear().range([0,width*.65])
                 .domain([0,d3.max(data,function(d){return d.count;})]);
-            var y = d3.scale.ordinal().rangeRoundBands([0,height*.75],.1)
+            var y = d3.scale.ordinal().rangeRoundBands([0,height*.70],.1)
                 .domain(data.sort(function(a,b){
                     return b.count-a.count;})
                 .map(function(d){return d._id;})
@@ -113,16 +114,16 @@ transactionTypeBarChartDirectiveModule.directive('transactionTypeBarChart',['que
             var yAxis = d3.svg.axis().scale(y).orient("left");
             var svg = d3.select("#transactionType")
                 .attr("width", width).attr("height", height).append("g")
-                .attr("transform", "translate(" + width2*.1+ "," + height*.13 + ")");
+                .attr("transform", "translate(" + width2*.15+ "," + height*.13 + ")");
             var labels = svg.append("g")
-                .attr("class","y axis").attr("transform", "translate("+width2*.10+",15)")
+                .attr("class","y axis").attr("transform", "translate("+width2*.15+",15)")
                 .call(yAxis);
             labels.selectAll(".tick")
                 .attr("id",function(d,i){return "transactionTypeText"+i;})
                 .attr("class","transactionTypeText")
                 .on("click", function(d,i){upDateTreemap(d);onSelection(d,i)});
             svg.append("g").attr("class","x axis").call(xAxis)
-                .attr("transform", "translate("+width2*.10+",10)")
+                .attr("transform", "translate("+width2*.15+",10)")
                 .append("text").attr("x", -20).attr("dx", ".71em").attr("y", -10)
                 .style("text-anchor","end").text("Count");
             svg.selectAll(".bar").data(data)
@@ -134,7 +135,7 @@ transactionTypeBarChartDirectiveModule.directive('transactionTypeBarChart',['que
                 .attr("width", function(d){return x(d.count);})
                 .transition().delay(function(d,i){return i*100;})
                 .attr("height", function(d){return y.rangeBand();})
-                .attr("transform","translate("+width2*.10+",15)");
+                .attr("transform","translate("+width2*.15+",15)");
         }
 //        barChart.createVertical = function(data){
 //            var x = d3.scale.ordinal().rangeRoundBands([0, width*.95], .1);
@@ -192,7 +193,7 @@ transactionTypeBarChartDirectiveModule.directive('transactionTypeBarChart',['que
             svg.append("g").attr("id","transactionType");
             svg.append("text").attr("transform", "translate(0,15)").text("Transaction Type Chart");
             svg.append("text").attr("id","transactionTypeNext").on("click",function(d){pagination("next")})
-                    .attr("transform", "translate("+width*.73+","+height*.965+")").text("Next");
+                    .attr("transform", "translate("+width*.75+","+height*.965+")").text("Next");
             svg.append("text").attr("id","transactionTypePrevious").on("click",function(d){pagination("previous")})
                     .attr("transform", "translate("+width*.55+","+height*.965+")").text("Previous");
             barChart.createHorizontal(slicedData);
