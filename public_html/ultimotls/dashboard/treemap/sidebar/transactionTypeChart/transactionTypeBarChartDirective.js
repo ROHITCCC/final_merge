@@ -45,7 +45,7 @@ transactionTypeBarChartDirectiveModule.directive('transactionTypeBarChart',['que
             .on("click", function(d){onReset();});
         svg.append("text").text("Reset");
     }
-    function barChart(data, status){
+    function barChart(data, status, scope){
         
         var width = document.getElementById('transactionTypeBarChartDiv').offsetWidth, height = (window.innerHeight*.30);
         var width2 = document.getElementById('transactionTypeBarChartDiv').offsetWidth;
@@ -97,14 +97,22 @@ transactionTypeBarChartDirectiveModule.directive('transactionTypeBarChart',['que
         barChart.createHorizontal = function(data){
             d3.select("#transactionTypePrevious").style("opacity", 1);
             d3.select("#transactionTypeNext").style("opacity", 1);
+            
             if(pageCount === 0){
                 d3.select("#transactionTypePrevious").style("opacity", 0.3);
             }
             if(pageCount === pages-1){
                 d3.select("#transactionTypeNext").style("opacity", 0.3);
             }
-            var x = d3.scale.linear().range([0,width*.65])
-                .domain([0,d3.max(data,function(d){return d.count;})]);
+            if(scope.treemapSaver.saveScale === undefined){
+                scope.treemapSaver.saveScale = d3.scale.linear().range([0,width*.65])
+                    .domain([0,d3.max(data,function(d){return d.count;})]);
+            }
+            if(d3.select("#transactionTypePrevious").style("opacity") !== "1"){
+                scope.treemapSaver.saveScale = d3.scale.linear().range([0,width*.65])
+                    .domain([0,d3.max(data,function(d){return d.count;})]);
+            }
+            var x = scope.treemapSaver.saveScale;
             var y = d3.scale.ordinal().rangeRoundBands([0,height*.70],.1)
                 .domain(data.sort(function(a,b){
                     return b.count-a.count;})
@@ -209,7 +217,7 @@ transactionTypeBarChartDirectiveModule.directive('transactionTypeBarChart',['que
                 }
                 var temp = getCall.data._embedded['rh:doc'];
                 scope.transactionTypeTempData = temp;
-                barChart(temp, "createChart");
+                barChart(temp, "createChart", scope);
             });
             $(window).resize(function(){
                 updateSize(scope.transactionTypeTempData);
