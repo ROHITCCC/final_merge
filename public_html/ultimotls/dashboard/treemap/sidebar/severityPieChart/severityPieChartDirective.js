@@ -194,7 +194,7 @@ severityPieChartDirectiveModule.directive('severityPieChart',['queryFilter', fun
                 })
                 .attr("y",yAdjust)
                 .on("click", function(d,i){upDateTreemap(d._id);onSelection(d,i);})
-                .text(function(d,i){return ""+d._id;}).style("fill",function(d,i){console.log(i);return color(i);}); 
+                .text(function(d,i){return ""+d._id;}).style("fill",function(d,i){return color(i);}); 
 	};
         this.Donut3D = Donut3D;
         
