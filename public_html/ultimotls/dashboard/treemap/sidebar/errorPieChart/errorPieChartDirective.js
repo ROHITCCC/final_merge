@@ -42,10 +42,18 @@ errorPieChartDirectiveModule.directive('errorPieChart',['queryFilter', function(
         d3.selectAll(".transactionTypeText").selectAll("text").style("opacity", 0.3);
         d3.select("#severityPathText").selectAll("text").style("opacity",0.3);
         d3.select("#errorPathText").selectAll("text").style("opacity",0.3);
-        d3.select("#errorInnerSlice"+d._id).style("opacity",1);
-        d3.select("#errorTopSlice"+d._id).style("opacity",1);
-        d3.select("#errorOuterSlice"+d._id).style("opacity",1);
-        d3.select("#errorPieChartTextBox-"+d._id).style("opacity",1);
+        if(d.data !== undefined){
+            d3.select("#errorInnerSlice"+d.data._id).style("opacity",1);
+            d3.select("#errorTopSlice"+d.data._id).style("opacity",1);
+            d3.select("#errorOuterSlice"+d.data._id).style("opacity",1);
+            d3.select("#errorPieChartTextBox-"+d.data._id).style("opacity",1);
+        }else{
+            d3.select("#errorInnerSlice"+d._id).style("opacity",1);
+            d3.select("#errorTopSlice"+d._id).style("opacity",1);
+            d3.select("#errorOuterSlice"+d._id).style("opacity",1);
+            d3.select("#errorPieChartTextBox-"+d._id).style("opacity",1);
+        }
+        
         
         d3.select("#errorTypePieChart").select("svg")
             .append("g").attr("transform", "translate("+width*.7+",15)")

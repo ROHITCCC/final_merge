@@ -43,10 +43,17 @@ severityPieChartDirectiveModule.directive('severityPieChart',['queryFilter', fun
         d3.selectAll(".transactionTypeText").selectAll("text").style("opacity", 0.3);
         d3.select("#errorPathText").selectAll("text").style("opacity",0.3);
         d3.select("#severityPathText").selectAll("text").style("opacity",0.3);
-        d3.select("#severityInnerSlice-"+d._id).style("opacity",1);
-        d3.select("#severityTopSlice-"+d._id).style("opacity",1);
-        d3.select("#severityOuterSlice-"+d._id).style("opacity",1);
-        d3.select("#severityPieChartTextBox-"+d._id).style("opacity",1);
+        if(d.data !== undefined){
+            d3.select("#severityInnerSlice-"+d.data._id).style("opacity",1);
+            d3.select("#severityTopSlice-"+d.data._id).style("opacity",1);
+            d3.select("#severityOuterSlice-"+d.data._id).style("opacity",1);
+            d3.select("#severityPieChartTextBox-"+d.data._id).style("opacity",1);
+        }else{
+            d3.select("#severityInnerSlice-"+d._id).style("opacity",1);
+            d3.select("#severityTopSlice-"+d._id).style("opacity",1);
+            d3.select("#severityOuterSlice-"+d._id).style("opacity",1);
+            d3.select("#severityPieChartTextBox-"+d._id).style("opacity",1);
+        }
         
         d3.select("#severityPieChart").select("svg")
             .append("g").attr("transform", "translate("+width*.7+",15)")
@@ -187,7 +194,7 @@ severityPieChartDirectiveModule.directive('severityPieChart',['queryFilter', fun
                 })
                 .attr("y",yAdjust)
                 .on("click", function(d,i){upDateTreemap(d._id);onSelection(d,i);})
-                .text(function(d,i){return ""+d._id;}).style("fill",function(d,i){return color(i);}); 
+                .text(function(d,i){return ""+d._id;}).style("fill",function(d,i){console.log(i);return color(i);}); 
 	};
         this.Donut3D = Donut3D;
         
