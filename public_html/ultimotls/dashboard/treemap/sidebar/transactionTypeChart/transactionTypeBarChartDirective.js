@@ -1,7 +1,7 @@
 var transactionTypeBarChartDirectiveModule = angular.module('transactionTypeBarChartDirectiveModule', ['transactionTypeBarChartControllerModule']);
 
 transactionTypeBarChartDirectiveModule.directive('transactionTypeBarChart',['queryFilter', function(queryFilter){
-    function updateSize(data){
+    function updateSize(data, scope){
         var width = document.getElementById('transactionTypeBarChartDiv').offsetWidth*.9, height = (window.innerHeight*.29);
         if (data === 0){
             d3.select("#transactionTypeBarChart").select("svg").remove();
@@ -12,7 +12,7 @@ transactionTypeBarChartDirectiveModule.directive('transactionTypeBarChart',['que
                 .append("text").text("No Data Available");
             return;
         }
-        barChart(data, "updateChart");
+        barChart(data, "updateChart", scope);
         return;
     };
     function cleanUp(){
@@ -220,7 +220,7 @@ transactionTypeBarChartDirectiveModule.directive('transactionTypeBarChart',['que
                 barChart(temp, "createChart", scope);
             });
             $(window).resize(function(){
-                updateSize(scope.transactionTypeTempData);
+                updateSize(scope.transactionTypeTempData, scope);
             })
         });
     };
